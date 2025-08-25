@@ -128,20 +128,48 @@ else:
     from .plans import *  # noqa: F401, F403
 
 
-RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
+# RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
 
-stations = ["source", "4ida", "4idb", "4idg", "4idh"]
-for device in oregistry.findall(stations):
-    connect_device(device, raise_error=False)
+# stations = ["source", "4ida", "4idb", "4idg", "4idh"]
+# for device in oregistry.findall(stations):
+#     connect_device(device, raise_error=False)
 
-counters.plotselect(11, 0)
+# counters.plotselect(11, 0)
+
+# # Diffractometer
+# select_diffractometer(get_huber_euler())  # noqa: F405
+# select_engine_for_psi(get_huber_euler_psi())  # noqa: F405
+
+_load_devices = input("\n==> Do you want to load all devices? [Y/n]: ") or "y"
+
+try:
+    if _load_devices.lower() in ["y", "yes"]:
+        logger.info("Loading all devices, this can take a few minutes.")
+        RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
+        stations = ["source", "4ida", "4idb", "4idg", "4idh"]
+        for device in oregistry.findall(stations):
+            connect_device(device, raise_error=False)
+
+        counters.plotselect(11, 0)
+
+        # Diffractometer
+        select_diffractometer(get_huber_euler())  # noqa: F405
+        select_engine_for_psi(get_huber_euler_psi())  # noqa: F40
+    else:
+        logger.info(
+            "No device has been loaded. Please see the reload_all_devices, "
+            "load_device, and find_loadable_devices functions for options to "
+            "load devices."
+        )
+except AttributeError:
+    logger.info(
+        "No device has been loaded. Please see the reload_all_devices, "
+        "load_device, and find_loadable_devices functions for options to "
+        "load devices."
+    )
 
 for sus in run_engine_suspenders.values():
     RE.install_suspender(sus)
 
 # TODO: REMOVE THIS AFTER UPSTREAM FIX
 _ = RE.preprocessors.pop()
-
-# Diffractometer
-select_diffractometer(get_huber_euler())  # noqa: F405
-select_engine_for_psi(get_huber_euler_psi())  # noqa: F405
