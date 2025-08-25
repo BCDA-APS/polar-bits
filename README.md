@@ -6,8 +6,8 @@ Instrument Github Repository to be used with BITS structure at the APS
 ## Installing your own BITS instrument
 
 ```bash
-export ENV_NAME=BITS_env
-conda create -y -n $ENV_NAME python=3.11
+export ENV_NAME=polar-bits
+conda create -y -n $ENV_NAME python=3.11 hkl pyepics
 conda activate $ENV_NAME
 pip install apsbits
 ```
@@ -15,7 +15,7 @@ pip install apsbits
 
 ## Creating a New Instrument
 ```bash
-export YOUR_INSTRUMENT_NAME=new_instrument
+export YOUR_INSTRUMENT_NAME=polar
 create-bits $YOUR_INSTRUMENT_NAME
 pip install -e .
 ```
