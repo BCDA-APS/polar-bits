@@ -9,13 +9,6 @@ Includes:
 * Bluesky queueserver
 """
 
-# There is something below that will load the wrong libgobject-2.0.so
-# which causes the hklpy import to fail. This is a workaround so that
-# the system loads a good version of the library.
-try:
-    import hkl
-except ModuleNotFoundError:
-    print("Not using hklpy")
 
 import logging
 from pathlib import Path
