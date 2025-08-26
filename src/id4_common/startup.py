@@ -9,7 +9,6 @@ Includes:
 * Bluesky queueserver
 """
 
-
 import logging
 from pathlib import Path
 
@@ -22,6 +21,7 @@ from apsbits.utils.config_loaders import load_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
 from IPython import get_ipython
+
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
 
@@ -82,21 +82,24 @@ if running_in_queueserver():
 else:
     # Import bluesky plans and stubs with prefixes set by common conventions.
     # The apstools plans and utils are imported by '*'.
-    from apstools.plans import *  # noqa: F401, F403
-    from apstools.utils import *  # noqa: F401, F403
+    # from apstools.plans import *  # noqa: F401, F403
+    # from apstools.utils import *  # noqa: F401, F403
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
+
+    from .suspenders.shutters_suspenders import (  # noqa: F401
+        shutter_suspenders,
+    )
+    from .suspenders.suspender_utils import (  # noqa: F401
+        suspender_restart,
+        suspender_stop,
+        suspender_change_sleep
+    )
 
     from .utils.wax import wm, wax, wa_new  # noqa: F401
     from .utils.counters_class import counters  # noqa: F401
     from .utils.pr_setup import pr_setup  # noqa: F401
     from .utils.attenuator_utils import atten  # noqa: F401
-    from .utils.suspenders import (  # noqa: F401
-        run_engine_suspenders,
-        suspender_restart,
-        suspender_stop,
-        suspender_change_sleep
-    )
     from .utils.dm_utils import *  # noqa: F401, F403
     from .utils.experiment_utils import *  # noqa: F401, F403
     from .utils.hkl_utils import *  # noqa: F401, F403
@@ -119,19 +122,6 @@ else:
     )
 
     from .plans import *  # noqa: F401, F403
-
-
-# RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
-
-# stations = ["source", "4ida", "4idb", "4idg", "4idh"]
-# for device in oregistry.findall(stations):
-#     connect_device(device, raise_error=False)
-
-# counters.plotselect(11, 0)
-
-# # Diffractometer
-# select_diffractometer(get_huber_euler())  # noqa: F405
-# select_engine_for_psi(get_huber_euler_psi())  # noqa: F405
 
 _load_devices = input("\n==> Do you want to load all devices? [Y/n]: ") or "y"
 
@@ -161,7 +151,7 @@ except AttributeError:
         "load devices."
     )
 
-for sus in run_engine_suspenders.values():
+for sus in shutter_suspenders.values():
     RE.install_suspender(sus)
 
 # TODO: REMOVE THIS AFTER UPSTREAM FIX
