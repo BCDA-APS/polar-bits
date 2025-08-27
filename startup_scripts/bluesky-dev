@@ -1,0 +1,4 @@
+#!/bin/bash
+
+source /APSshare/miniconda/x86_64/bin/activate polar-bits
+ipython -i -c "from id4_common.startup import *"
