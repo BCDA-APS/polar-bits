@@ -33,7 +33,7 @@ instrument_path = Path(__file__).parent
 # Load configuration to be used by the instrument.
 
 # First the general iconfig
-iconfig_path = instrument_path / "configs" / "iconfig.yml"
+iconfig_path = instrument_path.parent / "id4_common" / "configs" / "iconfig.yml"
 load_config(iconfig_path)
 
 # Load extras for this station and update the config
@@ -54,11 +54,11 @@ aps_dm_setup(iconfig.get("DM_SETUP_FILE"))
 # Command-line tools, such as %wa, %ct, ...
 register_bluesky_magics()
 
-from .utils.local_magics import LocalMagics  # noqa: E402
+from id4_common.utils.local_magics import LocalMagics  # noqa: E402
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
-from .utils.run_engine import (  # noqa: F401, E402
+from id4_common.utils.run_engine import (  # noqa: F401, E402
     RE,
     sd,
     bec,
@@ -70,20 +70,24 @@ from .utils.run_engine import (  # noqa: F401, E402
 if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
     # from .callbacks.nexus_data_file_writer import nxwriter_init
     # nxwriter = nxwriter_init(RE)
-    from .callbacks.nexus_data_file_writer import nxwriter  # noqa: F401
+    from id4_common.callbacks.nexus_data_file_writer import (  # noqa: F401
+        nxwriter
+    )
 
 if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
-    from .callbacks.spec_data_file_writer import init_specwriter_with_RE
-    from .callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
-    from .callbacks.spec_data_file_writer import spec_comment  # noqa: F401
-    from .callbacks.spec_data_file_writer import specwriter  # noqa: F401
+    from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
+        init_specwriter_with_RE,
+        newSpecFile,
+        spec_comment,
+        specwriter
+    )
 
     init_specwriter_with_RE(RE)
     # Remove specwritter preprocessor --> the extra stream tried to trigger
     # devices that are disconnected.
     _ = RE.preprocessors.pop()
 
-from .callbacks.dichro_stream import (  # noqa: F401, E402
+from id4_common.callbacks.dichro_stream import (  # noqa: F401, E402
     dichro, plot_dichro_settings, dichro_bec
 )
 
@@ -137,9 +141,8 @@ else:
 
     from id4_common.plans import *  # noqa: F401, F403
 
-logger.info("Loading 4-ID-Raman devices, this can take a few minutes.")
+logger.info("Loading 4-ID-B devices, this can take a few minutes.")
 RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
-# TODO: CHANGE THIS ONCE DEVICES IS FIXED.
 stations = ["4idb"]
 for device in oregistry.findall(stations):
     connect_device(device, raise_error=False)
