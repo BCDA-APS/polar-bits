@@ -5,7 +5,6 @@ from apsbits.core.instrument_init import oregistry
 from apstools.utils import dynamic_import
 from logging import getLogger
 import sys
-from time import sleep
 from apsbits.core.instrument_init import make_devices
 from ophyd import OphydObject
 from .run_engine import sd, RE
@@ -206,7 +205,7 @@ def connect_device(device, baseline=None, raise_error=True):
                     sd.baseline.remove(dev)
 
             sd.baseline.append(device)
-        
+
         cam = getattr(device, "cam", None)
         if cam is not None:
             cam.stage_sigs["wait_for_plugins"] = "Yes"
@@ -308,7 +307,6 @@ def load_device(name, file=None):
     setattr(namespace, name, device)
 
 
-
 def AD_plugin_primed(plugin):
     """
     Determine whether an AreaDetector plugin is primed.
@@ -360,9 +358,9 @@ def AD_prime_plugin2(plugin):
 
     Notes
     -----
-    - Determination of the primed state is delegated to AD_plugin_primed(plugin).
-      For some detectors (e.g., Vortex), a time stamp of 0 is treated as
-      "unprimed."
+    - Determination of the primed state is delegated to
+      AD_plugin_primed(plugin). For some detectors (e.g., Vortex), a timestamp
+      of 0 is treated as "unprimed."
     - If the plugin is already primed, this function logs at debug level and
       returns without performing any action.
     """
@@ -444,7 +442,7 @@ def remove_device(device):
         device = dev_obj
     elif not isinstance(device, OphydObject):
         raise ValueError("Input must be an ophyd device or a device name.")
-    
+
     _ = oregistry.pop(device)
     if device in sd.baseline:
         sd.baseline.remove(device)
