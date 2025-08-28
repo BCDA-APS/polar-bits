@@ -49,20 +49,20 @@ id4_common.devices.labjacks.CustomLabJackT7:
 id4_common.devices.ad_vimba.VimbaDetector:
 - name: flagcam_hhl
   prefix: "4idaPostMirrBeam:"
-  labels: ["4ida", "camera", "detector", "flag"]
+  labels: ["camera", "detector", "flag"]
 
 - name: flagcam_mono
   prefix: "4idaPostMonoBeam:"
-  labels: ["4ida", "camera", "detector", "flag"]
+  labels: ["camera", "detector", "flag"]
 
 - name: flagcam_toro
   prefix: "4idbPostToroBeam:"
-  labels: ["4idb", "camera", "detector", "flag"]
+  labels: ["camera", "detector", "flag"]
 
 # xray-eye vimba camera, normally on 4-ID-G/Huber-detector arm
 - name: flagcam_xeye
   prefix: "4idXrayEye:"
-  labels: ["4idg", "camera", "detector", "flag"]
+  labels: ["camera", "detector", "flag"]
 
 ophyd.EpicsMotor:
 - name: flagmotor_hhl
@@ -168,11 +168,11 @@ apstools.devices.ApsPssShutterWithStatus:
 id4_common.devices.scaler.LocalScalerCH:
 - name: scaler1
   prefix: "4idCTR8_1:scaler1"
-  labels: ["detector", "scaler", "4idb", "4idg"]
+  labels: ["detector", "scaler", "4idb", "4idg", "4idh"]
 
 - name: scaler2
   prefix: "4idCTR8_1:scaler2"
-  labels: ["detector", "scaler", "4idh"]
+  labels: ["detector", "scaler", "4idb", "4idg", "4idh"]
 
 id4_common.devices.usb_ctr8.CustomMeasCompCtr:
 - name: ctr8

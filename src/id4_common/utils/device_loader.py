@@ -178,10 +178,6 @@ def connect_device(device, baseline=None, raise_error=True):
             else False
         )
 
-    # Remove device from registry if it already exists
-    if oregistry.find(device.name, allow_none=True) is not None:
-        oregistry.pop(device)
-
     try:
         logger.info(f"Connecting to {device.name}...")
         device.wait_for_connection()
@@ -224,6 +220,10 @@ def connect_device(device, baseline=None, raise_error=True):
         message = (
             f"Device {device.name} is disconnected, removing it from oregistry."
         )
+
+    	# Remove device from registry if it already exists
+        if oregistry.find(device.name, allow_none=True) is not None:
+            oregistry.pop(device)
 
         if device in sd.baseline:
             sd.baseline.remove(device)
