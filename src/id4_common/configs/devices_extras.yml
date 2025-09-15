@@ -1,0 +1,44 @@
+# Extra devices
+# Usually not used.
+
+id4_common.devices.ad_vimba.VimbaDetector:
+- name: flagcam_hhl
+  prefix: "4idaPostMirrBeam:"
+  labels: ["camera", "detector", "flag"]
+
+- name: flagcam_mono
+  prefix: "4idaPostMonoBeam:"
+  labels: ["camera", "detector", "flag"]
+
+- name: flagcam_toro
+  prefix: "4idbPostToroBeam:"
+  labels: ["camera", "detector", "flag"]
+
+# xray-eye vimba camera, normally on 4-ID-G/Huber-detector arm
+- name: flagcam_xeye
+  prefix: "4idXrayEye:"
+  labels: ["camera", "detector", "flag"]
+
+ophyd.EpicsMotor:
+- name: flagmotor_hhl
+  prefix: "4idVDCM:m6"
+  labels: ["4ida", "motor", "flag", "baseline"]
+
+- name: flagmotor_mono
+  prefix: "4idVDCM:m7"
+  labels: ["4ida", "motor", "flag", "baseline"]
+
+- name: flagmotor_toro
+  prefix: "4idbSoft:m3"
+  labels: ["4idb", "motor", "flag", "baseline"]
+
+# Move this eventually to core?
+id4_common.devices.chopper_device.ChopperDevice:
+- name: chopper
+  prefix: "4idChopper:"
+  labels: ["4idb", "baseline"]
+
+id4_common.devices.softgluezynq_vortex.SGZVortex:
+- name: "sgz_vortex"
+  prefix: "4iddMZ0:"
+  labels: ["detector", "4idg", "4idh"]

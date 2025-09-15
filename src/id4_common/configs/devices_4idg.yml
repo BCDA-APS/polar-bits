@@ -1,0 +1,100 @@
+# 4-ID-G specific devices
+
+id4_common.devices.jj_slits.SlitDevice:
+- name: gslt
+  PV: "4idgSoft:"
+  motorsDict: {top: m44, bot: m43, out: m46, inb: m45}
+  slitnum: 1
+  labels: ["4idg", "slit", "baseline"]
+
+id4_common.devices.quadems.SydorEMRO:
+- name: gsydor
+  prefix: "4idgSydor:T4U_BPM:"
+  labels: ["detector", "xbpm", "baseline", "4idg"]
+
+id4_common.devices.transfocator_device.TransfocatorClass:
+- name: transfocator
+  prefix: "4idPyCRL:CRL4ID:"
+  labels: ["4idg", "optics", "track_energy", "baseline"]
+
+id4_common.devices.xbpm_4idg.XBPM:
+- name: gxbpm
+  prefix: "4idgSoft:"
+  labels: ["4idg", "baseline"]
+
+id4_common.devices.filters_device_avs.APSFilter:
+- name: gfilter
+  prefix: "4idPyFilter:FL1:"
+  labels: ["4idg", "filter", "baseline"]
+
+id4_common.devices.kb_4idg.KBDevice:
+- name: gkb
+  prefix: "4idgKB:"
+  labels: ["4idg", "optics", "baseline", "kb"]
+
+apstools.devices.LakeShore336Device:
+- name: temp_4idg
+  prefix: "4idgSoft:LS336:cryo:"
+  labels: ["4idg", "temperature", "baseline"]
+
+# TODO: Will leave this here for now just to be sure the hklpy2 is working.
+id4_common.devices.polar_diffractometer.CradleDiffractometer:
+- name: huber_euler
+  prefix: "4idgSoft:"
+  labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.polar_diffractometer.HPDiffractometer:
+- name: huber_hp
+  prefix: "4idgSoft:"
+  labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.polar_diffractometer.CradlePSI:
+- name: huber_euler_psi
+  prefix: "4idgSoft:"
+  engine: psi
+  labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.polar_diffractometer.HPPSI:
+- name: huber_hp_psi
+  prefix: "4idgSoft:"
+  engine: psi
+  labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer:
+- name: huber_euler_2
+  prefix: "4idgSoft:"
+  labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer:
+- name: huber_hp_2
+  prefix: "4idgSoft:"
+  labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerPSI:
+- name: huber_euler_psi_2
+  prefix: "4idgSoft:"
+  labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometerPSI:
+- name: huber_hp_psi_2
+  prefix: "4idgSoft:"
+  labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.ad_eiger1M.Eiger1MDetector:
+- name: eiger
+  prefix: "4idEiger:"
+  labels: ["4idg", "detector"]
+
+id4_common.devices.preamps.LocalPreAmp:
+- name: preamp_4idgI0
+  prefix: "4idgSoftX:A1"
+  labels: ["4idg", "preamp", "baseline"]
+
+- name: preamp_4idgI
+  prefix: "4idgSoftX:A2"
+  labels: ["4idg", "preamp", "baseline"]
+
+id4_common.devices.gh_i0_motors.I04idg:
+- name: i0g
+  prefix: "4idgSoft:"
+  labels: ["4idg", "baseline"]

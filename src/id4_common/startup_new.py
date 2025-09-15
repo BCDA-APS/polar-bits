@@ -131,6 +131,10 @@ try:
     if _load_devices.lower() in ["y", "yes"]:
         logger.info("Loading all devices, this can take a few minutes.")
 
+        devices_suffixes = ["core", "beamlinebasic"]
+        # for fname in glob
+        ### CONTINUE HERE...
+
         RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
         stations = ["source", "4ida", "4idb", "4idg", "4idh"]
         for device in oregistry.findall(stations):
