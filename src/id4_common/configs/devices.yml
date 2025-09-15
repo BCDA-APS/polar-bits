@@ -363,3 +363,8 @@ id4_common.devices.softgluezynq_vortex.SGZVortex:
 - name: "sgz_vortex"
   prefix: "4iddMZ0:"
   labels: ["detector", "4idg", "4idh"]
+
+id4_common.devices.mirror_toroidal.ToroidalMirror:
+- name: "t_mirror"
+  prefix: "4idbToro:"
+  labels: ["4idb", "optics", "mirror", "baseline"]

@@ -142,3 +142,8 @@ id4_common.devices.table_4idb.Table4idb:
 - name: midtable_4idb
   prefix: "4idbSoft:"
   labels: ["4idb", "baseline"]
+
+id4_common.devices.mirror_toroidal.ToroidalMirror:
+- name: "t_mirror"
+  prefix: "4idbToro:"
+  labels: ["4idb", "optics", "mirror", "baseline"]
