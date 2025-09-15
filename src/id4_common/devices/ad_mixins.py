@@ -31,6 +31,7 @@ from ophyd.areadetector.filestore_mixins import FileStoreBase
 from ophyd.areadetector.trigger_mixins import (
     ADTriggerStatus as ophyd_ADTriggerStatus
 )
+from ophyd.status import UnknownStatusFailure
 from apstools.devices import CamMixin_V34
 from os.path import isfile
 from itertools import count
@@ -518,16 +519,22 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
 
         original_vals = {sig: sig.get() for sig in self.warmup_signals}
 
-        for sig, val in self.warmup_signals.items():
-            sleep(0.1)  # abundance of caution
-            sig.set(val).wait()
+        try:
+            for sig, val in self.warmup_signals.items():
+                sleep(0.1)  # abundance of caution
+                sig.set(val).wait()
 
-        sleep(2)  # wait for acquisition
+            sleep(2)  # wait for acquisition
 
-        for sig, val in reversed(list(original_vals.items())):
-            sleep(0.1)
-            sig.set(val).wait()
-
+            for sig, val in reversed(list(original_vals.items())):
+                sleep(0.1)
+                sig.set(val).wait()
+        except UnknownStatusFailure as exc:
+            logger.error(
+                "The device {self.name} could not be warmed up because it "
+                "could not connect to a device with the following exception: "
+                f"{exc}."
+            )
 
 class TriggerBase(BlueskyInterface):
     """Base class for trigger mixin classes
