@@ -1,0 +1,35 @@
+# 4-ID-B specific devices
+
+id4_common.devices.labjacks.CustomLabJackT7:
+- name: labjack_4idb
+  prefix: "4idbSoft:LJ:"
+  labels: ["4idb", "baseline"]
+
+id4_common.devices.quadems.TetrAMMRO:
+- name: btetramm
+  prefix: "4idbSoft:TetrAMM:"
+  labels: ["detector", "xbpm", "baseline", "4idb"]
+
+id4_common.devices.filters_device.APSFilter:
+- name: bfilter
+  prefix: "4idbSoft:filter:"
+  labels: ["4idb", "filter", "baseline"]
+
+id4_common.devices.kb_mirrors.KBMirror:
+- name: bkb
+  prefix: "4idbSoft:"
+  labels: ["4idb", "optics", "baseline"]
+
+id4_common.devices.electromagnet.Magnet2T:
+- name: emag
+  prefix: ""
+  labels: ["4idb", "magnet", "baseline"]
+
+id4_common.devices.preamps.LocalPreAmp:
+- name: preamp_4idbI0
+  prefix: "4idbSoft:A3"
+  labels: ["4idb", "preamp", "baseline"]
+
+- name: preamp_4idbI
+  prefix: "4idbSoft:A4"
+  labels: ["4idb", "preamp", "baseline"]

@@ -1,0 +1,12 @@
+# Core devices
+# These are needed to operate bluesky.
+
+# This is messing up the logger.
+apstools.devices.DM_WorkflowConnector:
+- name: dm_workflow
+  labels: ["dm", "baseline"]
+
+ophyd.Signal:
+- name: dm_experiment
+  value: ""
+  labels: ["dm", "baseline"]

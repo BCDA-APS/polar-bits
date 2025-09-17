@@ -1,0 +1,57 @@
+# 4-ID-H specific devices
+
+id4_common.devices.jj_slits.SlitDevice:
+- name: gslt
+  PV: "4idgSoft:"
+  motorsDict: {top: m44, bot: m43, out: m46, inb: m45}
+  slitnum: 1
+  labels: ["4idg", "slit", "baseline"]
+
+- name: hslt
+  PV: "4idhSoft:"
+  motorsDict: {top: m11, bot: m10, out: m12, inb: m13}
+  slitnum: 1
+  labels: ["4idh", "slit", "baseline"]
+
+id4_common.devices.quadems.SydorEMRO:
+- name: hsydor
+  prefix: "4idhSydor:T4U_BPM:"
+  labels: ["detector", "xbpm", "baseline", "4idh"]
+
+id4_common.devices.transfocator_device.TransfocatorClass:
+- name: transfocator
+  prefix: "4idPyCRL:CRL4ID:"
+  labels: ["4idg", "optics", "track_energy", "baseline"]
+
+id4_common.devices.table_4idh.Table4idh:
+- name: table_4idh
+  prefix: "4idhSoft:"
+  labels: ["4idh", "table", "baseline"]
+
+id4_common.devices.xbpm_4idh.XBPM:
+- name: hxbpm
+  prefix: "4idhSoft:"
+  labels: ["4idh", "baseline"]
+
+id4_common.devices.magnet_911.Magnet911:
+- name: magnet911
+  prefix: "4idhSoft:"
+  labels: ["4idh", "magnet", "baseline"]
+
+id4_common.devices.preamps.LocalPreAmp:
+- name: preamp_4idhI0
+  prefix: "4idhSoft:A1"
+  labels: ["4idh", "preamp", "baseline"]
+
+- name: preamp_4idhI1
+  prefix: "4idhSoft:A2"
+  labels: ["4idh", "preamp", "baseline"]
+
+- name: preamp_4idhI2
+  prefix: "4idhSoft:A3"
+  labels: ["4idh", "preamp", "baseline"]
+
+id4_common.devices.gh_i0_motors.I04idh:
+- name: i0h
+  prefix: "4idhSoft:"
+  labels: ["4idh", "baseline"]

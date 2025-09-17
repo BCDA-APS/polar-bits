@@ -1,0 +1,13 @@
+# Guarneri-style device YAML configuration
+
+
+# TODO: This is a place-holder right now.
+id4_common.devices.scaler.LocalScalerCH:
+- name: scaler1
+  prefix: "4idCTR8_1:scaler1"
+  labels: ["detector", "scaler", "4idb", "4idg"]
+
+id4_common.devices.usb_ctr8.CustomMeasCompCtr:
+- name: ctr8
+  prefix: "4idCTR8_1:"
+  labels: ["detector", "4idb", "4idg", "4idh", "baseline"]
