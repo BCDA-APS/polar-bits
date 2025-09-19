@@ -123,35 +123,66 @@ else:
 
     from .plans import *  # noqa: F401, F403
 
-_load_devices = input("\n==> Do you want to load all devices? [Y/n]: ") or "y"
+_load_devices = input("\n==> Do you want to load any device? [yes]: ") or "yes"
 
-from glob import glob
+if _load_devices.lower() in ["y", "yes"]:
 
-try:
-    if _load_devices.lower() in ["y", "yes"]:
-        logger.info("Loading all devices, this can take a few minutes.")
+    _station = (
+        input(
+            "Which set of devices? Options are: core, b, g, h, all [core]:"
+        ) or "core"
+    )
 
-        devices_suffixes = ["core", "beamlinebasic"]
-        # for fname in glob
-        ### CONTINUE HERE...
+    devices_files = [
+        dict(file="devices_core.yml"),
+        dict(file="devices_basic.yml"),
+    ]
 
-        RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
-        stations = ["source", "4ida", "4idb", "4idg", "4idh"]
-        for device in oregistry.findall(stations):
-            connect_device(device, raise_error=False)
+    if _station in ["b", "g", "h"]:
+        devices_files.append(
+            dict(
+                file="devices.yml",
+                path=instrument_path.parent / f"id4_{_station}/configs"
+            )
+        )
+        logger.info(f"Loading 4id{_station} devices.")
+    elif _station == "all":
+        for _st in ["b", "g", "h"]:
+            devices_files.append(
+                dict(
+                    file="devices.yml",
+                    path=instrument_path.parent / f"id4_{_st}/configs"
+                )
+            )
+        logger.info(f"Loading all devices.")
+    else:
+        logger.info("Loading core devices.")
+
+    try:
+        for kwargs in devices_files:
+            RE(make_devices(clear=False, **kwargs))
+
+        for device in oregistry.all_devices:
+            # oregistry.all_devices has all devices, including the ones that are
+            # not parent. This is to connect only to the parent ones.
+            if device.parent is None:
+                connect_device(device, raise_error=False)
 
         counters.plotselect(11, 0)
 
         # Diffractometer
-        select_diffractometer(get_huber_euler())  # noqa: F405
-        select_engine_for_psi(get_huber_euler_psi())  # noqa: F40
-    else:
+        if oregistry.find("huber_euler", allow_none=True) is not None:
+            select_diffractometer(get_huber_euler())  # noqa: F405
+        if oregistry.find("huber_euler_psi", allow_none=True) is not None:
+            select_diffractometer(get_huber_euler_psi())  # noqa: F405
+
+    except AttributeError:
         logger.info(
             "No device has been loaded. Please see the reload_all_devices, "
             "load_device, and find_loadable_devices functions for options to "
             "load devices."
         )
-except AttributeError:
+else:
     logger.info(
         "No device has been loaded. Please see the reload_all_devices, "
         "load_device, and find_loadable_devices functions for options to "
