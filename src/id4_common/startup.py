@@ -156,6 +156,3 @@ except AttributeError:
 
 for sus in shutter_suspenders.values():
     RE.install_suspender(sus)
-
-# TODO: REMOVE THIS AFTER UPSTREAM FIX
-# _ = RE.preprocessors.pop()
