@@ -27,18 +27,34 @@ class TriggerTime(TriggerBase):
 
     _status_type = ADTriggerStatus
 
-    def __init__(self, *args, image_name=None, min_period=0.2, **kwargs):
+    # TODO: Tests done on Sept 19, 2025: min_period = 0, delay = 0.3 seems safe.
+    # delay = 0.25 may be ok, 0.2 is certainly bad.
+    def __init__(
+        self, *args, image_name=None, min_period=0.0, delay=0.3, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
         self._image_name = image_name
         self._acquisition_signal_pv = "cam.special_trigger_button"
         self._min_period = min_period
+        self._delay = delay
         self._flysetup = False
 
     @property
     def acquisition_signal(self):
         return getattr(self, self._acquisition_signal_pv)
+
+    @property
+    def delay(self):
+        return self._delay
+    
+    @delay.setter
+    def delay(self, value):
+        try:
+            self._delay = float(value)
+        except ValueError:
+            raise ValueError("delay must be a number.")
 
     @property
     def min_period(self):
@@ -125,9 +141,10 @@ class TriggerTime(TriggerBase):
             )
 
         @run_in_thread
-        def add_delay(status_obj, min_period):
+        def add_delay(status_obj, min_period, delay):
             count_time = self.cam.acquire_time.get()
             total_sleep = count_time if count_time > min_period else min_period
+            total_sleep += delay
             sleep(total_sleep)
             status_obj.set_finished()
 
@@ -135,7 +152,7 @@ class TriggerTime(TriggerBase):
         self.acquisition_signal.put(1, wait=False)
         if self.hdf1.enable.get() in (True, 1, "on", "Enable"):
             self.generate_datum(self._image_name, ttime(), {})
-        add_delay(self._status, self._min_period)
+        add_delay(self._status, self._min_period, self._delay)
         return self._status
 
 
