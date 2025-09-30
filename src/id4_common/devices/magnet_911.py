@@ -35,21 +35,8 @@ class RamanMotors(Device):
 
 
 class MagnetMotors(Device):
-    y = Component(
-        PVPositionerSoftDoneWithStop,
-        "",
-        readback_pv="Height",
-        setpoint_pv="SetHeight.VAL",
-        tolerance=0.0005,
-    )
-
-    rot = Component(
-        PVPositionerSoftDoneWithStop,
-        "",
-        readback_pv="Angle",
-        setpoint_pv="SetAngle.VAL",
-        tolerance=0.05,
-    )
+    y = FormattedComponent(EpicsMotor, "4idhAero:m2", labels=("motor",))
+    th = FormattedComponent(EpicsMotor, "4idhAero:m1", labels=("motor",))
 
 
 class PowerSupply(Device):
