@@ -276,25 +276,25 @@ id4_common.devices.polar_diffractometer.HPPSI:
   engine: psi
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer:
-- name: huber_euler_2
-  prefix: "4idgSoft:"
-  labels: ["4idg", "diffractometer", "baseline"]
+# id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer:
+# - name: huber_euler_2
+#   prefix: "4idgSoft:"
+#   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer:
-- name: huber_hp_2
-  prefix: "4idgSoft:"
-  labels: ["4idg", "diffractometer", "baseline"]
+# id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer:
+# - name: huber_hp_2
+#   prefix: "4idgSoft:"
+#   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerPSI:
-- name: huber_euler_psi_2
-  prefix: "4idgSoft:"
-  labels: ["4idg", "diffractometer", "baseline"]
+# id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerPSI:
+# - name: huber_euler_psi_2
+#   prefix: "4idgSoft:"
+#   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometerPSI:
-- name: huber_hp_psi_2
-  prefix: "4idgSoft:"
-  labels: ["4idg", "diffractometer", "baseline"]
+# id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometerPSI:
+# - name: huber_hp_psi_2
+#   prefix: "4idgSoft:"
+#   labels: ["4idg", "diffractometer", "baseline"]
 
 id4_common.devices.ad_eiger1M.Eiger1MDetector:
 - name: eiger
