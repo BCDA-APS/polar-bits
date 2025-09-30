@@ -248,6 +248,11 @@ id4_common.devices.kb_4idg.KBDevice:
   prefix: "4idgKB:"
   labels: ["4idg", "optics", "baseline", "kb"]
 
+id4_common.devices.kb_4idh.KBDevice:
+- name: hkb
+  prefix: "4idhKB:"
+  labels: ["4idh", "optics", "baseline", "kb"]
+
 apstools.devices.LakeShore336Device:
 - name: temp_4idg
   prefix: "4idgSoft:LS336:cryo:"
