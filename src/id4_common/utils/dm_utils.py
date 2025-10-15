@@ -45,6 +45,9 @@ DEFAULT_USERS = [
     "d86103",  # Daniel
 ]
 
+BEAMLINE_NAME = "4-ID-B,G,H"
+STATION = "4IDD"
+
 
 def dm_workflow():
     dm = oregistry.find("dm_workflow", allow_none=True)
@@ -188,7 +191,8 @@ def create_dm_experiment(
         rootPath = get_current_run()["name"]
     return exp_api.addExperiment(
         experiment_name,
-        typeName="4IDD",
+        stationName=STATION,
+        typeName=STATION,
         description=description,
         rootPath=rootPath,
         startDate=startDate,
@@ -213,12 +217,26 @@ def add_dm_users(experiment_name, users_name_list):
     return output
 
 
-def get_experiment(experiment_name):
+def get_experiment_(experiment_name):
     return exp_api.getExperimentByName(experiment_name)
 
 
+def get_experiment(experiment_name):
+    exps = exp_api.getExperimentsByStation(STATION)[::-1]
+    id = None
+    for exp in exps:
+        if exp["name"] == experiment_name:
+            id = exp["id"]
+
+    if id is None:
+        print(f"Did not find any experiment named {experiment_name}")
+        raise ObjectNotFound
+    else:
+        return exp_api.getExperimentById(id)
+
+
 def get_experiments_names(since="2018-01-01", until="2100-01-01"):
-    exps = exp_api.getExperimentsByStation("4IDD")[::-1]
+    exps = exp_api.getExperimentsByStation(STATION)[::-1]
     names = []
     for exp in exps:
         _start = datetime.fromisoformat(exp["startDate"]).utctimetuple()
@@ -237,10 +255,12 @@ def current_run_experiments_names():
 def get_proposal_info(proposal_id: int, run: str = None):
     if run is None:
         run = get_current_run()["name"]
-    return bss_api.getProposal(proposal_id, run)
+    return bss_api.getProposal(
+        proposal_id, beamlineName=BEAMLINE_NAME, runName=run
+    )
 
 
 def list_proposals(run: str = None):
     if run is None:
         run = get_current_run()["name"]
-    return bss_api.listProposals(run)
+    return bss_api.listProposals(beamlineName=BEAMLINE_NAME, runName=run)

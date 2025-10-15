@@ -254,8 +254,13 @@ id4_common.devices.kb_4idh.KBDevice:
   labels: ["4idh", "optics", "baseline", "kb"]
 
 apstools.devices.LakeShore336Device:
-- name: temp_4idg
-  prefix: "4idgSoft:LS336:cryo:"
+- name: temp_336_4idg
+  prefix: "4idgSoft:LS336:TC1:"
+  labels: ["4idg", "temperature", "baseline"]
+
+apstools.devices.LakeShore340Device:
+- name: temp_340_4idg
+  prefix: "4idgSoftX:LS340:TC1:"
   labels: ["4idg", "temperature", "baseline"]
 
 # TODO: Will leave this here for now just to be sure the hklpy2 is working.

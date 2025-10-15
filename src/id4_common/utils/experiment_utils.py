@@ -337,8 +337,8 @@ class ExperimentClass:
                 reset_scan_id = (
                     (
                         reset_scan_id
-                        or input("Reset Bluesky scan_id to 1? [yes]: ")
-                        or "yes"
+                        or input("Reset Bluesky scan_id to 1? [no]: ")
+                        or "no"
                     )
                     .strip()
                     .lower()

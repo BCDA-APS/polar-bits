@@ -207,7 +207,7 @@ def sampleNew(*args):
                 position=_geom_.calc.Position(
                     gamma=40,
                     mu=20,
-                    chi=-90,
+                    chi=90,
                     phi=0,
                     delta=0,
                     tau=0,
@@ -237,7 +237,7 @@ def sampleNew(*args):
                 position=_geom_.calc.Position(
                     tth=40,
                     omega=20,
-                    chi=-90,
+                    chi=90,
                     phi=0,
                 ),
             )

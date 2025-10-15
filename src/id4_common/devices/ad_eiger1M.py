@@ -117,7 +117,6 @@ class TriggerTime(TriggerBase):
         self.cam.acquire.set(1).wait(timeout=10)
 
     def unstage(self):
-        super().unstage()
         self.cam.acquire.set(0).wait(timeout=10)
 
         def check_value(*, old_value, value, **kwargs):
@@ -131,6 +130,7 @@ class TriggerTime(TriggerBase):
         )
         self._flysetup = False
         self.setup_manual_trigger()
+        super().unstage()
 
     def trigger(self):
         "Trigger one acquisition."
