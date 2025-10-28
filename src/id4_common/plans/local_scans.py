@@ -45,7 +45,6 @@ from pathlib import Path
 from numpy import array
 from apsbits.core.instrument_init import oregistry
 from apsbits.utils.config_loaders import get_config
-from hkl.user import current_diffractometer
 from logging import getLogger
 
 from ..callbacks.nexus_data_file_writer import nxwriter
@@ -53,6 +52,7 @@ from ..callbacks.dichro_stream import dichro as dichro_device
 from ..utils.experiment_utils import experiment
 from ..utils.run_engine import RE
 from ..utils.counters_class import counters
+from ..utils.hkl_utils import current_diffractometer
 
 try:
     # change to import this only if needed?
@@ -660,7 +660,7 @@ def lup(
     :func:`ascan`
     """
 
-    _md = {"plan_name": "rel_scan"}
+    _md = {"plan_name": "lup"}
     md = md or {}
     _md.update(md)
     motors = [motor for motor, _, _ in partition(3, args)]
@@ -682,6 +682,91 @@ def lup(
         )
 
     return (yield from inner_lup())
+
+
+
+def th2th(
+		tth_start,
+		tth_end,
+		number_of_points,
+		time_per_point,
+		detectors=None,
+		lockin=False,
+		dichro=False,
+		fixq=False,
+		vortex_sgz=False,
+		per_step=None,
+		md=None,
+	):
+	"""
+	Relative horizontal theta/2theta scan. It will scan the mu and gamma motors.
+
+	Parameters
+	----------
+	tth_start : float
+		Relative 2theta start. The relative theta will be half of the 2theta.
+	tth_end : float
+		Relative 2theta end. The relative theta will be half of the 2theta.
+	number_of_points : int
+		Number of points to be measured.
+	time_per_point : float
+		Measurement time per point.
+	detectors : list, optional
+		List of detectors to be used in the scan. If None, will use the
+		detectors defined in `counters.detectors`.
+	lockin : boolean, optional
+		Flag to do a lock-in scan. Please run pr_setup.config() prior do a
+		lock-in scan.
+	dichro : boolean, optional
+		Flag to do a dichro scan. Please run pr_setup.config() prior do a
+		dichro scan. Note that this will switch the x-ray polarization at every
+		point using the +, -, -, + sequence, thus increasing the number of
+		points by a factor of 4
+	fixq : boolean, optional
+		Flag for fixQ scans. If True, it will fix the diffractometer hkl
+		position during the scan. This is particularly useful for energy scan.
+		Note that hkl is moved ~after~ the other motors!
+	vortex_sgz : boolean, optional
+		Measures the Vortex detector using the softgluezynq triggers. This is a
+		special mode that requires the 'vortex' and 'sgz_vortex' devices to
+		exist otherwise an error will be thrown.
+	per_step: callable, optional
+		hook for customizing action of inner loop (messages per step).
+		See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+		for details.
+	md : dictionary, optional
+		Metadata to be added to the run start.
+
+	See Also
+	--------
+	:func:`lup`
+	:func:`ascan`
+	"""
+
+	diffract = current_diffractometer()
+	if diffract is None:
+		raise ValueError(
+			"There is no diffractometer setup. Please use "
+			"`select_diffractometer` to setup the diffractometer."
+		)
+	            
+	yield from lup(
+		diffract.gamma,
+		tth_start/2,
+		tth_end/2,
+		diffract.mu,
+		tth_start,
+		tth_end,
+		number_of_points,
+		time_per_point,
+		detectors=detectors,
+		lockin=lockin,
+		dichro=dichro,
+		fixq=fixq,
+		vortex_sgz=vortex_sgz,
+		per_step=per_step,
+		md=md,
+	)    
 
 
 def grid_scan(

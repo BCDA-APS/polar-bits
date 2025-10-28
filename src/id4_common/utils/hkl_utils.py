@@ -35,6 +35,7 @@ Auxilary HKL functions.
     ~show_constraints
     ~reset_constraints
     ~set_constraints
+    ~restore_huber_from_scan
 """
 
 import pathlib
@@ -1759,13 +1760,13 @@ def _wh():
     _geom_for_psi_ = engine_for_psi()
     _geom_for_psi_.calc.sample.UB = _geom_.calc._sample.UB
     print(
-        "\n   H K L = {:5f} {:5f} {:5f}".format(
+        "\n   H K L = {:5f}, {:5f}, {:5f}".format(
             _geom_.calc.engine.pseudo_axes["h"],
             _geom_.calc.engine.pseudo_axes["k"],
             _geom_.calc.engine.pseudo_axes["l"],
         )
     )
-    if _geom_.name == "polar":
+    if _geom_.name == "huber_euler":
         print(
             "   Azimuth = {:6.4f}".format(
                 _geom_for_psi_.inverse(0).psi,
@@ -2199,7 +2200,7 @@ def write_config(method="File", overwrite=False):
             if POLAR_DIFFRACTOMETER in _geom_.name:
                 with open(polar_config.name, "w") as f:
                     f.write(settings)
-            if _geom_.name == "fourc":
+            elif _geom_.name == "fourc":
                 with open(polar_config.name, "w") as f:
                     f.write(settings)
             else:

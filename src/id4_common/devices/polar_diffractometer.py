@@ -235,7 +235,7 @@ class AnalyzerDevice(PseudoPositioner):
                 d_best = [key, value]
         if analyzer_energy:
             print(
-                f"Best analyzer to use at {energy}: {d_best[1][0]}_"
+                f"Best analyzer to use at {energy} keV: {d_best[1][0]}_"
                 f"{d_best[1][1]}{d_best[1][2]}{d_best[1][3]}"
             )
         else:
@@ -247,6 +247,7 @@ class AnalyzerDevice(PseudoPositioner):
             if anum in d_dict:
                 ana = d_dict[anum]
                 cryst = f"{ana[0]}_{ana[1]}{ana[2]}{ana[3]}"
+                print(f"Using {cryst}")
             else:
                 ana = d_best[1:][0]
                 cryst = f"{ana[0]}_{ana[1]}{ana[2]}{ana[3]}"
