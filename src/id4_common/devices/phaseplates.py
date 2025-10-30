@@ -110,6 +110,7 @@ class PRDeviceBase(PseudoPositioner):
 
     # This offset is used when the motor is used to switch polarization
     offset_degrees = Component(Signal, value=0.0, kind="config")
+    motor_switch = Component(TrackingSignal, value=False, kind="config")
 
     tracking = Component(TrackingSignal, value=False, kind="config")
 
@@ -122,12 +123,23 @@ class PRDeviceBase(PseudoPositioner):
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / 2 / self.d_spacing.get()) * 180.0 / pi
+        # If we are using the motor to switch polarization, then it will
+        # always move off peak.
+        if self.motor_switch.get():
+            theta += self.offset_degrees.get()
+
         return theta
 
     def convert_theta_to_energy(self, theta):
+        # If we are using the motor to switch polarization, then the correct
+        # energy will be based on the theta minus the offset
+        if self.motor_switch.get():
+            theta -= self.offset_degrees.get()
+
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = 2 * self.d_spacing.get() * sin(theta * pi / 180)
         energy = speed_of_light * Planck * 6.241509e15 * 1e10 / lamb
+
         return energy
 
     @pseudo_position_argument
@@ -145,13 +157,21 @@ class PRDeviceBase(PseudoPositioner):
         )
 
     def set_energy(self, energy):
+        _motor_switch = self.motor_switch.get()
+        if _motor_switch:
+            self.motor_switch.put(False)
+
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
+        if _motor_switch:
+            self.motor_switch.put(True)
+
     def default_settings(self):
         if self.name == "pr3":
             self.d_spacing.put(3.135)
+            self.motor_switch.put(True)
 
 
 class PRDevice(PRDeviceBase):

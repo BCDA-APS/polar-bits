@@ -134,8 +134,10 @@ def dichro_steps(devices_to_read, take_reading):
     to the length of the `pr_setup.dichro_steps` list.
     """
     devices_to_read += [pr_setup.positioner]
+    center = 0 if pr_setup.oscillate_pzt else pr_setup.positioner.position
+
     for pos in flag.dichro_steps:
-        yield from mv(pr_setup.positioner, pos)
+        yield from mv(pr_setup.positioner, pos + center)
         yield from take_reading(devices_to_read)
 
 
@@ -405,7 +407,12 @@ def count(
     flag.dichro = dichro
     if dichro:
         _offset = pr_setup.offset.get()
-        _center = pr_setup.positioner.parent.center.get()
+        
+        if pr_setup.oscillate_pzt:
+            _center = pr_setup.positioner.parent.center.get()
+        else:
+            _center = -1*_offset
+
         _steps = pr_setup.dichro_steps
         flag.dichro_steps = [_center + step * _offset for step in _steps]
 
@@ -541,7 +548,12 @@ def ascan(
     flag.dichro = dichro
     if dichro:
         _offset = pr_setup.offset.get()
-        _center = pr_setup.positioner.parent.center.get()
+        
+        if pr_setup.oscillate_pzt:
+            _center = pr_setup.positioner.parent.center.get()
+        else:
+            _center = -1*_offset
+
         _steps = pr_setup.dichro_steps
         flag.dichro_steps = [_center + step * _offset for step in _steps]
 
@@ -854,7 +866,12 @@ def grid_scan(
     flag.dichro = dichro
     if dichro:
         _offset = pr_setup.offset.get()
-        _center = pr_setup.positioner.parent.center.get()
+        
+        if pr_setup.oscillate_pzt:
+            _center = pr_setup.positioner.parent.center.get()
+        else:
+            _center = -1*_offset
+
         _steps = pr_setup.dichro_steps
         flag.dichro_steps = [_center + step * _offset for step in _steps]
 
@@ -1070,7 +1087,12 @@ def qxscan(
     flag.dichro = dichro
     if dichro:
         _offset = pr_setup.offset.get()
-        _center = pr_setup.positioner.parent.center.get()
+        
+        if pr_setup.oscillate_pzt:
+            _center = pr_setup.positioner.parent.center.get()
+        else:
+            _center = -1*_offset
+
         _steps = pr_setup.dichro_steps
         flag.dichro_steps = [_center + step * _offset for step in _steps]
 
