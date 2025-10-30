@@ -36,7 +36,7 @@ def _get_detector():
             "was plotted."
         )
 
-    return peaks["cen"][list(peaks["cen"].keys())[0]]
+    return list(peaks["cen"].keys())[0]
 
 
 def _get_current_pos(positioner):
