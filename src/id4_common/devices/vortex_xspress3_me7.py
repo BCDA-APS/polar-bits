@@ -72,7 +72,7 @@ class Trigger(TriggerBase):
             self.cam.stage_sigs["num_images"] = (
                 sgz.down_counter_pulse.preset.get()
             )
-    
+
     def setup_external_trigger(self):
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
@@ -146,7 +146,7 @@ class Trigger(TriggerBase):
                 #     status = self.cam.acquire_busy.get()
 
                 while (
-                    (self.cam.acquire_busy.get() != 1) | 
+                    (self.cam.acquire_busy.get() != 1) |
                     (self.cam.detector_state.get() != 1)
                 ):
                     await asyncio.sleep(0.01)

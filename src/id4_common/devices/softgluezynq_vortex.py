@@ -7,7 +7,6 @@ from ophyd import (
     Signal,
 )
 from bluesky.plan_stubs import mv, sleep
-from time import sleep as tsleep
 from .softgluezynq_parts import (
     _buffer_fields,
     _io_fields,

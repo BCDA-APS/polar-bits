@@ -102,8 +102,8 @@ def configure_counts_wrapper(plan, detectors, count_time):
             )
             yield from mv(scaler_channel.gate, "N")
         else:
-            for mon, time in original_times.items():
-                yield from mv(mon, time)
+            for _mon, _time in original_times.items():
+                yield from mv(_mon, _time)
 
     def _inner_plan():
         yield from setup()
@@ -202,7 +202,7 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
                 yield from mv(
                     pr_setup.positioner, pr_setup.positioner.parent.center.get()
                 )
-            
+
             yield from mv(pr_setup.positioner.parent.selectDC, 1)
 
     def _unstage():
@@ -265,7 +265,7 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
         _ready = yield from rd(magnet911.ps.ready)
         if _ready == 0:
             logger.info("Waiting for magnet to be ready.")
-        
+
         _start_time = time()
         while _ready == 0:
             _message = yield from rd(magnet911.ps.status)

@@ -41,10 +41,9 @@ class MagnetMotors(Device):
     th = FormattedComponent(EpicsMotor, "4idhAero:m1", labels=("motor",))
 
 
-
 class FieldPositioner(PVPositioner):
     setpoint = Component(
-        EpicsSignal, "TargetField", write_pv = "SetField.VAL", put_complete=True
+        EpicsSignal, "TargetField", write_pv="SetField.VAL", put_complete=True
     )
 
     readback = Component(EpicsSignalRO, "Field", kind="hinted")
@@ -72,7 +71,7 @@ class FieldPositioner(PVPositioner):
         write_pv="SetTargetFieldUnits",
         string=True,
         kind="config",
-    )       
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
