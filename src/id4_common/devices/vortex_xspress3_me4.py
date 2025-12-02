@@ -50,6 +50,8 @@ class Trigger(TriggerBase):
         self._flysetup = False
         self._status = None
         self._status_arm = None
+        self._arm_plan_delay = 0.1
+        self._sleep_after_trigger = 0.1
 
     def setup_manual_trigger(self):
         # Stage signals
@@ -131,17 +133,21 @@ class Trigger(TriggerBase):
             future = asyncio.Future()
 
             async def set_future_done(future):
-                # Checks if there is a new image being read. Stops when there is
-                # no new image for >  sleep_time.
-                status = 0
-                while status != 1:
-                    status = self.cam.acquire_busy.get()
+                # Checks the detector status, then sleeps by _arm_plan_delay
+                # sleep_time.
+                # status = 0
+                # while status != 1:
+                #     status = self.cam.acquire_busy.get()
 
-                # await asyncio.sleep(5)
+                while (self.cam.acquire_busy.get() != 1) | (self.cam.detector_state.get() != 1):
+                    await asyncio.sleep(0.01)
+
+                await asyncio.sleep(self._arm_plan_delay)
                 future.set_result("Detector done!")
 
             asyncio.create_task(set_future_done(future))
             self._acquisition_signal.put(1, use_complete=True)
+            await asyncio.sleep(self._sleep_after_trigger)
             # Wait for the future to complete
             await future
 

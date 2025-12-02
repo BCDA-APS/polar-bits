@@ -7,6 +7,7 @@ from ophyd import (
     Signal,
 )
 from bluesky.plan_stubs import mv, sleep
+from time import sleep as tsleep
 from .softgluezynq_parts import (
     _buffer_fields,
     _io_fields,
@@ -71,6 +72,7 @@ class SGZVortex(Device):
 
     # Clocks
     clocks = Component(SGZClocks, "SG:", kind="config")
+    clock_freq = Component(Signal, value=1e7, kind="config")
 
     # Dummy for now
     preset_monitor = Component(Signal, value=0, kind="omitted")
@@ -83,6 +85,7 @@ class SGZVortex(Device):
         self._reference_clock = reference_clock
         self._status = None
         self._frequency = 13
+        self._read_delay = 0.0  # TODO: unclear that this is needed.
 
     @property
     def frequency(self):
@@ -144,7 +147,7 @@ class SGZVortex(Device):
                 # Turn off the enable
                 # Not sure .set is the best thing to do here.
                 self.buffers.in1.signal.set("0").wait()
-
+                sleep(self._read_delay)
                 self._status.set_finished()
                 self._status = None
 

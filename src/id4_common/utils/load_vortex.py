@@ -15,7 +15,7 @@ DETECTORS = {
     "dante4": (VortexDante4, "dp_dante8_xrd4:"),
     "xmap": (VortexXMAP, "dpxXMAPDP2:"),
     "xspress4": (VortexXspress34, "S4QX4:"),
-    "xspress7": (VortexXspress37, "XSP3_7Chan:"),
+    "xspress7": (VortexXspress37, "s4XSP3ME7:"),
 }
 
 

@@ -58,7 +58,10 @@ def _move_to_pos(parameter, positioner=None, detector=None):
     if detector is None:
         detector = _get_detector()
 
-    new_pos = peaks[parameter][detector]
+    new_pos = (
+        peaks[parameter][detector] if parameter == "cen" else
+        peaks[parameter][detector][0]
+    )
     current_pos = _get_current_pos(positioner)
 
     # If it doesn't find a stop metadata document, it will trigger the motion

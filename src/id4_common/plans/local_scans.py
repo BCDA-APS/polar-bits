@@ -26,6 +26,7 @@ from bluesky.plan_stubs import (
     rd,
     trigger_and_read,
     move_per_step,
+    sleep
 )
 from bluesky.preprocessors import (
     reset_positions_decorator,
@@ -38,6 +39,7 @@ from .local_preprocessors import (
     configure_counts_decorator,
     extra_devices_decorator,
     stage_dichro_decorator,
+    stage_magnet911_decorator
 )
 
 from toolz import partition
@@ -194,6 +196,8 @@ def one_local_step(detectors, step, pos_cache, take_reading=trigger_and_read):
 
             # Arm Vortex
             yield from vortex.arm_plan()
+            # yield from sleep(vortex._sleep_after_trigger)
+            # logger.debug(vortex._sleep_after_trigger)
 
         yield from take_reading(devices_to_read)
 
@@ -287,10 +291,10 @@ def setup_nxwritter(_base_path, _master_fullpath, _rel_dets_paths):
     nxwriter.file_path = str(_base_path)
 
 
-def setup_detectors(is_monitor_time):
+def setup_detectors(time):
     # If counting against time, then all good, can just use the detectors
     # setup in counters
-    if is_monitor_time:
+    if time > 0:
         dets = counters.detectors
 
         if flag.vortex_sgz:
@@ -311,6 +315,12 @@ def setup_detectors(is_monitor_time):
                 dets.append(vortex)
             if sgz_vortex not in dets:
                 dets.append(sgz_vortex)
+
+            vortex._vortex_sgz = True
+
+            freq = 1/sgz_vortex.div_by_n.n.get()*sgz_vortex.clock_freq.get()
+            pulses = int(time*freq)
+            sgz_vortex.down_counter_pulse.preset.set(pulses).wait(5)
 
         return dets  # this should have all scalers by default
     # If counting against a monitor, it only works if the detectors is in the
@@ -402,7 +412,7 @@ def count(
 
     fixq = False
     if detectors is None:
-        detectors = setup_detectors(time > 0)
+        detectors = setup_detectors(time)
 
     flag.dichro = dichro
     if dichro:
@@ -423,7 +433,7 @@ def count(
             "there is a custom per_shot, but fixQ or dichro was selected."
         )
     elif per_shot is None:
-        per_shot = one_local_shot if fixq or dichro else None
+        per_shot = one_local_shot if (fixq or dichro or vortex_sgz) else None
 
     _master_fullpath, _dets_file_paths, _rel_dets_paths = _setup_paths(
         detectors
@@ -453,10 +463,11 @@ def count(
         _md["hints"]["detectors"].extend(item.hints["fields"])
 
     _md.update(md or {})
-
+ 
+    @stage_magnet911_decorator(False)
     @monitor_during_decorator([dichro_device] if dichro else [])
     @configure_counts_decorator(detectors, time)
-    @stage_dichro_decorator(dichro, lockin, [None])
+    @stage_dichro_decorator(dichro, lockin, vortex_sgz, [None])
     @extra_devices_decorator(extras)
     @subs_decorator(nxwriter.receiver)
     def _inner_count():
@@ -543,7 +554,7 @@ def ascan(
 
     if detectors is None:
         # detectors = counters.detectors
-        detectors = setup_detectors(time > 0)
+        detectors = setup_detectors(time)
 
     flag.dichro = dichro
     if dichro:
@@ -559,7 +570,7 @@ def ascan(
 
     flag.fixq = fixq
     if per_step is None:
-        per_step = one_local_step if fixq or dichro else None
+        per_step = one_local_step if (fixq or dichro or vortex_sgz) else None
     if fixq:
         huber = current_diffractometer()
         flag.hkl_pos = {
@@ -599,10 +610,14 @@ def ascan(
 
     motors = [motor for motor, _, _ in partition(3, args)]
 
+    magnet911 = oregistry.find("magnet911", allow_none=True)
+    magnet_option = False if magnet911 is None else (magnet911.ps.field in args)
+
+    @stage_magnet911_decorator(magnet_option)
     @monitor_during_decorator([dichro_device] if dichro else [])
     @subs_decorator(nxwriter.receiver)
     @configure_counts_decorator(detectors, time)
-    @stage_dichro_decorator(dichro, lockin, motors)
+    @stage_dichro_decorator(dichro, lockin, vortex_sgz, motors)
     @extra_devices_decorator(extras)
     def _inner_ascan():
         yield from scan(detectors + extras, *args, per_step=per_step, md=_md)
@@ -861,7 +876,7 @@ def grid_scan(
     flag.vortex_sgz = vortex_sgz
 
     if detectors is None:
-        detectors = setup_detectors(time > 0)
+        detectors = setup_detectors(time)
 
     flag.dichro = dichro
     if dichro:
@@ -877,7 +892,7 @@ def grid_scan(
 
     flag.fixq = fixq
     if per_step is None:
-        per_step = one_local_step if fixq or dichro else None
+        per_step = one_local_step if (fixq or dichro or vortex_sgz) else None
 
     if fixq:
         huber = current_diffractometer()
@@ -918,10 +933,14 @@ def grid_scan(
 
     motors = [m[0] for m in chunk_outer_product_args(args)]
 
+    magnet911 = oregistry.find("magnet911", allow_none=True)
+    magnet_option = False if magnet911 is None else (magnet911.ps.field in args)
+
+    @stage_magnet911_decorator(magnet_option)
     @monitor_during_decorator([dichro_device] if dichro else [])
     @subs_decorator(nxwriter.receiver)
     @configure_counts_decorator(detectors, time)
-    @stage_dichro_decorator(dichro, lockin, motors)
+    @stage_dichro_decorator(dichro, lockin, vortex_sgz, motors)
     @extra_devices_decorator(extras)
     def _inner_grid_scan():
         yield from bp_grid_scan(
@@ -1082,7 +1101,7 @@ def qxscan(
     flag.vortex_sgz = vortex_sgz
 
     if detectors is None:
-        detectors = setup_detectors(time > 0)
+        detectors = setup_detectors(time)
 
     flag.dichro = dichro
     if dichro:
@@ -1099,7 +1118,7 @@ def qxscan(
     flag.fixq = fixq
 
     if per_step is None:
-        per_step = one_local_step if fixq or dichro else None
+        per_step = one_local_step if (fixq or dichro or vortex_sgz) else None
 
     if fixq:
         huber = current_diffractometer()
@@ -1170,7 +1189,7 @@ def qxscan(
     @monitor_during_decorator([dichro_device] if dichro else [])
     @subs_decorator(nxwriter.receiver)
     @configure_counts_decorator(detectors, time)
-    @stage_dichro_decorator(dichro, lockin, [energy])
+    @stage_dichro_decorator(dichro, lockin, vortex_sgz, [energy])
     @extra_devices_decorator(extras)
     def _inner_qxscan():
         yield from list_scan(
@@ -1209,6 +1228,10 @@ def mv(*args, **kwargs):
     :func:`bluesky.plan_stubs.mv`
     """
 
+    magnet911 = oregistry.find("magnet911", allow_none=True)
+    magnet_option = False if magnet911 is None else (magnet911.ps.field in args)
+
+    @stage_magnet911_decorator(magnet_option)
     def _inner_mv():
         yield from bps_mv(*args, **kwargs)
 
@@ -1277,6 +1300,11 @@ def abs_set(*args, **kwargs):
     :func:`bluesky.plan_stubs.mv`
     """
 
+    magnet911 = oregistry.find("magnet911", allow_none=True)
+    magnet_option = False if magnet911 is None else (magnet911.ps.field in args)
+
+
+    @stage_magnet911_decorator(magnet_option, persistent=False)
     def _inner_abs_set():
         yield from bps_abs_set(*args, **kwargs)
 

@@ -23,8 +23,8 @@ class Vertical(Device):
 
 class Horizontal(Device):
     # Pitch angle
-    thy_piezo = Component(EpicsMotor, "m4", labels=("motor",))
-    thy_pico = Component(EpicsMotor, "m11", labels=("motor",))
+    thy_piezo = Component(EpicsMotor, "m1", labels=("motor",))
+    thy_pico = Component(EpicsMotor, "m9", labels=("motor",))
     thy_capsensor = Component(EpicsSignalRO, "m19.RBV")
     thy = Component(EpicsSignalRO, "SM1.RBV")
 
