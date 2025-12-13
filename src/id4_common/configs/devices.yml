@@ -243,6 +243,11 @@ id4_common.devices.filters_device_avs.APSFilter:
   prefix: "4idPyFilter:FL1:"
   labels: ["4idg", "filter", "baseline"]
 
+id4_common.devices.filters_device_avs.APSFilter:
+- name: hfilter
+  prefix: "4idPyFilter:FL2:"
+  labels: ["4idh", "filter", "baseline"]
+
 id4_common.devices.kb_4idg.KBDevice:
 - name: gkb
   prefix: "4idgKB:"

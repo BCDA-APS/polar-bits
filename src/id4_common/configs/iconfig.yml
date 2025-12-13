@@ -98,6 +98,11 @@ AREA_DETECTOR:
         # IOC_FILES_ROOT: /gdata/dm/4IDD  # unnecessary, uses DM or EPICS value
         DEFAULT_FOLDER: /net/s4data/export/sector4/4idd/bluesky_images/eiger1M
         ALLOW_PLUGIN_WARMUP: true
+    LAMBDA:
+        # BLUESKY_FILES_ROOT: /gdata/dm/4IDD/  # forced to be the same
+        # IOC_FILES_ROOT: /gdata/dm/4IDD  # unnecessary, uses DM or EPICS value
+        DEFAULT_FOLDER: /net/s4data/export/sector4/4idd/bluesky_images/lambda
+        ALLOW_PLUGIN_WARMUP: true
     VORTEX:
         # BLUESKY_FILES_ROOT: /net/s4data/export/sector4/4idd  # forced to be the same
         IOC_FILES_ROOT: /net/s4data/export/sector4/4idd

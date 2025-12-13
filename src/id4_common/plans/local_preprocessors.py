@@ -207,7 +207,8 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
 
     def _unstage():
 
-        yield from mv(pr_setup.positioner.parent.selectDC, 1)
+        if pr_setup.positioner is not None:
+            yield from mv(pr_setup.positioner.parent.selectDC, 1)
 
         if lockin:
             for dev in _lockin_devices:
