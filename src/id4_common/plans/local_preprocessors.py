@@ -169,7 +169,29 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
                 )
 
         if lockin or sgz:
-            yield from mv(pr_setup.positioner.parent.selectAC, 1)
+            
+            # TODO: This is a bit of a workaround because the select DC and
+            # select AC button have a bit of a lag. If we do multiple lockin
+            # scans back to back, it may not turn on the AC because the
+            # select DC done in the previous scan may not have taken effect.
+            # Ideally this would be in the device itself, it would wait until
+            # the status changed.
+
+            def _change_mode(mode):
+                _val = 0 if mode == "selectDC" else 2
+                _button = getattr(pr_setup.positioner.parent, mode)
+                yield from mv(_button, 1)
+                for _ in range(10):
+                    _st = yield from rd(pr_setup.positioner.parent.ACstatus)
+                    if _st == _val:
+                        break
+                    yield from sleep(0.1)
+
+            initial_status = yield from rd(pr_setup.positioner.parent.ACstatus)
+            if initial_status != 0:
+                yield from _change_mode("selectDC")
+            
+            yield from _change_mode("selectAC")
 
         if dichro:
             for i in range(len(positioner)):
