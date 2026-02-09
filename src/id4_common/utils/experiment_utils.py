@@ -32,7 +32,7 @@ from .dm_utils import (
     dm_experiment_setup,
     get_current_run_name,
 )
-from .run_engine import RE
+from .run_engine import RE, cat
 from ..callbacks.spec_data_file_writer import specwriter
 
 logger = getLogger(__name__)
@@ -366,17 +366,24 @@ class ExperimentClass:
         specwriter.newfile(fname)
         self.spec_file = specwriter.spec_filename.name
 
-    def load_from_bluesky(self, reset_scan_id: int = -1, skip_DM: bool = False):
-        kwargs = {}
-        for key in (
-            "esaf_id",
-            "proposal_id",
-            "base_name",
-            "sample",
-            "server",
-            "experiment_name",
+    def load_from_bluesky(
+            self,
+            scan_id: int = -1,
+            reset_scan_id: int = -1,
+            skip_DM: bool = False,
+            useRE=False
         ):
-            kwargs[key] = RE.md[key]
+        metadata = RE.md if useRE == True else cat[scan_id].metadata["start"]
+        kwargs = {
+            key: metadata[key] for key in (
+                "esaf_id",
+                "proposal_id",
+                "base_name",
+                "sample",
+                "server",
+                "experiment_name",
+            )
+        }
 
         self.setup(reset_scan_id=reset_scan_id, skip_DM=skip_DM, **kwargs)
 
