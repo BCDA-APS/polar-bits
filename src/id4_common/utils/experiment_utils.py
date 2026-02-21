@@ -15,10 +15,11 @@ __all__ = """
 """.split()
 
 # TODO: Temporarily removed
-# from apstools.utils import (
-#     dm_start_daq,
-#     dm_get_experiment_datadir_active_daq,
-# )
+from apstools.utils import (
+    dm_start_daq,
+    dm_get_experiment_datadir_active_daq,
+    dm_setup
+)
 from dm import ObjectNotFound, DmException
 from os import chdir
 from pathlib import Path
@@ -309,17 +310,21 @@ class ExperimentClass:
         # The normal behavior is to start the DAQ, but currently this
         # changes files permissions, and prevents us from saving new files.
 
-        # data_directory = f"@voyager:{self.base_experiment_path}"
+        # data_directory = f"@sojourner:{self.base_experiment_path}"
+        data_directory = f"@sojourner:{self.base_experiment_path}"
 
         # Check DM DAQ is running for this experiment, if not then start it.
-        # if dm_get_experiment_datadir_active_daq(
-        #     self.experiment_name, data_directory
-        # ) is None:
-        #     logger.info(
-        #         "Starting DM voyager DAQ: experiment %r",
-        #         self.experiment_name
-        #     )
-        #     dm_start_daq(self.experiment_name, "@voyager")
+        if dm_get_experiment_datadir_active_daq(
+            self.experiment_name, data_directory
+        ) is None:
+            
+            dm_setup(iconfig["DM_SETUP_FILE"])
+
+            logger.info(
+                "Starting DM voyager DAQ: experiment %r",
+                self.experiment_name
+            )
+            dm_start_daq(self.experiment_name, "@sojourner")
 
     def setup_path(self):
         # Make sure that the subfolder structure exists, if not creates it.
