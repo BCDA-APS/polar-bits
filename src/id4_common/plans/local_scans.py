@@ -39,7 +39,8 @@ from .local_preprocessors import (
     configure_counts_decorator,
     extra_devices_decorator,
     stage_dichro_decorator,
-    stage_magnet911_decorator
+    stage_magnet911_decorator,
+    stage_4idg_softglue_decorator
 )
 
 from toolz import partition
@@ -360,6 +361,7 @@ def count(
     lockin=False,
     dichro=False,
     vortex_sgz=False,
+    g_sgz=False,
     delay=None,
     per_shot=None,
     md=None,
@@ -408,6 +410,9 @@ def count(
     if time == 0:
         raise ValueError("time must be different from zero.")
 
+    if g_sgz:
+        pos_stream = oregistry.find("pos_stream")
+
     flag.vortex_sgz = vortex_sgz
 
     fixq = False
@@ -436,7 +441,7 @@ def count(
         per_shot = one_local_shot if (fixq or dichro or vortex_sgz) else None
 
     _master_fullpath, _dets_file_paths, _rel_dets_paths = _setup_paths(
-        detectors
+        detectors if not g_sgz else detectors + [pos_stream]
     )
 
     setup_nxwritter(
@@ -465,6 +470,7 @@ def count(
     _md.update(md or {})
  
     @stage_magnet911_decorator(False)
+    @stage_4idg_softglue_decorator(g_sgz)
     @monitor_during_decorator([dichro_device] if dichro else [])
     @configure_counts_decorator(detectors, time)
     @stage_dichro_decorator(dichro, lockin, vortex_sgz, [None])
@@ -487,6 +493,7 @@ def ascan(
     dichro=False,
     fixq=False,
     vortex_sgz=False,
+    g_sgz=False,
     per_step=None,
     md=None,
 ):
@@ -550,6 +557,9 @@ def ascan(
         time = args[-1]
         args = args[:-1]
 
+    if g_sgz:
+        pos_stream = oregistry.find("pos_stream")
+
     flag.vortex_sgz = vortex_sgz
 
     if detectors is None:
@@ -580,7 +590,7 @@ def ascan(
         }
 
     _master_fullpath, _dets_file_paths, _rel_dets_paths = _setup_paths(
-        detectors
+        detectors if not g_sgz else detectors + [pos_stream]
     )
 
     setup_nxwritter(
@@ -614,11 +624,12 @@ def ascan(
     magnet_option = False if magnet911 is None else (magnet911.ps.field in args)
 
     @stage_magnet911_decorator(magnet_option)
+    @stage_4idg_softglue_decorator(g_sgz)
     @monitor_during_decorator([dichro_device] if dichro else [])
-    @subs_decorator(nxwriter.receiver)
     @configure_counts_decorator(detectors, time)
     @stage_dichro_decorator(dichro, lockin, vortex_sgz, motors)
     @extra_devices_decorator(extras)
+    @subs_decorator(nxwriter.receiver)
     def _inner_ascan():
         yield from scan(detectors + extras, *args, per_step=per_step, md=_md)
 
@@ -634,6 +645,7 @@ def lup(
     dichro=False,
     fixq=False,
     vortex_sgz=False,
+    g_sgz=False,
     per_step=None,
     md=None,
 ):
@@ -703,6 +715,7 @@ def lup(
                 dichro=dichro,
                 fixq=fixq,
                 vortex_sgz=vortex_sgz,
+                g_sgz=g_sgz,
                 per_step=per_step,
                 md=_md,
             )
@@ -722,6 +735,7 @@ def th2th(
 		dichro=False,
 		fixq=False,
 		vortex_sgz=False,
+        g_sgz=False,
 		per_step=None,
 		md=None,
 	):
@@ -791,6 +805,7 @@ def th2th(
 		dichro=dichro,
 		fixq=fixq,
 		vortex_sgz=vortex_sgz,
+        g_sgz=g_sgz,
 		per_step=per_step,
 		md=md,
 	)    
@@ -804,6 +819,7 @@ def grid_scan(
     dichro=False,
     fixq=False,
     vortex_sgz=False,
+    g_sgz=False,
     per_step=None,
     md=None,
 ):
@@ -873,6 +889,9 @@ def grid_scan(
         time = args[-1]
         args = args[:-1]
 
+    if g_sgz:
+        pos_stream = oregistry.find("pos_stream")
+
     flag.vortex_sgz = vortex_sgz
 
     if detectors is None:
@@ -903,7 +922,7 @@ def grid_scan(
         }
 
     _master_fullpath, _dets_file_paths, _rel_dets_paths = _setup_paths(
-        detectors
+        detectors if not g_sgz else detectors + [pos_stream]
     )
 
     setup_nxwritter(
@@ -937,11 +956,12 @@ def grid_scan(
     magnet_option = False if magnet911 is None else (magnet911.ps.field in args)
 
     @stage_magnet911_decorator(magnet_option)
+    @stage_4idg_softglue_decorator(g_sgz)
     @monitor_during_decorator([dichro_device] if dichro else [])
-    @subs_decorator(nxwriter.receiver)
     @configure_counts_decorator(detectors, time)
     @stage_dichro_decorator(dichro, lockin, vortex_sgz, motors)
     @extra_devices_decorator(extras)
+    @subs_decorator(nxwriter.receiver)
     def _inner_grid_scan():
         yield from bp_grid_scan(
             detectors + extras,
@@ -964,6 +984,7 @@ def rel_grid_scan(
     dichro=False,
     fixq=False,
     vortex_sgz=False,
+    g_sgz=False,
     per_step=None,
     md=None,
 ):
@@ -1041,6 +1062,7 @@ def rel_grid_scan(
                 dichro=dichro,
                 fixq=fixq,
                 vortex_sgz=vortex_sgz,
+                g_sgz=g_sgz,
                 per_step=per_step,
                 md=_md,
             )
@@ -1057,6 +1079,7 @@ def qxscan(
     dichro=False,
     fixq=False,
     vortex_sgz=False,
+    g_sgz=False,
     per_step=None,
     md=None,
 ):
@@ -1097,6 +1120,9 @@ def qxscan(
     :func:`bluesky.plans.scan`
     :func:`lup`
     """
+
+    if g_sgz:
+        pos_stream = oregistry.find("pos_stream")
 
     flag.vortex_sgz = vortex_sgz
 
@@ -1153,7 +1179,7 @@ def qxscan(
         args += (det.preset_monitor, abs(time) * array(factor_list))
 
     _master_fullpath, _dets_file_paths, _rel_dets_paths = _setup_paths(
-        detectors
+        detectors if not g_sgz else detectors + [pos_stream]
     )
 
     setup_nxwritter(
@@ -1185,12 +1211,13 @@ def qxscan(
         _md["hints"]["scan_type"] += " lockin"
 
     _md.update(md or {})
-
+    
     @monitor_during_decorator([dichro_device] if dichro else [])
     @subs_decorator(nxwriter.receiver)
     @configure_counts_decorator(detectors, time)
     @stage_dichro_decorator(dichro, lockin, vortex_sgz, [energy])
     @extra_devices_decorator(extras)
+    @subs_decorator(nxwriter.receiver)
     def _inner_qxscan():
         yield from list_scan(
             detectors + extras, *args, per_step=per_step, md=_md

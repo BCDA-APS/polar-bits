@@ -282,8 +282,8 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
 
     magnet911 = oregistry.find("magnet911", allow_none=True)
     if magnet911 is None:
-        raise ValueError("magnet911 is not registered in the oregistry.")
-
+        # raise ValueError("magnet911 is not registered in the oregistry.")
+        logger.debug("magnet911 is not registered in the oregistry.")
     def _stage():
         _ready = yield from rd(magnet911.ps.ready)
         if _ready == 0:
@@ -318,7 +318,73 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
         return (yield from plan)
 
 
+def stage_4idg_softglue_wrapper(plan, use_sg):
+
+    sg = oregistry.find("gsgz", allow_none=True)
+    pos_stream = oregistry.find("pos_stream", allow_none=True)
+
+    def _stage():
+        
+        if sg is None:
+            raise ValueError("4idG softglue must be loaded in oregistry!")
+
+        if pos_stream is None:
+            raise ValueError("Positioner stream must be loaded in oregistry!")
+
+        # Reset softglue, make sure ckInt is enabled.
+        yield from mv(
+            sg.buffers.in1.signal, "1!",
+            # sg.buffers.in2.signal, "1!",
+            sg.buffers.in4.signal, "1"
+        )
+
+        # Clear and enable DMA
+        yield from sg.clear_enable_dma()
+
+        # Start pos stream
+
+        yield from mv(
+            pos_stream.cam.array_counter, 0,
+            pos_stream.hdf1.capture, 1
+        )
+        yield from mv(
+            pos_stream.cam.acquire, 1
+        )
+
+    def _unstage():
+        # Make sure that the circular buffer is emptied
+        for _ in range(7):
+            yield from mv(sg.scaltostream.flush.signal, "1!")
+            yield from sleep(0.1)
+        
+        # Clear and disable DMA
+        yield from sg.clear_disable_dma()
+
+        # Stop softglue
+        yield from mv(
+            sg.buffers.in4.signal, "0"
+        )
+        
+        # Stop position stream
+        yield from mv(
+            pos_stream.hdf1.capture, 0
+        )
+        yield from mv(
+            pos_stream.cam.acquire, 0
+        )
+
+    def _inner_plan():
+        yield from _stage()
+        return (yield from plan)
+
+    if use_sg:
+        return (yield from finalize_wrapper(_inner_plan(), _unstage()))
+    else:
+        return (yield from plan)
+
+
 extra_devices_decorator = make_decorator(extra_devices_wrapper)
 configure_counts_decorator = make_decorator(configure_counts_wrapper)
 stage_dichro_decorator = make_decorator(stage_dichro_wrapper)
 stage_magnet911_decorator = make_decorator(stage_magnet911_wrapper)
+stage_4idg_softglue_decorator = make_decorator(stage_4idg_softglue_wrapper)

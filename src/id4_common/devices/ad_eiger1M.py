@@ -129,7 +129,7 @@ class TriggerTime(TriggerBase):
             SubscriptionStatus(self.cam.status_message, check_value, timeout=10)
         )
         self._flysetup = False
-        self.setup_manual_trigger()
+        # self.setup_manual_trigger()
         super().unstage()
 
     def trigger(self):
@@ -243,7 +243,7 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
 
         self.cam.num_triggers.put(1)
         self.cam.manual_trigger.put("Disable")
-        self.cam.trigger_mode.put("Internal Enable")
+        self.cam.trigger_mode.put("Internal Series")
         self.cam.acquire.put(0)
 
         self.hdf1.file_template.put(self.hdf1_name_format)
