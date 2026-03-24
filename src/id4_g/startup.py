@@ -142,7 +142,7 @@ else:
     from id4_common.plans import *  # noqa: F401, F403
 
 logger.info("Loading 4-ID-G devices, this can take a few minutes.")
-RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
+RE(make_devices(clear=True, file=str(instrument_path / "configs" / "devices.yml")))  # Create the devices.
 stations = ["source", "4ida", "4idb", "4idg"]
 for device in oregistry.findall(stations):
     connect_device(device, raise_error=False)

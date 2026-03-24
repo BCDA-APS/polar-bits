@@ -5,7 +5,7 @@ id4_common.devices.jj_slits.SlitDevice:
   PV: "4idgSoft:"
   motorsDict: {top: m44, bot: m43, out: m46, inb: m45}
   slitnum: 1
-  labels: ["4idg", "slit", "baseline"]
+  labels: ["4idg", "4idh", "slit", "baseline"]
 
 - name: hslt
   PV: "4idhSoft:"
@@ -21,7 +21,7 @@ id4_common.devices.quadems.SydorEMRO:
 id4_common.devices.transfocator_device.TransfocatorClass:
 - name: transfocator
   prefix: "4idPyCRL:CRL4ID:"
-  labels: ["4idg", "optics", "track_energy", "baseline"]
+  labels: ["4idg", "4idh", "optics", "track_energy", "baseline"]
 
 id4_common.devices.table_4idh.Table4idh:
 - name: table_4idh
