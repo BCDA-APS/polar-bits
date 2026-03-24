@@ -16,7 +16,7 @@ from .ad_mixins import (
     PolarHDF5Plugin,
     ProcessPlugin,
     TransformPlugin,
-    ADTriggerStatus
+    ADTriggerStatus,
 )
 
 
@@ -48,7 +48,7 @@ class TriggerTime(TriggerBase):
     @property
     def delay(self):
         return self._delay
-    
+
     @delay.setter
     def delay(self, value):
         try:

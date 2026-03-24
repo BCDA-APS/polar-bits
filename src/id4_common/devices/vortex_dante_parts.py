@@ -98,8 +98,8 @@ class DanteCAM1(ADBase):
 
 
 class DanteCAM4(DanteCAM1):
-    _default_configuration_attrs = (
-        DanteCAM1._default_configuration_attrs + ("snl_connected",)
+    _default_configuration_attrs = DanteCAM1._default_configuration_attrs + (
+        "snl_connected",
     )
 
     # Multi Channel

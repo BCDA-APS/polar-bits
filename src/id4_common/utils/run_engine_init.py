@@ -108,7 +108,9 @@ def init_RE(
             )
 
     if cat_instance is not None:
-        RE.md.update(re_metadata(iconfig, cat_instance))  # programmatic metadata
+        RE.md.update(
+            re_metadata(iconfig, cat_instance)
+        )  # programmatic metadata
         RE.md.update(re_config.get("DEFAULT_METADATA", {}))
         RE.subscribe(cat_instance.v1.insert)
     if bec_instance is not None:

@@ -8,7 +8,7 @@ from ophyd import (
     Staged,
     EpicsSignal,
     BlueskyInterface,
-    Signal
+    Signal,
 )
 from ophyd.areadetector import EpicsSignalWithRBV, DetectorBase, ADBase
 from .ad_mixins import PolarHDF5Plugin
@@ -23,7 +23,7 @@ class PositionStreamCam(ADBase):
         "port_name",
         "adcore_version",
         "array_callbacks",
-        "wait_for_plugins"
+        "wait_for_plugins",
     )
 
     # Shared among all cams and plugins
@@ -53,7 +53,7 @@ class MySingleTrigger(BlueskyInterface):
     def __init__(self, *args, image_name=None, delay_time=0.1, **kwargs):
         super().__init__(*args, **kwargs)
         if image_name is None:
-            image_name = '_'.join([self.name, 'image'])
+            image_name = "_".join([self.name, "image"])
         self._image_name = image_name
         self._acquire_busy_pv = "cam.acquire_busy"
         self._acquire_pv = "cam.acquire"
@@ -66,7 +66,7 @@ class MySingleTrigger(BlueskyInterface):
     @property
     def _acquire_busy(self):
         return getattr(self, self._acquire_busy)
-    
+
     def stage(self):
         self._acquire_busy.subscribe(self._acquire_changed)
         super().stage()
@@ -78,8 +78,10 @@ class MySingleTrigger(BlueskyInterface):
     def trigger(self):
         "Trigger one acquisition."
         if self._staged != Staged.yes:
-            raise RuntimeError("This detector is not ready to trigger."
-                               "Call the stage() method before triggering.")
+            raise RuntimeError(
+                "This detector is not ready to trigger."
+                "Call the stage() method before triggering."
+            )
 
         self._status = self._status_type(self)
         self._acquire.put(1, wait=False)
@@ -99,10 +101,10 @@ class MySingleTrigger(BlueskyInterface):
 
 class PositionStreamDevice(MySingleTrigger, DetectorBase):
 
-    _default_configuration_attrs = ('cam',)
-    _default_read_attrs = ('hdf1',)
+    _default_configuration_attrs = ("cam",)
+    _default_read_attrs = ("hdf1",)
 
-    cam = ADComponent(PositionStreamCam, 'SG1:')
+    cam = ADComponent(PositionStreamCam, "SG1:")
     hdf1 = ADComponent(PolarHDF5Plugin, "HDF1:")
 
     def __init__(

@@ -119,7 +119,7 @@ class AnalyzerDevice(PseudoPositioner):
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
-    def calc(self, acal='No'):
+    def calc(self, acal="No"):
         d_ana = self.d_spacing.get()
         if d_ana == 1e4:
             self.setup()
@@ -133,18 +133,14 @@ class AnalyzerDevice(PseudoPositioner):
             f"[ath, atth] = [{th_angle:.2f}, {tth_angle:.2f}] for {cryst} "
             f"analyzer at {energy:.2f} keV"
         )
-        if acal =='No':
-            acal = (
-                input(f"Calibrate ath position (y/n/r)? [{acal}]: ")
-                or acal
-            )            
-        if acal in ['Yes','yes','Y','y']:
-            print(f'Calibrating ath to {th_angle:.2f}')
+        if acal == "No":
+            acal = input(f"Calibrate ath position (y/n/r)? [{acal}]: ") or acal
+        if acal in ["Yes", "yes", "Y", "y"]:
+            print(f"Calibrating ath to {th_angle:.2f}")
             self.set_energy(energy)
-        elif acal == 'r':
-            print('Releasing calibration for ath!')
+        elif acal == "r":
+            print("Releasing calibration for ath!")
             self.th.user_offset.put(0)
-
 
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH

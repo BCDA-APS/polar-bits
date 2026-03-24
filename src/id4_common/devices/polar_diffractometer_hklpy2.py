@@ -287,7 +287,7 @@ mono_kwargs = {
     "energy_units": "keV",
     "pv_wavelength": "BraggLambdaRdbkAO",  # the wavelength readback PV
     "wavelength_units": "angstrom",
-    "wavelength_deadband": 0.000_150, 
+    "wavelength_deadband": 0.000_150,
     "kind": "config",
 }
 
@@ -297,14 +297,9 @@ CradleDiffractometerBase = diffractometer_class_factory(
     geometry="APS POLAR",
     motor_labels=["motor"],
     reals=dict(
-        tau="m73",
-        mu="m4",
-        gamma="m19",
-        delta="m20",
-        chi="m37",
-        phi="m38"
+        tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"
     ),
-    beam_kwargs=mono_kwargs.copy()
+    beam_kwargs=mono_kwargs.copy(),
 )
 
 
@@ -319,14 +314,9 @@ HPDiffractometerBase = diffractometer_class_factory(
     geometry="APS POLAR",
     motor_labels=["motor"],
     reals=dict(
-        tau="m73",
-        mu="m4",
-        gamma="m19",
-        delta="m20",
-        chi="m5",
-        phi="m6"
+        tau="m73", mu="m4", gamma="m19", delta="m20", chi="m5", phi="m6"
     ),
-    beam_kwargs=mono_kwargs.copy()
+    beam_kwargs=mono_kwargs.copy(),
 )
 
 
@@ -361,14 +351,9 @@ CradleDiffractometerPSI = diffractometer_class_factory(
     geometry="APS POLAR",
     motor_labels=["motor"],
     reals=dict(
-        tau="m73",
-        mu="m4",
-        gamma="m19",
-        delta="m20",
-        chi="m37",
-        phi="m38"
+        tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"
     ),
-    beam_kwargs=mono_kwargs.copy()
+    beam_kwargs=mono_kwargs.copy(),
 )
 
 
@@ -378,12 +363,7 @@ HPDiffractometerPSI = diffractometer_class_factory(
     geometry="APS POLAR",
     motor_labels=["motor"],
     reals=dict(
-        tau="m73",
-        mu="m4",
-        gamma="m19",
-        delta="m20",
-        chi="m5",
-        phi="m6"
+        tau="m73", mu="m4", gamma="m19", delta="m20", chi="m5", phi="m6"
     ),
-    beam_kwargs=mono_kwargs.copy()
+    beam_kwargs=mono_kwargs.copy(),
 )

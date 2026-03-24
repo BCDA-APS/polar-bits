@@ -18,7 +18,7 @@ __all__ = """
 from apstools.utils import (
     dm_start_daq,
     dm_get_experiment_datadir_active_daq,
-    dm_setup
+    dm_setup,
 )
 from dm import ObjectNotFound, DmException
 from os import chdir
@@ -314,15 +314,17 @@ class ExperimentClass:
         data_directory = f"@sojourner:{self.base_experiment_path}"
 
         # Check DM DAQ is running for this experiment, if not then start it.
-        if dm_get_experiment_datadir_active_daq(
-            self.experiment_name, data_directory
-        ) is None:
-            
+        if (
+            dm_get_experiment_datadir_active_daq(
+                self.experiment_name, data_directory
+            )
+            is None
+        ):
+
             dm_setup(iconfig["DM_SETUP_FILE"])
 
             logger.info(
-                "Starting DM voyager DAQ: experiment %r",
-                self.experiment_name
+                "Starting DM voyager DAQ: experiment %r", self.experiment_name
             )
             dm_start_daq(self.experiment_name, "@sojourner")
 
@@ -372,15 +374,16 @@ class ExperimentClass:
         self.spec_file = specwriter.spec_filename.name
 
     def load_from_bluesky(
-            self,
-            scan_id: int = -1,
-            reset_scan_id: int = -1,
-            skip_DM: bool = False,
-            useRE=False
-        ):
+        self,
+        scan_id: int = -1,
+        reset_scan_id: int = -1,
+        skip_DM: bool = False,
+        useRE=False,
+    ):
         metadata = RE.md if useRE == True else cat[scan_id].metadata["start"]
         kwargs = {
-            key: metadata[key] for key in (
+            key: metadata[key]
+            for key in (
                 "esaf_id",
                 "proposal_id",
                 "base_name",

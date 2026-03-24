@@ -165,7 +165,7 @@ def dm_experiment_setup(
     esaf_id=None,
     users_name_list: list = [],
     title: str = None,
-    **kwargs
+    **kwargs,
 ):
     # Gets the users from the ESAF.
     if esaf_id is not None:

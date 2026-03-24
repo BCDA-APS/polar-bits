@@ -47,6 +47,7 @@ aps_dm_setup(iconfig.get("DM_SETUP_FILE"))
 register_bluesky_magics()
 
 from .utils.local_magics import LocalMagics  # noqa: E402
+
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
@@ -70,7 +71,9 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
     _ = RE.preprocessors.pop()
 
 from .callbacks.dichro_stream import (  # noqa: F401, E402
-    dichro, plot_dichro_settings, dichro_bec
+    dichro,
+    plot_dichro_settings,
+    dichro_bec,
 )
 
 # These imports must come after the above setup.
@@ -93,7 +96,7 @@ else:
     from .suspenders.suspender_utils import (  # noqa: F401
         suspender_restart,
         suspender_stop,
-        suspender_change_sleep
+        suspender_change_sleep,
     )
 
     from .utils.wax import wm, wax, wa_new  # noqa: F401

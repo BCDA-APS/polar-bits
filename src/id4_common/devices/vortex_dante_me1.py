@@ -3,6 +3,7 @@
 from ophyd import ADComponent, Staged, SignalRO, DynamicDeviceComponent
 from ophyd.mca import EpicsMCARecord
 from ophyd.areadetector import DetectorBase
+
 # from ophyd.areadetector.trigger_mixins import ADTriggerStatus
 from pathlib import Path
 from collections import OrderedDict

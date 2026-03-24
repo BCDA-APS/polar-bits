@@ -2,7 +2,6 @@
 Toroidal Mirror
 """
 
-
 from ophyd import (
     Component,
     Device,
@@ -10,6 +9,7 @@ from ophyd import (
     EpicsSignal,
     EpicsSignalRO,
 )
+
 
 class MR3(Device):
 
@@ -41,9 +41,7 @@ class MR3(Device):
     bender_d = Component(EpicsMotor, "m6", labels=("motor",))
 
     radius_setpoint = Component(EpicsSignal, "MR3:TargetRadius")
-    radius_readback = Component(
-        EpicsSignalRO, "MR3:RadiusEstimateDisp.SVAL"
-    )
+    radius_readback = Component(EpicsSignalRO, "MR3:RadiusEstimateDisp.SVAL")
     flat_button = Component(EpicsSignal, "MR3:SetFlat", kind="omitted")
 
 

@@ -18,6 +18,7 @@ __all__ = [
 # TODO: Create the option to ask the user if there are multiple detectors or
 # positioners. Probably add a timeout to it.
 
+
 def _get_positioner():
     dimensions = cat[-1].metadata["start"]["hints"]["dimensions"]
     if len(dimensions) > 1:
@@ -59,8 +60,9 @@ def _move_to_pos(parameter, positioner=None, detector=None):
         detector = _get_detector()
 
     new_pos = (
-        peaks[parameter][detector] if parameter == "cen" else
-        peaks[parameter][detector][0]
+        peaks[parameter][detector]
+        if parameter == "cen"
+        else peaks[parameter][detector][0]
     )
     current_pos = _get_current_pos(positioner)
 
@@ -68,15 +70,19 @@ def _move_to_pos(parameter, positioner=None, detector=None):
     # question
     meta = cat[-1].metadata.get("stop", None)
     time = (
-        datetime.now() - datetime.fromtimestamp(meta['time'])
-        if meta is not None else timedelta(seconds=1000)
+        datetime.now() - datetime.fromtimestamp(meta["time"])
+        if meta is not None
+        else timedelta(seconds=1000)
     )
 
     if time.seconds > 300:
-        answer = input(
-            f"Move {positioner.name} from {current_pos} to {new_pos}? (Y/[N]) "
-        ) or "N"
-        if answer not in ['Y','y','yes']:
+        answer = (
+            input(
+                f"Move {positioner.name} from {current_pos} to {new_pos}? (Y/[N]) "
+            )
+            or "N"
+        )
+        if answer not in ["Y", "y", "yes"]:
             logger.info("No motion will be done.")
             yield from null()
 

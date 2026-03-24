@@ -151,7 +151,7 @@ def set_diffractometer(instrument=None):
     elif diff == "huber_hp":
         select_diffractometer(get_huber_hp())
         print("Diffractometer {} selected".format(diff))
-        POLAR_DIFFRACTOMETER = "huber_hp"       
+        POLAR_DIFFRACTOMETER = "huber_hp"
     else:
         raise ValueError("{} not an existing diffractometer".format(diff))
 
@@ -1606,7 +1606,7 @@ def ca(h, k, l, energy=None):
         f"\n   Lambda (Energy) = {wavelength:6.4f} \u212b"
         f" ({energy:6.4f}) keV"
     )
-    print(POLAR_DIFFRACTOMETER,_geom_.name)
+    print(POLAR_DIFFRACTOMETER, _geom_.name)
     if POLAR_DIFFRACTOMETER in _geom_.name:
         print(
             "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(

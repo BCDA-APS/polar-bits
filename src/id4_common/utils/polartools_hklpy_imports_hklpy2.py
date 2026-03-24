@@ -18,7 +18,7 @@
 from hklpy2.user import (  # noqa: F401
     set_diffractometer,
     # show_selected_diffractometer,  # Any alternative?
-    pa
+    pa,
 )
 
 from hklpy2.misc import (  # noqa: F401

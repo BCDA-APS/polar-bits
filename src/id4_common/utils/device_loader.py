@@ -221,7 +221,7 @@ def connect_device(device, baseline=None, raise_error=True):
             f"Device {device.name} is disconnected, removing it from oregistry."
         )
 
-    	# Remove device from registry if it already exists
+        # Remove device from registry if it already exists
         if oregistry.find(device.name, allow_none=True) is not None:
             oregistry.pop(device)
 

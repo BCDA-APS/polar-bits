@@ -16,8 +16,9 @@ from .ad_mixins import (
     StatsPlugin,
     ROIPlugin,
     TriggerBase,
-    ADTriggerStatus
+    ADTriggerStatus,
 )
+
 
 class Trigger(TriggerBase):
     """

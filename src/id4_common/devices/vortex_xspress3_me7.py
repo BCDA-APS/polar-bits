@@ -145,9 +145,8 @@ class Trigger(TriggerBase):
                 # while status != 1:
                 #     status = self.cam.acquire_busy.get()
 
-                while (
-                    (self.cam.acquire_busy.get() != 1) |
-                    (self.cam.detector_state.get() != 1)
+                while (self.cam.acquire_busy.get() != 1) | (
+                    self.cam.detector_state.get() != 1
                 ):
                     await asyncio.sleep(0.01)
 

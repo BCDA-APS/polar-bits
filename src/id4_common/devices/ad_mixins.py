@@ -6,7 +6,7 @@ from ophyd import (
     Signal,
     Component,
     BlueskyInterface,
-    OphydObject
+    OphydObject,
 )
 from ophyd.areadetector import (
     EigerDetectorCam,
@@ -29,7 +29,7 @@ from ophyd.areadetector.plugins import (
 )
 from ophyd.areadetector.filestore_mixins import FileStoreBase
 from ophyd.areadetector.trigger_mixins import (
-    ADTriggerStatus as ophyd_ADTriggerStatus
+    ADTriggerStatus as ophyd_ADTriggerStatus,
 )
 from ophyd.status import UnknownStatusFailure
 from apstools.devices import CamMixin_V34
@@ -495,11 +495,11 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
     @property
     def warmup_signals(self):
         return OrderedDict(self._warmup_signals)
-    
+
     @warmup_signals.setter
     def warmup_signals(self, values):
         try:
-            for (sig, _) in list(values):
+            for sig, _ in list(values):
                 if not isinstance(sig, OphydObject):
                     raise ValueError(
                         "warmup signal must be a list of "
@@ -535,6 +535,7 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
                 "could not connect to a device with the following exception: "
                 f"{exc}."
             )
+
 
 class TriggerBase(BlueskyInterface):
     """Base class for trigger mixin classes
@@ -597,9 +598,7 @@ class ADTriggerStatus(ophyd_ADTriggerStatus):
             fraction = None
             time_remaining = None
         else:
-            time_remaining = (
-                None if fraction == 0 else time_elapsed / fraction
-            )
+            time_remaining = None if fraction == 0 else time_elapsed / fraction
         for watcher in self._watchers:
             watcher(
                 name=self._name,

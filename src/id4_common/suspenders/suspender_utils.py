@@ -20,13 +20,10 @@ def _query_label():
 
 def _query_sleep_time(label):
     while True:
-        sleep_time = (
-            input(
-                "How long the to wait after beam returns in seconds? "
-                f"({shutter_suspenders[label]._sleep}) "
-            )
-            or {shutter_suspenders[label]._sleep}
-        )
+        sleep_time = input(
+            "How long the to wait after beam returns in seconds? "
+            f"({shutter_suspenders[label]._sleep}) "
+        ) or {shutter_suspenders[label]._sleep}
 
         try:
             return float(sleep_time)

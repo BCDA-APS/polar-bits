@@ -10,7 +10,7 @@ from ophyd import (
     EpicsMotor,
     EpicsSignalRO,
     EpicsSignal,
-    PVPositioner
+    PVPositioner,
 )
 from ophyd.status import Status
 from apstools.devices import PVPositionerSoftDoneWithStop
@@ -80,9 +80,8 @@ class FieldPositioner(PVPositioner):
 
     def move(self, position, wait=True, timeout=None, moved_cb=None):
 
-        if (
-            (self.parent.heater.get() in [0, "ON"]) &
-            (abs(position-self.readback.get()) < self._tolerance)
+        if (self.parent.heater.get() in [0, "ON"]) & (
+            abs(position - self.readback.get()) < self._tolerance
         ):
             status = Status()
             status.set_finished()
@@ -122,16 +121,12 @@ class PowerSupply(Device):
         string=True,
         kind="config",
     )
-    set_ignore_table = Component(
-        EpicsSignal, "SetIgnoreTable", kind="config"
-    )
+    set_ignore_table = Component(EpicsSignal, "SetIgnoreTable", kind="config")
 
     set_persistent = Component(
         EpicsSignal, "SetPersistent.PROC", kind="omitted"
     )
-    set_pm_zero = Component(
-        EpicsSignal, "SetPMZero.PROC", kind="omitted"
-    )
+    set_pm_zero = Component(EpicsSignal, "SetPMZero.PROC", kind="omitted")
 
     ramp_pause = Component(EpicsSignal, "SetPause", kind="config")
     ramp_start = Component(EpicsSignal, "StartRamp.PROC", kind="omitted")

@@ -8,7 +8,7 @@ from ophyd import (
     EpicsSignal,
     EpicsSignalRO,
     DynamicDeviceComponent,
-    Signal
+    Signal,
 )
 from collections import OrderedDict
 from bluesky.plan_stubs import mv

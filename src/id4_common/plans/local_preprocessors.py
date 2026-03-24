@@ -169,7 +169,7 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
                 )
 
         if lockin or sgz:
-            
+
             # TODO: This is a bit of a workaround because the select DC and
             # select AC button have a bit of a lag. If we do multiple lockin
             # scans back to back, it may not turn on the AC because the
@@ -190,7 +190,7 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             initial_status = yield from rd(pr_setup.positioner.parent.ACstatus)
             if initial_status != 0:
                 yield from _change_mode("selectDC")
-            
+
             yield from _change_mode("selectAC")
 
         if dichro:
@@ -284,6 +284,7 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
     if magnet911 is None:
         # raise ValueError("magnet911 is not registered in the oregistry.")
         logger.debug("magnet911 is not registered in the oregistry.")
+
     def _stage():
         _ready = yield from rd(magnet911.ps.ready)
         if _ready == 0:
@@ -294,7 +295,7 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
             _message = yield from rd(magnet911.ps.status)
             print(_message, end="\r")
 
-            if time() - _start_time > 10*60:
+            if time() - _start_time > 10 * 60:
                 raise TimeoutError("Magnet took more than 10 min to be ready.")
 
             yield from sleep(0.1)
@@ -324,7 +325,7 @@ def stage_4idg_softglue_wrapper(plan, use_sg):
     pos_stream = oregistry.find("pos_stream", allow_none=True)
 
     def _stage():
-        
+
         if sg is None:
             raise ValueError("4idG softglue must be loaded in oregistry!")
 
@@ -333,9 +334,11 @@ def stage_4idg_softglue_wrapper(plan, use_sg):
 
         # Reset softglue, make sure ckInt is enabled.
         yield from mv(
-            sg.buffers.in1.signal, "1!",
+            sg.buffers.in1.signal,
+            "1!",
             # sg.buffers.in2.signal, "1!",
-            sg.buffers.in4.signal, "1"
+            sg.buffers.in4.signal,
+            "1",
         )
 
         # Clear and enable DMA
@@ -344,34 +347,25 @@ def stage_4idg_softglue_wrapper(plan, use_sg):
         # Start pos stream
 
         yield from mv(
-            pos_stream.cam.array_counter, 0,
-            pos_stream.hdf1.capture, 1
+            pos_stream.cam.array_counter, 0, pos_stream.hdf1.capture, 1
         )
-        yield from mv(
-            pos_stream.cam.acquire, 1
-        )
+        yield from mv(pos_stream.cam.acquire, 1)
 
     def _unstage():
         # Make sure that the circular buffer is emptied
         for _ in range(7):
             yield from mv(sg.scaltostream.flush.signal, "1!")
             yield from sleep(0.1)
-        
+
         # Clear and disable DMA
         yield from sg.clear_disable_dma()
 
         # Stop softglue
-        yield from mv(
-            sg.buffers.in4.signal, "0"
-        )
-        
+        yield from mv(sg.buffers.in4.signal, "0")
+
         # Stop position stream
-        yield from mv(
-            pos_stream.hdf1.capture, 0
-        )
-        yield from mv(
-            pos_stream.cam.acquire, 0
-        )
+        yield from mv(pos_stream.hdf1.capture, 0)
+        yield from mv(pos_stream.cam.acquire, 0)
 
     def _inner_plan():
         yield from _stage()

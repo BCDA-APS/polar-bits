@@ -2,12 +2,7 @@
 SoftGlueZynq
 """
 
-from ophyd import (
-    Component,
-    Device,
-    DynamicDeviceComponent,
-    Signal
-)
+from ophyd import Component, Device, DynamicDeviceComponent, Signal
 
 from .softgluezynq_parts import (
     _dma_fields,
@@ -18,12 +13,11 @@ from .softgluezynq_parts import (
     SGZGateDly,
     SoftGlueScalToStream,
     SGZClocks,
-    SampleXY
+    SampleXY,
 )
 
 from bluesky.plan_stubs import mv
 from logging import getLogger
-
 
 logger = getLogger(__name__)
 
@@ -41,34 +35,18 @@ class SoftGlueZynqDevice(Device):
     io = DynamicDeviceComponent(_io_fields())
 
     # Using channel #4 to count when the gate is off.
-    up_counter_count = Component(
-        SGZUpCounter, "SG:UpCntr-1_", kind="config"
-    )
-    up_counter_trigger = Component(
-        SGZUpCounter, "SG:UpCntr-2_", kind="config"
-    )
-    up_counter_gate_on = Component(
-        SGZUpCounter, "SG:UpCntr-3_", kind="config"
-    )
-    up_counter_gate_off = Component(
-        SGZUpCounter, "SG:UpCntr-4_", kind="config"
-    )
+    up_counter_count = Component(SGZUpCounter, "SG:UpCntr-1_", kind="config")
+    up_counter_trigger = Component(SGZUpCounter, "SG:UpCntr-2_", kind="config")
+    up_counter_gate_on = Component(SGZUpCounter, "SG:UpCntr-3_", kind="config")
+    up_counter_gate_off = Component(SGZUpCounter, "SG:UpCntr-4_", kind="config")
 
     # Setup the frequency of the count and trigger based on 10 MHz clock.
-    div_by_n_count = Component(
-        SGZDevideByN, "SG:DivByN-1_", kind="config"
-    )
-    div_by_n_trigger = Component(
-        SGZDevideByN, "SG:DivByN-2_", kind="config"
-    )
-    div_by_n_interrupt = Component(
-        SGZDevideByN, "SG:DivByN-3_", kind="config"
-    )
+    div_by_n_count = Component(SGZDevideByN, "SG:DivByN-1_", kind="config")
+    div_by_n_trigger = Component(SGZDevideByN, "SG:DivByN-2_", kind="config")
+    div_by_n_interrupt = Component(SGZDevideByN, "SG:DivByN-3_", kind="config")
 
     # Create a gate pulse
-    gate_trigger = Component(
-        SGZGateDly, "SG:GateDly-1_", kind="config"
-    )
+    gate_trigger = Component(SGZGateDly, "SG:GateDly-1_", kind="config")
 
     # Send data to DMA
     scaltostream = Component(

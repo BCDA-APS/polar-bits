@@ -21,7 +21,6 @@ from .softgluezynq_parts import (
     SGZhistScalerDma,
 )
 
-
 # class TimeSettingSignal(Signal):
 #     def get()
 
