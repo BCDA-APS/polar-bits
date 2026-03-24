@@ -42,3 +42,8 @@ id4_common.devices.softgluezynq_vortex.SGZVortex:
 - name: "sgz_vortex"
   prefix: "4iddMZ0:"
   labels: ["detector", "4idg", "4idh"]
+
+id4_common.devices.magnet_kepco_4idg.KepcoDevice:
+- name: "gmagnet"
+  prefix: "4idkepco:"
+  labels: ["magnet", "4idg"]

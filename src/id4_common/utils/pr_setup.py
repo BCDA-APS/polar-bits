@@ -4,10 +4,12 @@ from ..callbacks.dichro_stream import plot_dichro_settings
 from apsbits.core.instrument_init import oregistry
 
 
+# TODO: Need to change the query logic to include the oscillate pzt
 class PRSetup:
 
     positioner = None
     offset = None
+    oscillate_pzt = True
     _dichro_steps = [1, -1, -1, 1]
 
     @property

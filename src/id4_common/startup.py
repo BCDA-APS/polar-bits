@@ -103,6 +103,8 @@ else:
     from .utils.dm_utils import *  # noqa: F401, F403
     from .utils.experiment_utils import *  # noqa: F401, F403
     from .utils.hkl_utils import *  # noqa: F401, F403
+    from .utils.undulator_setup import undulator_setup
+    from .utils.shorts import opt
 
     # TODO: DM, hklpy, experiment_utils seems to be changing the
     # logging level. I don't know why.
@@ -156,6 +158,3 @@ except AttributeError:
 
 for sus in shutter_suspenders.values():
     RE.install_suspender(sus)
-
-# TODO: REMOVE THIS AFTER UPSTREAM FIX
-_ = RE.preprocessors.pop()

@@ -9,7 +9,7 @@ from time import sleep
 from .ad_mixins import PolarHDF5Plugin
 
 
-class DanteCAM(ADBase):
+class DanteCAM1(ADBase):
 
     _default_configuration_attrs = (
         "port_name",
@@ -26,7 +26,6 @@ class DanteCAM(ADBase):
         "mca_mapping_points",
         "mca_gatting",
         "mca_list_buffer_size",
-        "snl_connected",
     )
 
     _default_read_attrs = (
@@ -96,6 +95,12 @@ class DanteCAM(ADBase):
     num_images = ADComponent(EpicsSignalWithRBV, "MappingPoints")
     mca_gatting = ADComponent(EpicsSignalWithRBV, "GatingMode")
     mca_list_buffer_size = ADComponent(EpicsSignalWithRBV, "ListBufferSize")
+
+
+class DanteCAM4(DanteCAM1):
+    _default_configuration_attrs = (
+        DanteCAM1._default_configuration_attrs + ("snl_connected",)
+    )
 
     # Multi Channel
     snl_connected = ADComponent(EpicsSignalRO, "SNL_Connected")

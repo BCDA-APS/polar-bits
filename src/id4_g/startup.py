@@ -163,6 +163,3 @@ cat = db_query(  # noqa: F405
     full_cat,
     dict(instrument_name=f'polar-{iconfig["STATION"]}')
 )
-
-# TODO: REMOVE THIS AFTER UPSTREAM FIX
-_ = RE.preprocessors.pop()

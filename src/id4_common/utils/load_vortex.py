@@ -1,4 +1,5 @@
 from ..devices.vortex_dante_me4 import VortexDante4
+from ..devices.vortex_dante_me1 import VortexDante1
 from ..devices.vortex_xmap import VortexXMAP
 from ..devices.vortex_xspress3_me4 import VortexXspress34
 from ..devices.vortex_xspress3_me7 import VortexXspress37
@@ -10,10 +11,11 @@ logger = getLogger(__name__)
 
 # TODO: Get this from a YAML file?
 DETECTORS = {
+    "dante1": (VortexDante1, "dp_dante1_xrd12:"),
     "dante4": (VortexDante4, "dp_dante8_xrd4:"),
     "xmap": (VortexXMAP, "dpxXMAPDP2:"),
     "xspress4": (VortexXspress34, "S4QX4:"),
-    "xspress7": (VortexXspress37, "XSP3_7Chan:"),
+    "xspress7": (VortexXspress37, "s4XSP3ME7:"),
 }
 
 
@@ -40,7 +42,7 @@ def load_vortex(
         name : str, optional
             Bluesky name of the detector. Defaults to 'vortex'.
         labels : list of strings, optional
-            Bluesky labels. Defaults to ["detector",]
+            Bluesky labels. Defaults to ["detectexior",]
         baseline : bool, optional
             Flag to add the device to the baseline. Defaults to False.
     RETURNS

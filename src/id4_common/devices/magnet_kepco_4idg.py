@@ -89,7 +89,7 @@ class KepcoDevice(Device):
     t1 = Component(EpicsSignalRO, "T1", kind="config")
     t2 = Component(EpicsSignalRO, "T2", kind="config")
     t3 = Component(EpicsSignalRO, "T3", kind="config")
-    status_temperature = Component(EpicsSignalRO, "hts_status", kind="config")
+    status_temperature = Component(EpicsSignalRO, "htsstatus", kind="config")
 
     def default_settings(self):
         self.start_auto_mode()

@@ -17,6 +17,8 @@ import asyncio
 from pathlib import Path
 from collections import OrderedDict
 from time import time as ttime
+from apsbits.core.instrument_init import oregistry
+from logging import getLogger
 from .ad_mixins import (
     ROIPlugin,
     AttributePlugin,
@@ -24,6 +26,9 @@ from .ad_mixins import (
     PolarHDF5Plugin,
     VortexDetectorCam,
 )
+from time import sleep
+
+logger = getLogger(__name__)
 
 MAX_IMAGES = 12216
 MAX_ROIS = 8
@@ -44,13 +49,29 @@ class Trigger(TriggerBase):
         self._acquisition_signal = self.cam.acquire
         self._acquire_busy_signal = self.cam.acquire_busy
         self._flysetup = False
+        self._vortex_sgz = False
         self._status = None
+        self._arm_plan_delay = 0.0
+        self._trigger_delay = 0.05
 
     def setup_manual_trigger(self):
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "Internal"
         self.cam.stage_sigs["num_images"] = 1
         self.cam.stage_sigs["wait_for_plugins"] = "Yes"
+
+    def setup_sgzbca_trigger(self):
+        # Stage signals
+        self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
+        self.cam.stage_sigs["wait_for_plugins"] = "No"
+
+        sgz = oregistry.find("sgz_vortex", allow_none=True)
+        if sgz is None:
+            logger.warning("Did not find the softglue detector (sgz_vortex).")
+        else:
+            self.cam.stage_sigs["num_images"] = (
+                sgz.down_counter_pulse.preset.get()
+            )
 
     def setup_external_trigger(self):
         # Stage signals
@@ -65,6 +86,9 @@ class Trigger(TriggerBase):
         if self._flysetup:
             self.setup_external_trigger()
 
+        if self._vortex_sgz:
+            self.setup_sgzbca_trigger()
+
         # Make sure that detector is not armed.
         self._acquisition_signal.set(0).wait(timeout=10)
         self._acquire_busy_signal.subscribe(self._acquire_changed)
@@ -78,6 +102,7 @@ class Trigger(TriggerBase):
         super().unstage()
         self.cam.acquire.set(0).wait(timeout=10)
         self._flysetup = False
+        self._vortex_sgz = False
         self._acquire_busy_signal.clear_sub(self._acquire_changed)
         self._collect_image = False
         self.setup_manual_trigger()
@@ -91,7 +116,8 @@ class Trigger(TriggerBase):
 
         # Click the Acquire_button
         self._status = self._status_type(self)
-        self._acquisition_signal.put(1, wait=False)
+        if not self._vortex_sgz:
+            self._acquisition_signal.put(1, wait=False)
         if self.hdf1.enable.get() in (True, 1, "on", "Enable"):
             self.generate_datum(self._image_name, ttime(), {})
 
@@ -104,7 +130,7 @@ class Trigger(TriggerBase):
             return
         if (old_value != 0) and (value == 0):
             # Negative-going edge means an acquisition just finished.
-            # sleep(self._delay)
+            sleep(self._trigger_delay)
             self._status.set_finished()
             self._status = None
 
@@ -113,13 +139,19 @@ class Trigger(TriggerBase):
             future = asyncio.Future()
 
             async def set_future_done(future):
-                # Checks if there is a new image being read. Stops when there is
-                # no new image for >  sleep_time.
-                status = 0
-                while status != 1:
-                    status = self.cam.acquire_busy.get()
+                # Checks the detector status, then sleeps by _arm_plan_delay
+                # sleep_time.
+                # status = 0
+                # while status != 1:
+                #     status = self.cam.acquire_busy.get()
 
-                # await asyncio.sleep(5)
+                while (
+                    (self.cam.acquire_busy.get() != 1) |
+                    (self.cam.detector_state.get() != 1)
+                ):
+                    await asyncio.sleep(0.01)
+
+                await asyncio.sleep(self._arm_plan_delay)
                 future.set_result("Detector done!")
 
             asyncio.create_task(set_future_done(future))
@@ -475,10 +507,10 @@ class VortexXspress37(Trigger, DetectorBase):
         self._flysetup = flyscan
 
         base_folder = str(base_folder) + f"/{self.name}/"
-        # self.hdf1.file_path.set(base_folder).wait(timeout=10)
+        self.hdf1.file_path.set(base_folder).wait(timeout=10)
 
         # TODO: need to temporarily change the saving folder.
-        self.hdf1.file_path.set(self._local_folder).wait(timeout=10)
+        # self.hdf1.file_path.set(self._local_folder).wait(timeout=10)
 
         _, full_path, relative_path = self.hdf1.make_write_read_paths(
             base_folder

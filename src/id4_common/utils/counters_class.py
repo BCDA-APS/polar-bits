@@ -40,7 +40,9 @@ class CountersClass:
         super().__init__()
         # This will hold the devices instances.
         self._dets = []
+        self._selected_dets_channels = []
         self._mon = "Time"
+        self._selected_mon_channel = 0
         self._extra_devices = []
         self._order = order
 
@@ -193,13 +195,26 @@ class CountersClass:
 
     @property
     def detectors_plot_options(self):
-        table = dict(detectors=[], channels=[])
+        table = dict(detectors=[], channels=[], selection=[])
 
         # If there is any scaler, then we will have a first row with Time
         if len(self._available_scalers) > 0:
             table["detectors"].append("scalers")
             table["channels"].append("Time")
+        
+        # Since time is special, it needs to be run first to check if Time is
+        # being used.
+        row_number = 0
+        if row_number in self._selected_dets_channels:
+            table["selection"] += ["<-- Detector"]
+        elif row_number == self._selected_mon_channel:
+            table["selection"] += ["<--  Monitor"]
+        else:
+            table["selection"] += [""]
 
+        # this count runs independently because each device has its own
+        # number of detectors
+        option_number = 1 
         for det in self._available_detectors:
             # det.plot_options will return a list of available
             # plotting options.
@@ -212,6 +227,17 @@ class CountersClass:
 
             table["channels"] += _options
             table["detectors"] += [det.name for _ in range(len(_options))]
+            
+            # Checks for the current selection of detectors and monitor, and
+            # marks the ones that are selected.
+            for _ in range(len(_options)):
+                if option_number in self._selected_dets_channels:
+                    table["selection"] += ["<-- Detector"]
+                elif option_number == self._selected_mon_channel:
+                    table["selection"] += ["<--  Monitor"]
+                else:
+                    table["selection"] += [""]
+                option_number += 1
 
         # This will be a table with all the options, it will have the advantage
         # that it can be indexed.
@@ -278,15 +304,21 @@ class CountersClass:
 
         if not _valid_dets:
             while True:
-                dets = input("Enter the indexes of plotting channels: ") or None
+                dets = input(
+                    "Enter the indexes of plotting channels "
+                    f"{self._selected_dets_channels}: "
+                ) or self._selected_dets_channels
 
-                if dets is None:
+                if len(dets) == 0:
                     print("A value must be entered.")
                     continue
 
                 # Check these are all numbers
                 try:
-                    dets = [int(i) for i in dets.split()]
+                    if isinstance(dets, str):
+                        dets = [int(i) for i in dets.split()]
+                    else:
+                        dets = [int(i) for i in dets]
                 except ValueError:
                     print("Please enter the index numbers only.")
                     continue
@@ -304,6 +336,7 @@ class CountersClass:
                 break
 
         self.select_plot_channels(dets)
+        self._selected_dets_channels = dets
 
         if not _valid_mon:
             _mon = self.detectors_plot_options[
@@ -329,7 +362,8 @@ class CountersClass:
                     continue
 
                 break
-
+        
+        self._selected_mon_channel = mon
         self._mon = self.detectors_plot_options.loc[mon]["channels"]
 
         print()

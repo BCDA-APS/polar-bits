@@ -9,6 +9,33 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
+def _dma_fields(num=8, first_letter="I"):
+    defn = OrderedDict()
+    defn["enable"] = (EpicsSignal, "1acquireDmaEnable", {"kind": "config"})
+    defn["scan"] = (EpicsSignal, "1acquireDma.SCAN", {"kind": "config"})
+    defn["read_button"] = (EpicsSignal, "1acquireDma.PROC", {"kind": "omitted"})
+    defn["clear_button"] = (EpicsSignal, "1acquireDma.D", {"kind": "omitted"})
+    defn["clear_buffer"] = (EpicsSignal, "1acquireDma.F", {"kind": "omitted"})
+    defn["words_in_buffer"] = (
+        EpicsSignalRO,
+        "1acquireDma.VALJ",
+        {"kind": "config"},
+    )
+    defn["events"] = (EpicsSignalRO, "1acquireDma.VALI", {"kind": "config"})
+    for i in range(1, num + 1):
+        defn[f"channel_{i}_name"] = (
+            EpicsSignal,
+            f"1s{i}name",
+            {"kind": "config"},
+        )
+        defn[f"channel_{i}_scale"] = (
+            EpicsSignal,
+            f"1acquireDma.{chr(ord(first_letter)+i-1)}",
+            {"kind": "config"},
+        )
+    return defn
+
+
 def _io_fields(num=16):
     defn = OrderedDict()
     for i in range(1, num + 1):
@@ -113,3 +140,26 @@ class SGZhistScalerDma(Device):
     # TODO: maybe we can breakdown the histogram into channels here
     # already?
     hist = Component(EpicsSignalRO, ".VALA", kind="normal")
+
+
+class SoftGlueScalToStream(Device):
+    reset = Component(SoftGlueSignal, "RESET", kind="config")
+    chadv = Component(SoftGlueSignal, "CHADV", kind="config")
+    imtrig = Component(SoftGlueSignal, "IMTRIG", kind="config")
+    flush = Component(SoftGlueSignal, "FLUSH", kind="config")
+    full = Component(SoftGlueSignal, "FULL", kind="config")
+    advdone = Component(SoftGlueSignal, "ADVDONE", kind="config")
+    imdone = Component(SoftGlueSignal, "IMDONE", kind="config")
+    fifo = Component(EpicsSignalRO, "FIFO", kind="config")
+    dmawords = Component(EpicsSignal, "DMAWORDS", kind="config")
+
+
+class SampleXY(Device):
+    x_offset = Component(EpicsSignal, "SAMPLE_XOFF", kind="config")
+    y_offset = Component(EpicsSignal, "SAMPLE_YOFF", kind="config")
+    pitch_offset = Component(EpicsSignal, "SAMPLE_POFF", kind="config")
+
+    x = Component(EpicsSignalRO, "SAMPLE_X")
+    y = Component(EpicsSignalRO, "SAMPLE_Y")
+    dx = Component(EpicsSignalRO, "SAMPLE_DX")
+    pitch = Component(EpicsSignalRO, "SAMPLE_PITCH")

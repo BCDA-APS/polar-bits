@@ -3,11 +3,12 @@
 from ophyd import ADComponent, Staged, SignalRO, DynamicDeviceComponent
 from ophyd.mca import EpicsMCARecord
 from ophyd.areadetector import DetectorBase
+# from ophyd.areadetector.trigger_mixins import ADTriggerStatus
 from pathlib import Path
 from collections import OrderedDict
 from time import time as ttime
 from .ad_mixins import TriggerBase, ADTriggerStatus
-from .vortex_dante_parts import DanteCAM4, DanteHDF1Plugin, DanteSCA
+from .vortex_dante_parts import DanteCAM1, DanteHDF1Plugin, DanteSCA
 
 MAX_TIME = 60 * 60  # time used in align mode
 MAX_ROIS = 32
@@ -154,16 +155,16 @@ def _scas(num_channels):
     return defn
 
 
-class VortexDante4(Trigger, DetectorBase):
+class VortexDante1(Trigger, DetectorBase):
 
     _default_configuration_attrs = ("cam",)
     _default_read_attrs = ("hdf1", "mcas", "scas", "total")
 
     _read_rois = [1]
-    _num_channels = 4
+    _num_channels = 1
     _mca_rois_read_attrs = ("count",)
 
-    cam = ADComponent(DanteCAM4, "dante:")
+    cam = ADComponent(DanteCAM1, "dante1:")
 
     mcas = DynamicDeviceComponent(_mcas(_num_channels))
     scas = DynamicDeviceComponent(_scas(_num_channels))
@@ -236,7 +237,7 @@ class VortexDante4(Trigger, DetectorBase):
         self.read_rois = [0]
         self.plot_roi0()
 
-        for item in "mca1 mca2 mca3 mca4".split():
+        for item in "mca1".split():
             mca = getattr(self.mcas, item)
             mca.preset_real_time.kind = "omitted"
             mca.elapsed_real_time.kind = "omitted"

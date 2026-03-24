@@ -15,10 +15,11 @@ __all__ = """
 """.split()
 
 # TODO: Temporarily removed
-# from apstools.utils import (
-#     dm_start_daq,
-#     dm_get_experiment_datadir_active_daq,
-# )
+from apstools.utils import (
+    dm_start_daq,
+    dm_get_experiment_datadir_active_daq,
+    dm_setup
+)
 from dm import ObjectNotFound, DmException
 from os import chdir
 from pathlib import Path
@@ -32,7 +33,7 @@ from .dm_utils import (
     dm_experiment_setup,
     get_current_run_name,
 )
-from .run_engine import RE
+from .run_engine import RE, cat
 from ..callbacks.spec_data_file_writer import specwriter
 
 logger = getLogger(__name__)
@@ -309,17 +310,21 @@ class ExperimentClass:
         # The normal behavior is to start the DAQ, but currently this
         # changes files permissions, and prevents us from saving new files.
 
-        # data_directory = f"@voyager:{self.base_experiment_path}"
+        # data_directory = f"@sojourner:{self.base_experiment_path}"
+        data_directory = f"@sojourner:{self.base_experiment_path}"
 
         # Check DM DAQ is running for this experiment, if not then start it.
-        # if dm_get_experiment_datadir_active_daq(
-        #     self.experiment_name, data_directory
-        # ) is None:
-        #     logger.info(
-        #         "Starting DM voyager DAQ: experiment %r",
-        #         self.experiment_name
-        #     )
-        #     dm_start_daq(self.experiment_name, "@voyager")
+        if dm_get_experiment_datadir_active_daq(
+            self.experiment_name, data_directory
+        ) is None:
+            
+            dm_setup(iconfig["DM_SETUP_FILE"])
+
+            logger.info(
+                "Starting DM voyager DAQ: experiment %r",
+                self.experiment_name
+            )
+            dm_start_daq(self.experiment_name, "@sojourner")
 
     def setup_path(self):
         # Make sure that the subfolder structure exists, if not creates it.
@@ -337,8 +342,8 @@ class ExperimentClass:
                 reset_scan_id = (
                     (
                         reset_scan_id
-                        or input("Reset Bluesky scan_id to 1? [yes]: ")
-                        or "yes"
+                        or input("Reset Bluesky scan_id to 1? [no]: ")
+                        or "no"
                     )
                     .strip()
                     .lower()
@@ -366,17 +371,24 @@ class ExperimentClass:
         specwriter.newfile(fname)
         self.spec_file = specwriter.spec_filename.name
 
-    def load_from_bluesky(self, reset_scan_id: int = -1, skip_DM: bool = False):
-        kwargs = {}
-        for key in (
-            "esaf_id",
-            "proposal_id",
-            "base_name",
-            "sample",
-            "server",
-            "experiment_name",
+    def load_from_bluesky(
+            self,
+            scan_id: int = -1,
+            reset_scan_id: int = -1,
+            skip_DM: bool = False,
+            useRE=False
         ):
-            kwargs[key] = RE.md[key]
+        metadata = RE.md if useRE == True else cat[scan_id].metadata["start"]
+        kwargs = {
+            key: metadata[key] for key in (
+                "esaf_id",
+                "proposal_id",
+                "base_name",
+                "sample",
+                "server",
+                "experiment_name",
+            )
+        }
 
         self.setup(reset_scan_id=reset_scan_id, skip_DM=skip_DM, **kwargs)
 

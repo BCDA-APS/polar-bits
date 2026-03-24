@@ -14,6 +14,7 @@ from dm import (
     ExperimentDsApi,
     UserDsApi,
     ObjectAlreadyExists,
+    ObjectNotFound,
     DmException,
 )
 from datetime import datetime
@@ -44,6 +45,9 @@ DEFAULT_USERS = [
     "d87100",  # Yong
     "d86103",  # Daniel
 ]
+
+BEAMLINE_NAME = "4-ID-B,G,H"
+STATION = "4ID"
 
 
 def dm_workflow():
@@ -109,12 +113,12 @@ def dm_upload_wait(
     raise TimeoutError(f"DM upload timed out after {time()-t0 :.1f} s.")
 
 
-def list_esafs(year=datetime.now().year, sector="04"):
-    return esaf_api.listEsafs(sector, year)
+def list_esafs(year=datetime.now().year, sector=STATION):
+    return esaf_api.listStationEsafs(sector, year=year)
 
 
 def get_esaf_info(id):
-    return esaf_api.getEsaf(id)
+    return esaf_api.getStationEsafById(STATION, id)
 
 
 def get_esaf_users_badge(id):
@@ -157,7 +161,11 @@ def get_current_run_name():
 
 
 def dm_experiment_setup(
-    experiment_name, esaf_id=None, users_name_list: list = [], **kwargs
+    experiment_name,
+    esaf_id=None,
+    users_name_list: list = [],
+    title: str = None,
+    **kwargs
 ):
     # Gets the users from the ESAF.
     if esaf_id is not None:
@@ -166,6 +174,9 @@ def dm_experiment_setup(
         for b in badges:
             _users.append(f"d{b}")
         users_name_list = list(users_name_list) + _users
+
+        if title is None:
+            kwargs["description"] = get_esaf_info(esaf_id)["esafTitle"]
 
     # TODO: if no dates are passed, it will automatically make it from now to
     # the end of the current run. Is it better to just tie it to the ESAF?
@@ -188,7 +199,8 @@ def create_dm_experiment(
         rootPath = get_current_run()["name"]
     return exp_api.addExperiment(
         experiment_name,
-        typeName="4IDD",
+        stationName=STATION,
+        typeName=STATION,
         description=description,
         rootPath=rootPath,
         startDate=startDate,
@@ -213,12 +225,26 @@ def add_dm_users(experiment_name, users_name_list):
     return output
 
 
-def get_experiment(experiment_name):
+def get_experiment_(experiment_name):
     return exp_api.getExperimentByName(experiment_name)
 
 
+def get_experiment(experiment_name):
+    exps = exp_api.getExperimentsByStation(STATION)[::-1]
+    id = None
+    for exp in exps:
+        if exp["name"] == experiment_name:
+            id = exp["id"]
+
+    if id is None:
+        print(f"Did not find any experiment named {experiment_name}")
+        raise ObjectNotFound
+    else:
+        return exp_api.getExperimentById(id)
+
+
 def get_experiments_names(since="2018-01-01", until="2100-01-01"):
-    exps = exp_api.getExperimentsByStation("4IDD")[::-1]
+    exps = exp_api.getExperimentsByStation(STATION)[::-1]
     names = []
     for exp in exps:
         _start = datetime.fromisoformat(exp["startDate"]).utctimetuple()
@@ -237,10 +263,10 @@ def current_run_experiments_names():
 def get_proposal_info(proposal_id: int, run: str = None):
     if run is None:
         run = get_current_run()["name"]
-    return bss_api.getProposal(proposal_id, run)
+    return bss_api.getStationProposalById(STATION, proposal_id, runName=run)
 
 
 def list_proposals(run: str = None):
     if run is None:
         run = get_current_run()["name"]
-    return bss_api.listProposals(run)
+    return bss_api.listStationProposals(STATION, runName=run)
