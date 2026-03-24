@@ -377,7 +377,7 @@ def AD_prime_plugin2(plugin):
         )
 
 
-def reload_all_devices(file="devices.yml"):
+def reload_all_devices(file="devices.yml", stations=None):
     """
     Reload all devices from a configuration file and connect devices.
 
@@ -385,6 +385,9 @@ def reload_all_devices(file="devices.yml"):
     ----------
     file : str, optional
         Path to the YAML devices configuration file. Defaults to "devices.yml".
+    stations : list of str, optional
+        List of station labels to connect after reloading. If None, connects
+        all stations: ["source", "4ida", "4idb", "4idg", "4idh"].
 
     Returns
     -------
@@ -396,14 +399,15 @@ def reload_all_devices(file="devices.yml"):
     This function:
     1. Invokes the `make_devices` plan with `clear=True` via the RunEngine to
        rebuild and register devices from the specified configuration file.
-    2. Searches the registry for devices matching known station identifiers
-       ("source", "4ida", "4idb", "4idg", "4idh") and attempts to connect them
-       without raising errors on failure.
+    2. Searches the registry for devices matching the given station labels
+       and attempts to connect them without raising errors on failure.
     """
+
+    if stations is None:
+        stations = ["source", "4ida", "4idb", "4idg", "4idh"]
 
     RE(make_devices(clear=True, file=file))  # Create the devices.
 
-    stations = ["source", "4ida", "4idb", "4idg", "4idh"]
     for device in oregistry.findall(stations):
         connect_device(device, raise_error=False)
 

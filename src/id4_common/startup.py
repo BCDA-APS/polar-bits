@@ -103,8 +103,8 @@ else:
     from .utils.dm_utils import *  # noqa: F401, F403
     from .utils.experiment_utils import *  # noqa: F401, F403
     from .utils.hkl_utils import *  # noqa: F401, F403
-    from .utils.undulator_setup import undulator_setup
-    from .utils.shorts import opt
+    from .utils.undulator_setup import undulator_setup  # noqa: F401
+    from .utils.shorts import opt  # noqa: F401
 
     # TODO: DM, hklpy, experiment_utils seems to be changing the
     # logging level. I don't know why.
@@ -126,8 +126,6 @@ else:
     from .plans import *  # noqa: F401, F403
 
 _load_devices = input("\n==> Do you want to load all devices? [Y/n]: ") or "y"
-
-from glob import glob
 
 try:
     if _load_devices.lower() in ["y", "yes"]:
