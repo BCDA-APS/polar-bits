@@ -61,12 +61,14 @@ Configuration is YAML-driven. The main file is `src/id4_common/configs/iconfig.y
 - Area detector defaults (Eiger 1M, Lambda, Vortex, LightField, Vimba)
 - EPICS timeouts and logging paths
 
-Device definitions live in YAML files under `src/id4_common/configs/`:
-- `devices.yml` — main device list (all beamlines)
-- `devices_4idb.yml`, `devices_4idg.yml`, `devices_4idh.yml` — beamline-specific additions
-- `devices_basic.yml`, `devices_core.yml`, `devices_extras.yml` — grouped subsets
+Device definitions live in `src/id4_common/configs/devices.yml` — the single source of truth for all beamlines. Each device entry maps a Python class path to EPICS PV prefixes and labels.
 
-Each device entry maps a Python class path to EPICS PV prefixes and labels. Labels like `"4idb"`, `"baseline"`, `"detector"` are used to filter and organize devices at runtime.
+Labels control which devices get connected at each beamline:
+- Station labels (`"4idb"`, `"4idg"`, `"4idh"`) — which beamline(s) connect a device
+- `"baseline"` — included in supplemental data stream
+- Functional labels (`"detector"`, `"motor"`, `"slit"`, etc.) — for filtering via `find_loadable_devices()`
+
+To make a device available to an additional beamline, add that beamline's label to its entry in `devices.yml` — one edit, one file.
 
 ### Startup Flow
 
@@ -77,8 +79,19 @@ Each device entry maps a Python class path to EPICS PV prefixes and labels. Labe
 4. Conditionally load SPEC/NeXus callbacks based on `iconfig.yml`
 5. Load dichro stream callback
 6. Prompt user to load devices (calls `make_devices` which reads `devices.yml`)
-7. Connect devices tagged with station labels (`source`, `4ida`, `4idb`, etc.)
+7. Connect devices tagged with that beamline's station labels
 8. Install shutter suspenders on the RunEngine
+
+Each beamline startup connects only the devices whose labels match its `stations` list:
+
+| Beamline | stations list |
+|----------|--------------|
+| 4IDB | `["source", "4ida", "4idb"]` |
+| 4IDG | `["source", "4ida", "4idg"]` |
+| 4IDH | `["source", "4ida", "4idh"]` |
+| Raman | (beamline-specific) |
+
+Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry multiple station labels in `devices.yml`.
 
 ### Key Components in `id4_common/`
 
@@ -92,10 +105,12 @@ Each device entry maps a Python class path to EPICS PV prefixes and labels. Labe
 
 Devices can be dynamically managed:
 ```python
-find_loadable_devices()       # list available devices
-load_device("device_name")    # connect a specific device
-remove_device("device_name")  # disconnect
-reload_all_devices()          # reload all from YAML
+find_loadable_devices()                          # list available devices
+find_loadable_devices(label="4idg")              # filter by label
+load_device("device_name")                       # connect a specific device
+remove_device("device_name")                     # disconnect and remove from baseline
+reload_all_devices()                             # reload all from YAML (all stations)
+reload_all_devices(stations=["source", "4idh"])  # reload for a specific beamline
 ```
 
 The `oregistry` (from `apsbits`) is the central device registry.
@@ -112,7 +127,7 @@ Each beamline has a `qs-config.yml` and `qs_host.sh`. The QS uses Redis (localho
 
 ## Code Style
 
-- Line length: 115 (black/flake8), 88 (ruff)
+- Line length: 80 (black), 88 (ruff)
 - Python 3.11+
 - Linting: ruff (replaces flake8/isort/black in pre-commit)
 - Docstrings required for all public classes/functions/methods/modules (ruff rules D100-D107)
