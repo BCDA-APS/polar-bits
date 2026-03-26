@@ -1,63 +1,106 @@
 # Guarneri-style device YAML configuration
-# Standard labels:
-#   core          — loaded by all hutches (shared optics, source)
-#   4idb/4idg/4idh — loaded only by that hutch
-#   baseline      — included in the supplemental data stream
-#   source        — APS source devices
-
-################
-## APS Source ##
-################
 
 id4_common.devices.aps_xbpm.MyXBPM:
 - name: aps_xbpm
   prefix: S04
-  labels: ["core", "source", "baseline"]
+  labels: ["source", "baseline"]
 
 id4_common.devices.aps_undulator.PolarUndulatorPair:
 - name: undulators
   prefix: "S04ID:"
-  labels: ["core", "source", "energy device", "baseline"]
+  labels: ["source", "energy device", "baseline"]
 
 id4_common.devices.aps_status.StatusAPS:
 - name: status_aps
   prefix: ""
-  labels: ["core", "source", "status", "baseline"]
-
-id4_common.devices.polar_status.Status4ID:
-- name: status_polar
-  prefix: "PA:04ID:"
-  labels: ["core", "status", "baseline"]
-
-##################################
-## 4-ID-A: Common Optics / Core ##
-##################################
-
-id4_common.devices.qxscan_device.QxscanParams:
-- name: qxscan_setup
-  labels: ["core", "qxscan", "energy device", "baseline"]
+  labels: ["source", "status", "baseline"]
 
 id4_common.devices.wb_slit.SlitDevice:
 - name: wbslt
   prefix: '4idVDCM:'
   motorsDict: {'hor': 'm9', 'diag': 'm10', 'pitch': 'm11', 'yaw': 'm12'}
   slitnum: 1
-  labels: ["core", "slit", "baseline"]
+  labels: ["4ida", "slit", "baseline"]
 
 id4_common.devices.hhl_mirror.ToroidalMirror:
 - name: hhl_mirror
   prefix: "4idHHLM:"
-  labels: ["core", "mirror", "baseline"]
+  labels: ["4ida", "mirror", "baseline"]
 
 id4_common.devices.mono_feedback.MonoFeedback:
 - name: mono_feedback
   prefix: "4idbSoft:"
-  labels: ["core", "monochromator", "feedback", "baseline"]
+  labels: ["monochromator", "feedback", "baseline"]
 
 id4_common.devices.monochromator.MonoDevice:
 - name: mono
   prefix: "4idVDCM:"
-  labels: ["core", "monochromator", "energy device", "baseline"]
+  labels: ["4ida", "monochromator", "energy device", "baseline"]
+
+id4_common.devices.labjacks.CustomLabJackT7:
+- name: labjack_4ida
+  prefix: "4idaSoft:LJ:"
+  labels: ["4ida", "baseline"]
+
+- name: labjack_4idb
+  prefix: "4idbSoft:LJ:"
+  labels: ["4idb", "baseline"]
+
+id4_common.devices.ad_vimba.VimbaDetector:
+- name: flagcam_hhl
+  prefix: "4idaPostMirrBeam:"
+  labels: ["camera", "detector", "flag"]
+
+- name: flagcam_mono
+  prefix: "4idaPostMonoBeam:"
+  labels: ["camera", "detector", "flag"]
+
+- name: flagcam_toro
+  prefix: "4idbPostToroBeam:"
+  labels: ["camera", "detector", "flag"]
+
+# xray-eye vimba camera, normally on 4-ID-G/Huber-detector arm
+- name: flagcam_xeye
+  prefix: "4idXrayEye:"
+  labels: ["camera", "detector", "flag"]
+
+ophyd.EpicsMotor:
+- name: flagmotor_hhl
+  prefix: "4idVDCM:m6"
+  labels: ["4ida", "motor", "flag", "baseline"]
+
+- name: flagmotor_mono
+  prefix: "4idVDCM:m7"
+  labels: ["4ida", "motor", "flag", "baseline"]
+
+- name: flagmotor_toro
+  prefix: "4idbSoft:m3"
+  labels: ["4idb", "motor", "flag", "baseline"]
+
+id4_common.devices.jj_slits.SlitDevice:
+- name: monoslt
+  PV: "4idVDCM:"
+  motorsDict: {top: m14, bot: m13, out: m16, inb: m15}
+  slitnum: 2
+  labels: ["4ida", "slit", "baseline"]
+
+- name: bslt
+  PV: "4idbSoft:"
+  motorsDict: {top: m11, bot: m10, out: m13, inb: m12}
+  slitnum: 1
+  labels: ["4idb", "slit", "baseline"]
+
+- name: gslt
+  PV: "4idgSoft:"
+  motorsDict: {top: m44, bot: m43, out: m46, inb: m45}
+  slitnum: 1
+  labels: ["4idg", "4idh", "slit", "baseline"]
+
+- name: hslt
+  PV: "4idhSoft:"
+  motorsDict: {top: m11, bot: m10, out: m12, inb: m13}
+  slitnum: 1
+  labels: ["4idh", "slit", "baseline"]
 
 # PRs prefix must be without :
 id4_common.devices.phaseplates.PRDevice:
@@ -65,19 +108,40 @@ id4_common.devices.phaseplates.PRDevice:
   prefix: "4ida"
   prnum: 1
   motorsDict: {x: m1, y: m2, th: m4}
-  labels: ["core", "phase retarder", "energy device", "track_energy", "baseline"]
+  labels: ["4ida", "phase retarder", "energy device", "track_energy", "baseline"]
 
 - name: pr2
   prefix: "4ida"
   prnum: 2
   motorsDict: {x: m6, y: m7, th: m9}
-  labels: ["core", "phase retarder", "energy device", "track_energy", "baseline"]
+  labels: ["4ida", "phase retarder", "energy device", "track_energy", "baseline"]
 
 id4_common.devices.phaseplates.PRDeviceBase:
 - name: pr3
   prefix: "4ida"
   motorsDict: {x: m10, y: m11, th: m12}
-  labels: ["core", "phase retarder", "energy device", "track_energy", "baseline"]
+  labels: ["4ida", "phase retarder", "energy device", "track_energy", "baseline"]
+
+id4_common.devices.energy_device.EnergySignal:
+- name: energy
+  value: 10
+  kind: hinted
+  labels: ["energy device", "baseline"]
+
+# This is messing up the logger.
+apstools.devices.DM_WorkflowConnector:
+- name: dm_workflow
+  labels: ["dm", "baseline"]
+
+ophyd.Signal:
+- name: dm_experiment
+  value: ""
+  labels: ["dm", "baseline"]
+
+id4_common.devices.polar_status.Status4ID:
+- name: status_polar
+  prefix: "PA:04ID:"
+  labels: ["status", "baseline"]
 
 id4_common.devices.shutters.PolarShutter:
 - name: ashutter
@@ -85,7 +149,7 @@ id4_common.devices.shutters.PolarShutter:
   state_pv: "S04ID-PSS:StaA:BeamPresent:CM"
   open_pv: "S04ID-PSS:FES:OpenEPICSC"
   close_pv: "S04ID-PSS:FES:CloseEPICSC"
-  labels: ["core", "shutter", "baseline"]
+  labels: ["4ida", "shutter", "baseline"]
 
 apstools.devices.ApsPssShutterWithStatus:
 - name: bshutter
@@ -93,79 +157,13 @@ apstools.devices.ApsPssShutterWithStatus:
   state_pv: "S04ID-PSS:StaB:BeamPresent:CM"
   open_pv: "S04ID-PSS:SBS:OpenEPICSC"
   close_pv: "S04ID-PSS:SBS:CloseEPICSC"
-  labels: ["core", "shutter", "baseline"]
+  labels: ["4idb", "shutter", "baseline"]
 
-id4_common.devices.energy_device.EnergySignal:
-- name: energy
-  value: 10
-  kind: hinted
-  labels: ["core", "energy device", "baseline"]
-
-id4_common.devices.mirror_toroidal.ToroidalMirror:
-- name: t_mirror
-  prefix: "4idbToro:"
-  labels: ["core", "optics", "mirror", "baseline"]
-
-id4_common.devices.diamond_window_table.WindowStages:
-- name: diamond_window
-  prefix: "4idbSoft:"
-  labels: ["core", "baseline"]
-
-# Both labjacks share the same class — must be under one key
-id4_common.devices.labjacks.CustomLabJackT7:
-- name: labjack_4ida
-  prefix: "4idaSoft:LJ:"
-  labels: ["core", "baseline"]
-
-- name: labjack_4idb
-  prefix: "4idbSoft:LJ:"
-  labels: ["4idb", "baseline"]
-
-# All JJ slits share the same class — must be under one key
-id4_common.devices.jj_slits.SlitDevice:
-- name: monoslt
-  PV: "4idVDCM:"
-  motorsDict: {top: m14, bot: m13, out: m16, inb: m15}
-  slitnum: 2
-  labels: ["core", "slit", "baseline"]
-
-# 4-ID-B
-- name: bslt
-  PV: "4idbSoft:"
-  motorsDict: {top: m11, bot: m10, out: m13, inb: m12}
-  slitnum: 1
-  labels: ["4idb", "slit", "baseline"]
-
-# 4-ID-G
-- name: gslt
-  PV: "4idgSoft:"
-  motorsDict: {top: m44, bot: m43, out: m46, inb: m45}
-  slitnum: 1
-  labels: ["4idg", "slit", "baseline"]
-
-# 4-ID-H
-- name: hslt
-  PV: "4idhSoft:"
-  motorsDict: {top: m11, bot: m10, out: m12, inb: m13}
-  slitnum: 1
-  labels: ["4idh", "slit", "baseline"]
-
-########
-## DM ##
-########
-
-apstools.devices.DM_WorkflowConnector:
-- name: dm_workflow
-  labels: ["core", "dm", "baseline"]
-
-ophyd.Signal:
-- name: dm_experiment
-  value: ""
-  labels: ["core", "dm", "baseline"]
-
-#######################################
-## Shared Scalers/Counters (B, G, H) ##
-#######################################
+# id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler:
+# - name: scaler
+#   prefix1: "4idCTR8_1:scaler1"
+#   prefix2: "4idCTR8_1:scaler2"
+#   labels: ["detector", "scaler", "4idb", "4idg", "4idh"]
 
 id4_common.devices.scaler.LocalScalerCH:
 - name: scaler1
@@ -181,9 +179,10 @@ id4_common.devices.usb_ctr8.CustomMeasCompCtr:
   prefix: "4idCTR8_1:"
   labels: ["detector", "4idb", "4idg", "4idh", "baseline"]
 
-############
-## 4-ID-B ##
-############
+id4_common.devices.diamond_window_table.WindowStages:
+- name: diamond_window
+  prefix: "4idbSoft:"
+  labels: ["4ida", "baseline"]
 
 id4_common.devices.table_4idb.Table4idb:
 - name: midtable_4idb
@@ -195,10 +194,29 @@ id4_common.devices.quadems.TetrAMMRO:
   prefix: "4idbSoft:TetrAMM:"
   labels: ["detector", "xbpm", "baseline", "4idb"]
 
+id4_common.devices.quadems.SydorEMRO:
+- name: gsydor
+  prefix: "4idgSydor:T4U_BPM:"
+  labels: ["detector", "xbpm", "baseline", "4idg"]
+
+- name: hsydor
+  prefix: "4idhSydor:T4U_BPM:"
+  labels: ["detector", "xbpm", "baseline", "4idh"]
+
+id4_common.devices.polarimeter.PolAnalyzer:
+- name: pol
+  prefix: "4idbSoft:"
+  labels: ["4idb", "baseline"]
+
 id4_common.devices.filters_device.APSFilter:
 - name: bfilter
   prefix: "4idbSoft:filter:"
   labels: ["4idb", "filter", "baseline"]
+
+id4_common.devices.chopper_device.ChopperDevice:
+- name: chopper
+  prefix: "4idChopper:"
+  labels: ["4idb", "baseline"]
 
 id4_common.devices.kb_mirrors.KBMirror:
 - name: bkb
@@ -210,45 +228,22 @@ id4_common.devices.electromagnet.Magnet2T:
   prefix: ""
   labels: ["4idb", "magnet", "baseline"]
 
-id4_common.devices.polarimeter.PolAnalyzer:
-- name: pol
-  prefix: "4idbSoft:"
-  labels: ["4idb", "baseline"]
-
-############
-## 4-ID-G ##
-############
-
 id4_common.devices.xbpm_4idg.XBPM:
 - name: gxbpm
   prefix: "4idgSoft:"
   labels: ["4idg", "baseline"]
-
-# gsydor (4-ID-G) and hsydor (4-ID-H) share the same class
-id4_common.devices.quadems.SydorEMRO:
-# 4-ID-G
-- name: gsydor
-  prefix: "4idgSydor:T4U_BPM:"
-  labels: ["detector", "xbpm", "baseline", "4idg"]
-
-# 4-ID-H
-- name: hsydor
-  prefix: "4idhSydor:T4U_BPM:"
-  labels: ["detector", "xbpm", "baseline", "4idh"]
 
 id4_common.devices.transfocator_device.TransfocatorClass:
 - name: transfocator
   prefix: "4idPyCRL:CRL4ID:"
   labels: ["4idg", "4idh", "optics", "track_energy", "baseline"]
 
-# gfilter (4-ID-G) and hfilter (4-ID-H) share the same class
 id4_common.devices.filters_device_avs.APSFilter:
-# 4-ID-G
 - name: gfilter
   prefix: "4idPyFilter:FL1:"
   labels: ["4idg", "filter", "baseline"]
 
-# 4-ID-H
+id4_common.devices.filters_device_avs.APSFilter:
 - name: hfilter
   prefix: "4idPyFilter:FL2:"
   labels: ["4idh", "filter", "baseline"]
@@ -257,6 +252,11 @@ id4_common.devices.kb_4idg.KBDevice:
 - name: gkb
   prefix: "4idgKB:"
   labels: ["4idg", "optics", "baseline", "kb"]
+
+id4_common.devices.kb_4idh.KBDevice:
+- name: hkb
+  prefix: "4idhKB:"
+  labels: ["4idh", "optics", "baseline", "kb"]
 
 apstools.devices.LakeShore336Device:
 - name: temp_336_4idg
@@ -268,7 +268,6 @@ apstools.devices.LakeShore340Device:
   prefix: "4idgSoftX:LS340:TC1:"
   labels: ["4idg", "temperature", "baseline"]
 
-# Diffractometers
 # TODO: Will leave this here for now just to be sure the hklpy2 is working.
 id4_common.devices.polar_diffractometer.CradleDiffractometer:
 - name: huber_euler
@@ -317,14 +316,9 @@ id4_common.devices.ad_eiger1M.Eiger1MDetector:
   prefix: "4idEiger:"
   labels: ["4idg", "detector"]
 
-id4_common.devices.gh_i0_motors.I04idg:
-- name: i0g
-  prefix: "4idgSoft:"
-  labels: ["4idg", "baseline"]
-
-############
-## 4-ID-H ##
-############
+id4_common.devices.qxscan_device.QxscanParams:
+- name: qxscan_setup
+  labels: ["qxscan", "energy device", "baseline"]
 
 id4_common.devices.table_4idh.Table4idh:
 - name: table_4idh
@@ -341,23 +335,7 @@ id4_common.devices.magnet_911.Magnet911:
   prefix: "4idhSoft:"
   labels: ["4idh", "magnet", "baseline"]
 
-id4_common.devices.kb_4idh.KBDevice:
-- name: hkb
-  prefix: "4idhKB:"
-  labels: ["4idh", "optics", "baseline", "kb"]
-
-id4_common.devices.gh_i0_motors.I04idh:
-- name: i0h
-  prefix: "4idhSoft:"
-  labels: ["4idh", "baseline"]
-
-#####################################
-## Shared Preamps (B, G, H)        ##
-## All share LocalPreAmp — one key ##
-#####################################
-
 id4_common.devices.preamps.LocalPreAmp:
-# 4-ID-B
 - name: preamp_4idbI0
   prefix: "4idbSoft:A3"
   labels: ["4idb", "preamp", "baseline"]
@@ -366,7 +344,6 @@ id4_common.devices.preamps.LocalPreAmp:
   prefix: "4idbSoft:A4"
   labels: ["4idb", "preamp", "baseline"]
 
-# 4-ID-G
 - name: preamp_4idgI0
   prefix: "4idgSoftX:A1"
   labels: ["4idg", "preamp", "baseline"]
@@ -375,7 +352,6 @@ id4_common.devices.preamps.LocalPreAmp:
   prefix: "4idgSoftX:A2"
   labels: ["4idg", "preamp", "baseline"]
 
-# 4-ID-H
 - name: preamp_4idhI0
   prefix: "4idhSoft:A1"
   labels: ["4idh", "preamp", "baseline"]
@@ -388,51 +364,22 @@ id4_common.devices.preamps.LocalPreAmp:
   prefix: "4idhSoft:A3"
   labels: ["4idh", "preamp", "baseline"]
 
-#######################
-## Cameras and Flags ##
-#######################
+id4_common.devices.gh_i0_motors.I04idg:
+- name: i0g
+  prefix: "4idgSoft:"
+  labels: ["4idg", "baseline"]
 
-id4_common.devices.ad_vimba.VimbaDetector:
-- name: flagcam_hhl
-  prefix: "4idaPostMirrBeam:"
-  labels: ["camera", "detector", "flag"]
-
-- name: flagcam_mono
-  prefix: "4idaPostMonoBeam:"
-  labels: ["camera", "detector", "flag"]
-
-- name: flagcam_toro
-  prefix: "4idbPostToroBeam:"
-  labels: ["camera", "detector", "flag"]
-
-# xray-eye vimba camera, normally on 4-ID-G/Huber-detector arm
-- name: flagcam_xeye
-  prefix: "4idXrayEye:"
-  labels: ["camera", "detector", "flag"]
-
-ophyd.EpicsMotor:
-- name: flagmotor_hhl
-  prefix: "4idVDCM:m6"
-  labels: ["motor", "flag", "baseline"]
-
-- name: flagmotor_mono
-  prefix: "4idVDCM:m7"
-  labels: ["motor", "flag", "baseline"]
-
-- name: flagmotor_toro
-  prefix: "4idbSoft:m3"
-  labels: ["motor", "flag", "baseline"]
-
-###################
-## Miscellaneous  ##
-###################
-
-id4_common.devices.chopper_device.ChopperDevice:
-- name: chopper
-  prefix: "4idChopper:"
-  labels: ["baseline"]
+id4_common.devices.gh_i0_motors.I04idh:
+- name: i0h
+  prefix: "4idhSoft:"
+  labels: ["4idh", "baseline"]
 
 id4_common.devices.softgluezynq_vortex.SGZVortex:
-- name: sgz_vortex
+- name: "sgz_vortex"
   prefix: "4iddMZ0:"
-  labels: ["detector"]
+  labels: ["detector", "4idg", "4idh"]
+
+id4_common.devices.mirror_toroidal.ToroidalMirror:
+- name: "t_mirror"
+  prefix: "4idbToro:"
+  labels: ["4idb", "optics", "mirror", "baseline"]

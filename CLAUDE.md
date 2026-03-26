@@ -64,7 +64,8 @@ Configuration is YAML-driven. The main file is `src/id4_common/configs/iconfig.y
 Device definitions live in `src/id4_common/configs/devices.yml` — the single source of truth for all beamlines. Each device entry maps a Python class path to EPICS PV prefixes and labels.
 
 Labels control which devices get connected at each beamline:
-- Station labels (`"4idb"`, `"4idg"`, `"4idh"`) — which beamline(s) connect a device
+- `"core"` — loaded by all hutches (shared upstream/optics devices)
+- Station labels (`"4idb"`, `"4idg"`, `"4idh"`) — hutch-specific devices
 - `"baseline"` — included in supplemental data stream
 - Functional labels (`"detector"`, `"motor"`, `"slit"`, etc.) — for filtering via `find_loadable_devices()`
 
@@ -86,12 +87,12 @@ Each beamline startup connects only the devices whose labels match its `stations
 
 | Beamline | stations list |
 |----------|--------------|
-| 4IDB | `["source", "4ida", "4idb"]` |
-| 4IDG | `["source", "4ida", "4idg"]` |
-| 4IDH | `["source", "4ida", "4idh"]` |
+| 4IDB | `["core", "4idb"]` |
+| 4IDG | `["core", "4idg"]` |
+| 4IDH | `["core", "4idh"]` |
 | Raman | (beamline-specific) |
 
-Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry multiple station labels in `devices.yml`.
+Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry the `"core"` label in `devices.yml`.
 
 ### Key Components in `id4_common/`
 
@@ -110,10 +111,31 @@ find_loadable_devices(label="4idg")              # filter by label
 load_device("device_name")                       # connect a specific device
 remove_device("device_name")                     # disconnect and remove from baseline
 reload_all_devices()                             # reload all from YAML (all stations)
-reload_all_devices(stations=["source", "4idh"])  # reload for a specific beamline
+reload_all_devices(stations=["core", "4idh"])  # reload for a specific beamline
 ```
 
 The `oregistry` (from `apsbits`) is the central device registry.
+
+### Deferred EPICS Connection Pattern
+
+`make_devices()` instantiates all device objects **without** making EPICS connections.
+Only `connect_device()` (via `wait_for_connection()`) triggers actual EPICS interaction.
+
+**Rule:** Never subscribe to or read from EPICS/PVA signals inside `__init__`. Instead,
+implement a `_post_connect_setup()` method on the device class. `connect_device()` calls
+this hook automatically after `wait_for_connection()` succeeds:
+
+```python
+class MyDevice(Device):
+    signal = Component(EpicsSignalRO, "PV:NAME")
+
+    def _post_connect_setup(self):
+        """Called by connect_device() after EPICS connection is live."""
+        self.signal.subscribe(self._my_callback, run=False)
+```
+
+For sub-components (not top-level `devices.yml` entries), use `run=False` on all
+`subscribe()` calls in `__init__` to avoid fetching PV values before connection.
 
 ### Data Output
 

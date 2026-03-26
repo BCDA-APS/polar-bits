@@ -152,7 +152,12 @@ class PyCRL(Device):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._status = None
-        self.system_done.subscribe(self._update_status_subscription, run=False)
+
+    def _post_connect_setup(self):
+        """Set up EPICS subscriptions after connection is established."""
+        self.system_done.subscribe(
+            self._update_status_subscription, run=False
+        )
 
     def _update_status_subscription(self, value, old_value, **kwarg):
         if (

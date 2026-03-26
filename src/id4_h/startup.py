@@ -146,7 +146,7 @@ else:
 
 logger.info("Loading 4-ID-H devices, this can take a few minutes.")
 RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
-stations = ["source", "4ida", "4idh"]
+stations = ["core", "4idh"]
 for device in oregistry.findall(stations):
     connect_device(device, raise_error=False)
 

@@ -158,10 +158,10 @@ class StatsPlugin(PluginMixin, StatsPlugin_V34):
     # This is to auto-set the kind depending on what is being computed.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.compute_statistics.subscribe(self._control_stats)
-        self.compute_centroid.subscribe(self._control_centroid)
-        self.compute_profiles.subscribe(self._control_profile)
-        self.compute_histogram.subscribe(self._control_histogram)
+        self.compute_statistics.subscribe(self._control_stats, run=False)
+        self.compute_centroid.subscribe(self._control_centroid, run=False)
+        self.compute_profiles.subscribe(self._control_profile, run=False)
+        self.compute_histogram.subscribe(self._control_histogram, run=False)
 
     def start_auto_kind(self):
         self.compute_statistics.subscribe(self._control_stats)

@@ -182,6 +182,10 @@ def connect_device(device, baseline=None, raise_error=True):
         logger.info(f"Connecting to {device.name}...")
         device.wait_for_connection()
 
+        # Call post-connection setup hook if defined by the device
+        if hasattr(device, "_post_connect_setup"):
+            device._post_connect_setup()
+
         # Apply default settings if available
         if hasattr(device, "default_settings"):
             device.default_settings()
@@ -387,7 +391,7 @@ def reload_all_devices(file="devices.yml", stations=None):
         Path to the YAML devices configuration file. Defaults to "devices.yml".
     stations : list of str, optional
         List of station labels to connect after reloading. If None, connects
-        all stations: ["source", "4ida", "4idb", "4idg", "4idh"].
+        all stations: ["core", "4idb", "4idg", "4idh"].
 
     Returns
     -------
@@ -404,7 +408,7 @@ def reload_all_devices(file="devices.yml", stations=None):
     """
 
     if stations is None:
-        stations = ["source", "4ida", "4idb", "4idg", "4idh"]
+        stations = ["core", "4idb", "4idg", "4idh"]
 
     RE(make_devices(clear=True, file=file))  # Create the devices.
 
