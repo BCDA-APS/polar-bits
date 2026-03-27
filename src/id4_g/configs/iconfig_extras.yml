@@ -7,14 +7,13 @@ ICONFIG_VERSION: 2.0.0
 STATION: 4idg
 
 ### The short name for the databroker catalog.
-DATABROKER_CATALOG: &databroker_catalog 4id_polar
+DATABROKER_CATALOG: 4id_polar
 
 ### RunEngine configuration
 RUN_ENGINE:
     DEFAULT_METADATA:
         beamline_id: 4id-polar
         instrument_name: polar-4idg
-        databroker_catalog: *databroker_catalog
 
     ### EPICS PV to use for the `scan_id`.
     ### Default: `RE.md["scan_id"]` (not using an EPICS PV)

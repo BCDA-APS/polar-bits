@@ -7,7 +7,9 @@ ICONFIG_VERSION: 2.0.1
 STATION: &station dev
 
 ### The short name for the databroker catalog.
-DATABROKER_CATALOG: &databroker_catalog 4id_polar
+DATABROKER_CATALOG: 4id_polar
+TILED_PROFILE_NAME: 4id_polar
+TILED_PATH_NAME: /raw
 
 ### RunEngine configuration
 RUN_ENGINE:
@@ -15,7 +17,6 @@ RUN_ENGINE:
         beamline_id: 4id-polar
         instrument_name: polar-dev
         proposal_id: commissioning
-        databroker_catalog: *databroker_catalog
 
     ### EPICS PV to use for the `scan_id`.
     ### Default: `RE.md["scan_id"]` (not using an EPICS PV)

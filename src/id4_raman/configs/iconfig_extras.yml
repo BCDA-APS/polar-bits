@@ -4,10 +4,10 @@
 ICONFIG_VERSION: 2.0.1
 
 # Add additional configuration for use with your instrument.
-STATION: &station raman
+STATION: raman
 
 ### The short name for the databroker catalog.
-DATABROKER_CATALOG: &databroker_catalog 4id_polar
+DATABROKER_CATALOG: 4id_polar
 
 ### RunEngine configuration
 RUN_ENGINE:
@@ -15,7 +15,6 @@ RUN_ENGINE:
         beamline_id: 4id-polar
         instrument_name: 4id-raman
         proposal_id: internal
-        databroker_catalog: *databroker_catalog
 
     ### EPICS PV to use for the `scan_id`.
     ### Default: `RE.md["scan_id"]` (not using an EPICS PV)

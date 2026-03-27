@@ -15,7 +15,7 @@ from pathlib import Path
 from apsbits.core.instrument_init import make_devices
 from apsbits.core.instrument_init import oregistry
 from apsbits.core.instrument_init import instrument  # noqa: F401
-from apsbits.utils.aps_functions import aps_dm_setup  # TODO: is this correct?
+from id4_common.utils.aps_functions import aps_dm_setup
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.helper_functions import register_bluesky_magics
@@ -134,7 +134,7 @@ try:
     if _load_devices.lower() in ["y", "yes"]:
         logger.info("Loading all devices, this can take a few minutes.")
 
-        RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
+        make_devices(clear=True, file="devices.yml", device_manager=instrument)
         stations = ["core", "4idb", "4idg", "4idh"]
         for device in oregistry.findall(stations):
             connect_device(device, raise_error=False)
