@@ -222,12 +222,8 @@ def connect_device(device, baseline=None, raise_error=True):
 
     except TimeoutError:
         message = (
-            f"Device {device.name} is disconnected, removing it from oregistry."
+            f"Device {device.name} is disconnected, removing it from baseline."
         )
-
-        # Remove device from registry if it already exists
-        if oregistry.find(device.name, allow_none=True) is not None:
-            oregistry.pop(device)
 
         if device in sd.baseline:
             sd.baseline.remove(device)
