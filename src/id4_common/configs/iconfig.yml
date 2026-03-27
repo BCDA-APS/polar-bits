@@ -8,7 +8,7 @@ STATION: &station dev
 
 ### The short name for the databroker catalog.
 DATABROKER_CATALOG: 4id_polar
-TILED_PROFILE_NAME: 4id_polar
+TILED_PROFILE_NAME: raw
 TILED_PATH_NAME: /raw
 
 ### RunEngine configuration
