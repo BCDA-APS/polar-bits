@@ -2,17 +2,29 @@
 Phase retarders.
 """
 
-from ophyd import Device, EpicsMotor, PseudoPositioner, PseudoSingle
-from ophyd import Component, FormattedComponent
-from ophyd import EpicsSignal, EpicsSignalRO, Signal, DerivedSignal
-from ophyd.pseudopos import pseudo_position_argument, real_position_argument
-from scipy.constants import speed_of_light, Planck
-from numpy import arcsin, pi, sin
-from apstools.devices import TrackingSignal, PVPositionerSoftDoneWithStop
+from apstools.devices import PVPositionerSoftDoneWithStop
+from apstools.devices import TrackingSignal
 
 # This is here because PRDevice.select_pr has a micron symbol that utf-8
 # cannot read. See: https://github.com/bluesky/ophyd/issues/930
 from epics import utils
+from numpy import arcsin
+from numpy import pi
+from numpy import sin
+from ophyd import Component
+from ophyd import DerivedSignal
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
+from ophyd import PseudoPositioner
+from ophyd import PseudoSingle
+from ophyd import Signal
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
+from scipy.constants import Planck
+from scipy.constants import speed_of_light
 
 utils.IOENCODING = "latin-1"
 
@@ -65,26 +77,30 @@ class PRPzt(Device):
 
     selectDC = FormattedComponent(
         EpicsSignal,
-        "4idaSoft:232DRIO:1:OFF_ch{_prnum}.PROC",
+        "{_drio}OFF_ch{_prnum}.PROC",
         kind="omitted",
         put_complete=True,
     )
 
     selectAC = FormattedComponent(
         EpicsSignal,
-        "4idaSoft:232DRIO:1:ON_ch{_prnum}.PROC",
+        "{_drio}ON_ch{_prnum}.PROC",
         kind="omitted",
         put_complete=True,
     )
 
     ACstatus = FormattedComponent(
-        EpicsSignal, "4idaSoft:232DRIO:1:status", kind="config"
+        EpicsSignal, "{_drio}status", kind="config"
     )
 
     conversion_factor = Component(Signal, value=0.1, kind="config")
 
-    def __init__(self, PV, *args, **kwargs):
+    def __init__(
+        self, PV, *args, drio_prefix="4idaSoft:232DRIO:1:", **kwargs
+    ):
+        """Initialize PRPzt with parametric DRIO IOC prefix."""
         self._prnum = PV.split(":")[-2]
+        self._drio = drio_prefix
         super().__init__(PV, *args, **kwargs)
 
 

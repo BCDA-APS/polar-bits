@@ -2,17 +2,21 @@
 Monochromator with energy controller by bluesky
 """
 
-from ophyd import (
-    Component,
-    FormattedComponent,
-    EpicsMotor,
-    EpicsSignal,
-    PseudoPositioner,
-    PseudoSingle,
-)
-from ophyd.pseudopos import pseudo_position_argument, real_position_argument
-from scipy.constants import speed_of_light, Planck
-from numpy import arcsin, pi, sin, cos
+from numpy import arcsin
+from numpy import cos
+from numpy import pi
+from numpy import sin
+from ophyd import Component
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import FormattedComponent
+from ophyd import PseudoPositioner
+from ophyd import PseudoSingle
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
+from scipy.constants import Planck
+from scipy.constants import speed_of_light
+
 from .labjacks import AnalogOutput
 
 
@@ -34,8 +38,8 @@ class MonoDevice(PseudoPositioner):
     chi2 = Component(EpicsMotor, "m5", labels=("motor",))
 
     # PZTs from labjack
-    pzt_thf2 = FormattedComponent(AnalogOutput, "4idaSoft:LJ:Ao5")
-    pzt_chi2 = FormattedComponent(AnalogOutput, "4idaSoft:LJ:Ao3")
+    pzt_thf2 = FormattedComponent(AnalogOutput, "{_pzt_thf2}")
+    pzt_chi2 = FormattedComponent(AnalogOutput, "{_pzt_chi2}")
 
     # Parameters
     y_offset = Component(EpicsSignal, "Kohzu_yOffsetAO.VAL", kind="config")
@@ -47,6 +51,19 @@ class MonoDevice(PseudoPositioner):
     crystal_type = Component(
         EpicsSignal, "BraggTypeMO", string=True, kind="config"
     )
+
+    def __init__(
+        self,
+        prefix,
+        *,
+        pzt_thf2_pv="4idaSoft:LJ:Ao5",
+        pzt_chi2_pv="4idaSoft:LJ:Ao3",
+        **kwargs,
+    ):
+        """Initialize MonoDevice with parametric LabJack PZT PV addresses."""
+        self._pzt_thf2 = pzt_thf2_pv
+        self._pzt_chi2 = pzt_chi2_pv
+        super().__init__(prefix, **kwargs)
 
     def convert_energy_to_theta(self, energy):
         # lambda in angstroms, theta in degrees, energy in keV

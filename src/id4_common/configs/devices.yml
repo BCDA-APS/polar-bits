@@ -26,7 +26,7 @@ id4_common.devices.aps_status.StatusAPS:
 
 id4_common.devices.polar_status.Status4ID:
 - name: status_polar
-  prefix: "PA:04ID:"
+  prefix: "S04ID-PSS:"
   labels: ["core", "status", "baseline"]
 
 ##################################
@@ -57,6 +57,8 @@ id4_common.devices.mono_feedback.MonoFeedback:
 id4_common.devices.monochromator.MonoDevice:
 - name: mono
   prefix: "4idVDCM:"
+  pzt_thf2_pv: "4idaSoft:LJ:Ao5"
+  pzt_chi2_pv: "4idaSoft:LJ:Ao3"
   labels: ["core", "monochromator", "energy device", "baseline"]
 
 # PRs prefix must be without :
@@ -208,6 +210,8 @@ id4_common.devices.kb_mirrors.KBMirror:
 id4_common.devices.electromagnet.Magnet2T:
 - name: emag
   prefix: ""
+  motor_prefix: "4idb:"
+  kepco_prefix: "4idbSoft:BOP:PS1:"
   labels: ["4idb", "magnet", "baseline"]
 
 id4_common.devices.polarimeter.PolAnalyzer:
@@ -219,10 +223,18 @@ id4_common.devices.polarimeter.PolAnalyzer:
 ## 4-ID-G ##
 ############
 
-id4_common.devices.xbpm_4idg.XBPM:
+id4_common.devices.xbpm.XBPM:
+# 4-ID-G
 - name: gxbpm
   prefix: "4idgSoft:"
+  motorsDict: {x: m48, y: m47}
   labels: ["4idg", "baseline"]
+
+# 4-ID-H
+- name: hxbpm
+  prefix: "4idhSoft:"
+  motorsDict: {x: m6, y: m5}
+  labels: ["4idh", "baseline"]
 
 # gsydor (4-ID-G) and hsydor (4-ID-H) share the same class
 id4_common.devices.quadems.SydorEMRO:
@@ -253,7 +265,7 @@ id4_common.devices.filters_device_avs.APSFilter:
   prefix: "4idPyFilter:FL2:"
   labels: ["4idh", "filter", "baseline"]
 
-id4_common.devices.kb_4idg.KBDevice:
+id4_common.devices.kb_generic.GKBDevice:
 - name: gkb
   prefix: "4idgKB:"
   labels: ["4idg", "optics", "baseline", "kb"]
@@ -331,17 +343,12 @@ id4_common.devices.table_4idh.Table4idh:
   prefix: "4idhSoft:"
   labels: ["4idh", "table", "baseline"]
 
-id4_common.devices.xbpm_4idh.XBPM:
-- name: hxbpm
-  prefix: "4idhSoft:"
-  labels: ["4idh", "baseline"]
-
 id4_common.devices.magnet_911.Magnet911:
 - name: magnet911
   prefix: "4idhSoft:"
   labels: ["4idh", "magnet", "baseline"]
 
-id4_common.devices.kb_4idh.KBDevice:
+id4_common.devices.kb_generic.HKBDevice:
 - name: hkb
   prefix: "4idhKB:"
   labels: ["4idh", "optics", "baseline", "kb"]

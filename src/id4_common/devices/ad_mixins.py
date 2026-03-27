@@ -43,7 +43,7 @@ from time import sleep, time as ttime
 logger = getLogger(__name__)
 
 USE_DM_PATH = True
-DM_ROOT_PATH = "/gdata/dm/4IDD"
+DM_ROOT_PATH = "/gdata/dm/4ID"
 
 
 class PluginMixin(PluginBase_V34):
