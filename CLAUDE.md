@@ -61,7 +61,7 @@ Configuration is YAML-driven. The main file is `src/id4_common/configs/iconfig.y
 - Area detector defaults (Eiger 1M, Lambda, Vortex, LightField, Vimba)
 - EPICS timeouts and logging paths
 
-Device definitions live in `src/id4_common/configs/devices.yml` — the single source of truth for all beamlines. Each device entry maps a Python class path to EPICS PV prefixes and labels.
+Device definitions live in `src/id4_common/configs/devices.yml` — the single source of truth for all beamlines. Each device entry maps a Python class path to EPICS PV prefixes, labels, and any extra kwargs the class `__init__` requires.
 
 Labels control which devices get connected at each beamline:
 - `"core"` — loaded by all hutches (shared upstream/optics devices)
@@ -70,6 +70,39 @@ Labels control which devices get connected at each beamline:
 - Functional labels (`"detector"`, `"motor"`, `"slit"`, etc.) — for filtering via `find_loadable_devices()`
 
 To make a device available to an additional beamline, add that beamline's label to its entry in `devices.yml` — one edit, one file.
+
+**PV-agnostic device pattern:** Device classes must not hardcode absolute EPICS PV strings. Instead, accept site-specific PV details as `__init__` kwargs and reference them in `FormattedComponent` templates. Example:
+
+```python
+class MyDevice(Device):
+    motor = FormattedComponent(EpicsMotor, "{_ioc}m1", labels=("motor",))
+
+    def __init__(self, prefix, *, ioc_prefix, **kwargs):
+        self._ioc = ioc_prefix
+        super().__init__(prefix, **kwargs)
+```
+
+```yaml
+id4_common.devices.my_device.MyDevice:
+- name: mydev
+  prefix: ""
+  ioc_prefix: "4idbSoft:"
+  labels: ["4idb", "baseline"]
+```
+
+Where a `DynamicDeviceComponent` must be built at class-definition time, use a factory function instead:
+
+```python
+def make_mydevice_class(ioc="4idgSoft:"):
+    class MyDevice(Base):
+        ddc = DynamicDeviceComponent(_make_dict(ioc))
+        ...
+    return MyDevice
+
+MyDevice = make_mydevice_class()  # module-level default for devices.yml
+```
+
+Multiple devices sharing a class must all be listed under **one** class key in `devices.yml` (YAML sequences continue until the next mapping key — a misplaced `- name:` entry silently falls under the preceding class).
 
 ### Startup Flow
 
@@ -96,7 +129,7 @@ Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry the `"core"
 
 ### Key Components in `id4_common/`
 
-- **`devices/`** — 67 ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.)
+- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `transfocator_device.py` (`make_transfocator_class` factory)
 - **`plans/`** — Bluesky scan plans: `local_scans.py` (lup, ascan, grid_scan), `dm_plans.py` (DM workflow submission), `center_maximum.py`, `flyscan_demo.py`
 - **`callbacks/`** — `spec_data_file_writer.py`, `nexus_data_file_writer.py`, `dichro_stream.py`
 - **`utils/`** — ~36 modules including HKL/crystallography utilities, DM integration, counters class, attenuator control, device loader (`device_loader.py`), experiment utilities, and `polartools`/`hklpy2` import wrappers
