@@ -12,9 +12,8 @@ Includes:
 import logging
 from pathlib import Path
 
+from apsbits.core.instrument_init import init_instrument
 from apsbits.core.instrument_init import make_devices
-from apsbits.core.instrument_init import oregistry
-from apsbits.core.instrument_init import instrument  # noqa: F401
 from id4_common.utils.aps_functions import aps_dm_setup
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
@@ -45,7 +44,7 @@ iconfig = get_config()
 
 logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 
-# Discard oregistry items loaded above.
+instrument, oregistry = init_instrument("guarneri")
 oregistry.clear()
 
 # Configure the session with callbacks, devices, and plans.
