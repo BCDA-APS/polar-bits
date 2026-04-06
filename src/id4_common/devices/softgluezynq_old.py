@@ -8,6 +8,7 @@ from ophyd import (
     EpicsSignal,
     EpicsSignalRO,
     DynamicDeviceComponent,
+    Signal,
 )
 from collections import OrderedDict
 from bluesky.plan_stubs import mv
@@ -161,6 +162,7 @@ class SoftGlueZynqDevice(Device):
 
     # Clocks
     clocks = Component(SoftGlueClocks, "SG:", kind="config")
+    clock_freq = Component(Signal, value=1e7, kind="config")
 
     def __init__(
         self, *args, reset_sleep_time=0.2, reference_clock=1e7, **kwargs

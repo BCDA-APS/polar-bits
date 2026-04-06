@@ -55,6 +55,7 @@ aps_dm_setup(iconfig.get("DM_SETUP_FILE"))
 register_bluesky_magics()
 
 from id4_common.utils.local_magics import LocalMagics  # noqa: E402
+
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
@@ -63,7 +64,7 @@ from id4_common.utils.run_engine import (  # noqa: F401, E402
     sd,
     bec,
     cat as full_cat,  # This is the whole beamline catalog, below we narrow it.
-    peaks
+    peaks,
 )
 
 # Import optional components based on configuration
@@ -71,7 +72,7 @@ if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
     # from .callbacks.nexus_data_file_writer import nxwriter_init
     # nxwriter = nxwriter_init(RE)
     from id4_common.callbacks.nexus_data_file_writer import (  # noqa: F401
-        nxwriter
+        nxwriter,
     )
 
 if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
@@ -79,7 +80,7 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
         init_specwriter_with_RE,
         newSpecFile,
         spec_comment,
-        specwriter
+        specwriter,
     )
 
     init_specwriter_with_RE(RE)
@@ -88,7 +89,9 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
     _ = RE.preprocessors.pop()
 
 from id4_common.callbacks.dichro_stream import (  # noqa: F401, E402
-    dichro, plot_dichro_settings, dichro_bec
+    dichro,
+    plot_dichro_settings,
+    dichro_bec,
 )
 
 # These imports must come after the above setup.
@@ -111,7 +114,7 @@ else:
     from id4_common.suspenders.suspender_utils import (  # noqa: F401
         suspender_restart,
         suspender_stop,
-        suspender_change_sleep
+        suspender_change_sleep,
     )
 
     from id4_common.utils.wax import wm, wax, wa_new  # noqa: F401
@@ -143,7 +146,7 @@ else:
 
 logger.info("Loading 4-ID-B devices, this can take a few minutes.")
 RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
-stations = ["source", "4ida", "4idb"]
+stations = ["core", "4idb"]
 for device in oregistry.findall(stations):
     connect_device(device, raise_error=False)
 
@@ -156,6 +159,5 @@ for sus in shutter_suspenders.values():
 # This helps sorting up if there is a mix up of the scan_ids when using
 # two stations at the same time.
 cat = db_query(  # noqa: F405
-    full_cat,
-    dict(instrument_name=f'polar-{iconfig["STATION"]}')
+    full_cat, dict(instrument_name=f'polar-{iconfig["STATION"]}')
 )

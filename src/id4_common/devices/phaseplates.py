@@ -2,17 +2,29 @@
 Phase retarders.
 """
 
-from ophyd import Device, EpicsMotor, PseudoPositioner, PseudoSingle
-from ophyd import Component, FormattedComponent
-from ophyd import EpicsSignal, EpicsSignalRO, Signal, DerivedSignal
-from ophyd.pseudopos import pseudo_position_argument, real_position_argument
-from scipy.constants import speed_of_light, Planck
-from numpy import arcsin, pi, sin
-from apstools.devices import TrackingSignal, PVPositionerSoftDoneWithStop
+from apstools.devices import PVPositionerSoftDoneWithStop
+from apstools.devices import TrackingSignal
 
 # This is here because PRDevice.select_pr has a micron symbol that utf-8
 # cannot read. See: https://github.com/bluesky/ophyd/issues/930
 from epics import utils
+from numpy import arcsin
+from numpy import pi
+from numpy import sin
+from ophyd import Component
+from ophyd import DerivedSignal
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
+from ophyd import PseudoPositioner
+from ophyd import PseudoSingle
+from ophyd import Signal
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
+from scipy.constants import Planck
+from scipy.constants import speed_of_light
 
 utils.IOENCODING = "latin-1"
 
@@ -65,26 +77,30 @@ class PRPzt(Device):
 
     selectDC = FormattedComponent(
         EpicsSignal,
-        "4idaSoft:232DRIO:1:OFF_ch{_prnum}.PROC",
+        "{_drio}OFF_ch{_prnum}.PROC",
         kind="omitted",
         put_complete=True,
     )
 
     selectAC = FormattedComponent(
         EpicsSignal,
-        "4idaSoft:232DRIO:1:ON_ch{_prnum}.PROC",
+        "{_drio}ON_ch{_prnum}.PROC",
         kind="omitted",
         put_complete=True,
     )
 
     ACstatus = FormattedComponent(
-        EpicsSignal, "4idaSoft:232DRIO:1:status", kind="config"
+        EpicsSignal, "{_drio}status", kind="config"
     )
 
     conversion_factor = Component(Signal, value=0.1, kind="config")
 
-    def __init__(self, PV, *args, **kwargs):
+    def __init__(
+        self, PV, *args, drio_prefix="4idaSoft:232DRIO:1:", **kwargs
+    ):
+        """Initialize PRPzt with parametric DRIO IOC prefix."""
         self._prnum = PV.split(":")[-2]
+        self._drio = drio_prefix
         super().__init__(PV, *args, **kwargs)
 
 
@@ -110,6 +126,7 @@ class PRDeviceBase(PseudoPositioner):
 
     # This offset is used when the motor is used to switch polarization
     offset_degrees = Component(Signal, value=0.0, kind="config")
+    motor_switch = Component(TrackingSignal, value=False, kind="config")
 
     tracking = Component(TrackingSignal, value=False, kind="config")
 
@@ -122,12 +139,23 @@ class PRDeviceBase(PseudoPositioner):
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / 2 / self.d_spacing.get()) * 180.0 / pi
+        # If we are using the motor to switch polarization, then it will
+        # always move off peak.
+        if self.motor_switch.get():
+            theta += self.offset_degrees.get()
+
         return theta
 
     def convert_theta_to_energy(self, theta):
+        # If we are using the motor to switch polarization, then the correct
+        # energy will be based on the theta minus the offset
+        if self.motor_switch.get():
+            theta -= self.offset_degrees.get()
+
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = 2 * self.d_spacing.get() * sin(theta * pi / 180)
         energy = speed_of_light * Planck * 6.241509e15 * 1e10 / lamb
+
         return energy
 
     @pseudo_position_argument
@@ -145,13 +173,21 @@ class PRDeviceBase(PseudoPositioner):
         )
 
     def set_energy(self, energy):
+        _motor_switch = self.motor_switch.get()
+        if _motor_switch:
+            self.motor_switch.put(False)
+
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
+        if _motor_switch:
+            self.motor_switch.put(True)
+
     def default_settings(self):
         if self.name == "pr3":
             self.d_spacing.put(3.135)
+            self.motor_switch.put(True)
 
 
 class PRDevice(PRDeviceBase):

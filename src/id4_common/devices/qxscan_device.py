@@ -199,10 +199,8 @@ class QxscanParams(Device):
                 self.post_edge.num_regions.put(int(value))
                 break
             else:
-                print(
-                    "WARNING: number of post-edge regions need to be >= 1 \
-                    and <= 5!"
-                )
+                print("WARNING: number of post-edge regions need to be >= 1 \
+                    and <= 5!")
 
         for i in range(self.post_edge.num_regions.get()):
             print("\n Defining post-edge #{}".format(i + 1))

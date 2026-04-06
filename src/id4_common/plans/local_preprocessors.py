@@ -2,10 +2,11 @@
 
 from bluesky.utils import make_decorator
 from bluesky.preprocessors import finalize_wrapper
-from bluesky.plan_stubs import mv, null, subscribe, unsubscribe, rd
+from bluesky.plan_stubs import mv, null, subscribe, unsubscribe, rd, sleep
 from ophyd import Kind
 from logging import getLogger
 from apsbits.core.instrument_init import oregistry
+from time import time
 
 from ..callbacks.dichro_stream import plot_dichro_settings, dichro_bec
 from ..utils.counters_class import counters
@@ -101,8 +102,8 @@ def configure_counts_wrapper(plan, detectors, count_time):
             )
             yield from mv(scaler_channel.gate, "N")
         else:
-            for mon, time in original_times.items():
-                yield from mv(mon, time)
+            for _mon, _time in original_times.items():
+                yield from mv(_mon, _time)
 
     def _inner_plan():
         yield from setup()
@@ -114,7 +115,7 @@ def configure_counts_wrapper(plan, detectors, count_time):
         return (yield from finalize_wrapper(_inner_plan(), reset()))
 
 
-def stage_dichro_wrapper(plan, dichro, lockin, positioner):
+def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
     """
     Stage dichoic scans.
 
@@ -167,7 +168,30 @@ def stage_dichro_wrapper(plan, dichro, lockin, positioner):
                     "Please run pr_setup.config() and choose pzt."
                 )
 
-            yield from mv(pr_setup.positioner.parent.selectAC, 1)
+        if lockin or sgz:
+
+            # TODO: This is a bit of a workaround because the select DC and
+            # select AC button have a bit of a lag. If we do multiple lockin
+            # scans back to back, it may not turn on the AC because the
+            # select DC done in the previous scan may not have taken effect.
+            # Ideally this would be in the device itself, it would wait until
+            # the status changed.
+
+            def _change_mode(mode):
+                _val = 0 if mode == "selectDC" else 2
+                _button = getattr(pr_setup.positioner.parent, mode)
+                yield from mv(_button, 1)
+                for _ in range(10):
+                    _st = yield from rd(pr_setup.positioner.parent.ACstatus)
+                    if _st == _val:
+                        break
+                    yield from sleep(0.1)
+
+            initial_status = yield from rd(pr_setup.positioner.parent.ACstatus)
+            if initial_status != 0:
+                yield from _change_mode("selectDC")
+
+            yield from _change_mode("selectAC")
 
         if dichro:
             for i in range(len(positioner)):
@@ -201,7 +225,12 @@ def stage_dichro_wrapper(plan, dichro, lockin, positioner):
                     pr_setup.positioner, pr_setup.positioner.parent.center.get()
                 )
 
+            yield from mv(pr_setup.positioner.parent.selectDC, 1)
+
     def _unstage():
+
+        if pr_setup.positioner is not None:
+            yield from mv(pr_setup.positioner.parent.selectDC, 1)
 
         if lockin:
             for dev in _lockin_devices:
@@ -209,8 +238,6 @@ def stage_dichro_wrapper(plan, dichro, lockin, positioner):
 
             for dev in _hinted_devices:
                 dev.kind = "hinted"
-
-            yield from mv(pr_setup.positioner.parent.selectDC, 1)
 
         if dichro:
             # move PZT to off center.
@@ -232,6 +259,126 @@ def stage_dichro_wrapper(plan, dichro, lockin, positioner):
     return (yield from finalize_wrapper(_inner_plan(), _unstage()))
 
 
+def stage_magnet911_wrapper(plan, magnet, persistent=True):
+    """
+    Stage the 911T magnet.
+
+    Turns on/off the persistence switch heater before/after the magnetic field
+    scan or move.
+
+    Parameters
+    ----------
+    plan : iterable or iterator
+        a generator, list, or similar containing `Msg` objects
+    magnet : boolean
+        Flag that triggers the stage/unstage.
+
+    Yields
+    ------
+    msg : Msg
+        messages from plan, with 'subscribe' and 'unsubscribe' messages
+        inserted and appended
+    """
+
+    magnet911 = oregistry.find("magnet911", allow_none=True)
+    if magnet911 is None:
+        # raise ValueError("magnet911 is not registered in the oregistry.")
+        logger.debug("magnet911 is not registered in the oregistry.")
+
+    def _stage():
+        _ready = yield from rd(magnet911.ps.ready)
+        if _ready == 0:
+            logger.info("Waiting for magnet to be ready.")
+
+        _start_time = time()
+        while _ready == 0:
+            _message = yield from rd(magnet911.ps.status)
+            print(_message, end="\r")
+
+            if time() - _start_time > 10 * 60:
+                raise TimeoutError("Magnet took more than 10 min to be ready.")
+
+            yield from sleep(0.1)
+            _ready = yield from rd(magnet911.ps.ready)
+
+    def _unstage():
+        _heater = yield from rd(magnet911.ps.heater)
+        if _heater in [0, "ON"]:
+            if persistent:
+                yield from mv(magnet911.ps.set_persistent, 1)
+        else:
+            logger.warning("Persistent heater is already off.")
+
+    def _inner_plan():
+        yield from _stage()
+        return (yield from plan)
+
+    if magnet:
+        return (yield from finalize_wrapper(_inner_plan(), _unstage()))
+    else:
+        return (yield from plan)
+
+
+def stage_4idg_softglue_wrapper(plan, use_sg):
+
+    sg = oregistry.find("gsgz", allow_none=True)
+    pos_stream = oregistry.find("pos_stream", allow_none=True)
+
+    def _stage():
+
+        if sg is None:
+            raise ValueError("4idG softglue must be loaded in oregistry!")
+
+        if pos_stream is None:
+            raise ValueError("Positioner stream must be loaded in oregistry!")
+
+        # Reset softglue, make sure ckInt is enabled.
+        yield from mv(
+            sg.buffers.in1.signal,
+            "1!",
+            # sg.buffers.in2.signal, "1!",
+            sg.buffers.in4.signal,
+            "1",
+        )
+
+        # Clear and enable DMA
+        yield from sg.clear_enable_dma()
+
+        # Start pos stream
+
+        yield from mv(
+            pos_stream.cam.array_counter, 0, pos_stream.hdf1.capture, 1
+        )
+        yield from mv(pos_stream.cam.acquire, 1)
+
+    def _unstage():
+        # Make sure that the circular buffer is emptied
+        for _ in range(7):
+            yield from mv(sg.scaltostream.flush.signal, "1!")
+            yield from sleep(0.1)
+
+        # Clear and disable DMA
+        yield from sg.clear_disable_dma()
+
+        # Stop softglue
+        yield from mv(sg.buffers.in4.signal, "0")
+
+        # Stop position stream
+        yield from mv(pos_stream.hdf1.capture, 0)
+        yield from mv(pos_stream.cam.acquire, 0)
+
+    def _inner_plan():
+        yield from _stage()
+        return (yield from plan)
+
+    if use_sg:
+        return (yield from finalize_wrapper(_inner_plan(), _unstage()))
+    else:
+        return (yield from plan)
+
+
 extra_devices_decorator = make_decorator(extra_devices_wrapper)
 configure_counts_decorator = make_decorator(configure_counts_wrapper)
 stage_dichro_decorator = make_decorator(stage_dichro_wrapper)
+stage_magnet911_decorator = make_decorator(stage_magnet911_wrapper)
+stage_4idg_softglue_decorator = make_decorator(stage_4idg_softglue_wrapper)

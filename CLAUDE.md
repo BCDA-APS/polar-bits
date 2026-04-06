@@ -1,0 +1,188 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What This Is
+
+`polar-bits` is a Bluesky-based data acquisition instrument package for the POLAR beamline (4ID sector) at the Advanced Photon Source (APS). It is built on the [BITS (Bluesky Instrument Toolkit Structure)](https://BCDA-APS.github.io/BITS/) framework from the `apsbits` package.
+
+## Development Setup
+
+```bash
+conda create -y -n polar-bits python=3.11 hkl pyepics
+conda activate polar-bits
+pip install -e ".[dev]"
+```
+
+## Commands
+
+**Linting:**
+```bash
+pre-commit run --all-files
+```
+
+**Testing:**
+```bash
+pytest
+pytest path/to/test_file.py::test_name  # single test
+```
+
+**QueueServer (per beamline):**
+```bash
+./src/id4_b_qserver/qs_host.sh restart   # start/restart
+./src/id4_b_qserver/qs_host.sh status
+queue-monitor &                           # GUI client
+```
+
+**Start interactive session (IPython):**
+```bash
+ipython
+# then:
+from id4_common.startup import *
+```
+
+## Architecture
+
+### Multi-Beamline Structure
+
+All beamlines share `id4_common` and have beamline-specific packages:
+
+- `id4_common/` — shared devices, plans, callbacks, utils for all beamlines
+- `id4_b/`, `id4_g/`, `id4_h/`, `id4_raman/` — beamline-specific overrides and startup
+- `id4_{b,g,h,raman}_qserver/` — QueueServer configs and launch scripts per beamline
+- `id4_common_qserver/` — shared QueueServer components
+
+### Configuration System
+
+Configuration is YAML-driven. The main file is `src/id4_common/configs/iconfig.yml`, which controls:
+- RunEngine metadata (station, proposal, catalog)
+- Enabled output formats (SPEC `.dat` files enabled by default, NeXus `.hdf` optional)
+- APS Data Management (DM) integration paths
+- Area detector defaults (Eiger 1M, Lambda, Vortex, LightField, Vimba)
+- EPICS timeouts and logging paths
+
+Device definitions live in `src/id4_common/configs/devices.yml` — the single source of truth for all beamlines. Each device entry maps a Python class path to EPICS PV prefixes, labels, and any extra kwargs the class `__init__` requires.
+
+Labels control which devices get connected at each beamline:
+- `"core"` — loaded by all hutches (shared upstream/optics devices)
+- Station labels (`"4idb"`, `"4idg"`, `"4idh"`) — hutch-specific devices
+- `"baseline"` — included in supplemental data stream
+- Functional labels (`"detector"`, `"motor"`, `"slit"`, etc.) — for filtering via `find_loadable_devices()`
+
+To make a device available to an additional beamline, add that beamline's label to its entry in `devices.yml` — one edit, one file.
+
+**PV-agnostic device pattern:** Device classes must not hardcode absolute EPICS PV strings. Instead, accept site-specific PV details as `__init__` kwargs and reference them in `FormattedComponent` templates. Example:
+
+```python
+class MyDevice(Device):
+    motor = FormattedComponent(EpicsMotor, "{_ioc}m1", labels=("motor",))
+
+    def __init__(self, prefix, *, ioc_prefix, **kwargs):
+        self._ioc = ioc_prefix
+        super().__init__(prefix, **kwargs)
+```
+
+```yaml
+id4_common.devices.my_device.MyDevice:
+- name: mydev
+  prefix: ""
+  ioc_prefix: "4idbSoft:"
+  labels: ["4idb", "baseline"]
+```
+
+Where a `DynamicDeviceComponent` must be built at class-definition time, use a factory function instead:
+
+```python
+def make_mydevice_class(ioc="4idgSoft:"):
+    class MyDevice(Base):
+        ddc = DynamicDeviceComponent(_make_dict(ioc))
+        ...
+    return MyDevice
+
+MyDevice = make_mydevice_class()  # module-level default for devices.yml
+```
+
+Multiple devices sharing a class must all be listed under **one** class key in `devices.yml` (YAML sequences continue until the next mapping key — a misplaced `- name:` entry silently falls under the preceding class).
+
+### Startup Flow
+
+`startup.py` orchestrates the session:
+1. Load `iconfig.yml`
+2. Set up APS DM integration (`aps_dm_setup`)
+3. Initialize RunEngine (`RE`), databroker catalog (`cat`), BEC, and supplementary data streams
+4. Conditionally load SPEC/NeXus callbacks based on `iconfig.yml`
+5. Load dichro stream callback
+6. Prompt user to load devices (calls `make_devices` which reads `devices.yml`)
+7. Connect devices tagged with that beamline's station labels
+8. Install shutter suspenders on the RunEngine
+
+Each beamline startup connects only the devices whose labels match its `stations` list:
+
+| Beamline | stations list |
+|----------|--------------|
+| 4IDB | `["core", "4idb"]` |
+| 4IDG | `["core", "4idg"]` |
+| 4IDH | `["core", "4idh"]` |
+| Raman | (beamline-specific) |
+
+Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry the `"core"` label in `devices.yml`.
+
+### Key Components in `id4_common/`
+
+- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `transfocator_device.py` (`make_transfocator_class` factory)
+- **`plans/`** — Bluesky scan plans: `local_scans.py` (lup, ascan, grid_scan), `dm_plans.py` (DM workflow submission), `center_maximum.py`, `flyscan_demo.py`
+- **`callbacks/`** — `spec_data_file_writer.py`, `nexus_data_file_writer.py`, `dichro_stream.py`
+- **`utils/`** — ~36 modules including HKL/crystallography utilities, DM integration, counters class, attenuator control, device loader (`device_loader.py`), experiment utilities, and `polartools`/`hklpy2` import wrappers
+- **`suspenders/`** — shutter-based RunEngine suspenders for beamline safety
+
+### Device Loading at Runtime
+
+Devices can be dynamically managed:
+```python
+find_loadable_devices()                          # list available devices
+find_loadable_devices(label="4idg")              # filter by label
+load_device("device_name")                       # connect a specific device
+remove_device("device_name")                     # disconnect and remove from baseline
+reload_all_devices()                             # reload all from YAML (all stations)
+reload_all_devices(stations=["core", "4idh"])  # reload for a specific beamline
+```
+
+The `oregistry` (from `apsbits`) is the central device registry.
+
+### Deferred EPICS Connection Pattern
+
+`make_devices()` instantiates all device objects **without** making EPICS connections.
+Only `connect_device()` (via `wait_for_connection()`) triggers actual EPICS interaction.
+
+**Rule:** Never subscribe to or read from EPICS/PVA signals inside `__init__`. Instead,
+implement a `_post_connect_setup()` method on the device class. `connect_device()` calls
+this hook automatically after `wait_for_connection()` succeeds:
+
+```python
+class MyDevice(Device):
+    signal = Component(EpicsSignalRO, "PV:NAME")
+
+    def _post_connect_setup(self):
+        """Called by connect_device() after EPICS connection is live."""
+        self.signal.subscribe(self._my_callback, run=False)
+```
+
+For sub-components (not top-level `devices.yml` entries), use `run=False` on all
+`subscribe()` calls in `__init__` to avoid fetching PV values before connection.
+
+### Data Output
+
+- **SPEC files** (`.dat`): enabled by default in `iconfig.yml`; `newSpecFile()`, `spec_comment()` available in session
+- **NeXus/HDF5** (`.hdf`): opt-in via `iconfig.yml`
+- **Dichro stream**: circular dichroism data processing, always loaded
+
+### QueueServer
+
+Each beamline has a `qs-config.yml` and `qs_host.sh`. The QS uses Redis (localhost:6379) for communication and an IPython kernel backend. `startup.py` detects QueueServer context via `running_in_queueserver()` and adjusts imports accordingly (e.g., no interactive prompts, no shutter suspenders).
+
+## Code Style
+
+- Line length: 80 (black), 88 (ruff)
+- Python 3.11+
+- Linting: ruff (replaces flake8/isort/black in pre-commit)
+- Docstrings required for all public classes/functions/methods/modules (ruff rules D100-D107)

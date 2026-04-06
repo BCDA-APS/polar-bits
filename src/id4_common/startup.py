@@ -47,6 +47,7 @@ aps_dm_setup(iconfig.get("DM_SETUP_FILE"))
 register_bluesky_magics()
 
 from .utils.local_magics import LocalMagics  # noqa: E402
+
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
@@ -70,7 +71,9 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
     _ = RE.preprocessors.pop()
 
 from .callbacks.dichro_stream import (  # noqa: F401, E402
-    dichro, plot_dichro_settings, dichro_bec
+    dichro,
+    plot_dichro_settings,
+    dichro_bec,
 )
 
 # These imports must come after the above setup.
@@ -93,7 +96,7 @@ else:
     from .suspenders.suspender_utils import (  # noqa: F401
         suspender_restart,
         suspender_stop,
-        suspender_change_sleep
+        suspender_change_sleep,
     )
 
     from .utils.wax import wm, wax, wa_new  # noqa: F401
@@ -103,6 +106,8 @@ else:
     from .utils.dm_utils import *  # noqa: F401, F403
     from .utils.experiment_utils import *  # noqa: F401, F403
     from .utils.hkl_utils import *  # noqa: F401, F403
+    from .utils.undulator_setup import undulator_setup  # noqa: F401
+    from .utils.shorts import opt  # noqa: F401
 
     # TODO: DM, hklpy, experiment_utils seems to be changing the
     # logging level. I don't know why.
@@ -125,14 +130,12 @@ else:
 
 _load_devices = input("\n==> Do you want to load all devices? [Y/n]: ") or "y"
 
-from glob import glob
-
 try:
     if _load_devices.lower() in ["y", "yes"]:
         logger.info("Loading all devices, this can take a few minutes.")
 
         RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
-        stations = ["source", "4ida", "4idb", "4idg", "4idh"]
+        stations = ["core", "4idb", "4idg", "4idh"]
         for device in oregistry.findall(stations):
             connect_device(device, raise_error=False)
 

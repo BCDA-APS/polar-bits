@@ -119,19 +119,28 @@ class AnalyzerDevice(PseudoPositioner):
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
-    def calc(self):
+    def calc(self, acal="No"):
         d_ana = self.d_spacing.get()
         if d_ana == 1e4:
             self.setup()
             d_ana = self.d_spacing.get()
         wavelength = self.beamline_wavelength
+        energy = self.beamline_energy
         cryst = self.crystal.get()
         th_angle = math.degrees(math.asin(wavelength / (2 * d_ana)))
         tth_angle = 2 * th_angle
         print(
-            f"[ath, atth] = [{th_angle:6.2f}, {tth_angle:6.2f}] for {cryst} "
-            "analyzer"
+            f"[ath, atth] = [{th_angle:.2f}, {tth_angle:.2f}] for {cryst} "
+            f"analyzer at {energy:.2f} keV"
         )
+        if acal == "No":
+            acal = input(f"Calibrate ath position (y/n/r)? [{acal}]: ") or acal
+        if acal in ["Yes", "yes", "Y", "y"]:
+            print(f"Calibrating ath to {th_angle:.2f}")
+            self.set_energy(energy)
+        elif acal == "r":
+            print("Releasing calibration for ath!")
+            self.th.user_offset.put(0)
 
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
@@ -222,7 +231,7 @@ class AnalyzerDevice(PseudoPositioner):
                 d_best = [key, value]
         if analyzer_energy:
             print(
-                f"Best analyzer to use at {energy}: {d_best[1][0]}_"
+                f"Best analyzer to use at {energy} keV: {d_best[1][0]}_"
                 f"{d_best[1][1]}{d_best[1][2]}{d_best[1][3]}"
             )
         else:
@@ -234,6 +243,7 @@ class AnalyzerDevice(PseudoPositioner):
             if anum in d_dict:
                 ana = d_dict[anum]
                 cryst = f"{ana[0]}_{ana[1]}{ana[2]}{ana[3]}"
+                print(f"Using {cryst}")
             else:
                 ana = d_best[1:][0]
                 cryst = f"{ana[0]}_{ana[1]}{ana[2]}{ana[3]}"

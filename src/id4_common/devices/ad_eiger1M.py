@@ -16,7 +16,7 @@ from .ad_mixins import (
     PolarHDF5Plugin,
     ProcessPlugin,
     TransformPlugin,
-    ADTriggerStatus
+    ADTriggerStatus,
 )
 
 
@@ -48,7 +48,7 @@ class TriggerTime(TriggerBase):
     @property
     def delay(self):
         return self._delay
-    
+
     @delay.setter
     def delay(self, value):
         try:
@@ -117,7 +117,6 @@ class TriggerTime(TriggerBase):
         self.cam.acquire.set(1).wait(timeout=10)
 
     def unstage(self):
-        super().unstage()
         self.cam.acquire.set(0).wait(timeout=10)
 
         def check_value(*, old_value, value, **kwargs):
@@ -130,7 +129,8 @@ class TriggerTime(TriggerBase):
             SubscriptionStatus(self.cam.status_message, check_value, timeout=10)
         )
         self._flysetup = False
-        self.setup_manual_trigger()
+        # self.setup_manual_trigger()
+        super().unstage()
 
     def trigger(self):
         "Trigger one acquisition."
@@ -243,7 +243,7 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
 
         self.cam.num_triggers.put(1)
         self.cam.manual_trigger.put("Disable")
-        self.cam.trigger_mode.put("Internal Enable")
+        self.cam.trigger_mode.put("Internal Series")
         self.cam.acquire.put(0)
 
         self.hdf1.file_template.put(self.hdf1_name_format)

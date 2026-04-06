@@ -1,21 +1,33 @@
-"""
-Electromagnet
-"""
+"""Electromagnet."""
 
-from ophyd import Component, Device, EpicsMotor
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import FormattedComponent
+
 from .magnet_kepco_4idb import KepcoController
 
 
 class Magnet2T(Device):
-    sx = Component(EpicsMotor, "4idb:m18", labels=("motor",))
-    sy = Component(EpicsMotor, "4idb:m17", labels=("motor",))
-    srot = Component(EpicsMotor, "4idb:m19", labels=("motor",))
+    """2 Tesla electromagnet with sample and magnet positioning motors."""
 
-    mx = Component(EpicsMotor, "4idb:m22", labels=("motor",))
-    my = Component(EpicsMotor, "4idb:m21", labels=("motor",))
-    mrot = Component(EpicsMotor, "4idb:m20", labels=("motor",))
+    sx = FormattedComponent(EpicsMotor, "{_mp}m18", labels=("motor",))
+    sy = FormattedComponent(EpicsMotor, "{_mp}m17", labels=("motor",))
+    srot = FormattedComponent(EpicsMotor, "{_mp}m19", labels=("motor",))
 
-    kepco = Component(KepcoController, "4idbSoft:BOP:PS1:", labels=("magnet",))
+    mx = FormattedComponent(EpicsMotor, "{_mp}m22", labels=("motor",))
+    my = FormattedComponent(EpicsMotor, "{_mp}m21", labels=("motor",))
+    mrot = FormattedComponent(EpicsMotor, "{_mp}m20", labels=("motor",))
+
+    kepco = FormattedComponent(
+        KepcoController, "{_kp}", labels=("magnet",)
+    )
+
+    def __init__(self, prefix, *, motor_prefix, kepco_prefix, **kwargs):
+        """Initialize Magnet2T with separate motor and Kepco IOC prefixes."""
+        self._mp = motor_prefix
+        self._kp = kepco_prefix
+        super().__init__(prefix, **kwargs)
 
     def default_settings(self):
+        """Apply default settings to the Kepco controller."""
         self.kepco.default_settings()

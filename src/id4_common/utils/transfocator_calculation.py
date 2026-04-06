@@ -234,8 +234,6 @@ def transfocator_calc_old(
     fv = distance_new / (source_sample_distance - distance_new) * 4.1 * 2.35
     print(
         "Approximate focus size in brightness mode {:.3f} \u03bcm x {:.3f} "
-        "\u03bcm".format(
-            fh, fv
-        )
+        "\u03bcm".format(fh, fv)
     )
     print("-" * 65)

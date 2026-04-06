@@ -1,5 +1,5 @@
 """
-Table in middle of 4idb
+9T magnet
 """
 
 from ophyd import (
@@ -10,7 +10,9 @@ from ophyd import (
     EpicsMotor,
     EpicsSignalRO,
     EpicsSignal,
+    PVPositioner,
 )
+from ophyd.status import Status
 from apstools.devices import PVPositionerSoftDoneWithStop
 from collections import OrderedDict
 
@@ -35,40 +37,35 @@ class RamanMotors(Device):
 
 
 class MagnetMotors(Device):
-    y = Component(
-        PVPositionerSoftDoneWithStop,
-        "",
-        readback_pv="Height",
-        setpoint_pv="SetHeight.VAL",
-        tolerance=0.0005,
+    y = FormattedComponent(EpicsMotor, "4idhAero:m2", labels=("motor",))
+    th = FormattedComponent(EpicsMotor, "4idhAero:m1", labels=("motor",))
+
+
+class FieldPositioner(PVPositioner):
+    setpoint = Component(
+        EpicsSignal, "TargetField", write_pv="SetField.VAL", put_complete=True
     )
 
-    rot = Component(
-        PVPositionerSoftDoneWithStop,
-        "",
-        readback_pv="Angle",
-        setpoint_pv="SetAngle.VAL",
-        tolerance=0.05,
+    readback = Component(EpicsSignalRO, "Field", kind="hinted")
+
+    actuate = Component(EpicsSignal, "StartRamp.PROC", kind="omitted")
+    actuate_value = 1
+
+    # TODO: Should I make a stop logic? What about pause? there is a pause
+    # button.
+    # stop_signal = Component(EpicsSignal, "SetAbort.PROC", kind="omitted")
+    # stop_value = 1
+
+    done = Component(EpicsSignalRO, "Ready", kind="omitted")
+    done_value = 1
+
+    current = Component(EpicsSignalRO, "Current")
+    voltage = Component(EpicsSignalRO, "Voltage", kind="config")
+
+    egu_readback = Component(
+        EpicsSignalRO, "TargetFieldUnits", string=True, kind="config"
     )
-
-
-class PowerSupply(Device):
-    ready = Component(EpicsSignalRO, "Ready", kind="config")
-    heater = Component(EpicsSignalRO, "Heater", string=True, kind="config")
-    quench = Component(EpicsSignalRO, "Quench", string=True, kind="config")
-
-    field = Component(EpicsSignalRO, "Field", kind="hinted")
-    field_unit = Component(EpicsSignalRO, "TargetFieldUnits", kind="config")
-
-    field = Component(EpicsSignalRO, "Field", kind="hinted")
-    target_field = Component(
-        PVPositionerSoftDoneWithStop,
-        "",
-        setpoint_pv="SetField.VAL",
-        readback_pv="TargetField",
-        tolerance=0.01,  # TODO: Enough?
-    )
-    field_unit = Component(
+    egu_setpoint = Component(
         EpicsSignal,
         "TargetFieldUnits",
         write_pv="SetTargetFieldUnits",
@@ -76,17 +73,46 @@ class PowerSupply(Device):
         kind="config",
     )
 
-    persistant_field = Component(EpicsSignalRO, "PersField")
-    current = Component(EpicsSignalRO, "Current")
-    voltage = Component(EpicsSignalRO, "Voltage")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.readback.name = self.name
+        self._tolerance = 0.05
+
+    def move(self, position, wait=True, timeout=None, moved_cb=None):
+
+        if (self.parent.heater.get() in [0, "ON"]) & (
+            abs(position - self.readback.get()) < self._tolerance
+        ):
+            status = Status()
+            status.set_finished()
+            return status
+        else:
+            return super().move(
+                position, wait=wait, timeout=timeout, moved_cb=moved_cb
+            )
+
+
+class PowerSupply(Device):
+
+    field = Component(FieldPositioner, "")
+
+    active_coil = Component(EpicsSignal, "SetActiveCoil", string=True)
+
+    safety_message = FormattedComponent(
+        EpicsSignalRO,
+        "4idhSoft:911TMagnet:safety_msg.SVAL",
+        string=True,
+    )
+
+    status = Component(EpicsSignalRO, "Status", string=True, kind="config")
+    ready = Component(EpicsSignalRO, "Ready", kind="config")
+    heater = Component(EpicsSignalRO, "Heater", string=True, kind="config")
+    quench = Component(EpicsSignalRO, "Quench", string=True, kind="config")
     helium = Component(EpicsSignalRO, "HeliumLevel")
+    persistent_field = Component(EpicsSignalRO, "PersField")
 
     ramp_rate = Component(
-        PVPositionerSoftDoneWithStop,
-        "",
-        setpoint_pv="SetRampRate.VAL",
-        readback_pv="RampRate",
-        tolerance=0.001,  # TODO: Enough?
+        EpicsSignal, "RampRate", write_pv="SetRampRate.VAL", kind="config"
     )
     ramp_rate_unit = Component(
         EpicsSignal,
@@ -95,6 +121,12 @@ class PowerSupply(Device):
         string=True,
         kind="config",
     )
+    set_ignore_table = Component(EpicsSignal, "SetIgnoreTable", kind="config")
+
+    set_persistent = Component(
+        EpicsSignal, "SetPersistent.PROC", kind="omitted"
+    )
+    set_pm_zero = Component(EpicsSignal, "SetPMZero.PROC", kind="omitted")
 
     ramp_pause = Component(EpicsSignal, "SetPause", kind="config")
     ramp_start = Component(EpicsSignal, "StartRamp.PROC", kind="omitted")

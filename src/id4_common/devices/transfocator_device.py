@@ -1,31 +1,28 @@
-"""
-Transfocator
-"""
+"""Transfocator."""
 
-from ophyd import (
-    Device,
-    Component,
-    DynamicDeviceComponent,
-    FormattedComponent,
-    PVPositioner,
-    EpicsMotor,
-    Signal,
-    EpicsSignal,
-    EpicsSignalRO,
-    EpicsSignalWithRBV,
-    DeviceStatus,
-)
-from ophyd.status import AndStatus
-from bluesky.plan_stubs import mv
-from apstools.devices import TrackingSignal
-from toolz import partition
-from numpy import loadtxt
-from scipy.interpolate import interp1d
-from time import sleep as tsleep
 from logging import getLogger
+from time import sleep as tsleep
+
+from apstools.devices import TrackingSignal
+from bluesky.plan_stubs import mv
+from numpy import loadtxt
+from ophyd import Component
+from ophyd import Device
+from ophyd import DeviceStatus
+from ophyd import DynamicDeviceComponent
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import EpicsSignalWithRBV
+from ophyd import FormattedComponent
+from ophyd import PVPositioner
+from ophyd import Signal
+from ophyd.status import AndStatus
+from scipy.interpolate import interp1d
+from toolz import partition
 
 logger = getLogger(__name__)
-MOTORS_IOC = "4idgSoft:"
+DEFAULT_MOTORS_IOC = "4idgSoft:"
 EPICS_ENERGY_SLEEP = 0.15
 
 
@@ -41,6 +38,8 @@ def _make_lenses_motors(motors: list):
 
 
 class PyCRLSingleLens(PVPositioner):
+    """Single CRL lens stack positioner."""
+
     readback = Component(EpicsSignalRO, "_RBV")
     setpoint = Component(EpicsSignal, "", put_complete=True)
 
@@ -63,6 +62,7 @@ class PyCRLSingleLens(PVPositioner):
         moved_cb=None,
         wait: bool = False,
     ):
+        """Set lens position, returning immediately if already there."""
         if self.readback.get() == new_position:
             _status = DeviceStatus(self)
             _status.set_finished()
@@ -74,11 +74,14 @@ class PyCRLSingleLens(PVPositioner):
 
 
 class PyCRLSignal(EpicsSignal):
+    """EpicsSignal with a value sub-component and EGU readback."""
+
     value = Component(EpicsSignal, "")
     egu = Component(EpicsSignalRO, ".EGU")
 
 
 class PyCRL(Device):
+    """PyCRL compound refractive lens controller."""
 
     # Energy
     energy_mono = Component(PyCRLSignal, "EnergyBeamline", kind="config")
@@ -86,11 +89,15 @@ class PyCRL(Device):
     energy_select = Component(PyCRLSignal, "EnergySelect", kind="config")
 
     # Slits
-    slit_hor_size = Component(PyCRLSignal, "1:slitSize_H_RBV", kind="config")
+    slit_hor_size = Component(
+        PyCRLSignal, "1:slitSize_H_RBV", kind="config"
+    )
     slit_hor_pv = Component(
         EpicsSignal, "1:slitSize_H.DOL", string=True, kind="config"
     )
-    slit_vert_size = Component(PyCRLSignal, "1:slitSize_V_RBV", kind="config")
+    slit_vert_size = Component(
+        PyCRLSignal, "1:slitSize_V_RBV", kind="config"
+    )
     slit_vert_pv = Component(
         EpicsSignal, "1:slitSize_V.DOL", string=True, kind="config"
     )
@@ -99,7 +106,6 @@ class PyCRL(Device):
     focal_size_setpoint = Component(EpicsSignal, "focalSize")
     focal_size_readback = Component(EpicsSignalRO, "fSize_actual")
     focal_power_index = Component(EpicsSignalWithRBV, "1:sortedIndex")
-    # focal_power_index_readback = Component(EpicsSignal, "1:sortedIndex_RBV")
     focal_sizes = Component(EpicsSignal, "fSizes", kind="omitted")
     minimize_button = Component(
         EpicsSignal, "minimizeFsize.PROC", kind="omitted"
@@ -109,11 +115,15 @@ class PyCRL(Device):
     # Parameters readbacks
     dq = Component(PyCRLSignal, "dq", kind="config")
     q = Component(PyCRLSignal, "q", kind="config")
-    z_offset = Component(PyCRLSignal, "1:oePositionOffset_RBV", kind="config")
+    z_offset = Component(
+        PyCRLSignal, "1:oePositionOffset_RBV", kind="config"
+    )
     z_offset_pv = Component(
         EpicsSignal, "1:oePositionOffset.DOL", kind="config"
     )
-    z_from_source = Component(PyCRLSignal, "1:oePosition_RBV", kind="config")
+    z_from_source = Component(
+        PyCRLSignal, "1:oePosition_RBV", kind="config"
+    )
     sample_offset = Component(
         PyCRLSignal, "samplePositionOffset_RBV", kind="config"
     )
@@ -124,15 +134,21 @@ class PyCRL(Device):
 
     # Lenses indices
     binary = Component(EpicsSignalRO, "1:lenses", kind="config")
-    ind_control = Component(EpicsSignalRO, "1:lensConfig_BW", kind="config")
-    readbacks = Component(EpicsSignalRO, "1:lensConfig_RBV", kind="config")
+    ind_control = Component(
+        EpicsSignalRO, "1:lensConfig_BW", kind="config"
+    )
+    readbacks = Component(
+        EpicsSignalRO, "1:lensConfig_RBV", kind="config"
+    )
 
     # Other options
     preview_index = Component(EpicsSignal, "previewIndex", kind="config")
     focal_size_preview = Component(
         EpicsSignalRO, "fSize_preview", kind="config"
     )
-    inter_lens_delay = Component(EpicsSignal, "1:interLensDelay", kind="config")
+    inter_lens_delay = Component(
+        EpicsSignal, "1:interLensDelay", kind="config"
+    )
     verbose_console = Component(EpicsSignal, "verbosity", kind="config")
     thickness_error_flag = Component(
         EpicsSignal, "thickerr_flag", kind="config"
@@ -150,9 +166,15 @@ class PyCRL(Device):
     lens8 = Component(PyCRLSingleLens, "1:stack08")
 
     def __init__(self, *args, **kwargs):
+        """Initialize PyCRL device."""
         super().__init__(*args, **kwargs)
         self._status = None
-        self.system_done.subscribe(self._update_status_subscription, run=False)
+
+    def _post_connect_setup(self):
+        """Set up EPICS subscriptions after connection is established."""
+        self.system_done.subscribe(
+            self._update_status_subscription, run=False
+        )
 
     def _update_status_subscription(self, value, old_value, **kwarg):
         if (
@@ -164,6 +186,7 @@ class PyCRL(Device):
             self._status = None
 
     def set(self, value, **kwargs):
+        """Set the system state."""
         _st = DeviceStatus(self)
 
         if self.system_done.get() in ["Done", 0]:
@@ -175,14 +198,16 @@ class PyCRL(Device):
 
 
 class EnergySignal(Signal):
+    """Signal that moves the transfocator to a new energy."""
 
     _epics_sleep = EPICS_ENERGY_SLEEP
 
     def put(self, *args, **kwargs):
+        """Raise NotImplementedError — use set() instead."""
         raise NotImplementedError("put operation not setup in this signal.")
 
     def set(self, value, **kwargs):
-
+        """Move transfocator to the specified energy."""
         self._readback = value
 
         if self.parent.energy_select.get() != 1:
@@ -192,15 +217,20 @@ class EnergySignal(Signal):
         tsleep(self._epics_sleep)
         # this is needed because the scan of the transfocator is 0.1 s
 
-        zpos = self.parent.z.user_readback.get() - self.parent.dq.get() * 1000.0
+        zpos = (
+            self.parent.z.user_readback.get()
+            - self.parent.dq.get() * 1000.0
+        )
         # dq in meters
 
         return self.parent.z.set(zpos, **kwargs)
 
 
 class ZMotor(EpicsMotor):
-    def set(self, new_position, **kwargs):
+    """EpicsMotor that optionally tracks X/Y when Z moves."""
 
+    def set(self, new_position, **kwargs):
+        """Move Z and optionally track X/Y."""
         zstatus = super().set(new_position, **kwargs)
 
         if self.parent.trackxy.get():
@@ -234,188 +264,214 @@ class ZMotor(EpicsMotor):
             return zstatus
 
     def stop(self, *, success=False):
+        """Stop Z and optionally X/Y."""
         super().stop(success=success)
         if self.parent.trackxy.get():
             self.parent.x.stop(success=success)
             self.parent.y.stop(success=success)
 
 
-class TransfocatorClass(PyCRL):
+def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
+    """Return a TransfocatorClass with lens motors bound to motors_ioc.
 
-    energy = Component(EnergySignal)
-    tracking = Component(TrackingSignal, value=False, kind="config")
+    Parameters
+    ----------
+    motors_ioc : str
+        IOC prefix for the transfocator stage motors, e.g. ``"4idgSoft:"``.
+    """
+    lens_list = [
+        f"{motors_ioc}m{n}" for n in [69, 68, 67, 66, 65, 64, 63, 62]
+    ]
 
-    # Motors -- setup in 4idgSoft
-    x = FormattedComponent(EpicsMotor, "{_motors_IOC}m58", labels=("motor",))
-    y = FormattedComponent(EpicsMotor, "{_motors_IOC}m57", labels=("motor",))
-    z = FormattedComponent(ZMotor, "{_motors_IOC}m61", labels=("motor",))
-    pitch = FormattedComponent(
-        EpicsMotor, "{_motors_IOC}m60", labels=("motor",)
-    )
-    yaw = FormattedComponent(EpicsMotor, "{_motors_IOC}m59", labels=("motor",))
+    class TransfocatorClass(PyCRL):
+        """Transfocator with parametric motor IOC prefix."""
 
-    lens_motors = DynamicDeviceComponent(
-        _make_lenses_motors(
-            [
-                f"{MOTORS_IOC}m69",
-                f"{MOTORS_IOC}m68",
-                f"{MOTORS_IOC}m67",
-                f"{MOTORS_IOC}m66",
-                f"{MOTORS_IOC}m65",
-                f"{MOTORS_IOC}m64",
-                f"{MOTORS_IOC}m63",
-                f"{MOTORS_IOC}m62",
-            ]
-        ),
-        component_class=FormattedComponent,
-    )
+        energy = Component(EnergySignal)
+        tracking = Component(TrackingSignal, value=False, kind="config")
 
-    reference_data_x = Component(Signal, kind="config")
-    reference_data_y = Component(Signal, kind="config")
-    deltax = Component(Signal, value=0, kind="config")
-    deltay = Component(Signal, value=0, kind="config")
-    trackxy = Component(TrackingSignal, value=False, kind="config")
+        # Motors
+        x = FormattedComponent(
+            EpicsMotor, "{_motors_IOC}m58", labels=("motor",)
+        )
+        y = FormattedComponent(
+            EpicsMotor, "{_motors_IOC}m57", labels=("motor",)
+        )
+        z = FormattedComponent(
+            ZMotor, "{_motors_IOC}m61", labels=("motor",)
+        )
+        pitch = FormattedComponent(
+            EpicsMotor, "{_motors_IOC}m60", labels=("motor",)
+        )
+        yaw = FormattedComponent(
+            EpicsMotor, "{_motors_IOC}m59", labels=("motor",)
+        )
 
-    def __init__(
-        self,
-        *args,
-        lens_pos=30,
-        default_distance=2591,
-        # reference_x=0,
-        # reference_y=0,
-        # x_polynomial=[0],
-        # y_polynomial=[0],
-        **kwargs,
-    ):
-        self._motors_IOC = MOTORS_IOC
-        PyCRL.__init__(self, *args, **kwargs)
-        self._lens_pos = lens_pos
-        self._default_distance = default_distance  # mm
-        # self.reference_x.put(reference_x)
-        # self.reference_y.put(reference_y)
-        # self.polynomial_x.put(x_polynomial)
-        # self.polynomial_y.put(y_polynomial)
-        self._x_interpolation = None
-        self._y_interpolation = None
-        self.reference_data_x.subscribe(self._update_interpolation_x, run=False)
-        self.reference_data_y.subscribe(self._update_interpolation_y, run=False)
+        lens_motors = DynamicDeviceComponent(
+            _make_lenses_motors(lens_list),
+            component_class=FormattedComponent,
+        )
 
-    def load_reference_data(self, fname, axis):
-        if axis not in "x y".split():
-            raise ValueError(f"axis must be x or y. {axis} is not valid.")
-        # x, y = loadtxt(fname, unpack=True)
-        getattr(self, f"reference_data_{axis}").put(loadtxt(fname))
+        reference_data_x = Component(Signal, kind="config")
+        reference_data_y = Component(Signal, kind="config")
+        deltax = Component(Signal, value=0, kind="config")
+        deltay = Component(Signal, value=0, kind="config")
+        trackxy = Component(TrackingSignal, value=False, kind="config")
 
-    def _update_interpolation_x(self, value, **kwargs):
-        z = value[:, 0]
-        x = value[:, 1]
-        self._x_interpolation = interp1d(z, x)
-
-    def _update_interpolation_y(self, value, **kwargs):
-        z = value[:, 0]
-        y = value[:, 1]
-        self._y_interpolation = interp1d(z, y)
-
-    def lens_status(self, i):
-        return getattr(self, f"lens{i}").readback.get(as_string=True)
-
-    @property
-    def lenses_in(self):
-        selected = []
-        for i in range(1, 9):
-            _status = self.lens_status(i)
-            if _status == "In":
-                selected.append(i)
-            elif _status == "Both out":
-                pass
-                # logger.info(f"WARNING: the status of lens #{i} is unknown.")
-        return selected
-
-    def _setup_lenses_move(self, lenses_in: list = []):
-        """
-        Adjust lenses
-
-        PARAMETERS
-        ----------
-        lenses_in : list or iterable
-            Index of the lenses that will be inserted. The ones not in this list
-            will be removed.
-        type : "plan" or "noplan"
-            Determines how the lenses will be used, using a bluesky plan
-            ("plan" option), or "noplan".
-        """
-
-        for i in lenses_in:
-            if (i > 8) or (i < 1):
-                raise ValueError("Lens index must be from 1 to 8.")
-
-        # Positive/negative step moves lens in/out respectively.
-        # We want to move it to the hard limit.
-
-        args = []
-        for lens in range(1, 9):
-            step = 1 if lens in lenses_in else 0
-            args += [getattr(self, f"lens{lens}"), step]
-
-        return args
-
-    def set_lenses(self, selected_lenses: list):
-        args = self._setup_lenses_move(selected_lenses)
-        for dev, pos in partition(2, args):
-            dev.setpoint.put(pos)
-
-    def set_lenses_plan(self, selected_lenses: list):
-        args = self._setup_lenses_move(selected_lenses)
-        return (yield from mv(*args))
-
-    def _check_z_lims(self, position):
-        if (position > self.z.low_limit_travel.get()) & (
-            position < self.z.high_limit_travel.get()
+        def __init__(
+            self,
+            *args,
+            motors_ioc=motors_ioc,
+            lens_pos=30,
+            default_distance=2591,
+            **kwargs,
         ):
-            return True
-        else:
-            return False
-
-    def _setup_optimize_distance(self):
-
-        if self.energy_select.get() in (1, "Local"):
-            logger.info("WARNING: transfocator in 'Local' energy mode")
-
-        distance = self.z.user_readback.get() - self.dq.get() * 1000
-
-        if not self._check_z_lims(distance):
-            raise ValueError(
-                f"The distance {distance} is outsize the Z travel range. No"
-                "motion will occur."
+            """Initialize TransfocatorClass with motor IOC prefix."""
+            self._motors_IOC = motors_ioc
+            PyCRL.__init__(self, *args, **kwargs)
+            self._lens_pos = lens_pos
+            self._default_distance = default_distance  # mm
+            self._x_interpolation = None
+            self._y_interpolation = None
+            self.reference_data_x.subscribe(
+                self._update_interpolation_x, run=False
+            )
+            self.reference_data_y.subscribe(
+                self._update_interpolation_y, run=False
             )
 
-        return distance
+        def load_reference_data(self, fname, axis):
+            """Load reference tracking data from file."""
+            if axis not in "x y".split():
+                raise ValueError(
+                    f"axis must be x or y. {axis} is not valid."
+                )
+            getattr(self, f"reference_data_{axis}").put(loadtxt(fname))
 
-    def optimize_lenses(
-        self,
-    ):
+        def _update_interpolation_x(self, value, **kwargs):
+            z = value[:, 0]
+            x = value[:, 1]
+            self._x_interpolation = interp1d(z, x)
 
-        self.focal_power_index.set(self.focal_sizes.get().argmin()).wait()
+        def _update_interpolation_y(self, value, **kwargs):
+            z = value[:, 0]
+            y = value[:, 1]
+            self._y_interpolation = interp1d(z, y)
 
-        self.z.move(self._setup_optimize_distance()).wait()
+        def lens_status(self, i):
+            """Return the status string of lens i."""
+            return getattr(self, f"lens{i}").readback.get(as_string=True)
 
-        self.set(1).wait()
+        @property
+        def lenses_in(self):
+            """Return list of inserted lens indices."""
+            selected = []
+            for i in range(1, 9):
+                _status = self.lens_status(i)
+                if _status == "In":
+                    selected.append(i)
+                elif _status == "Both out":
+                    pass
+            return selected
 
-    def optimize_lenses_plan(self):
+        def _setup_lenses_move(self, lenses_in: list = None):
+            """Build args list for moving lenses in/out.
 
-        def _moves():
-            yield from mv(
-                self.focal_power_index, self.focal_sizes.get().argmin()
+            Parameters
+            ----------
+            lenses_in : list or iterable
+                Index of the lenses that will be inserted. The ones not in
+                this list will be removed.
+            """
+            if lenses_in is None:
+                lenses_in = []
+            for i in lenses_in:
+                if (i > 8) or (i < 1):
+                    raise ValueError("Lens index must be from 1 to 8.")
+
+            args = []
+            for lens in range(1, 9):
+                step = 1 if lens in lenses_in else 0
+                args += [getattr(self, f"lens{lens}"), step]
+
+            return args
+
+        def set_lenses(self, selected_lenses: list):
+            """Move lenses to the specified in/out configuration."""
+            args = self._setup_lenses_move(selected_lenses)
+            for dev, pos in partition(2, args):
+                dev.setpoint.put(pos)
+
+        def set_lenses_plan(self, selected_lenses: list):
+            """Bluesky plan to move lenses to the specified configuration."""
+            args = self._setup_lenses_move(selected_lenses)
+            return (yield from mv(*args))
+
+        def _check_z_lims(self, position):
+            if (position > self.z.low_limit_travel.get()) & (
+                position < self.z.high_limit_travel.get()
+            ):
+                return True
+            else:
+                return False
+
+        def _setup_optimize_distance(self):
+            if self.energy_select.get() in (1, "Local"):
+                logger.info(
+                    "WARNING: transfocator in 'Local' energy mode"
+                )
+
+            distance = (
+                self.z.user_readback.get() - self.dq.get() * 1000
             )
-            yield from mv(self.z, self._setup_optimize_distance(), self, 1)
 
-        return (yield from _moves())
+            if not self._check_z_lims(distance):
+                raise ValueError(
+                    f"The distance {distance} is outsize the Z travel "
+                    "range. No motion will occur."
+                )
 
-    def optimize_distance(self):
-        self.z.move(self._setup_optimize_distance()).wait()
+            return distance
 
-    def optimize_distance_plan(self):
-        return (yield from mv(self.z, self._setup_optimize_distance()))
+        def optimize_lenses(self):
+            """Optimize lens configuration for minimum focal size."""
+            self.focal_power_index.set(
+                self.focal_sizes.get().argmin()
+            ).wait()
 
-    def default_settings(self):
-        self.stage_sigs["energy_select"] = 1
+            self.z.move(self._setup_optimize_distance()).wait()
+
+            self.set(1).wait()
+
+        def optimize_lenses_plan(self):
+            """Bluesky plan to optimize lens configuration."""
+
+            def _moves():
+                yield from mv(
+                    self.focal_power_index,
+                    self.focal_sizes.get().argmin(),
+                )
+                yield from mv(
+                    self.z, self._setup_optimize_distance(), self, 1
+                )
+
+            return (yield from _moves())
+
+        def optimize_distance(self):
+            """Move Z to the optimal focal distance."""
+            self.z.move(self._setup_optimize_distance()).wait()
+
+        def optimize_distance_plan(self):
+            """Bluesky plan to move Z to the optimal focal distance."""
+            return (yield from mv(self.z, self._setup_optimize_distance()))
+
+        def default_settings(self):
+            """Apply default stage signals for transfocator."""
+            self.stage_sigs["energy_select"] = 1
+
+    TransfocatorClass.__name__ = "TransfocatorClass"
+    TransfocatorClass.__qualname__ = "TransfocatorClass"
+    return TransfocatorClass
+
+
+# Module-level default — backward-compatible; used by devices.yml as-is.
+TransfocatorClass = make_transfocator_class()

@@ -22,7 +22,7 @@ RUN_ENGINE:
 
     ### Directory to "autosave" the RE.md dictionary (uses PersistentDict).
     ### Default: HOME/.config/Bluesky_RunEngine_md'
-    MD_PATH: /home/beams/POLAR/.config/Bluesky_RunEngine_md_4idg
+    MD_PATH: /home/beams/POLAR/.config/Bluesky_RunEngine_md_4idh
 
     ### The progress bar is nice to see,
     ### except when it clutters the output in Jupyter notebooks.

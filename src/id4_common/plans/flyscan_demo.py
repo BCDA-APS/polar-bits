@@ -29,9 +29,6 @@ from ..utils.dm_utils import (
     dm_upload_wait,
 )
 
-# TODO: what to do with this?
-from ..devices.pva_control import positioner_stream
-
 iconfig = get_config()
 
 logger = getLogger(__name__)
@@ -370,7 +367,7 @@ def flyscan_cycler(
     _dets_file_paths = {}
     # Relative paths are used in the master file so that data can be copied.
     _rel_dets_paths = {}
-    for det in list(detectors) + [positioner_stream]:
+    for det in detectors:
         _setup_images = getattr(det, "setup_images", None)
         if _setup_images:
             _dets_file_paths[det.name], _rel_dets_paths[det.name] = (
@@ -467,9 +464,6 @@ def flyscan_cycler(
     yield from sgz.reset_plan()
     yield from sgz.clear_enable_dma()
 
-    # Stop positioner stream just in case
-    yield from mv(positioner_stream, 0)
-
     # Setup the eiger frequency
     yield from sgz.setup_trigger_plan(
         detector_trigger_period, detector_collection_time
@@ -500,7 +494,6 @@ def flyscan_cycler(
     @run_decorator(md=_md)
     def inner_fly():
 
-        yield from mv(positioner_stream, 1)
         yield from sgz.start_softglue()
 
         yield from sgz.start_detectors()
@@ -518,9 +511,6 @@ def flyscan_cycler(
         yield from sleep(_time_per_point * _number_of_events_per_packet + 0.1)
 
         yield from sgz.stop_softglue()
-
-        logger.info("Stopping the positioner stream, this can take time.")
-        yield from mv(positioner_stream, 0)
 
         yield from sgz.clear_disable_dma()
 

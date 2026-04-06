@@ -181,3 +181,9 @@ qserver/existing_plans_and_devices.yaml
 
 # Unix
 .loglogin
+
+# Ruff files
+.ruff_cache
+
+# Claude code
+.claude

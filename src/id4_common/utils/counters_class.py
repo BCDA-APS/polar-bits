@@ -201,7 +201,7 @@ class CountersClass:
         if len(self._available_scalers) > 0:
             table["detectors"].append("scalers")
             table["channels"].append("Time")
-        
+
         # Since time is special, it needs to be run first to check if Time is
         # being used.
         row_number = 0
@@ -214,7 +214,7 @@ class CountersClass:
 
         # this count runs independently because each device has its own
         # number of detectors
-        option_number = 1 
+        option_number = 1
         for det in self._available_detectors:
             # det.plot_options will return a list of available
             # plotting options.
@@ -227,7 +227,7 @@ class CountersClass:
 
             table["channels"] += _options
             table["detectors"] += [det.name for _ in range(len(_options))]
-            
+
             # Checks for the current selection of detectors and monitor, and
             # marks the ones that are selected.
             for _ in range(len(_options)):
@@ -304,10 +304,13 @@ class CountersClass:
 
         if not _valid_dets:
             while True:
-                dets = input(
-                    "Enter the indexes of plotting channels "
-                    f"{self._selected_dets_channels}: "
-                ) or self._selected_dets_channels
+                dets = (
+                    input(
+                        "Enter the indexes of plotting channels "
+                        f"{self._selected_dets_channels}: "
+                    )
+                    or self._selected_dets_channels
+                )
 
                 if len(dets) == 0:
                     print("A value must be entered.")
@@ -362,7 +365,7 @@ class CountersClass:
                     continue
 
                 break
-        
+
         self._selected_mon_channel = mon
         self._mon = self.detectors_plot_options.loc[mon]["channels"]
 

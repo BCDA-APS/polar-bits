@@ -47,11 +47,7 @@ class MyNXWriter(NXWriterAPS):
         nxentry["instrument/layout_version"] = ds
 
         for name, path in self.external_files.items():
-            link_path = (
-                "/stream"
-                if name == "positioner_stream"
-                else "/entry/instrument"
-            )
+            link_path = "/entry/instrument"
             h5addr = f"/entry/externals/{name}"
             self.root[h5addr] = h5py.ExternalLink(
                 str(path),
