@@ -50,7 +50,7 @@ from .utils.local_magics import LocalMagics  # noqa: E402
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
-from .utils.run_engine import RE, sd, bec, cat, peaks  # noqa: F401, E402
+from .utils.run_engine import RE, sd, bec, cat, cat_legacy, peaks  # noqa: F401, E402
 
 # Import optional components based on configuration
 if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):

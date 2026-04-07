@@ -63,6 +63,7 @@ from id4_common.utils.run_engine import (  # noqa: F401, E402
     sd,
     bec,
     cat,
+    cat_legacy,
     peaks,
 )
 

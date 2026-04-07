@@ -63,6 +63,7 @@ from id4_common.utils.run_engine import (  # noqa: F401, E402
     sd,
     bec,
     cat,
+    cat_legacy,
     peaks,
 )
 
@@ -116,7 +117,7 @@ else:
         suspender_change_sleep,
     )
 
-    from id4_common.utils.wax import wm, wax, wa_new  # noqa: F401
+    # from id4_common.utils.wax import wm, wax, wa_new  # noqa: F401
     from id4_common.utils.counters_class import counters  # noqa: F401
     from id4_common.utils.pr_setup import pr_setup  # noqa: F401
     from id4_common.utils.attenuator_utils import atten  # noqa: F401

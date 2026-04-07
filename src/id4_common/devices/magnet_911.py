@@ -137,7 +137,9 @@ class PowerSupply(Device):
 
 
 class MonChannel(Device):
-    temperature_name = FormattedComponent(EpicsSignalRO, "{prefix}TempName{ch}")
+    temperature_name = FormattedComponent(
+        EpicsSignalRO, "{prefix}TempName{ch}", string=True
+    )
     temperature = FormattedComponent(EpicsSignalRO, "{prefix}Temp{ch}")
     hall_resistance = FormattedComponent(EpicsSignalRO, "{prefix}HallRes{ch}")
     hall_field = FormattedComponent(EpicsSignalRO, "{prefix}HallField{ch}")
