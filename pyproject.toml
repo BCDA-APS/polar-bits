@@ -14,12 +14,12 @@ classifiers = []
 license = "LicenseRef-ANL-Open-Source-License"
 license-files = ["LICEN[CS]E*"]
 dependencies = [
+    "databroker<2",
     "apsbits",
     "hklpy",
     "hklpy2",
     "polartools",
     "streamz",
-    "aps-dm-api",
 ]
 
 authors = [
