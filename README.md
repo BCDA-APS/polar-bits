@@ -20,6 +20,10 @@ create-bits $YOUR_INSTRUMENT_NAME
 pip install -e .
 ```
 
+## Setup conda config vars for hklpy
+```bash
+conda env config vars set LD_LIBRARY_PATH="$HOME/.conda/envs/$ENV_NAME/lib:$LD_LIBRARY_PATH"
+```
 
 ## IPython console Start
 
