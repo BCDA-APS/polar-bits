@@ -1,0 +1,33 @@
+id4_common.utils.spe_handler
+============================
+
+.. py:module:: id4_common.utils.spe_handler
+
+.. autoapi-nested-parse::
+
+   Handler for SPE files
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   id4_common.utils.spe_handler.SPEHandler
+
+
+Module Contents
+---------------
+
+.. py:class:: SPEHandler(fpath, template, filename, frame_per_point=1)
+
+   Bases: :py:obj:`area_detector_handlers.HandlerBase`
+
+
+   .. py:attribute:: specs
+
+
+   .. py:method:: get_file_list(datum_kwarg_gen)
+
+

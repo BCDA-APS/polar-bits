@@ -1,0 +1,91 @@
+id4_common.devices.labjacks
+===========================
+
+.. py:module:: id4_common.devices.labjacks
+
+.. autoapi-nested-parse::
+
+   Labjacks
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   id4_common.devices.labjacks.AnalogOutput
+   id4_common.devices.labjacks.CustomLabJackT7
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   id4_common.devices.labjacks.make_analog_outputs
+   id4_common.devices.labjacks.make_digital_ios
+
+
+Module Contents
+---------------
+
+.. py:class:: AnalogOutput
+
+   Bases: :py:obj:`apstools.devices.labjack.Output`
+
+
+   .. py:attribute:: description
+
+
+   .. py:attribute:: value
+
+
+   .. py:attribute:: low_limit
+
+
+   .. py:attribute:: high_limit
+
+
+   .. py:attribute:: readback_value
+      :value: None
+
+
+
+   .. py:attribute:: desired_value
+      :value: None
+
+
+
+.. py:function:: make_analog_outputs(num_aos: int)
+
+   Create a dictionary with analog output device definitions.
+
+   For use with an ophyd DynamicDeviceComponent.
+
+   :param num_aos: How many analog outputs to create.
+
+
+.. py:function:: make_digital_ios(channels_list: list)
+
+   Create a dictionary with digital I/O device definitions.
+
+   For use with an ophyd DynamicDeviceComponent.
+
+   :param num_dios: How many digital I/Os to create.
+
+
+.. py:class:: CustomLabJackT7
+
+   Bases: :py:obj:`apstools.devices.LabJackT7`
+
+
+   .. py:attribute:: analog_outputs
+
+
+   .. py:attribute:: digital_ios
+
+
+   .. py:method:: default_settings()
+
+

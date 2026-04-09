@@ -1,0 +1,51 @@
+id4_common.devices.table_4idh
+=============================
+
+.. py:module:: id4_common.devices.table_4idh
+
+.. autoapi-nested-parse::
+
+   Table in middle of 4idb
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   id4_common.devices.table_4idh.Table4idh
+
+
+Module Contents
+---------------
+
+.. py:class:: Table4idh
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: x_us
+
+
+   .. py:attribute:: x_ds
+
+
+   .. py:attribute:: y_us
+
+
+   .. py:attribute:: y_ds
+
+
+   .. py:attribute:: x
+
+
+   .. py:attribute:: y
+
+
+   .. py:attribute:: ax
+
+
+   .. py:attribute:: ay
+
+

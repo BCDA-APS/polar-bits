@@ -1,0 +1,562 @@
+id4_common.utils.hkl_utils
+==========================
+
+.. py:module:: id4_common.utils.hkl_utils
+
+.. autoapi-nested-parse::
+
+   Auxilary HKL functions.
+
+   .. autosummary::
+       ~select_engine_for_psi
+       ~engine_for_psi
+       ~set_experiment
+       ~set_diffractometer
+       ~sampleNew
+       ~sampleChange
+       ~sampleList
+       ~sampleRemove
+       ~list_reflections
+       ~or_swap
+       ~setor0
+       ~setor1
+       ~set_orienting
+       ~del_reflection
+       ~list_orienting
+       ~or0
+       ~or1
+       ~compute_UB
+       ~calc_UB
+       ~setmode
+       ~ca
+       ~br
+       ~uan
+       ~wh
+       ~setlat
+       ~setaz
+       ~freeze
+       ~update_lattice
+       ~write_config
+       ~read_config
+       ~show_constraints
+       ~reset_constraints
+       ~set_constraints
+       ~restore_huber_from_scan
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   id4_common.utils.hkl_utils.logger
+   id4_common.utils.hkl_utils.polar_config
+   id4_common.utils.hkl_utils.fourc_config
+   id4_common.utils.hkl_utils.pbar_manager
+   id4_common.utils.hkl_utils.POLAR_DIFFRACTOMETER
+   id4_common.utils.hkl_utils.fourc
+   id4_common.utils.hkl_utils.wh
+   id4_common.utils.hkl_utils.sampleList
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   id4_common.utils.hkl_utils.whClass
+   id4_common.utils.hkl_utils.sampleListClass
+   id4_common.utils.hkl_utils.Sync_UB_Matrix
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   id4_common.utils.hkl_utils.get_huber_euler
+   id4_common.utils.hkl_utils.get_huber_hp
+   id4_common.utils.hkl_utils.get_huber_euler_psi
+   id4_common.utils.hkl_utils.select_engine_for_psi
+   id4_common.utils.hkl_utils.engine_for_psi
+   id4_common.utils.hkl_utils.set_diffractometer
+   id4_common.utils.hkl_utils.sampleNew
+   id4_common.utils.hkl_utils.sampleChange
+   id4_common.utils.hkl_utils.sampleRemove
+   id4_common.utils.hkl_utils.list_reflections
+   id4_common.utils.hkl_utils.or_swap
+   id4_common.utils.hkl_utils.setor0
+   id4_common.utils.hkl_utils.setor1
+   id4_common.utils.hkl_utils.set_orienting
+   id4_common.utils.hkl_utils.del_reflection
+   id4_common.utils.hkl_utils.list_orienting
+   id4_common.utils.hkl_utils.or0
+   id4_common.utils.hkl_utils.or1
+   id4_common.utils.hkl_utils.compute_UB
+   id4_common.utils.hkl_utils.calc_UB
+   id4_common.utils.hkl_utils.setmode
+   id4_common.utils.hkl_utils.ca
+   id4_common.utils.hkl_utils.ubr
+   id4_common.utils.hkl_utils.br
+   id4_common.utils.hkl_utils.uan
+   id4_common.utils.hkl_utils.an
+   id4_common.utils.hkl_utils.pa_new
+   id4_common.utils.hkl_utils.setlat
+   id4_common.utils.hkl_utils.setaz
+   id4_common.utils.hkl_utils.freeze
+   id4_common.utils.hkl_utils.update_lattice
+   id4_common.utils.hkl_utils.write_config
+   id4_common.utils.hkl_utils.read_config
+   id4_common.utils.hkl_utils.show_constraints
+   id4_common.utils.hkl_utils.reset_constraints
+   id4_common.utils.hkl_utils.set_constraints
+   id4_common.utils.hkl_utils.restore_huber_from_scan
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: polar_config
+
+.. py:data:: fourc_config
+
+.. py:data:: pbar_manager
+
+.. py:data:: POLAR_DIFFRACTOMETER
+   :value: 'huber_euler'
+
+
+.. py:data:: fourc
+   :value: None
+
+
+.. py:function:: get_huber_euler()
+
+.. py:function:: get_huber_hp()
+
+.. py:function:: get_huber_euler_psi()
+
+.. py:function:: select_engine_for_psi(instrument=None)
+
+   Name the diffractometer to be used.
+
+
+.. py:function:: engine_for_psi()
+
+   Return the currently-selected psi calc engine (or ``None``).
+
+
+.. py:function:: set_diffractometer(instrument=None)
+
+   Name the diffractometer to be used.
+
+
+.. py:function:: sampleNew(*args)
+
+   Set the lattice constants.
+
+   :param a: Lattice constants. If None, it will ask for input.
+   :type a: float, optional
+   :param b: Lattice constants. If None, it will ask for input.
+   :type b: float, optional
+   :param c: Lattice constants. If None, it will ask for input.
+   :type c: float, optional
+   :param alpha: Lattice constants. If None, it will ask for input.
+   :type alpha: float, optional
+   :param beta: Lattice constants. If None, it will ask for input.
+   :type beta: float, optional
+   :param gamma: Lattice constants. If None, it will ask for input.
+   :type gamma: float, optional
+
+
+.. py:function:: sampleChange(sample_key=None)
+
+   Change selected sample in hklpy.
+
+   :param sample_key: Name of the sample as set in hklpy. If None it will ask for which
+                      sample.
+   :type sample_key: string, optional
+
+
+.. py:function:: sampleRemove(sample_key=None)
+
+   Remove selected sample in hklpy.
+
+   :param sample_key: Name of the sample as set in hklpy. If None it will ask for which
+                      sample.
+   :type sample_key: string, optional
+
+
+.. py:function:: list_reflections(all_samples=False)
+
+   Lists all reflections in defined in hklpy.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param all_samples: If True, it will list the reflections for all samples, if False, only
+                       the current sample. Defaults to False.
+   :type all_samples: boolean, optional
+
+
+.. py:function:: or_swap()
+
+   Swaps the two orientation reflections in hklpy.
+
+
+.. py:function:: setor0(*args)
+
+   Sets the primary orientation in hklpy.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param delta: Values of motor positions for current reflection. If None, it will ask
+                 for it.
+   :type delta: float, optional
+   :param th: Values of motor positions for current reflection. If None, it will ask
+              for it.
+   :type th: float, optional
+   :param chi: Values of motor positions for current reflection. If None, it will ask
+               for it.
+   :type chi: float, optional
+   :param phi: Values of motor positions for current reflection. If None, it will ask
+               for it.
+   :type phi: float, optional
+   :param gamma: Values of motor positions for current reflection. If None, it will ask
+                 for it.
+   :type gamma: float, optional
+   :param mu: Values of motor positions for current reflection. If None, it will ask
+              for it.
+   :type mu: float, optional
+   :param h: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: setor1(*args)
+
+   Sets the primary secondary in hklpy.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param delta: Values of motor positions for current reflection. If None, it will ask
+                 for it.
+   :type delta: float, optional
+   :param th: Values of motor positions for current reflection. If None, it will ask
+              for it.
+   :type th: float, optional
+   :param chi: Values of motor positions for current reflection. If None, it will ask
+               for it.
+   :type chi: float, optional
+   :param phi: Values of motor positions for current reflection. If None, it will ask
+               for it.
+   :type phi: float, optional
+   :param gamma: Values of motor positions for current reflection. If None, it will ask
+                 for it.
+   :type gamma: float, optional
+   :param mu: Values of motor positions for current reflection. If None, it will ask
+              for it.
+   :type mu: float, optional
+   :param h: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: set_orienting()
+
+   Change the primary and/or secondary orienting reflections to existing reflecitons
+   in reflection list in hklpy.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+
+.. py:function:: del_reflection()
+
+   Delete existing reflection from in reflection list in hklpy.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+
+.. py:function:: list_orienting(all_samples=False)
+
+   Prints the two reflections used in the UB matrix.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param all_samples: If True, it will print the reflections of all samples, if False, only of
+                       the current one.
+   :type all_samples: boolean, optional
+
+
+.. py:function:: or0(h=None, k=None, l=None)
+
+   Sets the primary orientation in hklpy using the current motor positions.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param h: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: or1(h=None, k=None, l=None)
+
+   Sets the secondary orientation in hklpy using the current motor positions.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param h: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: compute_UB()
+
+   Calculates the UB matrix.
+
+   This fixes one issue with the hklpy calc_UB in that using wh() right after
+   will not work, it needs to run one calculation first.
+
+   :param h: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: calc_UB(r1, r2, wavelength=None, output=False)
+
+   Compute the UB matrix with two reflections.
+
+   :param r1: Orienting reflections from hklpy.
+   :type r1: hklpy reflections
+   :param r2: Orienting reflections from hklpy.
+   :type r2: hklpy reflections
+   :param wavelength: This is not used...
+   :type wavelength: float, optional
+   :param output: Toggle to decide whether to print the UB matrix.
+   :type output: boolean
+
+
+.. py:function:: setmode(mode=None)
+
+   Set the mode of the currently selected diffractometer.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param mode: Mode to be selected. If None, it will ask.
+   :type mode: string, optional
+
+
+.. py:function:: ca(h, k, l, energy=None)
+
+   Calculate the motors position of a reflection.
+
+   :param h: H, K, and L values.
+   :type h: float
+   :param k: H, K, and L values.
+   :type k: float
+   :param l: H, K, and L values.
+   :type l: float
+   :param energy: energy (Optional)
+   :type energy: float
+
+
+.. py:function:: ubr(h, k, l)
+
+   Move the motors to a reciprocal space point.
+
+   :param h: H, K, and L values.
+   :type h: float
+   :param k: H, K, and L values.
+   :type k: float
+   :param l: H, K, and L values.
+   :type l: float
+
+
+.. py:function:: br(h, k, l)
+
+   Move the motors to a reciprocal space point.
+
+   :param h: H, K, and L values.
+   :type h: float
+   :param k: H, K, and L values.
+   :type k: float
+   :param l: H, K, and L values.
+   :type l: float
+
+   :rtype: Generator for the bluesky Run Engine.
+
+
+.. py:function:: uan(*args)
+
+   Moves the delta and theta motors.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param gamma: Delta and th motor angles to be moved to.
+   :type gamma: float, optional??
+   :param mu: Delta and th motor angles to be moved to.
+   :type mu: float, optional??
+
+
+.. py:function:: an(*args)
+
+   Moves the delta and theta motors.
+
+   WARNING: This function will only work with six circles. This will be fixed
+   in future releases.
+
+   :param delta: Delta and th motor angles to be moved to.
+   :type delta: float, optional??
+   :param th: Delta and th motor angles to be moved to.
+   :type th: float, optional??
+
+   :rtype: Generator for the bluesky Run Engine.
+
+
+.. py:function:: pa_new()
+
+   Retrieve information on the current reciprocal space position.
+
+
+
+.. py:function:: setlat(*args)
+
+   Set the lattice constants.
+
+   :param a: Lattice constants. If None, it will ask for input.
+   :type a: float, optional
+   :param b: Lattice constants. If None, it will ask for input.
+   :type b: float, optional
+   :param c: Lattice constants. If None, it will ask for input.
+   :type c: float, optional
+   :param alpha: Lattice constants. If None, it will ask for input.
+   :type alpha: float, optional
+   :param beta: Lattice constants. If None, it will ask for input.
+   :type beta: float, optional
+   :param gamma: Lattice constants. If None, it will ask for input.
+   :type gamma: float, optional
+
+
+.. py:function:: setaz(*args)
+
+.. py:function:: freeze(*args)
+
+.. py:function:: update_lattice(lattice_constant=None)
+
+   Update lattice constants.
+
+   :param lattice_constant: a, b or c or auto (default)
+   :type lattice_constant: string, optional
+
+
+.. py:function:: write_config(method='File', overwrite=False)
+
+   Write configuration from file in current directory.
+
+   :param method: right now only "File" possible, but later PV or other
+   :type method: string, optional
+   :param overwrite: asks if existing file hould be overwritten
+   :type overwrite: Boolean, optional
+
+
+.. py:function:: read_config(method='File')
+
+   Read configuration from file in current directory.
+
+   :param method: right now only "File" possible, but later PV or other
+   :type method: string, optional
+
+
+.. py:function:: show_constraints()
+
+   Show constraints and freeze angles (value)
+
+
+.. py:function:: reset_constraints()
+
+   Reset all constraints
+
+
+.. py:function:: set_constraints(*args)
+
+   Change constraint values for specific axis
+
+
+.. py:class:: whClass
+
+   _wh function used without parenthesis
+
+
+.. py:data:: wh
+
+.. py:class:: sampleListClass
+
+   _sampleList function used without parenthesis
+
+
+.. py:data:: sampleList
+
+.. py:class:: Sync_UB_Matrix(source: hkl.diffract.Diffractometer, target: hkl.diffract.Diffractometer)
+
+   Copy the UB matrix from source to target diffractometers.
+
+
+   .. py:attribute:: source
+
+
+   .. py:attribute:: target
+
+
+   .. py:method:: cleanup(*args, **kwargs)
+
+      Remove all our subscriptions to ophyd objects.
+
+
+
+   .. py:method:: sync_callback(value=None, **kwargs)
+
+
+.. py:function:: restore_huber_from_scan(scan_id, diffractometer=None, sample_name=None, force=False)
+

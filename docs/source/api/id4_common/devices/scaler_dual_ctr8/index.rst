@@ -1,0 +1,140 @@
+id4_common.devices.scaler_dual_ctr8
+===================================
+
+.. py:module:: id4_common.devices.scaler_dual_ctr8
+
+.. autoapi-nested-parse::
+
+   Setup for two CTR8 devices used together
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   id4_common.devices.scaler_dual_ctr8.NUMCHANNELS
+   id4_common.devices.scaler_dual_ctr8.PREFIX1
+   id4_common.devices.scaler_dual_ctr8.PREFIX2
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   id4_common.devices.scaler_dual_ctr8.LocalScalerChannel
+   id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   id4_common.devices.scaler_dual_ctr8.make_channels
+
+
+Module Contents
+---------------
+
+.. py:data:: NUMCHANNELS
+   :value: 8
+
+
+.. py:data:: PREFIX1
+   :value: '4idCTR8_1:scaler1'
+
+
+.. py:data:: PREFIX2
+   :value: '4idCTR8_1:scaler2'
+
+
+.. py:class:: LocalScalerChannel(*args, ch_num=0, **kwargs)
+
+   Bases: :py:obj:`ophyd.scaler.ScalerChannel`
+
+
+.. py:function:: make_channels()
+
+.. py:class:: DualCTR8Scaler(prefix1, prefix2, **kwargs)
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: prefix1
+
+
+   .. py:attribute:: prefix2
+
+
+   .. py:attribute:: channels
+
+
+   .. py:attribute:: scaler1
+
+
+   .. py:attribute:: scaler2
+
+
+   .. py:attribute:: freq
+
+
+   .. py:attribute:: preset_time
+      :value: None
+
+
+
+   .. py:attribute:: preset_monitor
+
+
+   .. py:method:: match_names()
+
+
+   .. py:method:: select_channels(chan_names=None)
+
+      Select channels based on the EPICS name PV
+
+      :param chan_names: The names (as reported by the ``channel.chname`` signal)
+                         of the channels to select.
+                         If ``None``, select **all** channels named in the EPICS scaler.
+      :type chan_names: Iterable[str] or None
+
+
+
+   .. py:property:: trigger_scaler
+
+
+   .. py:method:: trigger()
+
+
+   .. py:property:: channels_name_map
+
+
+   .. py:method:: select_plot_channels(chan_names=None)
+
+
+   .. py:method:: select_read_channels(chan_names=None)
+
+      Select channels based on the EPICS name PV.
+
+      :param chan_names: The names (as reported by the channel.chname signal)
+                         of the channels to select.
+                         If *None*, select all channels named in the EPICS scaler.
+      :type chan_names: Iterable[str] or None
+
+
+
+   .. py:property:: monitor
+
+
+   .. py:property:: plot_options
+
+
+   .. py:method:: select_plot(channels)
+
+
+   .. py:method:: default_settings()
+
+

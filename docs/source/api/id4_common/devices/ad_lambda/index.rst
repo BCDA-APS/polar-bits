@@ -1,0 +1,183 @@
+id4_common.devices.ad_lambda
+============================
+
+.. py:module:: id4_common.devices.ad_lambda
+
+.. autoapi-nested-parse::
+
+   Lambda area detector
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   id4_common.devices.ad_lambda.LAMBDA_FILES_ROOT
+   id4_common.devices.ad_lambda.BLUESKY_FILES_ROOT
+   id4_common.devices.ad_lambda.TEST_IMAGE_DIR
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   id4_common.devices.ad_lambda.MySingleTrigger
+   id4_common.devices.ad_lambda.Lambda250kCam
+   id4_common.devices.ad_lambda.MyHDF5Plugin
+   id4_common.devices.ad_lambda.Lambda250kDetector
+
+
+Module Contents
+---------------
+
+.. py:data:: LAMBDA_FILES_ROOT
+   :value: '/extdisk/4idd/'
+
+
+.. py:data:: BLUESKY_FILES_ROOT
+   :value: '/home/sector4/4idd/bluesky_images'
+
+
+.. py:data:: TEST_IMAGE_DIR
+   :value: '%Y/%m/%d/'
+
+
+.. py:class:: MySingleTrigger(*args, image_name=None, delay_time=0.1, **kwargs)
+
+   Bases: :py:obj:`ophyd.areadetector.TriggerBase`
+
+
+   This trigger mixin class takes one acquisition per trigger.
+   .. rubric:: Examples
+
+   >>> class SimDetector(SingleTrigger):
+   ...     pass
+   >>> det = SimDetector('..pv..')
+   # optionally, customize name of image
+   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+
+
+   .. py:method:: stage()
+
+
+   .. py:method:: unstage()
+
+
+   .. py:method:: trigger()
+
+      Trigger one acquisition.
+
+
+
+.. py:class:: Lambda250kCam
+
+   Bases: :py:obj:`ophyd.areadetector.CamBase`
+
+
+   support for X-Spectrum Lambda 750K detector
+   https://x-spectrum.de/products/lambda-350k750k/
+
+
+   .. py:attribute:: serial_number
+
+
+   .. py:attribute:: firmware_version
+
+
+   .. py:attribute:: operating_mode
+
+
+   .. py:attribute:: energy_threshold
+
+
+   .. py:attribute:: dual_threshold
+
+
+   .. py:attribute:: file_number_sync
+      :value: None
+
+
+
+   .. py:attribute:: file_number_write
+      :value: None
+
+
+
+   .. py:attribute:: pool_max_buffers
+      :value: None
+
+
+
+.. py:class:: MyHDF5Plugin(*args, **kwargs)
+
+   Bases: :py:obj:`ophyd.areadetector.filestore_mixins.FileStoreHDF5SingleIterativeWrite`, :py:obj:`ophyd.areadetector.plugins.HDF5Plugin_V34`
+
+
+   .. py:attribute:: filestore_spec
+      :value: 'AD_HDF5_Lambda250k_APSPolar'
+
+
+
+.. py:class:: Lambda250kDetector(*args, image_name=None, delay_time=0.1, **kwargs)
+
+   Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+
+
+   This trigger mixin class takes one acquisition per trigger.
+   .. rubric:: Examples
+
+   >>> class SimDetector(SingleTrigger):
+   ...     pass
+   >>> det = SimDetector('..pv..')
+   # optionally, customize name of image
+   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+
+
+   .. py:attribute:: cam
+
+
+   .. py:attribute:: hdf1
+
+
+   .. py:attribute:: roi1
+
+
+   .. py:attribute:: roi2
+
+
+   .. py:attribute:: roi3
+
+
+   .. py:attribute:: roi4
+
+
+   .. py:attribute:: stats1
+
+
+   .. py:attribute:: stats2
+
+
+   .. py:attribute:: stats3
+
+
+   .. py:attribute:: stats4
+
+
+   .. py:attribute:: codec
+
+
+   .. py:attribute:: proc
+
+
+   .. py:property:: preset_monitor
+
+
+   .. py:method:: default_kinds()
+
+
+   .. py:method:: default_settings()
+
+

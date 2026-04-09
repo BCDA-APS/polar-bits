@@ -1,0 +1,69 @@
+id4_common.devices.ventus_laser
+===============================
+
+.. py:module:: id4_common.devices.ventus_laser
+
+.. autoapi-nested-parse::
+
+   Ventus Laser
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   id4_common.devices.ventus_laser.VentusLaser
+
+
+Module Contents
+---------------
+
+.. py:class:: VentusLaser
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: power_setpoint
+
+
+   .. py:attribute:: power_readback
+
+
+   .. py:attribute:: current_setpoint
+
+
+   .. py:attribute:: current_readback
+
+
+   .. py:attribute:: laser_on
+
+
+   .. py:attribute:: laser_off
+
+
+   .. py:attribute:: laser_temperature
+
+
+   .. py:attribute:: psu_temperature
+
+
+   .. py:attribute:: status
+
+
+   .. py:attribute:: scan
+
+
+   .. py:attribute:: control_mode
+
+
+   .. py:attribute:: psu_time
+
+
+   .. py:attribute:: laser_enabled_time
+
+
+   .. py:attribute:: laser_operation_time
+
+
