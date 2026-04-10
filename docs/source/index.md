@@ -18,6 +18,8 @@ devices_reference
 plans
 callbacks
 queueserver
+examples/general
+examples/writing_macros
 examples/4idg_diffractometer
 examples/4idh_magnet
 api/index
@@ -82,6 +84,20 @@ SPEC, NeXus/HDF5, and dichroism stream output.
 :link-type: doc
 
 Start/restart the QueueServer per beamline.
+:::
+
+:::{grid-item-card} General Examples
+:link: examples/general
+:link-type: doc
+
+experiment_setup, counters.plotselect, scans, data access.
+:::
+
+:::{grid-item-card} Writing Macros
+:link: examples/writing_macros
+:link-type: doc
+
+Startup scripts, motor shortcuts, writing Bluesky plans.
 :::
 
 :::{grid-item-card} 4IDG Examples
