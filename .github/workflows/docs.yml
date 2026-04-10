@@ -3,14 +3,10 @@ name: Docs
 on:
   push:
     branches:
-      - main
+      - "**"
     tags:
       - "v*"
   workflow_dispatch: # allow manual triggering
-
-defaults:
-  run:
-    shell: bash -l {0}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -30,15 +26,11 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install pandoc
-        run: sudo apt-get install -y pandoc
-
       - name: Install documentation dependencies
         run: |
           set -vxeuo pipefail
           python -m pip install --upgrade pip
           pip install -e ".[doc]"
-          pip install sphinx-autoapi
 
       - name: Build HTML documentation
         run: |
@@ -50,13 +42,14 @@ jobs:
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             echo "dir=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
-          else
+          elif [[ "${GITHUB_REF}" == refs/heads/main ]]; then
             echo "dir=latest" >> "$GITHUB_OUTPUT"
+          else
+            echo "dir=dev" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        if: github.event_name != 'pull_request'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/build/html

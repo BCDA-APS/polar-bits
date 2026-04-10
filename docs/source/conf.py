@@ -4,11 +4,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 import pathlib
-import sys
 
-# Make the source packages importable for type stubs (autoapi does not require
-# this, but intersphinx benefits from it).
-sys.path.insert(0, str(pathlib.Path(__file__).parents[2] / "src"))
+_src_dir = pathlib.Path(__file__).parents[2] / "src"
 
 # -- Project information -----------------------------------------------------
 project = "polar-bits"
@@ -18,28 +15,26 @@ release = "0.0.1"
 
 # -- General configuration ---------------------------------------------------
 extensions = [
-    "autoapi.extension",  # sphinx-autoapi: no package import required
-    "myst_parser",  # Markdown source files
-    "nbsphinx",  # Jupyter notebook integration
-    "sphinx_design",  # cards, grids, badges
-    "sphinx_tabs.tabs",  # tabbed content blocks
-    "sphinx.ext.intersphinx",  # cross-links to external projects
-    "sphinx.ext.napoleon",  # NumPy / Google docstring styles
-    "sphinx.ext.viewcode",  # [source] links in API reference
+    "autoapi.extension",
+    "myst_parser",
+    "nbsphinx",
+    "sphinx_design",
+    "sphinx_tabs.tabs",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
 ]
 
-# MyST extensions for richer Markdown
 myst_enable_extensions = [
-    "colon_fence",  # ::: directive syntax
+    "colon_fence",
     "deflist",
     "substitution",
 ]
 
-templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- sphinx-autoapi ----------------------------------------------------------
-autoapi_dirs = [str(pathlib.Path(__file__).parents[2] / "src")]
+autoapi_dirs = [str(_src_dir)]
 autoapi_root = "api"
 autoapi_options = [
     "members",
@@ -95,5 +90,5 @@ html_context = {
 }
 
 # -- nbsphinx ----------------------------------------------------------------
-nbsphinx_execute = "never"  # don't execute notebooks at build time (no EPICS)
-nbsphinx_allow_errors = False
+# Don't execute notebooks at build time — EPICS is not available in CI
+nbsphinx_execute = "never"
