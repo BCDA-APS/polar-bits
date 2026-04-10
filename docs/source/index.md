@@ -14,9 +14,12 @@ getting_started
 architecture
 configuration
 devices_guide
+devices_reference
 plans
 callbacks
 queueserver
+examples/4idg_diffractometer
+examples/4idh_magnet
 api/index
 ```
 
@@ -53,6 +56,13 @@ Multi-beamline structure, startup flow, station labels.
 PV-agnostic pattern, deferred connection, factory classes.
 :::
 
+:::{grid-item-card} Device Reference
+:link: devices_reference
+:link-type: doc
+
+Lookup tables: all core, 4IDB, 4IDG, and 4IDH devices.
+:::
+
 :::{grid-item-card} Scan Plans
 :link: plans
 :link-type: doc
@@ -72,6 +82,20 @@ SPEC, NeXus/HDF5, and dichroism stream output.
 :link-type: doc
 
 Start/restart the QueueServer per beamline.
+:::
+
+:::{grid-item-card} 4IDG Examples
+:link: examples/4idg_diffractometer
+:link-type: doc
+
+Diffractometer setup, HKL navigation, reciprocal-space scans.
+:::
+
+:::{grid-item-card} 4IDH Examples
+:link: examples/4idh_magnet
+:link-type: doc
+
+Magnet 9-1-1 field sweeps, XMCD spectroscopy, temperature series.
 :::
 
 :::{grid-item-card} API Reference
