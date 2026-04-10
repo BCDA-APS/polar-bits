@@ -187,3 +187,6 @@ qserver/existing_plans_and_devices.yaml
 
 # Claude code
 .claude
+
+# old logs
+.usage_logs
