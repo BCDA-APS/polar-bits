@@ -12,10 +12,9 @@ Includes:
 import logging
 from pathlib import Path
 
+from apsbits.core.instrument_init import init_instrument
 from apsbits.core.instrument_init import make_devices
-from apsbits.core.instrument_init import oregistry
-from apsbits.core.instrument_init import instrument  # noqa: F401
-from apsbits.utils.aps_functions import aps_dm_setup  # TODO: is this correct?
+from id4_common.utils.aps_functions import aps_dm_setup
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.config_loaders import load_config_yaml
@@ -45,7 +44,7 @@ iconfig = get_config()
 
 logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 
-# Discard oregistry items loaded above.
+instrument, oregistry = init_instrument("guarneri")
 oregistry.clear()
 
 # Configure the session with callbacks, devices, and plans.
@@ -63,7 +62,8 @@ from id4_common.utils.run_engine import (  # noqa: F401, E402
     RE,
     sd,
     bec,
-    cat as full_cat,  # This is the whole beamline catalog, below we narrow it.
+    cat,
+    cat_legacy,
     peaks,
 )
 
@@ -145,7 +145,7 @@ else:
     from id4_common.plans import *  # noqa: F401, F403
 
 logger.info("Loading 4-ID-B devices, this can take a few minutes.")
-RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
+make_devices(clear=True, file="devices.yml", device_manager=instrument)
 stations = ["4idb"]
 for device in oregistry.findall(stations):
     connect_device(device, raise_error=False)
@@ -154,10 +154,3 @@ counters.plotselect(11, 0)
 
 for sus in shutter_suspenders.values():
     RE.install_suspender(sus)
-
-# Use a subset of the catalog - just for this station
-# This helps sorting up if there is a mix up of the scan_ids when using
-# two stations at the same time.
-cat = db_query(  # noqa: F405
-    full_cat, dict(instrument_name=f'polar-{iconfig["STATION"]}')
-)

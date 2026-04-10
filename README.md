@@ -7,7 +7,7 @@ Instrument Github Repository to be used with BITS structure at the APS
 
 ```bash
 export ENV_NAME=polar-bits
-conda create -y -n $ENV_NAME python=3.11 hkl pyepics
+conda create -y -n $ENV_NAME python=3.11 hkl pyepics aps-dm-api
 conda activate $ENV_NAME
 pip install apsbits
 ```
@@ -20,6 +20,10 @@ create-bits $YOUR_INSTRUMENT_NAME
 pip install -e .
 ```
 
+## Setup conda config vars for hklpy
+```bash
+conda env config vars set LD_LIBRARY_PATH="$HOME/.conda/envs/$ENV_NAME/lib:$LD_LIBRARY_PATH"
+```
 
 ## IPython console Start
 

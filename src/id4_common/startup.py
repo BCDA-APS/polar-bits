@@ -12,10 +12,9 @@ Includes:
 import logging
 from pathlib import Path
 
+from apsbits.core.instrument_init import init_instrument
 from apsbits.core.instrument_init import make_devices
-from apsbits.core.instrument_init import oregistry
-from apsbits.core.instrument_init import instrument  # noqa: F401
-from apsbits.utils.aps_functions import aps_dm_setup  # TODO: is this correct?
+from id4_common.utils.aps_functions import aps_dm_setup
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.helper_functions import register_bluesky_magics
@@ -37,7 +36,7 @@ iconfig = get_config()
 
 logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 
-# Discard oregistry items loaded above.
+instrument, oregistry = init_instrument("guarneri")
 oregistry.clear()
 
 # Configure the session with callbacks, devices, and plans.
@@ -51,7 +50,7 @@ from .utils.local_magics import LocalMagics  # noqa: E402
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
-from .utils.run_engine import RE, sd, bec, cat, peaks  # noqa: F401, E402
+from .utils.run_engine import RE, sd, bec, cat, cat_legacy, peaks  # noqa: F401, E402
 
 # Import optional components based on configuration
 if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
@@ -134,7 +133,7 @@ try:
     if _load_devices.lower() in ["y", "yes"]:
         logger.info("Loading all devices, this can take a few minutes.")
 
-        RE(make_devices(clear=True, file="devices.yml"))  # Create the devices.
+        make_devices(clear=True, file="devices.yml", device_manager=instrument)
         stations = ["core", "4idb", "4idg", "4idh"]
         for device in oregistry.findall(stations):
             connect_device(device, raise_error=False)
