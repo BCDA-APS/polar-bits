@@ -1,0 +1,211 @@
+id4_common.devices.polar_diffractometer_hklpy2
+==============================================
+
+.. py:module:: id4_common.devices.polar_diffractometer_hklpy2
+
+.. autoapi-nested-parse::
+
+   Polar diffractometer
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: WAVELENGTH_CONSTANT
+   :value: 12.39
+
+
+.. py:data:: PTTH_MIN_DEGREES
+   :value: 79
+
+
+.. py:data:: PTTH_MAX_DEGREES
+   :value: 101
+
+
+.. py:data:: PTH_MIN_DEGREES
+   :value: 39
+
+
+.. py:data:: PTH_MAX_DEGREES
+   :value: 51
+
+
+.. py:data:: ANALYZER_LIST_PATH
+
+.. py:class:: AnalyzerDevice
+
+   Bases: :py:obj:`ophyd.PseudoPositioner`
+
+
+   .. py:attribute:: energy
+
+
+   .. py:attribute:: th
+
+
+   .. py:attribute:: tth_trans
+
+
+   .. py:attribute:: th_motor
+
+
+   .. py:attribute:: tth
+
+
+   .. py:attribute:: eta
+
+
+   .. py:attribute:: chi
+
+
+   .. py:attribute:: d_spacing
+
+
+   .. py:attribute:: crystal
+
+
+   .. py:attribute:: tth_detector_distance
+
+
+   .. py:attribute:: tracking
+
+
+   .. py:method:: move_single(pseudo, position, **kwargs)
+
+
+   .. py:property:: beamline_wavelength
+
+
+   .. py:property:: beamline_energy
+
+
+   .. py:method:: convert_energy_to_theta(energy)
+
+
+   .. py:method:: convert_energy_to_tth_trans(energy)
+
+
+   .. py:method:: convert_theta_to_energy(theta)
+
+
+   .. py:method:: forward(pseudo_pos)
+
+      Run a forward (pseudo -> real) calculation
+
+
+
+   .. py:method:: inverse(real_pos)
+
+      Run an inverse (real -> pseudo) calculation
+
+
+
+   .. py:method:: set_energy(energy)
+
+
+   .. py:method:: calc()
+
+
+   .. py:method:: setup(analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH)
+
+
+.. py:class:: DiffractometerMixin
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: tablex
+
+
+   .. py:attribute:: tabley
+
+
+   .. py:attribute:: pad_rail
+
+
+   .. py:attribute:: point_rail
+
+
+   .. py:attribute:: filter
+
+
+   .. py:attribute:: detslt
+
+
+   .. py:attribute:: ana
+
+
+   .. py:method:: default_settings()
+
+
+.. py:data:: mono_kwargs
+
+.. py:data:: CradleDiffractometerBase
+
+.. py:class:: CradleDiffractometer
+
+   Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+
+
+   .. py:attribute:: x
+
+
+   .. py:attribute:: y
+
+
+   .. py:attribute:: z
+
+
+.. py:data:: HPDiffractometerBase
+
+.. py:class:: HPDiffractometer
+
+   Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+
+
+   .. py:attribute:: basex
+
+
+   .. py:attribute:: basey
+
+
+   .. py:attribute:: basez
+
+
+   .. py:attribute:: basey_motor
+
+
+   .. py:attribute:: basez_motor
+
+
+   .. py:attribute:: sample_tilt
+
+
+   .. py:attribute:: x
+
+
+   .. py:attribute:: y
+
+
+   .. py:attribute:: z
+
+
+   .. py:attribute:: nanox
+
+
+   .. py:attribute:: nanoy
+
+
+   .. py:attribute:: nanoz
+
+
+.. py:data:: CradleDiffractometerPSI
+
+.. py:data:: HPDiffractometerPSI
+

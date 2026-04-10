@@ -1,0 +1,892 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>General Examples &#8212; polar-bits</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=69256293" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+
+    <script src="../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/general';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Writing Macros" href="writing_macros.html" />
+    <link rel="prev" title="QueueServer" href="../queueserver.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">polar-bits</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#">
+    General Examples
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../api/index.html">
+    API Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    General Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">General Examples</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="general-examples">
+<h1>General Examples<a class="headerlink" href="#general-examples" title="Link to this heading">#</a></h1>
+<p>This page covers session setup and common operations that apply to all beamlines.</p>
+<hr class="docutils" />
+<section id="experiment-setup">
+<h2>Experiment Setup<a class="headerlink" href="#experiment-setup" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">experiment_setup()</span></code> collects the metadata needed to organize data into the
+correct folders and associate it with an APS proposal and ESAF. It can be run
+<strong>interactively</strong> (prompts at the command line) or <strong>non-interactively</strong> by
+passing all arguments as keyword parameters.</p>
+<section id="interactive-mode">
+<h3>Interactive mode<a class="headerlink" href="#interactive-mode" title="Link to this heading">#</a></h3>
+<p>Call with no arguments — the function prompts for each field in sequence:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_setup</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The prompts walk through:</p>
+<ol class="arabic simple">
+<li><p><strong>ESAF ID</strong> — enter the APS ESAF number (or <code class="docutils literal notranslate"><span class="pre">dev</span></code> to skip for development sessions)</p></li>
+<li><p><strong>Proposal ID</strong> — the APS proposal number (or <code class="docutils literal notranslate"><span class="pre">dev</span></code>)</p></li>
+<li><p><strong>Server</strong> — choose between <code class="docutils literal notranslate"><span class="pre">dserv</span></code> (local storage) and data management (<code class="docutils literal notranslate"><span class="pre">dm</span></code>)</p></li>
+<li><p><strong>Experiment name</strong> — must match an existing experiment in the DM system if using DM</p></li>
+<li><p><strong>Sample name</strong> — free text; creates a sub-folder under the experiment path</p></li>
+<li><p><strong>Scan ID reset</strong> — optionally reset the Bluesky <code class="docutils literal notranslate"><span class="pre">scan_id</span></code> counter</p></li>
+<li><p><strong>File base name</strong> — prefix for SPEC file names (e.g. <code class="docutils literal notranslate"><span class="pre">scan</span></code> → <code class="docutils literal notranslate"><span class="pre">scan_0001</span></code>)</p></li>
+</ol>
+<p>After completing setup, the SPEC writer is configured, <code class="docutils literal notranslate"><span class="pre">RE.md</span></code> is populated,
+and data will be written to the correct experiment path automatically.</p>
+</section>
+<section id="non-interactive-mode">
+<h3>Non-interactive mode<a class="headerlink" href="#non-interactive-mode" title="Link to this heading">#</a></h3>
+<p>Pass all values as keyword arguments — useful for startup scripts:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_setup</span><span class="p">(</span>
+    <span class="n">esaf_id</span>       <span class="o">=</span> <span class="mi">281924</span><span class="p">,</span>
+    <span class="n">proposal_id</span>   <span class="o">=</span> <span class="s2">&quot;dev&quot;</span><span class="p">,</span>
+    <span class="n">base_name</span>     <span class="o">=</span> <span class="s2">&quot;scan&quot;</span><span class="p">,</span>
+    <span class="n">sample</span>        <span class="o">=</span> <span class="s2">&quot;EuAl4&quot;</span><span class="p">,</span>
+    <span class="n">server</span>        <span class="o">=</span> <span class="s2">&quot;dserv&quot;</span><span class="p">,</span>
+    <span class="n">experiment_name</span> <span class="o">=</span> <span class="s2">&quot;Miao_25-3&quot;</span><span class="p">,</span>
+    <span class="n">reset_scan_id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>     <span class="c1"># -1 = do not reset</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="resuming-from-the-last-run">
+<h3>Resuming from the last run<a class="headerlink" href="#resuming-from-the-last-run" title="Link to this heading">#</a></h3>
+<p>If the session was interrupted, reload the experiment state from the most
+recent Bluesky run rather than re-entering all values:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_load_from_bluesky</span><span class="p">()</span>    <span class="c1"># reads metadata from cat[-1]</span>
+</pre></div>
+</div>
+</section>
+<section id="changing-sample-mid-experiment">
+<h3>Changing sample mid-experiment<a class="headerlink" href="#changing-sample-mid-experiment" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_change_sample</span><span class="p">(</span><span class="n">sample_name</span><span class="o">=</span><span class="s2">&quot;Fe3O4&quot;</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="s2">&quot;scan&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="detector-selection">
+<span id="id1"></span><h2>Detector Selection<a class="headerlink" href="#detector-selection" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">counters.plotselect()</span></code> configures which scaler channels are used as
+detectors and monitor in all scan plans. Called without arguments, it prints
+a table of available channels and prompts interactively:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+---+-------------------+----------+</span>
+<span class="o">|</span> <span class="c1"># | Detector          | Monitor? |</span>
+<span class="o">+---+-------------------+----------+</span>
+<span class="o">|</span> <span class="mi">0</span> <span class="o">|</span> <span class="n">scaler1_ch1</span> <span class="p">(</span><span class="n">I0</span><span class="p">)</span>  <span class="o">|</span>    <span class="o">*</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">scaler1_ch2</span> <span class="p">(</span><span class="n">I1</span><span class="p">)</span>  <span class="o">|</span>          <span class="o">|</span>
+<span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="n">scaler1_ch3</span> <span class="p">(</span><span class="n">I2</span><span class="p">)</span>  <span class="o">|</span>          <span class="o">|</span>
+<span class="o">...</span>
+<span class="n">Enter</span> <span class="n">detector</span> <span class="n">number</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="mi">2</span>
+<span class="n">Enter</span> <span class="n">monitor</span> <span class="n">number</span> <span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="mi">0</span>
+
+<span class="n">counters</span><span class="p">:</span>
+  <span class="n">detectors</span> <span class="p">:</span> <span class="p">[</span><span class="n">scaler1_ch3</span><span class="p">]</span>
+  <span class="n">monitor</span>   <span class="p">:</span> <span class="n">scaler1_ch1</span>
+</pre></div>
+</div>
+<p>Alternatively, pass indices directly (no prompt):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single detector (index 9), monitor at index 8</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># Multiple detectors, same monitor</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Inspect the current selection at any time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">counters</span><span class="p">)</span>           <span class="c1"># prints selection table</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">detectors</span>        <span class="c1"># list of active detector objects</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">monitor</span>          <span class="c1"># active monitor channel name</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="ipython-magics">
+<h2>IPython Magics<a class="headerlink" href="#ipython-magics" title="Link to this heading">#</a></h2>
+<p>Several IPython magic commands provide convenient shortcuts for motor control:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Move a motor to an absolute position (blocking)</span>
+<span class="o">%</span><span class="n">mov</span> <span class="n">motor_name</span> <span class="mf">10.5</span>
+<span class="o">%</span><span class="n">mov</span> <span class="n">energy</span> <span class="mf">7.245</span>
+<span class="o">%</span><span class="n">mov</span> <span class="n">phi</span> <span class="mi">45</span>
+
+<span class="c1"># Multiple motors at once</span>
+<span class="o">%</span><span class="n">mov</span> <span class="n">energy</span> <span class="mf">7.245</span> <span class="n">phi</span> <span class="mi">45</span>
+
+<span class="c1"># Relative move</span>
+<span class="o">%</span><span class="n">movr</span> <span class="n">motor_name</span> <span class="mf">0.1</span>
+<span class="o">%</span><span class="n">movr</span> <span class="n">phi</span> <span class="o">-</span><span class="mi">5</span>
+
+<span class="c1"># Show positions of all named motors</span>
+<span class="o">%</span><span class="n">wa</span>
+
+<span class="c1"># Show positions and software limits for specific motors</span>
+<span class="o">%</span><span class="n">wm</span> <span class="n">motor1</span> <span class="n">motor2</span>
+</pre></div>
+</div>
+<p>These are equivalent to running <code class="docutils literal notranslate"><span class="pre">RE(mv(...))</span></code> but more concise for interactive use.</p>
+</section>
+<hr class="docutils" />
+<section id="basic-scan-workflow">
+<h2>Basic Scan Workflow<a class="headerlink" href="#basic-scan-workflow" title="Link to this heading">#</a></h2>
+<p>A typical scan sequence:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Set up the experiment (once per session or sample change)</span>
+<span class="n">experiment_setup</span><span class="p">()</span>
+
+<span class="c1"># 2. Select detectors</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># 3. Set energy</span>
+<span class="o">%</span><span class="n">mov</span> <span class="n">energy</span> <span class="mf">7.514</span>
+
+<span class="c1"># 4. Align sample</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">tabx</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+
+<span class="c1"># 5. Start new SPEC file</span>
+<span class="n">newSpecFile</span><span class="p">(</span><span class="s2">&quot;TbFe_300K&quot;</span><span class="p">)</span>
+
+<span class="c1"># 6. Add a comment</span>
+<span class="n">spec_comment</span><span class="p">(</span><span class="s2">&quot;Sample: TbFe, T = 300 K, field = 0 T&quot;</span><span class="p">)</span>
+
+<span class="c1"># 7. Scan</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">ascan</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="mf">7.4</span><span class="p">,</span> <span class="mf">7.7</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="finding-and-loading-devices">
+<h2>Finding and Loading Devices<a class="headerlink" href="#finding-and-loading-devices" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># List all available devices from devices.yml</span>
+<span class="n">find_loadable_devices</span><span class="p">()</span>
+
+<span class="c1"># Filter by hutch or function</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;4idg&quot;</span><span class="p">)</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;detector&quot;</span><span class="p">)</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;kb&quot;</span><span class="p">)</span>       <span class="c1"># substring match</span>
+
+<span class="c1"># Connect a device not loaded at startup</span>
+<span class="n">load_device</span><span class="p">(</span><span class="s2">&quot;eiger&quot;</span><span class="p">)</span>
+
+<span class="c1"># Disconnect and remove from baseline</span>
+<span class="n">remove_device</span><span class="p">(</span><span class="s2">&quot;eiger&quot;</span><span class="p">)</span>
+
+<span class="c1"># Access a device by name using the registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">apsbits.core.instrument_init</span><span class="w"> </span><span class="kn">import</span> <span class="n">oregistry</span>
+<span class="n">dev</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;huber_euler&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="accessing-data">
+<h2>Accessing Data<a class="headerlink" href="#accessing-data" title="Link to this heading">#</a></h2>
+<p>Runs are stored in the databroker catalog (<code class="docutils literal notranslate"><span class="pre">cat</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="o">=</span> <span class="n">cat</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>            <span class="c1"># most recent run</span>
+<span class="n">run</span> <span class="o">=</span> <span class="n">cat</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>            <span class="c1"># second-to-last run</span>
+<span class="n">run</span> <span class="o">=</span> <span class="n">cat</span><span class="p">[</span><span class="mi">42</span><span class="p">]</span>            <span class="c1"># by scan_id</span>
+
+<span class="c1"># Read primary data stream</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">primary</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># returns xarray Dataset</span>
+<span class="n">ds</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span>             <span class="c1"># energy axis</span>
+<span class="n">ds</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>        <span class="c1"># detector channel</span>
+
+<span class="c1"># Quick plot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;scaler1_ch8&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Peak finding from the last scan:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peaks</span><span class="o">.</span><span class="n">cen</span>    <span class="c1"># center-of-mass position of the peak</span>
+<span class="n">peaks</span><span class="o">.</span><span class="n">max</span>    <span class="c1"># position of maximum</span>
+<span class="n">peaks</span><span class="o">.</span><span class="n">com</span>    <span class="c1"># alias for center-of-mass</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="energy-tracking">
+<h2>Energy Tracking<a class="headerlink" href="#energy-tracking" title="Link to this heading">#</a></h2>
+<p>Configure which devices follow the monochromator when energy changes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">&quot;undulators_ds&quot;</span><span class="p">,</span> <span class="s2">&quot;pr2&quot;</span><span class="p">])</span>
+
+<span class="c1"># Check which devices are currently tracked</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">tracking</span>
+
+<span class="c1"># Fine-tune the undulator offset relative to the mono</span>
+<span class="n">undulators</span><span class="o">.</span><span class="n">ds</span><span class="o">.</span><span class="n">energy_offset</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="o">-</span><span class="mf">0.063</span><span class="p">)</span>
+<span class="n">undulators</span><span class="o">.</span><span class="n">ds</span><span class="o">.</span><span class="n">energy_deadband</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">0.002</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="runengine-status">
+<h2>RunEngine Status<a class="headerlink" href="#runengine-status" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="o">.</span><span class="n">md</span>                     <span class="c1"># view all persistent metadata</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;scan_id&quot;</span><span class="p">]</span>          <span class="c1"># current scan counter</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;proposal_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;GUP-12345&quot;</span>   <span class="c1"># set metadata</span>
+
+<span class="n">RE</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>    <span class="c1"># abort current plan (cleanup may not run)</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>     <span class="c1"># graceful stop (cleanup runs)</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>    <span class="c1"># pause mid-scan (can resume)</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>   <span class="c1"># resume after pause or RE.request_pause()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../queueserver.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">QueueServer</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="writing_macros.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Writing Macros</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-mode">Interactive mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#non-interactive-mode">Non-interactive mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resuming-from-the-last-run">Resuming from the last run</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-sample-mid-experiment">Changing sample mid-experiment</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#detector-selection">Detector Selection</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ipython-magics">IPython Magics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-scan-workflow">Basic Scan Workflow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-and-loading-devices">Finding and Loading Devices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-data">Accessing Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#energy-tracking">Energy Tracking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runengine-status">RunEngine Status</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/examples/general.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/examples/general.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2014-2025, APS.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

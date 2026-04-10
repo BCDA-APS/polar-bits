@@ -1,0 +1,334 @@
+id4_common.plans.local_scans
+============================
+
+.. py:module:: id4_common.plans.local_scans
+
+.. autoapi-nested-parse::
+
+   Modifed bluesky scans
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: count(num, time, detectors=None, lockin=False, dichro=False, vortex_sgz=False, g_sgz=False, delay=None, per_shot=None, md=None)
+
+   Take one or more readings from detectors.
+   This is a local version of `bluesky.plans.count`. Note that the `per_shot`
+   cannot be set here, as it is used for dichro scans.
+   :param num: number of readings to take
+               If None, capture data until canceled
+   :type num: integer
+   :param time: If a number is passed, it will modify the counts over time. All
+                detectors need to have a .preset_monitor signal.
+   :type time: float
+   :param detectors: List of 'readable' objects. If None, will use the detectors defined in
+                     `counters.detectors`.
+   :type detectors: list, optional
+   :param lockin: Flag to do a lock-in scan. Please run pr_setup.config() prior do a
+                  lock-in scan.
+   :type lockin: boolean, optional
+   :param dichro: Flag to do a dichro scan. Please run pr_setup.config() prior do a
+                  dichro scan. Note that this will switch the x-ray polarization at every
+                  point using the +, -, -, + sequence, thus increasing the number of
+                  points by a factor of 4
+   :type dichro: boolean, optional
+   :param vortex_sgz: Measures the Vortex detector using the softgluezynq triggers. This is a
+                      special mode that requires the 'vortex' and 'sgz_vortex' devices to
+                      exist otherwise an error will be thrown.
+   :type vortex_sgz: boolean, optional
+   :param delay: Time delay in seconds between successive readings; default is 0.
+   :type delay: iterable or scalar, optional
+   :param per_shot: Hook for customizing action of inner loop (messages per step).
+                    See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+                    for details.
+   :type per_shot: callable, optional
+   :param md: metadata
+   :type md: dict, optional
+
+   .. rubric:: Notes
+
+   If ``delay`` is an iterable, it must have at least ``num - 1`` entries or
+   the plan will raise a ``ValueError`` during iteration.
+
+
+.. py:function:: ascan(*args, detectors=None, lockin=False, dichro=False, fixq=False, vortex_sgz=False, g_sgz=False, per_step=None, md=None)
+
+   Scan over one multi-motor trajectory.
+
+   This is a local version of `bluesky.plans.scan`. Note that the `per_step`
+   cannot be set here, as it is used for dichro scans.
+
+   :param \*args: For one dimension, ``motor, start, stop, number of points, time``.
+                  In general:
+                  .. code-block:: python
+                      motor1, start1, stop1,
+                      motor2, start2, start2,
+                      ...,
+                      motorN, startN, stopN,
+                      number of points,
+                      time
+                  Motors can be any 'settable' object (motor, temp controller, etc.)
+   :param detectors: List of detectors to be used in the scan. If None, will use the
+                     detectors defined in `counters.detectors`.
+   :type detectors: list, optional
+   :param lockin: Flag to do a lock-in scan. Please run pr_setup.config() prior do a
+                  lock-in scan.
+   :type lockin: boolean, optional
+   :param dichro: Flag to do a dichro scan. Please run pr_setup.config() prior do a
+                  dichro scan. Note that this will switch the x-ray polarization at every
+                  point using the +, -, -, + sequence, thus increasing the number of
+                  points by a factor of 4
+   :type dichro: boolean, optional
+   :param fixq: Flag for fixQ scans. If True, it will fix the diffractometer hkl
+                position during the scan. This is particularly useful for energy scan.
+                Note that hkl is moved ~after~ the other motors!
+   :type fixq: boolean, optional
+   :param vortex_sgz: Measures the Vortex detector using the softgluezynq triggers. This is a
+                      special mode that requires the 'vortex' and 'sgz_vortex' devices to
+                      exist otherwise an error will be thrown.
+   :type vortex_sgz: boolean, optional
+   :param per_step: hook for customizing action of inner loop (messages per step).
+                    See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+                    for details.
+   :type per_step: callable, optional
+   :param md: Metadata to be added to the run start.
+   :type md: dictionary, optional
+
+   .. seealso:: :func:`bluesky.plans.scan`, :func:`lup`
+
+
+.. py:function:: lup(*args, detectors=None, lockin=False, dichro=False, fixq=False, vortex_sgz=False, g_sgz=False, per_step=None, md=None)
+
+   Scan over one multi-motor trajectory relative to current position.
+
+   This is a local version of `bluesky.plans.rel_scan`. Note that the
+   `per_step` cannot be set here, as it is used for dichro scans.
+
+   :param \*args: For one dimension, ``motor, start, stop, number of points``.
+                  In general:
+                  .. code-block:: python
+                      motor1, start1, stop1,
+                      motor2, start2, start2,
+                      ...,
+                      motorN, startN, stopN,
+                      number of points
+                  Motors can be any 'settable' object (motor, temp controller, etc.)
+   :param detectors: List of detectors to be used in the scan. If None, will use the
+                     detectors defined in `counters.detectors`.
+   :type detectors: list, optional
+   :param lockin: Flag to do a lock-in scan. Please run pr_setup.config() prior do a
+                  lock-in scan.
+   :type lockin: boolean, optional
+   :param dichro: Flag to do a dichro scan. Please run pr_setup.config() prior do a
+                  dichro scan. Note that this will switch the x-ray polarization at every
+                  point using the +, -, -, + sequence, thus increasing the number of
+                  points by a factor of 4
+   :type dichro: boolean, optional
+   :param fixq: Flag for fixQ scans. If True, it will fix the diffractometer hkl
+                position during the scan. This is particularly useful for energy scan.
+                Note that hkl is moved ~after~ the other motors!
+   :type fixq: boolean, optional
+   :param vortex_sgz: Measures the Vortex detector using the softgluezynq triggers. This is a
+                      special mode that requires the 'vortex' and 'sgz_vortex' devices to        exist otherwise an error will be thrown.
+   :type vortex_sgz: boolean, optional
+   :param per_step: hook for customizing action of inner loop (messages per step).
+                    See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+                    for details.
+   :type per_step: callable, optional
+   :param md: Metadata to be added to the run start.
+   :type md: dictionary, optional
+
+   .. seealso:: :func:`bluesky.plans.rel_scan`, :func:`ascan`
+
+
+.. py:function:: grid_scan(*args, detectors=None, snake_axes=None, lockin=False, dichro=False, fixq=False, vortex_sgz=False, g_sgz=False, per_step=None, md=None)
+
+   Scan over a mesh; each motor is on an independent trajectory.
+   :param ``*args``:
+                     patterned like (``motor1, start1, stop1, num1,``
+                                     ``motor2, start2, stop2, num2,``
+                                     ``motor3, start3, stop3, num3,`` ...
+                                     ``motorN, startN, stopN, numN``)
+                     The first motor is the "slowest", the outer loop. For all motors
+                     except the first motor, there is a "snake" argument: a boolean
+                     indicating whether to following snake-like, winding trajectory or a
+                     simple left-to-right trajectory.
+   :param time: If a number is passed, it will modify the counts over time. All
+                detectors need to have a .preset_monitor signal.
+   :type time: float, optional
+   :param detectors: List of detectors to be used in the scan. If None, will use the
+                     detectors defined in `counters.detectors`.
+   :type detectors: list, optional
+   :param snake_axes: which axes should be snaked, either ``False`` (do not snake any axes),
+                      ``True`` (snake all axes) or a list of axes to snake. "Snaking" an axis
+                      is defined as following snake-like, winding trajectory instead of a
+                      simple left-to-right trajectory. The elements of the list are motors
+                      that are listed in `args`. The list must not contain the slowest
+                      (first) motor, since it can't be snaked.
+   :type snake_axes: boolean or iterable, optional
+   :param lockin: Flag to do a lock-in scan. Please run pr_setup.config() prior do a
+                  lock-in scan.
+   :type lockin: boolean, optional
+   :param dichro: Flag to do a dichro scan. Please run pr_setup.config() prior do a
+                  dichro scan. Note that this will switch the x-ray polarization at every
+                  point using the +, -, -, + sequence, thus increasing the number of
+                  points by a factor of 4
+   :type dichro: boolean, optional
+   :param fixq: Flag for fixQ scans. If True, it will fix the diffractometer hkl
+                position during the scan. This is particularly useful for energy scan.
+                Note that hkl is moved ~after~ the other motors!
+   :type fixq: boolean, optional
+   :param vortex_sgz: Measures the Vortex detector using the softgluezynq triggers. This is a
+                      special mode that requires the 'vortex' and 'sgz_vortex' devices to
+                      exist otherwise an error will be thrown.
+   :type vortex_sgz: boolean, optional
+   :param per_step: hook for customizing action of inner loop (messages per step).
+                    See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+                    for details.
+   :type per_step: callable, optional
+   :param md: metadata
+   :type md: dict, optional
+
+   .. seealso:: :func:`bluesky.plans.grid_scan`, :func:`bluesky.plans.rel_grid_scan`, :func:`bluesky.plans.inner_product_scan`, :func:`bluesky.plans.scan_nd`
+
+
+.. py:function:: rel_grid_scan(*args, detectors=None, snake_axes=None, lockin=False, dichro=False, fixq=False, vortex_sgz=False, g_sgz=False, per_step=None, md=None)
+
+   Scan over a mesh relative to current position.
+
+   Each motor is on an independent trajectory.
+
+   :param ``*args``:
+                     patterned like (``motor1, start1, stop1, num1,``
+                                     ``motor2, start2, stop2, num2,``
+                                     ``motor3, start3, stop3, num3,`` ...
+                                     ``motorN, startN, stopN, numN``)
+                     The first motor is the "slowest", the outer loop. For all motors
+                     except the first motor, there is a "snake" argument: a boolean
+                     indicating whether to following snake-like, winding trajectory or a
+                     simple left-to-right trajectory.
+   :param snake_axes: which axes should be snaked, either ``False`` (do not snake any axes),
+                      ``True`` (snake all axes) or a list of axes to snake. "Snaking" an axis
+                      is defined as following snake-like, winding trajectory instead of a
+                      simple left-to-right trajectory. The elements of the list are motors
+                      that are listed in `args`. The list must not contain the slowest
+                      (first) motor, since it can't be snaked.
+   :type snake_axes: boolean or iterable, optional
+   :param detectors: List of detectors to be used in the scan. If None, will use the
+                     detectors defined in `counters.detectors`.
+   :type detectors: list, optional
+   :param lockin: Flag to do a lock-in scan. Please run pr_setup.config() prior do a
+                  lock-in scan
+   :type lockin: boolean, optional
+   :param dichro: Flag to do a dichro scan. Please run pr_setup.config() prior do a
+                  dichro scan. Note that this will switch the x-ray polarization at every
+                  point using the +, -, -, + sequence, thus increasing the number of
+                  points by a factor of 4
+   :type dichro: boolean, optional
+   :param fixq: Flag for fixQ scans. If True, it will fix the diffractometer hkl
+                position during the scan. This is particularly useful for energy scan.
+                Note that hkl is moved ~after~ the other motors!
+   :type fixq: boolean, optional
+   :param vortex_sgz: Measures the Vortex detector using the softgluezynq triggers. This is a
+                      special mode that requires the 'vortex' and 'sgz_vortex' devices to
+                      exist otherwise an error will be thrown.
+   :type vortex_sgz: boolean, optional
+   :param per_step: hook for customizing action of inner loop (messages per step).
+                    See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+                    for details.
+   :type per_step: callable, optional
+   :param md: metadata
+   :type md: dict, optional
+
+   .. seealso:: :func:`grid_scan`, :func:`bluesky.plans.grid_scan`, :func:`bluesky.plans.rel_grid_scan`, :func:`bluesky.plans.inner_product_scan`, :func:`bluesky.plans.scan_nd`
+
+
+.. py:function:: qxscan(edge_energy, time, detectors=None, lockin=False, dichro=False, fixq=False, vortex_sgz=False, g_sgz=False, per_step=None, md=None)
+
+   Energy scan with fixed delta_K steps.
+
+   WARNING: please run qxscan_params() before using this plan! It will
+   use the parameters set in qxscan_params to determine the energy points.
+
+   :param edge_energy: Absorption edge energy. The parameters in qxscan_params offset by this
+                       energy.
+   :type edge_energy: float
+   :param time: If a number is passed, it will modify the counts over time. All
+                detectors need to have a .preset_monitor signal.
+   :type time: float
+   :param detectors: List of detectors to be used in the scan. If None, will use the
+                     detectors defined in `counters.detectors`.
+   :type detectors: list, optional
+   :param lockin: Flag to do a lock-in scan. Please run pr_setup.config() prior do a
+                  lock-in scan
+   :type lockin: boolean, optional
+   :param dichro: Flag to do a dichro scan. Please run pr_setup.config() prior do a
+                  dichro scan. Note that this will switch the x-ray polarization at every
+                  point using the +, -, -, + sequence, thus increasing the number of
+                  points by a factor of 4
+   :type dichro: boolean, optional
+   :param fixq: Flag for fixQ scans. If True, it will fix the diffractometer hkl
+                position during the scan. Note that hkl is moved ~after~ the other
+                motors!
+   :type fixq: boolean, optional
+   :param md: Metadata to be added to the run start.
+   :type md: dictionary, optional
+
+   .. seealso:: :func:`bluesky.plans.scan`, :func:`lup`
+
+
+.. py:function:: mv(*args, **kwargs)
+
+   Move one or more devices to a setpoint, and wait for all to complete.
+
+   This is a local version of `bluesky.plan_stubs.mv`. If more than one device
+   is specifed, the movements are done in parallel.
+
+   :param args: device1, value1, device2, value2, ...
+   :param kwargs: passed to bluesky.plan_stubs.mv
+
+   :Yields: **msg** (*Msg*)
+
+   .. seealso:: :func:`bluesky.plan_stubs.mv`
+
+
+.. py:function:: mvr(*args, **kwargs)
+
+   Move one or more devices to a relative setpoint. Wait for all to complete.
+   If more than one device is specified, the movements are done in parallel.
+
+   This is a local version of `bluesky.plan_stubs.mvr`.
+
+   :param args: device1, value1, device2, value2, ...
+   :param kwargs: passed to bluesky.plan_stub.mvr
+
+   :Yields: **msg** (*Msg*)
+
+   .. seealso:: :func:`bluesky.plan_stubs.rel_set`, :func:`bluesky.plan_stubs.mv`
+
+
+.. py:function:: abs_set(*args, **kwargs)
+
+   Set a value. Optionally, wait for it to complete before continuing.
+   This is a local version of `bluesky.plan_stubs.abs_set`. If more than one
+   device is specifed, the movements are done in parallel.
+
+   :param obj:
+   :type obj: Device
+   :param group: identifier used by 'wait'
+   :type group: string (or any hashable object), optional
+   :param wait: If True, wait for completion before processing any more messages.
+                False by default.
+   :type wait: boolean, optional
+   :param args: passed to obj.set()
+   :param kwargs: passed to obj.set()
+
+   :Yields: **msg** (*Msg*)
+
+   .. seealso:: :func:`bluesky.plan_stubs.rel_set`, :func:`bluesky.plan_stubs.wait`, :func:`bluesky.plan_stubs.mv`
+
+

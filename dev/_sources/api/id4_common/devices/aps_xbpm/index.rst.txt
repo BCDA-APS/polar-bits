@@ -1,0 +1,68 @@
+id4_common.devices.aps_xbpm
+===========================
+
+.. py:module:: id4_common.devices.aps_xbpm
+
+.. autoapi-nested-parse::
+
+   Ring XBPM support
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: CMsDevice
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: current1
+
+
+   .. py:attribute:: current2
+
+
+   .. py:attribute:: current3
+
+
+   .. py:attribute:: current4
+
+
+.. py:class:: MyXBPM
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: vertical_position
+
+
+   .. py:attribute:: vertical_angle
+
+
+   .. py:attribute:: horizontal_position
+
+
+   .. py:attribute:: horizontal_angle
+
+
+   .. py:attribute:: x_axis
+
+
+   .. py:attribute:: y_top
+
+
+   .. py:attribute:: y_bot
+
+
+   .. py:attribute:: cm1
+
+
+   .. py:attribute:: cm2
+
+
+   .. py:attribute:: cm3
+
+

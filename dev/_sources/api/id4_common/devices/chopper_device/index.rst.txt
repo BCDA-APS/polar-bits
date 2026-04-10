@@ -1,0 +1,45 @@
+id4_common.devices.chopper_device
+=================================
+
+.. py:module:: id4_common.devices.chopper_device
+
+.. autoapi-nested-parse::
+
+   Chopper
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: ChopperDevice
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: translation
+
+
+   .. py:attribute:: status
+
+
+   .. py:attribute:: frequency_readback
+
+
+   .. py:attribute:: frequency_setpoint
+
+
+   .. py:attribute:: phase
+
+
+   .. py:attribute:: wheel
+
+
+   .. py:attribute:: sync
+
+
+   .. py:attribute:: mode
+
+

@@ -1,0 +1,97 @@
+id4_common.devices.mono_feedback
+================================
+
+.. py:module:: id4_common.devices.mono_feedback
+
+.. autoapi-nested-parse::
+
+   Monochromator feedback
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: FeedbackDirection
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: status
+
+
+   .. py:attribute:: readback_pv
+
+
+   .. py:attribute:: control_pv
+
+
+   .. py:attribute:: setpoint
+
+
+   .. py:attribute:: readback
+
+
+   .. py:attribute:: following_error
+
+
+   .. py:attribute:: scan
+
+
+   .. py:attribute:: kp
+
+
+   .. py:attribute:: ki
+
+
+   .. py:attribute:: kd
+
+
+   .. py:attribute:: p
+
+
+   .. py:attribute:: i
+
+
+   .. py:attribute:: d
+
+
+   .. py:attribute:: low_limit
+
+
+   .. py:attribute:: high_limit
+
+
+.. py:class:: FeedbackStation
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: horizontal
+
+
+   .. py:attribute:: vertical
+
+
+.. py:class:: MonoFeedback
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: station
+
+
+   .. py:attribute:: enable
+
+
+   .. py:attribute:: b
+
+
+   .. py:attribute:: g
+
+
+   .. py:attribute:: h
+
+

@@ -1,0 +1,127 @@
+id4_common.devices.magnet_kepco_4idg
+====================================
+
+.. py:module:: id4_common.devices.magnet_kepco_4idg
+
+.. autoapi-nested-parse::
+
+   Diffractometer magnet
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: KepcoDevice
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: manufacturer
+
+
+   .. py:attribute:: model
+
+
+   .. py:attribute:: model2
+
+
+   .. py:attribute:: calibration
+
+
+   .. py:attribute:: serial
+
+
+   .. py:attribute:: firmware
+
+
+   .. py:attribute:: status
+
+
+   .. py:attribute:: status_output
+
+
+   .. py:attribute:: status_list
+
+
+   .. py:attribute:: status_errors
+
+
+   .. py:attribute:: status_mode
+
+
+   .. py:attribute:: status_protect
+
+
+   .. py:attribute:: status_message
+
+
+   .. py:attribute:: last_error_message
+
+
+   .. py:attribute:: field
+
+
+   .. py:attribute:: voltage
+
+
+   .. py:attribute:: current
+
+
+   .. py:attribute:: mode
+
+
+   .. py:attribute:: enable
+
+
+   .. py:attribute:: current_protection_positive
+
+
+   .. py:attribute:: current_protection_negative
+
+
+   .. py:attribute:: voltage_protection_positive
+
+
+   .. py:attribute:: voltage_protection_negative
+
+
+   .. py:attribute:: current_limit_positive
+
+
+   .. py:attribute:: current_limit_negative
+
+
+   .. py:attribute:: voltage_limit_positive
+
+
+   .. py:attribute:: voltage_limit_negative
+
+
+   .. py:attribute:: t1
+
+
+   .. py:attribute:: t2
+
+
+   .. py:attribute:: t3
+
+
+   .. py:attribute:: status_temperature
+
+
+   .. py:method:: default_settings()
+
+
+   .. py:method:: start_auto_mode()
+
+
+   .. py:method:: stop_auto_mode()
+
+
