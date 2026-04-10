@@ -33,6 +33,13 @@ myst_enable_extensions = [
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+# Suppress noisy-but-harmless warnings from autoapi cross-module import
+# resolution (imports that rely on EPICS/ophyd at runtime are unresolvable
+# in a static-analysis-only build).
+suppress_warnings = [
+    "autoapi.python_import_resolution",
+]
+
 # -- sphinx-autoapi ----------------------------------------------------------
 autoapi_dirs = [str(_src_dir)]
 autoapi_root = "api"
@@ -40,7 +47,8 @@ autoapi_options = [
     "members",
     "undoc-members",
     "show-inheritance",
-    "show-module-summary",
+    # "show-module-summary" omitted: generates autosummary tables that require
+    # the package to be importable — not possible in CI without EPICS/hklpy.
 ]
 # Skip test files, conftest, and version files
 autoapi_ignore = [
@@ -57,8 +65,6 @@ autoapi_add_toctree_entry = False
 # -- Intersphinx -------------------------------------------------------------
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    "ophyd": ("https://blueskyproject.io/ophyd/", None),
-    "bluesky": ("https://blueskyproject.io/bluesky/", None),
     "apstools": ("https://bcda-aps.github.io/apstools/latest/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
 }
