@@ -14,34 +14,10 @@ id4_common.utils.experiment_utils
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.experiment_utils.logger
-   id4_common.utils.experiment_utils.iconfig
-   id4_common.utils.experiment_utils.SERVERS
-   id4_common.utils.experiment_utils.path_startup
-   id4_common.utils.experiment_utils.experiment
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.utils.experiment_utils.ExperimentClass
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.experiment_utils.experiment_setup
-   id4_common.utils.experiment_utils.experiment_change_sample
-   id4_common.utils.experiment_utils.experiment_load_from_bluesky
 
 
 Module Contents

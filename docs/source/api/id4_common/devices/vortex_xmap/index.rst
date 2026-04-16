@@ -9,24 +9,8 @@ id4_common.devices.vortex_xmap
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.devices.vortex_xmap.MAX_ROIS
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.vortex_xmap.MyDXP
-   id4_common.devices.vortex_xmap.MyMCA
-   id4_common.devices.vortex_xmap.SingleTrigger
-   id4_common.devices.vortex_xmap.TotalCorrectedSignal
-   id4_common.devices.vortex_xmap.VortexXMAP
 
 
 Module Contents
@@ -36,9 +20,12 @@ Module Contents
    :value: 32
 
 
-.. py:class:: MyDXP
+.. py:class:: MyDXP(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.mca.SaturnDXP`
+
+
+   All high-level DXP parameters for each channel
 
 
    .. py:attribute:: live_time_output
@@ -51,9 +38,12 @@ Module Contents
 
 
 
-.. py:class:: MyMCA
+.. py:class:: MyMCA(*args, **kwargs)
 
    Bases: :py:obj:`ophyd.mca.EpicsMCARecord`
+
+
+   SynApps MCA Record interface
 
 
    .. py:attribute:: check_acquiring
@@ -76,8 +66,48 @@ Module Contents
 
    .. py:method:: stage()
 
+      Stage the device for data collection.
+
+      This method is expected to put the device into a state where
+      repeated calls to :meth:`~BlueskyInterface.trigger` and
+      :meth:`~BlueskyInterface.read` will 'do the right thing'.
+
+      Staging not idempotent and should raise
+      :obj:`RedundantStaging` if staged twice without an
+      intermediate :meth:`~BlueskyInterface.unstage`.
+
+      This method should be as fast as is feasible as it does not return
+      a status object.
+
+      The return value of this is a list of all of the (sub) devices
+      stage, including it's self.  This is used to ensure devices
+      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
+
+      This is an optional method, if the device does not need
+      staging behavior it should not implement `stage` (or
+      `unstage`).
+
+      :returns: **devices** -- list including self and all child devices staged
+      :rtype: list
+
+
 
    .. py:method:: unstage()
+
+      Unstage the device.
+
+      This method returns the device to the state it was prior to the
+      last `stage` call.
+
+      This method should be as fast as feasible as it does not
+      return a status object.
+
+      This method must be idempotent, multiple calls (without a new
+      call to 'stage') have no effect.
+
+      :returns: **devices** -- list including self and all child devices unstaged
+      :rtype: list
+
 
 
    .. py:method:: trigger()
@@ -100,6 +130,9 @@ Module Contents
 
 
    .. py:method:: get(**kwargs)
+
+      The readback value
+
 
 
 .. py:class:: VortexXMAP(*args, **kwargs)

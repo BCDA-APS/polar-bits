@@ -17,20 +17,8 @@ id4_common.utils.run_engine_init
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.run_engine_init.logger
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.run_engine_init.init_RE
 
 
 Module Contents

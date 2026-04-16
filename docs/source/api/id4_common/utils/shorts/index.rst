@@ -4,12 +4,6 @@ id4_common.utils.shorts
 .. py:module:: id4_common.utils.shorts
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.shorts.opt
 
 
 Module Contents

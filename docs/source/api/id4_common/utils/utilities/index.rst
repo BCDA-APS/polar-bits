@@ -21,26 +21,8 @@ id4_common.utils.utilities
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.utilities.path
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.utilities.setaz
-   id4_common.utils.utilities.freeze
-   id4_common.utils.utilities.change_diffractometer
-   id4_common.utils.utilities.plotselect
-   id4_common.utils.utilities.set_counting_time
-   id4_common.utils.utilities.set_experiment
-   id4_common.utils.utilities.list_functions
 
 
 Module Contents

@@ -16,14 +16,6 @@ id4_common.utils.run_engine
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.run_engine.iconfig
-   id4_common.utils.run_engine.cat
-   id4_common.utils.run_engine.cat_legacy
 
 
 Module Contents

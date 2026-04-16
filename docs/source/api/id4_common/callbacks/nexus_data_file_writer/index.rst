@@ -16,25 +16,8 @@ id4_common.callbacks.nexus_data_file_writer
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.callbacks.nexus_data_file_writer.iconfig
-   id4_common.callbacks.nexus_data_file_writer.logger
-   id4_common.callbacks.nexus_data_file_writer.LAYOUT_VERSION
-   id4_common.callbacks.nexus_data_file_writer.NEXUS_RELEASE
-   id4_common.callbacks.nexus_data_file_writer.nxwriter
-   id4_common.callbacks.nexus_data_file_writer.warn_missing
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.callbacks.nexus_data_file_writer.MyNXWriter
 
 
 Module Contents
@@ -52,7 +35,7 @@ Module Contents
    :value: 'v2022.07'
 
 
-.. py:class:: MyNXWriter
+.. py:class:: MyNXWriter(*args, **kwargs)
 
    Bases: :py:obj:`apstools.callbacks.NXWriterAPS`
 
@@ -64,6 +47,9 @@ Module Contents
 
 
    .. py:method:: write_root(filename)
+
+      root of the HDF5 file
+
 
 
    .. py:method:: write_entry()

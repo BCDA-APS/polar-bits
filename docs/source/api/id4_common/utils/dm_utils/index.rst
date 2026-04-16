@@ -9,45 +9,8 @@ id4_common.utils.dm_utils
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.dm_utils.esaf_api
-   id4_common.utils.dm_utils.bss_api
-   id4_common.utils.dm_utils.exp_api
-   id4_common.utils.dm_utils.user_api
-   id4_common.utils.dm_utils.DEFAULT_USERS
-   id4_common.utils.dm_utils.BEAMLINE_NAME
-   id4_common.utils.dm_utils.STATION
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.dm_utils.dm_workflow
-   id4_common.utils.dm_utils.dm_get_experiment_data_path
-   id4_common.utils.dm_utils.get_processing_job_status
-   id4_common.utils.dm_utils.dm_upload
-   id4_common.utils.dm_utils.dm_upload_info
-   id4_common.utils.dm_utils.dm_upload_wait
-   id4_common.utils.dm_utils.list_esafs
-   id4_common.utils.dm_utils.get_esaf_info
-   id4_common.utils.dm_utils.get_esaf_users_badge
-   id4_common.utils.dm_utils.get_current_run
-   id4_common.utils.dm_utils.get_current_run_name
-   id4_common.utils.dm_utils.dm_experiment_setup
-   id4_common.utils.dm_utils.create_dm_experiment
-   id4_common.utils.dm_utils.add_dm_users
-   id4_common.utils.dm_utils.get_experiment_
-   id4_common.utils.dm_utils.get_experiment
-   id4_common.utils.dm_utils.get_experiments_names
-   id4_common.utils.dm_utils.current_run_experiments_names
-   id4_common.utils.dm_utils.get_proposal_info
-   id4_common.utils.dm_utils.list_proposals
 
 
 Module Contents

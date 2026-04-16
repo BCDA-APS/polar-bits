@@ -4,20 +4,34 @@ id4_common.utils.local_magics
 .. py:module:: id4_common.utils.local_magics
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.utils.local_magics.LocalMagics
 
 
 Module Contents
 ---------------
 
-.. py:class:: LocalMagics
+.. py:class:: LocalMagics(shell=None, **kwargs)
 
    Bases: :py:obj:`bluesky.magics.BlueskyMagics`
+
+
+   IPython magics for bluesky.
+
+   To install:
+
+   >>> ip = get_ipython()
+   >>> ip.register_magics(BlueskyMagics)
+
+   Optionally configure default detectors and positioners by setting
+   the class attributes:
+
+   * ``BlueskyMagics.detectors``
+   * ``BlueskyMagics.positioners``
+
+   For more advanced configuration, access the magic's RunEngine instance and
+   ProgressBarManager instance:
+
+   * ``BlueskyMagics.RE``
+   * ``BlueskyMagics.pbar_manager``
 
 
    .. py:method:: wm(line)

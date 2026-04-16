@@ -9,12 +9,6 @@ id4_common.devices.ge_controller
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.ge_controller.GEController
 
 
 Module Contents
@@ -45,10 +39,17 @@ Module Contents
 
    .. py:property:: settle_time
 
+      Amount of time to wait after moves to report status completion
+
 
    .. py:property:: egu
 
+      The engineering units (EGU) for a position
+
 
    .. py:method:: stop(*, success=False)
+
+      Hold the current readback when stop() is called and not :meth:`inposition`.
+
 
 

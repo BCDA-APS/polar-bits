@@ -17,23 +17,8 @@ id4_common.plans.sim_plans
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.plans.sim_plans.logger
-   id4_common.plans.sim_plans.DEFAULT_MD
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.plans.sim_plans.sim_count_plan
-   id4_common.plans.sim_plans.sim_print_plan
-   id4_common.plans.sim_plans.sim_rel_scan_plan
 
 
 Module Contents

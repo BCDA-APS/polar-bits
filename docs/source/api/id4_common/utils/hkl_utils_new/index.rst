@@ -37,52 +37,10 @@ id4_common.utils.hkl_utils_new
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils_new.RE
-   id4_common.utils.hkl_utils_new.pbar_manager
-   id4_common.utils.hkl_utils_new.geometries
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils_new.Geometries
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils_new.newsample
-   id4_common.utils.hkl_utils_new.list_reflections
-   id4_common.utils.hkl_utils_new.sampleChange
-   id4_common.utils.hkl_utils_new.sampleRemove
-   id4_common.utils.hkl_utils_new.or_swap
-   id4_common.utils.hkl_utils_new.calc_UB
-   id4_common.utils.hkl_utils_new.compute_UB
-   id4_common.utils.hkl_utils_new.setor0
-   id4_common.utils.hkl_utils_new.setor1
-   id4_common.utils.hkl_utils_new.or0
-   id4_common.utils.hkl_utils_new.or1
-   id4_common.utils.hkl_utils_new.set_orienting
-   id4_common.utils.hkl_utils_new.del_reflection
-   id4_common.utils.hkl_utils_new.list_orienting
-   id4_common.utils.hkl_utils_new.setmode
-   id4_common.utils.hkl_utils_new.ca
-   id4_common.utils.hkl_utils_new.ubr
-   id4_common.utils.hkl_utils_new.br
-   id4_common.utils.hkl_utils_new.uan
-   id4_common.utils.hkl_utils_new.an
-   id4_common.utils.hkl_utils_new.setlat
-   id4_common.utils.hkl_utils_new.setaz
-   id4_common.utils.hkl_utils_new.freeze_psi
 
 
 Module Contents

@@ -9,14 +9,6 @@ id4_common.callbacks.dichro_stream
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.callbacks.dichro_stream.dichro
-   id4_common.callbacks.dichro_stream.plot_dichro_settings
-   id4_common.callbacks.dichro_stream.dichro_bec
 
 
 Module Contents

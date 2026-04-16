@@ -9,14 +9,6 @@ id4_common.devices.ad_vimba
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.ad_vimba.Trigger
-   id4_common.devices.ad_vimba.VimbaCam
-   id4_common.devices.ad_vimba.VimbaDetector
 
 
 Module Contents
@@ -40,16 +32,82 @@ Module Contents
 
    .. py:method:: stage()
 
+      Stage the device for data collection.
+
+      This method is expected to put the device into a state where
+      repeated calls to :meth:`~BlueskyInterface.trigger` and
+      :meth:`~BlueskyInterface.read` will 'do the right thing'.
+
+      Staging not idempotent and should raise
+      :obj:`RedundantStaging` if staged twice without an
+      intermediate :meth:`~BlueskyInterface.unstage`.
+
+      This method should be as fast as is feasible as it does not return
+      a status object.
+
+      The return value of this is a list of all of the (sub) devices
+      stage, including it's self.  This is used to ensure devices
+      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
+
+      This is an optional method, if the device does not need
+      staging behavior it should not implement `stage` (or
+      `unstage`).
+
+      :returns: **devices** -- list including self and all child devices staged
+      :rtype: list
+
+
 
    .. py:method:: unstage()
+
+      Unstage the device.
+
+      This method returns the device to the state it was prior to the
+      last `stage` call.
+
+      This method should be as fast as feasible as it does not
+      return a status object.
+
+      This method must be idempotent, multiple calls (without a new
+      call to 'stage') have no effect.
+
+      :returns: **devices** -- list including self and all child devices unstaged
+      :rtype: list
+
 
 
    .. py:method:: trigger()
 
+      Trigger the device and return status object.
 
-.. py:class:: VimbaCam
+      This method is responsible for implementing 'trigger' or
+      'acquire' functionality of this device.
+
+      If there is an appreciable time between triggering the device
+      and it being able to be read (via the
+      :meth:`~BlueskyInterface.read` method) then this method is
+      also responsible for arranging that the
+      :obj:`~ophyd.status.StatusBase` object returned by this method
+      is notified when the device is ready to be read.
+
+      If there is no delay between triggering and being readable,
+      then this method must return a :obj:`~ophyd.status.StatusBase`
+      object which is already completed.
+
+      :returns: **status** -- :obj:`~ophyd.status.StatusBase` object which will be marked
+                as complete when the device is ready to be read.
+      :rtype: StatusBase
+
+
+
+.. py:class:: VimbaCam(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.areadetector.CamBase`
+
+
+   The AreaDetector base class
+
+   This serves as the base for all detectors and plugins
 
 
    .. py:attribute:: pool_max_buffers
@@ -192,6 +250,14 @@ Module Contents
 
 
    .. py:method:: wait_for_connection(all_signals=False, timeout=2)
+
+      Wait for signals to connect
+
+      :param all_signals: Wait for all signals to connect (including lazy ones)
+      :type all_signals: bool, optional
+      :param timeout: Overall timeout
+      :type timeout: float or None
+
 
 
    .. py:property:: preset_monitor

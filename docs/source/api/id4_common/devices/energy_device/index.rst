@@ -9,20 +9,8 @@ id4_common.devices.energy_device
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.devices.energy_device.logger
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.energy_device.EnergySignal
 
 
 Module Contents
@@ -59,6 +47,8 @@ Module Contents
 
    .. py:property:: limits
 
+      The control limits (low, high), such that low <= value <= high
+
 
    .. py:property:: feedback_device
 
@@ -70,6 +60,13 @@ Module Contents
 
 
    .. py:method:: set(position, *, wait=False, timeout=None, settle_time=None, moved_cb=None)
+
+      Set the value of the Signal and return a Status object.
+
+      :returns: **st** -- This status object will be finished upon return in the
+                case of basic soft Signals
+      :rtype: Status
+
 
 
    .. py:method:: stop(*, success=False)

@@ -4,23 +4,8 @@ id4_common.utils.wax
 .. py:module:: id4_common.utils.wax
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.wax.cat
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.wax.wm
-   id4_common.utils.wax.wax
-   id4_common.utils.wax.wa_scan
-   id4_common.utils.wax.wa_new
 
 
 Module Contents

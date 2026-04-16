@@ -9,18 +9,12 @@ id4_common.devices.hhl_mirror
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.hhl_mirror.ToroidalMirror
 
 
 Module Contents
 ---------------
 
-.. py:class:: ToroidalMirror
+.. py:class:: ToroidalMirror(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.Device`
 

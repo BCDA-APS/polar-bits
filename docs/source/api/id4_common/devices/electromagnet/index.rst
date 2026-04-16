@@ -9,12 +9,6 @@ id4_common.devices.electromagnet
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.electromagnet.Magnet2T
 
 
 Module Contents

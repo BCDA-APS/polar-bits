@@ -13,22 +13,8 @@ id4_common.utils.transfocator_calculation_new
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.transfocator_calculation_new.BE_REFR_INDEX_FILE
-   id4_common.utils.transfocator_calculation_new.LENS_SETTINGS
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.transfocator_calculation_new.read_delta
-   id4_common.utils.transfocator_calculation_new.transfocator_calculation
 
 
 Module Contents

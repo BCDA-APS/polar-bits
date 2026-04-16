@@ -9,31 +9,8 @@ id4_common.devices.polar_diffractometer
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.devices.polar_diffractometer.WAVELENGTH_CONSTANT
-   id4_common.devices.polar_diffractometer.PTTH_MIN_DEGREES
-   id4_common.devices.polar_diffractometer.PTTH_MAX_DEGREES
-   id4_common.devices.polar_diffractometer.PTH_MIN_DEGREES
-   id4_common.devices.polar_diffractometer.PTH_MAX_DEGREES
-   id4_common.devices.polar_diffractometer.ANALYZER_LIST_PATH
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.polar_diffractometer.AnalyzerDevice
-   id4_common.devices.polar_diffractometer.SixCircleDiffractometer
-   id4_common.devices.polar_diffractometer.CradleDiffractometer
-   id4_common.devices.polar_diffractometer.HPDiffractometer
-   id4_common.devices.polar_diffractometer.PolarPSI
-   id4_common.devices.polar_diffractometer.CradlePSI
-   id4_common.devices.polar_diffractometer.HPPSI
 
 
 Module Contents
@@ -61,9 +38,36 @@ Module Contents
 
 .. py:data:: ANALYZER_LIST_PATH
 
-.. py:class:: AnalyzerDevice
+.. py:class:: AnalyzerDevice(prefix='', *, concurrent=True, read_attrs=None, configuration_attrs=None, name, egu='', auto_target=True, **kwargs)
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
+
+
+   A pseudo positioner which can be comprised of multiple positioners
+
+   :param prefix: The PV prefix for all components of the device
+   :type prefix: str
+   :param concurrent: If set, all real motors will be moved concurrently. If not, they will
+                      be moved in order of how they were defined initially
+   :type concurrent: bool, optional
+   :param read_attrs: the components to include in a normal reading (i.e., in ``read()``)
+   :type read_attrs: sequence of attribute names
+   :param configuration_attrs: the components to be read less often (i.e., in
+                               ``read_configuration()``) and to adjust via ``configure()``
+   :type configuration_attrs: sequence of attribute names
+   :param name: The name of the device
+   :type name: str, optional
+   :param egu: The user-defined engineering units for the whole PseudoPositioner
+   :type egu: str, optional
+   :param auto_target: Automatically set the target position of PseudoSingle devices when
+                       moving to a single PseudoPosition
+   :type auto_target: bool, optional
+   :param parent: The instance of the parent device, if applicable
+   :type parent: instance or None
+   :param settle_time: The amount of time to wait after moves to report status completion
+   :type settle_time: float, optional
+   :param timeout: The default timeout to use for motion requests, in seconds.
+   :type timeout: float, optional
 
 
    .. py:attribute:: energy
@@ -100,6 +104,20 @@ Module Contents
 
 
    .. py:method:: move_single(pseudo, position, **kwargs)
+
+      Move one PseudoSingle axis to a position
+
+      All other positioners will use their current setpoint/target value, if
+      available. Failing that, their current readback value will be used (see
+      ``PseudoSingle.sync`` and ``PseudoSingle.target``).
+
+      :param pseudo: PseudoSingle positioner to move
+      :type pseudo: PseudoSingle
+      :param position: Position only for the PseudoSingle
+      :type position: float
+      :param kwargs: Passed onto move
+      :type kwargs: dict
+
 
 
    .. py:property:: beamline_wavelength

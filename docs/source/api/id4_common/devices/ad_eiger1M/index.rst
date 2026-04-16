@@ -9,13 +9,6 @@ id4_common.devices.ad_eiger1M
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.ad_eiger1M.TriggerTime
-   id4_common.devices.ad_eiger1M.Eiger1MDetector
 
 
 Module Contents

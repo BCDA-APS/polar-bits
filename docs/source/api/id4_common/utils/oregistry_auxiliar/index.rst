@@ -4,12 +4,6 @@ id4_common.utils.oregistry_auxiliar
 .. py:module:: id4_common.utils.oregistry_auxiliar
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.oregistry_auxiliar.get_devices
 
 
 Module Contents

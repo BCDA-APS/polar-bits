@@ -16,18 +16,6 @@ id4_raman.startup
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_raman.startup.logger
-   id4_raman.startup.instrument_path
-   id4_raman.startup.iconfig_path
-   id4_raman.startup.extras
-   id4_raman.startup.iconfig
-   id4_raman.startup.logger
-   id4_raman.startup.stations
 
 
 Module Contents

@@ -62,30 +62,10 @@ id4_common.callbacks.apstools_spec_file_writer
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.callbacks.apstools_spec_file_writer.SPEC_TIME_FORMAT
-   id4_common.callbacks.apstools_spec_file_writer.SCAN_ID_RESET_VALUE
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback
-   id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.callbacks.apstools_spec_file_writer.spec_comment
 
 
 Module Contents
@@ -393,6 +373,9 @@ Module Contents
 
 
    .. py:method:: event(doc)
+
+      a single "row" of data
+
 
 
    .. py:method:: start(doc)

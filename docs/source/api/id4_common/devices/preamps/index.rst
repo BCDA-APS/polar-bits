@@ -9,12 +9,6 @@ id4_common.devices.preamps
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.preamps.LocalPreAmp
 
 
 Module Contents
@@ -23,6 +17,9 @@ Module Contents
 .. py:class:: LocalPreAmp(*args, scaler_channel=None, shutter=None, **kwargs)
 
    Bases: :py:obj:`apstools.devices.SRS570_PreAmplifier`
+
+
+   Ophyd support for Stanford Research Systems 570 preamplifier from synApps.
 
 
    .. py:property:: shutter

@@ -9,35 +9,10 @@ id4_common.devices.transfocator_device
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.devices.transfocator_device.logger
-   id4_common.devices.transfocator_device.DEFAULT_MOTORS_IOC
-   id4_common.devices.transfocator_device.EPICS_ENERGY_SLEEP
-   id4_common.devices.transfocator_device.TransfocatorClass
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.transfocator_device.PyCRLSingleLens
-   id4_common.devices.transfocator_device.PyCRLSignal
-   id4_common.devices.transfocator_device.PyCRL
-   id4_common.devices.transfocator_device.EnergySignal
-   id4_common.devices.transfocator_device.ZMotor
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.devices.transfocator_device.make_transfocator_class
 
 
 Module Contents
@@ -53,7 +28,7 @@ Module Contents
    :value: 0.15
 
 
-.. py:class:: PyCRLSingleLens
+.. py:class:: PyCRLSingleLens(prefix='', *, limits=None, name=None, read_attrs=None, configuration_attrs=None, parent=None, egu='', **kwargs)
 
    Bases: :py:obj:`ophyd.PVPositioner`
 
@@ -99,7 +74,7 @@ Module Contents
 
 
 
-.. py:class:: PyCRLSignal
+.. py:class:: PyCRLSignal(read_pv, write_pv=None, *, put_complete=False, string=False, limits=False, name=None, **kwargs)
 
    Bases: :py:obj:`ophyd.EpicsSignal`
 
@@ -108,6 +83,8 @@ Module Contents
 
 
    .. py:attribute:: value
+
+      The signal's value
 
 
    .. py:attribute:: egu
@@ -241,7 +218,7 @@ Module Contents
 
 
 
-.. py:class:: EnergySignal
+.. py:class:: EnergySignal(*, name, value=_DefaultFloat(0.0), dtype=None, shape=None, timestamp=None, parent=None, labels=None, kind=Kind.hinted, tolerance=None, rtolerance=None, metadata=None, cl=None, attr_name='')
 
    Bases: :py:obj:`ophyd.Signal`
 
@@ -263,7 +240,7 @@ Module Contents
 
 
 
-.. py:class:: ZMotor
+.. py:class:: ZMotor(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, **kwargs)
 
    Bases: :py:obj:`ophyd.EpicsMotor`
 

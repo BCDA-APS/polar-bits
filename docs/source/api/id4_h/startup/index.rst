@@ -16,18 +16,6 @@ id4_h.startup
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_h.startup.logger
-   id4_h.startup.instrument_path
-   id4_h.startup.iconfig_path
-   id4_h.startup.extras
-   id4_h.startup.iconfig
-   id4_h.startup.logger
-   id4_h.startup.stations
 
 
 Module Contents

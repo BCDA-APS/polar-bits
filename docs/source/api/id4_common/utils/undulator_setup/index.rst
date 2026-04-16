@@ -4,12 +4,6 @@ id4_common.utils.undulator_setup
 .. py:module:: id4_common.utils.undulator_setup
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.undulator_setup.undulator_setup
 
 
 Module Contents

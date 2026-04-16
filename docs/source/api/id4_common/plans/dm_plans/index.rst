@@ -16,22 +16,8 @@ id4_common.plans.dm_plans
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.plans.dm_plans.logger
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.plans.dm_plans.dm_kickoff_workflow
-   id4_common.plans.dm_plans.dm_list_processing_jobs
-   id4_common.plans.dm_plans.dm_submit_workflow_job
 
 
 Module Contents

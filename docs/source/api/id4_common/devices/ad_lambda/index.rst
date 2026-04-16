@@ -9,25 +9,8 @@ id4_common.devices.ad_lambda
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.devices.ad_lambda.LAMBDA_FILES_ROOT
-   id4_common.devices.ad_lambda.BLUESKY_FILES_ROOT
-   id4_common.devices.ad_lambda.TEST_IMAGE_DIR
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.ad_lambda.MySingleTrigger
-   id4_common.devices.ad_lambda.Lambda250kCam
-   id4_common.devices.ad_lambda.MyHDF5Plugin
-   id4_common.devices.ad_lambda.Lambda250kDetector
 
 
 Module Contents
@@ -62,8 +45,48 @@ Module Contents
 
    .. py:method:: stage()
 
+      Stage the device for data collection.
+
+      This method is expected to put the device into a state where
+      repeated calls to :meth:`~BlueskyInterface.trigger` and
+      :meth:`~BlueskyInterface.read` will 'do the right thing'.
+
+      Staging not idempotent and should raise
+      :obj:`RedundantStaging` if staged twice without an
+      intermediate :meth:`~BlueskyInterface.unstage`.
+
+      This method should be as fast as is feasible as it does not return
+      a status object.
+
+      The return value of this is a list of all of the (sub) devices
+      stage, including it's self.  This is used to ensure devices
+      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
+
+      This is an optional method, if the device does not need
+      staging behavior it should not implement `stage` (or
+      `unstage`).
+
+      :returns: **devices** -- list including self and all child devices staged
+      :rtype: list
+
+
 
    .. py:method:: unstage()
+
+      Unstage the device.
+
+      This method returns the device to the state it was prior to the
+      last `stage` call.
+
+      This method should be as fast as feasible as it does not
+      return a status object.
+
+      This method must be idempotent, multiple calls (without a new
+      call to 'stage') have no effect.
+
+      :returns: **devices** -- list including self and all child devices unstaged
+      :rtype: list
+
 
 
    .. py:method:: trigger()
@@ -72,7 +95,7 @@ Module Contents
 
 
 
-.. py:class:: Lambda250kCam
+.. py:class:: Lambda250kCam(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.areadetector.CamBase`
 
@@ -114,6 +137,10 @@ Module Contents
 .. py:class:: MyHDF5Plugin(*args, **kwargs)
 
    Bases: :py:obj:`ophyd.areadetector.filestore_mixins.FileStoreHDF5SingleIterativeWrite`, :py:obj:`ophyd.areadetector.plugins.HDF5Plugin_V34`
+
+
+   Used for running Areadetectors hdf5 plugin in `Single` mode, with
+   `point_number` in the kwargs.
 
 
    .. py:attribute:: filestore_spec

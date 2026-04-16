@@ -9,23 +9,19 @@ id4_common.devices.vortex_dante_parts
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.vortex_dante_parts.DanteCAM1
-   id4_common.devices.vortex_dante_parts.DanteCAM4
-   id4_common.devices.vortex_dante_parts.DanteSCA
-   id4_common.devices.vortex_dante_parts.DanteHDF1Plugin
 
 
 Module Contents
 ---------------
 
-.. py:class:: DanteCAM1
+.. py:class:: DanteCAM1(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.areadetector.ADBase`
+
+
+   The AreaDetector base class
+
+   This serves as the base for all detectors and plugins
 
 
    .. py:attribute:: port_name
@@ -50,6 +46,10 @@ Module Contents
 
 
    .. py:attribute:: connected
+
+      If the device is connected.
+
+      Subclasses should override this
 
 
    .. py:attribute:: array_size
@@ -133,17 +133,27 @@ Module Contents
    .. py:attribute:: mca_list_buffer_size
 
 
-.. py:class:: DanteCAM4
+.. py:class:: DanteCAM4(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`DanteCAM1`
+
+
+   The AreaDetector base class
+
+   This serves as the base for all detectors and plugins
 
 
    .. py:attribute:: snl_connected
 
 
-.. py:class:: DanteSCA
+.. py:class:: DanteSCA(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.areadetector.ADBase`
+
+
+   The AreaDetector base class
+
+   This serves as the base for all detectors and plugins
 
 
    .. py:attribute:: real_time
@@ -251,9 +261,6 @@ Module Contents
 .. py:class:: DanteHDF1Plugin(*args, **kwargs)
 
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
-
-
-   Using the filename from EPICS.
 
 
    .. py:attribute:: array_counter

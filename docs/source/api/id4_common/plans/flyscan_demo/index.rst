@@ -9,26 +9,8 @@ id4_common.plans.flyscan_demo
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.plans.flyscan_demo.iconfig
-   id4_common.plans.flyscan_demo.logger
-   id4_common.plans.flyscan_demo.sgz
-   id4_common.plans.flyscan_demo.dm_experiment
-   id4_common.plans.flyscan_demo.HDF1_NAME_FORMAT
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.plans.flyscan_demo.flyscan_snake
-   id4_common.plans.flyscan_demo.flyscan_1d
-   id4_common.plans.flyscan_demo.flyscan_cycler
 
 
 Module Contents

@@ -4,14 +4,6 @@ id4_common.plans.center_maximum
 .. py:module:: id4_common.plans.center_maximum
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.plans.center_maximum.cen
-   id4_common.plans.center_maximum.maxi
-   id4_common.plans.center_maximum.mini
 
 
 Module Contents

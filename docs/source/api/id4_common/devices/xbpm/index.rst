@@ -9,12 +9,6 @@ id4_common.devices.xbpm
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.xbpm.XBPM
 
 
 Module Contents

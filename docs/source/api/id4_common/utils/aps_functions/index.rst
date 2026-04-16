@@ -18,20 +18,8 @@ id4_common.utils.aps_functions
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.aps_functions.logger
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.aps_functions.aps_dm_setup
 
 
 Module Contents

@@ -9,23 +9,8 @@ id4_common.plans.workflow_plan
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.plans.workflow_plan.dm_workflow
-   id4_common.plans.workflow_plan.dm_experiment
-   id4_common.plans.workflow_plan.logger
-   id4_common.plans.workflow_plan.EXPECTED_KWARGS
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.plans.workflow_plan.run_workflow
 
 
 Module Contents

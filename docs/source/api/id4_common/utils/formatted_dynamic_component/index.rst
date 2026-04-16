@@ -4,13 +4,6 @@ id4_common.utils.formatted_dynamic_component
 .. py:module:: id4_common.utils.formatted_dynamic_component
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.utils.formatted_dynamic_component.FormattedDynamicSubDevice
-   id4_common.utils.formatted_dynamic_component.InstanceFormattedComponent
 
 
 Module Contents

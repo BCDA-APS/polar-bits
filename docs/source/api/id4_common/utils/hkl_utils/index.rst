@@ -45,73 +45,10 @@ id4_common.utils.hkl_utils
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils.logger
-   id4_common.utils.hkl_utils.polar_config
-   id4_common.utils.hkl_utils.fourc_config
-   id4_common.utils.hkl_utils.pbar_manager
-   id4_common.utils.hkl_utils.POLAR_DIFFRACTOMETER
-   id4_common.utils.hkl_utils.fourc
-   id4_common.utils.hkl_utils.wh
-   id4_common.utils.hkl_utils.sampleList
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils.whClass
-   id4_common.utils.hkl_utils.sampleListClass
-   id4_common.utils.hkl_utils.Sync_UB_Matrix
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils.get_huber_euler
-   id4_common.utils.hkl_utils.get_huber_hp
-   id4_common.utils.hkl_utils.get_huber_euler_psi
-   id4_common.utils.hkl_utils.select_engine_for_psi
-   id4_common.utils.hkl_utils.engine_for_psi
-   id4_common.utils.hkl_utils.set_diffractometer
-   id4_common.utils.hkl_utils.sampleNew
-   id4_common.utils.hkl_utils.sampleChange
-   id4_common.utils.hkl_utils.sampleRemove
-   id4_common.utils.hkl_utils.list_reflections
-   id4_common.utils.hkl_utils.or_swap
-   id4_common.utils.hkl_utils.setor0
-   id4_common.utils.hkl_utils.setor1
-   id4_common.utils.hkl_utils.set_orienting
-   id4_common.utils.hkl_utils.del_reflection
-   id4_common.utils.hkl_utils.list_orienting
-   id4_common.utils.hkl_utils.or0
-   id4_common.utils.hkl_utils.or1
-   id4_common.utils.hkl_utils.compute_UB
-   id4_common.utils.hkl_utils.calc_UB
-   id4_common.utils.hkl_utils.setmode
-   id4_common.utils.hkl_utils.ca
-   id4_common.utils.hkl_utils.ubr
-   id4_common.utils.hkl_utils.br
-   id4_common.utils.hkl_utils.uan
-   id4_common.utils.hkl_utils.an
-   id4_common.utils.hkl_utils.pa_new
-   id4_common.utils.hkl_utils.setlat
-   id4_common.utils.hkl_utils.setaz
-   id4_common.utils.hkl_utils.freeze
-   id4_common.utils.hkl_utils.update_lattice
-   id4_common.utils.hkl_utils.write_config
-   id4_common.utils.hkl_utils.read_config
-   id4_common.utils.hkl_utils.show_constraints
-   id4_common.utils.hkl_utils.reset_constraints
-   id4_common.utils.hkl_utils.set_constraints
-   id4_common.utils.hkl_utils.restore_huber_from_scan
 
 
 Module Contents

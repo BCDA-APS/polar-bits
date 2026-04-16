@@ -4,13 +4,6 @@ id4_common.utils.analyzer_utils
 .. py:module:: id4_common.utils.analyzer_utils
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.analyzer_utils.calcdhkl
-   id4_common.utils.analyzer_utils.check_structure_factor
 
 
 Module Contents

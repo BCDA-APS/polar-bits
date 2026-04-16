@@ -9,20 +9,6 @@ id4_common.plans.local_scans
 
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.plans.local_scans.count
-   id4_common.plans.local_scans.ascan
-   id4_common.plans.local_scans.lup
-   id4_common.plans.local_scans.grid_scan
-   id4_common.plans.local_scans.rel_grid_scan
-   id4_common.plans.local_scans.qxscan
-   id4_common.plans.local_scans.mv
-   id4_common.plans.local_scans.mvr
-   id4_common.plans.local_scans.abs_set
 
 
 Module Contents

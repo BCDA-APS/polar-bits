@@ -17,25 +17,8 @@ id4_common.callbacks.spec_data_file_writer
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.callbacks.spec_data_file_writer.logger
-   id4_common.callbacks.spec_data_file_writer.iconfig
-   id4_common.callbacks.spec_data_file_writer.file_extension
-   id4_common.callbacks.spec_data_file_writer.specwriter
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.callbacks.spec_data_file_writer.spec_comment
-   id4_common.callbacks.spec_data_file_writer.newSpecFile
-   id4_common.callbacks.spec_data_file_writer.init_specwriter_with_RE
 
 
 Module Contents

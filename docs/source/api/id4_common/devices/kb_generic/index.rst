@@ -9,21 +9,8 @@ id4_common.devices.kb_generic
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.devices.kb_generic.GKBDevice
-   id4_common.devices.kb_generic.HKBDevice
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.devices.kb_generic.make_kb_class
 
 
 Module Contents

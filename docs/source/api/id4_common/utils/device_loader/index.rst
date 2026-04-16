@@ -4,30 +4,8 @@ id4_common.utils.device_loader
 .. py:module:: id4_common.utils.device_loader
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.device_loader.logger
-   id4_common.utils.device_loader.DEFAULT_FILE
-   id4_common.utils.device_loader.MAIN_NAMESPACE
-   id4_common.utils.device_loader.AVAILABLE_DEVICES
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.device_loader.load_yaml_devices
-   id4_common.utils.device_loader.find_loadable_devices
-   id4_common.utils.device_loader.connect_device
-   id4_common.utils.device_loader.load_device
-   id4_common.utils.device_loader.AD_plugin_primed
-   id4_common.utils.device_loader.AD_prime_plugin2
-   id4_common.utils.device_loader.reload_all_devices
-   id4_common.utils.device_loader.remove_device
 
 
 Module Contents

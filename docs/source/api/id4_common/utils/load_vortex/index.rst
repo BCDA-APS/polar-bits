@@ -4,21 +4,8 @@ id4_common.utils.load_vortex
 .. py:module:: id4_common.utils.load_vortex
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.load_vortex.logger
-   id4_common.utils.load_vortex.DETECTORS
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.load_vortex.load_vortex
 
 
 Module Contents

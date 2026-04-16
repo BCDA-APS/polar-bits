@@ -9,29 +9,8 @@ id4_common.plans.local_preprocessors
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.plans.local_preprocessors.logger
-   id4_common.plans.local_preprocessors.extra_devices_decorator
-   id4_common.plans.local_preprocessors.configure_counts_decorator
-   id4_common.plans.local_preprocessors.stage_dichro_decorator
-   id4_common.plans.local_preprocessors.stage_magnet911_decorator
-   id4_common.plans.local_preprocessors.stage_4idg_softglue_decorator
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.plans.local_preprocessors.extra_devices_wrapper
-   id4_common.plans.local_preprocessors.configure_counts_wrapper
-   id4_common.plans.local_preprocessors.stage_dichro_wrapper
-   id4_common.plans.local_preprocessors.stage_magnet911_wrapper
-   id4_common.plans.local_preprocessors.stage_4idg_softglue_wrapper
 
 
 Module Contents

@@ -9,18 +9,12 @@ id4_common.devices.srs810
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.srs810.LockinDevice
 
 
 Module Contents
 ---------------
 
-.. py:class:: LockinDevice
+.. py:class:: LockinDevice(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.Device`
 

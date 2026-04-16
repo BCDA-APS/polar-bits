@@ -9,20 +9,17 @@ id4_common.devices.usb_ctr8
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.usb_ctr8.CustomMeasCompCtr
 
 
 Module Contents
 ---------------
 
-.. py:class:: CustomMeasCompCtr
+.. py:class:: CustomMeasCompCtr(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`apstools.devices.MeasCompCtr`
+
+
+   Measurement Computing USB CTR08 high-speed counter/timer.
 
 
    .. py:attribute:: long_in

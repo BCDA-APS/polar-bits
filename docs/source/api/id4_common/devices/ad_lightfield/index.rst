@@ -9,24 +9,8 @@ id4_common.devices.ad_lightfield
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.devices.ad_lightfield.spectrometer
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.ad_lightfield.MySingleTrigger
-   id4_common.devices.ad_lightfield.LF_HDF
-   id4_common.devices.ad_lightfield.LightFieldFilePlugin
-   id4_common.devices.ad_lightfield.MyLightFieldCam
-   id4_common.devices.ad_lightfield.LightFieldDetector
 
 
 Module Contents
@@ -49,8 +33,48 @@ Module Contents
 
    .. py:method:: stage()
 
+      Stage the device for data collection.
+
+      This method is expected to put the device into a state where
+      repeated calls to :meth:`~BlueskyInterface.trigger` and
+      :meth:`~BlueskyInterface.read` will 'do the right thing'.
+
+      Staging not idempotent and should raise
+      :obj:`RedundantStaging` if staged twice without an
+      intermediate :meth:`~BlueskyInterface.unstage`.
+
+      This method should be as fast as is feasible as it does not return
+      a status object.
+
+      The return value of this is a list of all of the (sub) devices
+      stage, including it's self.  This is used to ensure devices
+      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
+
+      This is an optional method, if the device does not need
+      staging behavior it should not implement `stage` (or
+      `unstage`).
+
+      :returns: **devices** -- list including self and all child devices staged
+      :rtype: list
+
+
 
    .. py:method:: unstage()
+
+      Unstage the device.
+
+      This method returns the device to the state it was prior to the
+      last `stage` call.
+
+      This method should be as fast as feasible as it does not
+      return a status object.
+
+      This method must be idempotent, multiple calls (without a new
+      call to 'stage') have no effect.
+
+      :returns: **devices** -- list including self and all child devices unstaged
+      :rtype: list
+
 
 
    .. py:method:: trigger()
@@ -59,12 +83,9 @@ Module Contents
 
 
 
-.. py:class:: LF_HDF(*args, write_path_template='', **kwargs)
+.. py:class:: LF_HDF
 
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
-
-
-   Using the filename from EPICS.
 
 
    .. py:method:: make_write_read_paths(write_path=None, read_path=None)
@@ -94,6 +115,31 @@ Module Contents
 
    .. py:method:: stage()
 
+      Stage the device for data collection.
+
+      This method is expected to put the device into a state where
+      repeated calls to :meth:`~BlueskyInterface.trigger` and
+      :meth:`~BlueskyInterface.read` will 'do the right thing'.
+
+      Staging not idempotent and should raise
+      :obj:`RedundantStaging` if staged twice without an
+      intermediate :meth:`~BlueskyInterface.unstage`.
+
+      This method should be as fast as is feasible as it does not return
+      a status object.
+
+      The return value of this is a list of all of the (sub) devices
+      stage, including it's self.  This is used to ensure devices
+      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
+
+      This is an optional method, if the device does not need
+      staging behavior it should not implement `stage` (or
+      `unstage`).
+
+      :returns: **devices** -- list including self and all child devices staged
+      :rtype: list
+
+
 
    .. py:method:: generate_datum(key, timestamp, datum_kwargs)
 
@@ -101,9 +147,14 @@ Module Contents
 
 
 
-.. py:class:: MyLightFieldCam
+.. py:class:: MyLightFieldCam(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.areadetector.LightFieldDetectorCam`
+
+
+   The AreaDetector base class
+
+   This serves as the base for all detectors and plugins
 
 
    .. py:attribute:: file_name_base

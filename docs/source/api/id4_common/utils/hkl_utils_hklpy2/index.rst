@@ -44,73 +44,10 @@ id4_common.utils.hkl_utils_hklpy2
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils_hklpy2.logger
-   id4_common.utils.hkl_utils_hklpy2.polar_config
-   id4_common.utils.hkl_utils_hklpy2.fourc_config
-   id4_common.utils.hkl_utils_hklpy2.pbar_manager
-   id4_common.utils.hkl_utils_hklpy2.POLAR_DIFFRACTOMETER
-   id4_common.utils.hkl_utils_hklpy2.fourc
-   id4_common.utils.hkl_utils_hklpy2.wh
-   id4_common.utils.hkl_utils_hklpy2.sampleList
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils_hklpy2.whClass
-   id4_common.utils.hkl_utils_hklpy2.sampleListClass
-   id4_common.utils.hkl_utils_hklpy2.Sync_UB_Matrix
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.hkl_utils_hklpy2.get_huber_euler
-   id4_common.utils.hkl_utils_hklpy2.get_huber_hp
-   id4_common.utils.hkl_utils_hklpy2.get_huber_euler_psi
-   id4_common.utils.hkl_utils_hklpy2.select_engine_for_psi
-   id4_common.utils.hkl_utils_hklpy2.engine_for_psi
-   id4_common.utils.hkl_utils_hklpy2.set_diffractometer
-   id4_common.utils.hkl_utils_hklpy2.sampleNew
-   id4_common.utils.hkl_utils_hklpy2.sampleChange
-   id4_common.utils.hkl_utils_hklpy2.sampleRemove
-   id4_common.utils.hkl_utils_hklpy2.list_reflections
-   id4_common.utils.hkl_utils_hklpy2.or_swap
-   id4_common.utils.hkl_utils_hklpy2.setor0
-   id4_common.utils.hkl_utils_hklpy2.setor1
-   id4_common.utils.hkl_utils_hklpy2.set_orienting
-   id4_common.utils.hkl_utils_hklpy2.del_reflection
-   id4_common.utils.hkl_utils_hklpy2.list_orienting
-   id4_common.utils.hkl_utils_hklpy2.or0
-   id4_common.utils.hkl_utils_hklpy2.or1
-   id4_common.utils.hkl_utils_hklpy2.compute_UB
-   id4_common.utils.hkl_utils_hklpy2.calc_UB
-   id4_common.utils.hkl_utils_hklpy2.setmode
-   id4_common.utils.hkl_utils_hklpy2.ca
-   id4_common.utils.hkl_utils_hklpy2.ubr
-   id4_common.utils.hkl_utils_hklpy2.br
-   id4_common.utils.hkl_utils_hklpy2.uan
-   id4_common.utils.hkl_utils_hklpy2.an
-   id4_common.utils.hkl_utils_hklpy2.pa_new
-   id4_common.utils.hkl_utils_hklpy2.setlat
-   id4_common.utils.hkl_utils_hklpy2.setaz
-   id4_common.utils.hkl_utils_hklpy2.freeze
-   id4_common.utils.hkl_utils_hklpy2.update_lattice
-   id4_common.utils.hkl_utils_hklpy2.write_config
-   id4_common.utils.hkl_utils_hklpy2.read_config
-   id4_common.utils.hkl_utils_hklpy2.show_constraints
-   id4_common.utils.hkl_utils_hklpy2.reset_constraints
-   id4_common.utils.hkl_utils_hklpy2.set_constraints
-   id4_common.utils.hkl_utils_hklpy2.restore_huber_from_scan
 
 
 Module Contents

@@ -9,23 +9,8 @@ id4_common.devices.vortex_dante_me1
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   id4_common.devices.vortex_dante_me1.MAX_TIME
-   id4_common.devices.vortex_dante_me1.MAX_ROIS
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   id4_common.devices.vortex_dante_me1.Trigger
-   id4_common.devices.vortex_dante_me1.TotalCorrectedSignal
-   id4_common.devices.vortex_dante_me1.VortexDante1
 
 
 Module Contents
@@ -81,6 +66,9 @@ Module Contents
 
 
    .. py:method:: get(**kwargs)
+
+      The readback value
+
 
 
 .. py:class:: VortexDante1(*args, default_folder=Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex'), hdf1_file_format='%s/%s_%6.6d.h5', **kwargs)

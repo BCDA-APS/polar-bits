@@ -4,12 +4,6 @@ id4_common.utils.attenuator_utils
 .. py:module:: id4_common.utils.attenuator_utils
 
 
-Functions
----------
-
-.. autoapisummary::
-
-   id4_common.utils.attenuator_utils.atten
 
 
 Module Contents
