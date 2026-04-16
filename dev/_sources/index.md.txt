@@ -22,6 +22,7 @@ examples/general
 examples/writing_macros
 examples/4idg_diffractometer
 examples/4idh_magnet
+faq
 api/index
 ```
 
@@ -112,6 +113,13 @@ Diffractometer setup, HKL navigation, reciprocal-space scans.
 :link-type: doc
 
 Magnet 9-1-1 field sweeps, XMCD spectroscopy, temperature series.
+:::
+
+:::{grid-item-card} FAQ
+:link: faq
+:link-type: doc
+
+Common questions: plots, baseline, pause/resume, peak finding.
 :::
 
 :::{grid-item-card} API Reference
