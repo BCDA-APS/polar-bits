@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-polar-bits requires Linux (or macOS) with Conda. The `hkl` package for
+polar-bits is designed to operate in Linux with miniconda. The `hkl` package for
 crystallography calculations and `pyepics` for EPICS communication are installed
 via Conda because they depend on compiled C/Fortran libraries.
 
