@@ -4,7 +4,7 @@
 
 polar-bits is built on the [BITS (Bluesky Instrument Toolkit Structure)](https://BCDA-APS.github.io/BITS/)
 framework and provides a shared device library, scan plans, and data output callbacks
-for four hutches: **4IDB**, **4IDG**, **4IDH**, and **Raman**.
+for three hutches and the Raman offline setup: **4IDB**, **4IDG**, **4IDH**, and **Raman**.
 
 ```{toctree}
 :maxdepth: 1
