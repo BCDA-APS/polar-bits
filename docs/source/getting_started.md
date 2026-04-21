@@ -4,7 +4,8 @@
 
 polar-bits is designed to operate in Linux with miniconda. The `hkl` package for
 crystallography calculations and `pyepics` for EPICS communication are installed
-via Conda because they depend on compiled C/Fortran libraries.
+via Conda because they depend on compiled C/Fortran libraries. The rest of the
+packages are installed with `pip`.
 
 ## Installation
 
@@ -34,35 +35,27 @@ pip install -e ".[doc]"
 
 ---
 
-## Starting an Interactive Session
+## Starting polar-bits
 
-Launch IPython from your terminal:
+Startup scripts are provided in `startup_scrips/`:
+- `bluesky-4idb`
+- `bluesky-4idg`
+- `bluesky-4idh`
+- `bluesky-core`
 
-```bash
-ipython
-```
+Note that these assume that the environment name is "polar-bits".
 
-Then import everything from the beamline startup module:
+The "b", "g", and "h" scripts start the corresponding endstation support. The main difference in these is that it loads the station-specific database catalog, and it connects to the devices labeled "core" or the selected station in `src/id4_common/configs/devices.yml`.
 
-```python
-from id4_common.startup import *
-```
+The "core" startup will ask whether you want to connect all devices or none. See next section for more details on loading specific devices.
 
-The startup module will:
-
-1. Load `iconfig.yml` configuration
-2. Set up APS Data Management integration
-3. Initialize the RunEngine (`RE`), databroker catalog (`cat`), and BEC
-4. Load SPEC / NeXus callbacks (based on `iconfig.yml` settings)
-5. Prompt you to load devices
-6. Connect devices for your beamline
-7. Install shutter suspenders on the RunEngine
+Note that all devices are always loaded, but not connected.
 
 ---
 
 ## Loading Devices
 
-After startup, use these helpers to manage device connections:
+In order to connect or reload a device you cna use the following utility functions:
 
 ```python
 # List all available devices
@@ -81,45 +74,3 @@ remove_device("transfocator")
 reload_all_devices()
 reload_all_devices(stations=["core", "4idh"])  # for a specific beamline
 ```
-
----
-
-## Running Simulated Plans
-
-To verify that the installation works without requiring EPICS connections,
-run the built-in simulation plans:
-
-```python
-RE(sim_print_plan())
-RE(sim_count_plan())
-RE(sim_rel_scan_plan())
-```
-
----
-
-## Jupyter Notebook
-
-You can also start a session inside JupyterLab:
-
-```bash
-jupyter lab
-```
-
-Then in a notebook cell:
-
-```python
-from id4_common.startup import *
-```
-
----
-
-## Beamline-Specific Startup
-
-Each beamline has its own startup module that loads its specific devices:
-
-| Beamline | Import |
-|----------|--------|
-| 4IDB | `from id4_b.startup import *` |
-| 4IDG | `from id4_g.startup import *` |
-| 4IDH | `from id4_h.startup import *` |
-| Raman | `from id4_raman.startup import *` |
