@@ -539,7 +539,7 @@
 <h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">#</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p>polar-bits supports four hutches at the POLAR beamline (APS sector 4ID), all
+<p>polar-bits supports three hutches and a Raman setup at the 4ID-POLAR beamline, all
 sharing a common codebase in <code class="docutils literal notranslate"><span class="pre">id4_common</span></code> with beamline-specific overrides in
 separate packages.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>src/
@@ -585,7 +585,7 @@ separate packages.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_common/suspenders/</span></code></p></td>
 <td><p>shutter-based suspenders</p></td>
 </tr>
-<tr class="row-odd"><td><p>Beamline overrides</p></td>
+<tr class="row-odd"><td><p>Instrument overrides</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_{b,g,h,raman}/</span></code></p></td>
 <td><p>startup.py, iconfig_extras.yml</p></td>
 </tr>
@@ -631,7 +631,7 @@ connects only devices whose labels intersect with its <code class="docutils lite
 <td><p><code class="docutils literal notranslate"><span class="pre">[&quot;core&quot;,</span> <span class="pre">&quot;4idh&quot;]</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>Raman</p></td>
-<td><p>beamline-specific</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[&quot;raman&quot;,]</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -647,8 +647,8 @@ connects only devices whose labels intersect with its <code class="docutils lite
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;core&quot;</span></code></p></td>
 <td><p>Loaded by all hutches (shared upstream/optics devices)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;4idb&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;4idg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;4idh&quot;</span></code></p></td>
-<td><p>Hutch-specific devices</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;4idb&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;4idg&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;4idh&quot;,</span> <span class="pre">&quot;raman&quot;</span></code></p></td>
+<td><p>Instrument-specific devices</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;baseline&quot;</span></code></p></td>
 <td><p>Added to the supplemental baseline data stream</p></td>
@@ -694,40 +694,6 @@ Instead, implement <code class="docutils literal notranslate"><span class="pre">
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">connect_device()</span></code> calls this hook automatically after <code class="docutils literal notranslate"><span class="pre">wait_for_connection()</span></code>
 succeeds.</p>
-</section>
-<hr class="docutils" />
-<section id="pv-agnostic-device-pattern">
-<h2>PV-Agnostic Device Pattern<a class="headerlink" href="#pv-agnostic-device-pattern" title="Link to this heading">#</a></h2>
-<p>Device classes must not hardcode absolute EPICS PV strings. Accept site-specific
-PV details as <code class="docutils literal notranslate"><span class="pre">__init__</span></code> kwargs and reference them in <code class="docutils literal notranslate"><span class="pre">FormattedComponent</span></code>
-templates:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="n">motor</span> <span class="o">=</span> <span class="n">FormattedComponent</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{_ioc}</span><span class="s2">m1&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;motor&quot;</span><span class="p">,))</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ioc_prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ioc</span> <span class="o">=</span> <span class="n">ioc_prefix</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># devices.yml</span>
-<span class="nt">id4_common.devices.my_device.MyDevice</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mydev</span>
-<span class="w">  </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">  </span><span class="nt">ioc_prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4idbSoft:&quot;</span>
-<span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;4idb&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;baseline&quot;</span><span class="p p-Indicator">]</span>
-</pre></div>
-</div>
-<p>Where a <code class="docutils literal notranslate"><span class="pre">DynamicDeviceComponent</span></code> must be built at class-definition time, use a
-factory function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_mydevice_class</span><span class="p">(</span><span class="n">ioc</span><span class="o">=</span><span class="s2">&quot;4idgSoft:&quot;</span><span class="p">):</span>
-    <span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-        <span class="n">ddc</span> <span class="o">=</span> <span class="n">DynamicDeviceComponent</span><span class="p">(</span><span class="n">_make_dict</span><span class="p">(</span><span class="n">ioc</span><span class="p">))</span>
-        <span class="o">...</span>
-    <span class="k">return</span> <span class="n">MyDevice</span>
-
-<span class="n">MyDevice</span> <span class="o">=</span> <span class="n">make_mydevice_class</span><span class="p">()</span>  <span class="c1"># module-level default for devices.yml</span>
-</pre></div>
-</div>
 </section>
 <hr class="docutils" />
 <section id="key-components-in-id4-common">
@@ -824,7 +790,6 @@ helpers, DM integration, attenuator control, and more.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#station-labels">Station Labels</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-registry-devices-yml">Device Registry (<code class="docutils literal notranslate"><span class="pre">devices.yml</span></code>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deferred-epics-connection-pattern">Deferred EPICS Connection Pattern</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pv-agnostic-device-pattern">PV-Agnostic Device Pattern</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-components-in-id4-common">Key Components in <code class="docutils literal notranslate"><span class="pre">id4_common/</span></code></a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#devices"><code class="docutils literal notranslate"><span class="pre">devices/</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plans"><code class="docutils literal notranslate"><span class="pre">plans/</span></code></a></li>

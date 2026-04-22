@@ -596,32 +596,6 @@ inside <code class="docutils literal notranslate"><span class="pre">__init__</sp
 </section>
 </section>
 <hr class="docutils" />
-<section id="pv-agnostic-pattern-pv-agnostic-pattern">
-<h2>PV-Agnostic Pattern {#pv-agnostic-pattern}<a class="headerlink" href="#pv-agnostic-pattern-pv-agnostic-pattern" title="Link to this heading">#</a></h2>
-<p>Device classes must not hardcode absolute EPICS PV strings. Accept
-site-specific PV details as <code class="docutils literal notranslate"><span class="pre">__init__</span></code> kwargs and reference them inside
-<code class="docutils literal notranslate"><span class="pre">FormattedComponent</span></code> templates:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">FormattedComponent</span><span class="p">,</span> <span class="n">EpicsMotor</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">KBMirror</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="n">hx</span> <span class="o">=</span> <span class="n">FormattedComponent</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{_ioc}</span><span class="s2">m1&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;motor&quot;</span><span class="p">,))</span>
-    <span class="n">hy</span> <span class="o">=</span> <span class="n">FormattedComponent</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{_ioc}</span><span class="s2">m2&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;motor&quot;</span><span class="p">,))</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ioc_prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ioc</span> <span class="o">=</span> <span class="n">ioc_prefix</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># devices.yml</span>
-<span class="nt">id4_common.devices.kb_generic.GKBDevice</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kb_4idb</span>
-<span class="w">  </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">  </span><span class="nt">ioc_prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4IDB:KB:&quot;</span>
-<span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;4idb&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;mirror&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;baseline&quot;</span><span class="p p-Indicator">]</span>
-</pre></div>
-</div>
-</section>
-<hr class="docutils" />
 <section id="factory-pattern-for-dynamic-components">
 <h2>Factory Pattern for Dynamic Components<a class="headerlink" href="#factory-pattern-for-dynamic-components" title="Link to this heading">#</a></h2>
 <p>Where a <code class="docutils literal notranslate"><span class="pre">DynamicDeviceComponent</span></code> must be assembled at class-definition time
@@ -868,7 +842,6 @@ unless overridden by explicit arguments.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#post-connect-setup-hook"><code class="docutils literal notranslate"><span class="pre">_post_connect_setup()</span></code> hook</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pv-agnostic-pattern-pv-agnostic-pattern">PV-Agnostic Pattern {#pv-agnostic-pattern}</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-pattern-for-dynamic-components">Factory Pattern for Dynamic Components</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notable-device-classes">Notable Device Classes</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#area-detectors">Area Detectors</a></li>

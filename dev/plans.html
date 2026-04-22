@@ -542,17 +542,29 @@
 <a class="reference external" href="https://blueskyproject.io/bluesky/">Bluesky</a> plans with POLAR-specific
 defaults (counters, monitor selection, DM integration).</p>
 <hr class="docutils" />
-<section id="motor-moves">
-<h2>Motor Moves<a class="headerlink" href="#motor-moves" title="Link to this heading">#</a></h2>
+<section id="positioner-motions">
+<h2>Positioner Motions<a class="headerlink" href="#positioner-motions" title="Link to this heading">#</a></h2>
+<p>Motions are an exception in that it can be done using both the RE wrapper and through the <code class="docutils literal notranslate"><span class="pre">mov</span></code> and <code class="docutils literal notranslate"><span class="pre">movr</span></code> python magics.</p>
+<p>Note that a positioner can be motor, temperature, magnetic field, energy, etc.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Absolute move</span>
-<span class="n">mv</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
-<span class="n">mv</span><span class="p">(</span><span class="n">motor1</span><span class="p">,</span> <span class="n">pos1</span><span class="p">,</span> <span class="n">motor2</span><span class="p">,</span> <span class="n">pos2</span><span class="p">)</span>   <span class="c1"># simultaneous multi-motor move</span>
+<span class="n">mov</span> <span class="n">positioner</span> <span class="n">position</span>
+<span class="n">mov</span> <span class="n">positioner1</span> <span class="n">pos1</span> <span class="n">positioner2</span> <span class="n">pos2</span> <span class="c1"># simultaneous multi-motor move</span>
 
 <span class="c1"># Relative move</span>
-<span class="n">mvr</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span>
+<span class="n">movr</span> <span class="n">positioner</span> <span class="n">delta</span>
+</pre></div>
+</div>
+<p>These are the same as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Absolute move</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">mv</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">position</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">mv</span><span class="p">(</span><span class="n">motor1</span><span class="p">,</span> <span class="n">pos1</span><span class="p">,</span> <span class="n">motor2</span><span class="p">,</span> <span class="n">pos2</span><span class="p">))</span>   
 
-<span class="c1"># Set (returns a Msg generator, use inside a plan)</span>
-<span class="n">abs_set</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+<span class="c1"># Relative move</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">mvr</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">delta</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The move options above will wait until the motion is done. If you want to start a motion and gain back command line control use <code class="docutils literal notranslate"><span class="pre">abs_set</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">abs_set</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">position</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>
@@ -561,17 +573,16 @@ defaults (counters, monitor selection, DM integration).</p>
 <h2>1-D Scans<a class="headerlink" href="#d-scans" title="Link to this heading">#</a></h2>
 <section id="lup-relative-scan">
 <h3><code class="docutils literal notranslate"><span class="pre">lup</span></code> — relative scan<a class="headerlink" href="#lup-relative-scan" title="Link to this heading">#</a></h3>
-<p>Scan <code class="docutils literal notranslate"><span class="pre">motor</span></code> from <code class="docutils literal notranslate"><span class="pre">start</span></code> to <code class="docutils literal notranslate"><span class="pre">stop</span></code> relative to its current position,
-collecting <code class="docutils literal notranslate"><span class="pre">npts</span></code> points.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lup</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
-<span class="n">lup</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="s2">&quot;Fe3O4&quot;</span><span class="p">})</span>
+<p>Scan <code class="docutils literal notranslate"><span class="pre">motor</span></code> from <code class="docutils literal notranslate"><span class="pre">start</span></code> to <code class="docutils literal notranslate"><span class="pre">stop</span></code> relative to its current position, collecting <code class="docutils literal notranslate"><span class="pre">npts</span></code> points.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="s2">&quot;Fe3O4&quot;</span><span class="p">}))</span>
 </pre></div>
 </div>
 </section>
 <section id="ascan-absolute-scan">
 <h3><code class="docutils literal notranslate"><span class="pre">ascan</span></code> — absolute scan<a class="headerlink" href="#ascan-absolute-scan" title="Link to this heading">#</a></h3>
 <p>Scan <code class="docutils literal notranslate"><span class="pre">motor</span></code> from <code class="docutils literal notranslate"><span class="pre">start</span></code> to <code class="docutils literal notranslate"><span class="pre">stop</span></code> in absolute coordinates.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ascan</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">ascan</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>
@@ -581,11 +592,11 @@ collecting <code class="docutils literal notranslate"><span class="pre">npts</sp
 <h2>2-D / N-D Scans<a class="headerlink" href="#d-n-d-scans" title="Link to this heading">#</a></h2>
 <section id="grid-scan-absolute-grid">
 <h3><code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> — absolute grid<a class="headerlink" href="#grid-scan-absolute-grid" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">grid_scan</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">grid_scan</span><span class="p">(</span>
     <span class="p">[</span><span class="n">detector</span><span class="p">],</span>
     <span class="n">motor1</span><span class="p">,</span> <span class="n">start1</span><span class="p">,</span> <span class="n">stop1</span><span class="p">,</span> <span class="n">npts1</span><span class="p">,</span>
     <span class="n">motor2</span><span class="p">,</span> <span class="n">start2</span><span class="p">,</span> <span class="n">stop2</span><span class="p">,</span> <span class="n">npts2</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="p">))</span>
 </pre></div>
 </div>
 </section>
@@ -597,16 +608,15 @@ collecting <code class="docutils literal notranslate"><span class="pre">npts</sp
 <hr class="docutils" />
 <section id="simple-count">
 <h2>Simple Count<a class="headerlink" href="#simple-count" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">count</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>    <span class="c1"># count once, or num times with optional delay</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">count</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>    <span class="c1"># count once, or num times with optional delay</span>
 </pre></div>
 </div>
 </section>
 <hr class="docutils" />
-<section id="q-space-scan">
-<h2>Q-Space Scan<a class="headerlink" href="#q-space-scan" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">qxscan</span></code> scans in reciprocal-space coordinates using the diffractometer and
-energy device:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qxscan</span><span class="p">(</span><span class="n">q_start</span><span class="p">,</span> <span class="n">q_stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+<section id="energy-scan-with-q-steps">
+<h2>Energy Scan with Q steps.<a class="headerlink" href="#energy-scan-with-q-steps" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">qxscan</span></code> scans the energy using a non-constant step size.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">qxscan</span><span class="p">(</span><span class="n">q_start</span><span class="p">,</span> <span class="n">q_stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>
@@ -705,7 +715,7 @@ around user plans.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motor-moves">Motor Moves</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#positioner-motions">Positioner Motions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-scans">1-D Scans</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lup-relative-scan"><code class="docutils literal notranslate"><span class="pre">lup</span></code> — relative scan</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ascan-absolute-scan"><code class="docutils literal notranslate"><span class="pre">ascan</span></code> — absolute scan</a></li>
@@ -717,7 +727,7 @@ around user plans.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-count">Simple Count</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#q-space-scan">Q-Space Scan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#energy-scan-with-q-steps">Energy Scan with Q steps.</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aps-data-management-plans">APS Data Management Plans</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runengine">RunEngine</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scan-metadata">Scan Metadata</a></li>
