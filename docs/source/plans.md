@@ -7,18 +7,35 @@ defaults (counters, monitor selection, DM integration).
 
 ---
 
-## Motor Moves
+## Positioner Motions
+
+Motions are an exception in that it can be done using both the RE wrapper and through the `mov` and `movr` python magics.
+
+Note that a positioner can be motor, temperature, magnetic field, energy, etc.
 
 ```python
 # Absolute move
-mv(motor, position)
-mv(motor1, pos1, motor2, pos2)   # simultaneous multi-motor move
+mov positioner position
+mov positioner1 pos1 positioner2 pos2 # simultaneous multi-motor move
 
 # Relative move
-mvr(motor, delta)
+movr positioner delta
+```
 
-# Set (returns a Msg generator, use inside a plan)
-abs_set(motor, position)
+These are the same as:
+
+```python
+# Absolute move
+RE(mv(motor, position))
+RE(mv(motor1, pos1, motor2, pos2))   
+
+# Relative move
+RE(mvr(motor, delta))
+```
+The move options above will wait until the motion is done. If you want to start a motion and gain back command line control use `abs_set`:
+
+```
+RE(abs_set(motor, position))
 ```
 
 ---
@@ -27,12 +44,11 @@ abs_set(motor, position)
 
 ### `lup` — relative scan
 
-Scan `motor` from `start` to `stop` relative to its current position,
-collecting `npts` points.
+Scan `motor` from `start` to `stop` relative to its current position, collecting `npts` points.
 
 ```python
-lup(motor, start, stop, npts)
-lup(motor, start, stop, npts, md={"sample": "Fe3O4"})
+RE(lup(motor, start, stop, npts))
+RE(lup(motor, start, stop, npts, md={"sample": "Fe3O4"}))
 ```
 
 ### `ascan` — absolute scan
@@ -40,7 +56,7 @@ lup(motor, start, stop, npts, md={"sample": "Fe3O4"})
 Scan `motor` from `start` to `stop` in absolute coordinates.
 
 ```python
-ascan(motor, start, stop, npts)
+RE(ascan(motor, start, stop, npts))
 ```
 
 ---
@@ -50,11 +66,11 @@ ascan(motor, start, stop, npts)
 ### `grid_scan` — absolute grid
 
 ```python
-grid_scan(
+RE(grid_scan(
     [detector],
     motor1, start1, stop1, npts1,
     motor2, start2, stop2, npts2,
-)
+))
 ```
 
 ### `rel_grid_scan` — relative grid
@@ -66,18 +82,17 @@ Same as `grid_scan` but offsets are relative to current motor positions.
 ## Simple Count
 
 ```python
-count(num=1, delay=None)    # count once, or num times with optional delay
+RE(count(num=1, delay=None))    # count once, or num times with optional delay
 ```
 
 ---
 
-## Q-Space Scan
+## Energy Scan with Q steps.
 
-`qxscan` scans in reciprocal-space coordinates using the diffractometer and
-energy device:
+`qxscan` scans the energy using a non-constant step size.
 
 ```python
-qxscan(q_start, q_stop, npts)
+RE(qxscan(q_start, q_stop, npts))
 ```
 
 ---

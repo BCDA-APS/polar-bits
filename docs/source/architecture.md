@@ -2,7 +2,7 @@
 
 ## Overview
 
-polar-bits supports four hutches at the POLAR beamline (APS sector 4ID), all
+polar-bits supports three hutches and a Raman setup at the 4ID-POLAR beamline, all
 sharing a common codebase in `id4_common` with beamline-specific overrides in
 separate packages.
 
@@ -29,7 +29,7 @@ src/
 | Data callbacks | `id4_common/callbacks/` | SPEC writer, NeXus writer, dichro stream |
 | Session utilities | `id4_common/utils/` | device loader, counters, HKL utilities |
 | Safety suspenders | `id4_common/suspenders/` | shutter-based suspenders |
-| Beamline overrides | `id4_{b,g,h,raman}/` | startup.py, iconfig_extras.yml |
+| Instrument overrides | `id4_{b,g,h,raman}/` | startup.py, iconfig_extras.yml |
 
 ---
 
@@ -58,14 +58,14 @@ connects only devices whose labels intersect with its `stations` list:
 | 4IDB | `["core", "4idb"]` |
 | 4IDG | `["core", "4idg"]` |
 | 4IDH | `["core", "4idh"]` |
-| Raman | beamline-specific |
+| Raman | `["raman",]`|
 
 Common labels:
 
 | Label | Meaning |
 |-------|---------|
 | `"core"` | Loaded by all hutches (shared upstream/optics devices) |
-| `"4idb"`, `"4idg"`, `"4idh"` | Hutch-specific devices |
+| `"4idb"`, `"4idg"`, `"4idh", "raman"` | Instrument-specific devices |
 | `"baseline"` | Added to the supplemental baseline data stream |
 | `"detector"`, `"motor"`, `"slit"` | Functional category — used for filtering |
 
@@ -111,45 +111,6 @@ class MyDevice(Device):
 
 `connect_device()` calls this hook automatically after `wait_for_connection()`
 succeeds.
-
----
-
-## PV-Agnostic Device Pattern
-
-Device classes must not hardcode absolute EPICS PV strings. Accept site-specific
-PV details as `__init__` kwargs and reference them in `FormattedComponent`
-templates:
-
-```python
-class MyDevice(Device):
-    motor = FormattedComponent(EpicsMotor, "{_ioc}m1", labels=("motor",))
-
-    def __init__(self, prefix, *, ioc_prefix, **kwargs):
-        self._ioc = ioc_prefix
-        super().__init__(prefix, **kwargs)
-```
-
-```yaml
-# devices.yml
-id4_common.devices.my_device.MyDevice:
-- name: mydev
-  prefix: ""
-  ioc_prefix: "4idbSoft:"
-  labels: ["4idb", "baseline"]
-```
-
-Where a `DynamicDeviceComponent` must be built at class-definition time, use a
-factory function:
-
-```python
-def make_mydevice_class(ioc="4idgSoft:"):
-    class MyDevice(Base):
-        ddc = DynamicDeviceComponent(_make_dict(ioc))
-        ...
-    return MyDevice
-
-MyDevice = make_mydevice_class()  # module-level default for devices.yml
-```
 
 ---
 

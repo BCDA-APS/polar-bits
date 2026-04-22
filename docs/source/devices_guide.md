@@ -66,35 +66,6 @@ inside `__init__` to avoid fetching PV values before the connection is live.
 
 ---
 
-## PV-Agnostic Pattern {#pv-agnostic-pattern}
-
-Device classes must not hardcode absolute EPICS PV strings. Accept
-site-specific PV details as `__init__` kwargs and reference them inside
-`FormattedComponent` templates:
-
-```python
-from ophyd import Device, FormattedComponent, EpicsMotor
-
-class KBMirror(Device):
-    hx = FormattedComponent(EpicsMotor, "{_ioc}m1", labels=("motor",))
-    hy = FormattedComponent(EpicsMotor, "{_ioc}m2", labels=("motor",))
-
-    def __init__(self, prefix, *, ioc_prefix, **kwargs):
-        self._ioc = ioc_prefix
-        super().__init__(prefix, **kwargs)
-```
-
-```yaml
-# devices.yml
-id4_common.devices.kb_generic.GKBDevice:
-- name: kb_4idb
-  prefix: ""
-  ioc_prefix: "4IDB:KB:"
-  labels: ["4idb", "mirror", "baseline"]
-```
-
----
-
 ## Factory Pattern for Dynamic Components
 
 Where a `DynamicDeviceComponent` must be assembled at class-definition time
