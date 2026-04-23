@@ -9,20 +9,28 @@ for three hutches and the Raman offline setup: **4IDB**, **4IDG**, **4IDH**, and
 ```{toctree}
 :maxdepth: 1
 :hidden:
+:caption: User Guide
 
 getting_started
-architecture
-configuration
-devices_guide
-devices_reference
 plans
-callbacks
-queueserver
 examples/general
 examples/writing_macros
 examples/4idg_diffractometer
 examples/4idh_magnet
+devices_reference
 faq
+```
+
+```{toctree}
+:maxdepth: 1
+:hidden:
+:caption: Advanced
+
+architecture
+configuration
+devices_guide
+callbacks
+queueserver
 api/index
 ```
 
@@ -38,25 +46,11 @@ api/index
 Installation, first session, loading devices.
 :::
 
-:::{grid-item-card} Architecture
-:link: architecture
+:::{grid-item-card} Scan Plans
+:link: plans
 :link-type: doc
 
-Multi-beamline structure, startup flow, station labels.
-:::
-
-:::{grid-item-card} Configuration
-:link: configuration
-:link-type: doc
-
-`iconfig.yml` and `devices.yml` explained.
-:::
-
-:::{grid-item-card} Devices Guide
-:link: devices_guide
-:link-type: doc
-
-PV-agnostic pattern, deferred connection, factory classes.
+`lup`, `ascan`, `grid_scan`, `qxscan`, DM workflow submission.
 :::
 
 :::{grid-item-card} Device Reference
@@ -64,27 +58,6 @@ PV-agnostic pattern, deferred connection, factory classes.
 :link-type: doc
 
 Lookup tables: all core, 4IDB, 4IDG, and 4IDH devices.
-:::
-
-:::{grid-item-card} Scan Plans
-:link: plans
-:link-type: doc
-
-`lup`, `ascan`, `grid_scan`, DM workflow submission.
-:::
-
-:::{grid-item-card} Callbacks
-:link: callbacks
-:link-type: doc
-
-SPEC, NeXus/HDF5, and dichroism stream output.
-:::
-
-:::{grid-item-card} QueueServer
-:link: queueserver
-:link-type: doc
-
-Start/restart the QueueServer per beamline.
 :::
 
 :::{grid-item-card} General Examples
@@ -120,6 +93,50 @@ Magnet 9-1-1 field sweeps, XMCD spectroscopy, temperature series.
 :link-type: doc
 
 Common questions: plots, baseline, pause/resume, peak finding.
+:::
+
+::::
+
+---
+
+## Advanced
+
+::::{grid} 2 2 3 3
+:gutter: 3
+
+:::{grid-item-card} Architecture
+:link: architecture
+:link-type: doc
+
+Multi-beamline structure, startup flow, station labels.
+:::
+
+:::{grid-item-card} Configuration
+:link: configuration
+:link-type: doc
+
+`iconfig.yml` and `devices.yml` explained.
+:::
+
+:::{grid-item-card} Devices Guide
+:link: devices_guide
+:link-type: doc
+
+PV-agnostic pattern, deferred connection, factory classes.
+:::
+
+:::{grid-item-card} Callbacks
+:link: callbacks
+:link-type: doc
+
+SPEC, NeXus/HDF5, and dichroism stream output.
+:::
+
+:::{grid-item-card} QueueServer
+:link: queueserver
+:link-type: doc
+
+Start/restart the QueueServer per beamline.
 :::
 
 :::{grid-item-card} API Reference

@@ -326,3 +326,20 @@ Access recent runs from the databroker catalog:
 run = cat[-1]              # most recent run
 run.primary.read()         # read as xarray Dataset
 ```
+
+[polartools](https://github.com/APS-4ID-POLAR/polartools) provides higher-level
+routines for diffraction data analysis, available in the session namespace:
+
+```python
+# Load and fit a single peak scan
+x, y, fit = fit_peak(-1, cat, positioner="delta", detector="scaler1_ch14")
+plot_fit(x, y, fit)
+
+# Load a series of scans (e.g. temperature series)
+data = load_series([10, 11, 12, 13], cat, positioner="delta", detector="scaler1_ch14")
+fit_series(data)
+
+# Load and display a 2D mesh scan
+mesh = load_mesh(-1, cat, xmotor="sx", ymotor="sy", detector="scaler1_ch14")
+plot_2d(mesh)
+```

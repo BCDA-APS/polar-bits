@@ -53,6 +53,16 @@ Note that all devices are always loaded, but not connected.
 
 ---
 
+## Data Analysis
+
+[polartools](https://github.com/APS-4ID-POLAR/polartools) is the companion
+Python package for loading, processing, and plotting data collected at POLAR.
+It provides routines for XAS/XMCD analysis, diffraction peak fitting, image
+processing, and general data utilities. polartools functions are available in
+the session namespace after startup.
+
+---
+
 ## Loading Devices
 
 In order to connect or reload a device you cna use the following utility functions:

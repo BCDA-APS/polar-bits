@@ -156,11 +156,6 @@ field.get()       # read current field value
 %mov field -3.0   # apply -3 T (reverse polarity)
 ```
 
-:::{warning}
-Always ramp to zero before reversing field direction. Confirm with the
-magnet operator before exceeding safe ramp rates.
-:::
-
 ---
 
 ## Field-Dependent Scans
@@ -215,7 +210,10 @@ counters.plotselect(9, 8)
 
 ## Reading XAS/XMCD Data
 
-Load the signal from a recent run and plot it:
+The functions below are from [polartools](https://github.com/APS-4ID-POLAR/polartools)
+and are available in the session namespace after startup.
+
+Load a single XAS scan and plot it:
 
 ```python
 import matplotlib.pyplot as plt
@@ -230,6 +228,33 @@ plt.figure()
 plt.plot(en, xas)
 plt.xlabel("Energy (keV)")
 plt.ylabel("XAS (I/I₀)")
+```
+
+Load and process XMCD data from a dichro scan:
+
+```python
+# Load the two helicity channels from a dichro scan
+en, xas_plus, xas_minus = load_dichro(
+    -1, cat,
+    positioner="energy",
+    detector="4idhI1",
+    monitor="4idhI0",
+)
+
+# Compute and plot XMCD
+en, xmcd, xas = process_xmcd(en, xas_plus, xas_minus)
+plot_xmcd(en, xmcd, xas)
+```
+
+Average over multiple scans:
+
+```python
+en, xas = load_multi_xas(
+    [10, 11, 12], cat,
+    positioner="energy",
+    detector="4idhI1",
+    monitor="4idhI0",
+)
 ```
 
 ---

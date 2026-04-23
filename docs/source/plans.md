@@ -59,6 +59,24 @@ Scan `motor` from `start` to `stop` in absolute coordinates.
 RE(ascan(motor, start, stop, npts))
 ```
 
+### `th2th` — relative theta/2theta scan
+
+Coupled scan of `mu` and `gamma` (theta and 2theta) relative to their current
+positions. `tth_start`/`tth_end` set the 2theta range; theta moves at half that
+rate.
+
+```python
+RE(th2th(tth_start, tth_end, npts, time_per_point))
+```
+
+Optional flags:
+
+```python
+RE(th2th(tth_start, tth_end, npts, time_per_point, dichro=True))
+RE(th2th(tth_start, tth_end, npts, time_per_point, lockin=True))
+RE(th2th(tth_start, tth_end, npts, time_per_point, fixq=True))
+```
+
 ---
 
 ## 2-D / N-D Scans
@@ -87,12 +105,55 @@ RE(count(num=1, delay=None))    # count once, or num times with optional delay
 
 ---
 
-## Energy Scan with Q steps.
+## XAFS Energy Scan (`qxscan`)
 
-`qxscan` scans the energy using a non-constant step size.
+`qxscan` is an XAFS-style energy scan covering pre-edge, edge, and post-edge
+regions. The post-edge step size is defined in k-space (Å⁻¹) and converted to
+energy internally, so the energy step increases with energy above the edge.
+
+All energies in `qxscan_params` are **relative to the absorption edge**.
+
+### Step 1 — Configure `qxscan_params`
+
+Call the device to enter the interactive setup wizard:
 
 ```python
-RE(qxscan(q_start, q_stop, npts))
+qxscan_params()
+```
+
+This prompts for pre-edge regions (energy start, step, time factor), the edge
+region (energy start/end, step, time factor), and post-edge regions (k end, k
+step, time factor). It then computes and stores the full energy list.
+
+Parameters can also be saved and reloaded:
+
+```python
+qxscan_params.save_params_json("my_scan.json")
+qxscan_params.load_params_json("my_scan.json")
+qxscan_params.load_from_scan(scan_id)   # restore from a previous run
+```
+
+Print the current setup:
+
+```python
+print(qxscan_params)
+```
+
+### Step 2 — Run the scan
+
+```python
+RE(qxscan(edge_energy, time))
+```
+
+- `edge_energy`: absorption edge energy in eV (absolute)
+- `time`: counting time factor applied to all detectors
+
+Optional flags:
+
+```python
+RE(qxscan(edge_energy, time, dichro=True))   # switch polarization at each point
+RE(qxscan(edge_energy, time, lockin=True))   # lock-in detection mode
+RE(qxscan(edge_energy, time, fixq=True))     # fix diffractometer hkl during scan
 ```
 
 ---
@@ -127,25 +188,3 @@ RE.stop()                                      # graceful stop
 RE.pause()                                     # pause (resume with RE.resume())
 RE.resume()
 ```
-
----
-
-## Scan Metadata
-
-Persistent metadata is stored in `RE.md`:
-
-```python
-RE.md["proposal_id"] = "GUP-12345"
-RE.md["sample"] = "Fe3O4 thin film"
-RE.md["user"] = "J. Smith"
-```
-
-Values set here are attached to every subsequent run document.
-
----
-
-## Plan Preprocessors
-
-`id4_common.plans.local_preprocessors` provides plan decorators that inject
-standard behavior (e.g. automatic shutter open/close, baseline snapshots)
-around user plans.

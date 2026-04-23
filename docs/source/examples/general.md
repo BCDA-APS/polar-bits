@@ -221,6 +221,22 @@ peaks.max    # position of maximum
 peaks.com    # alias for center-of-mass
 ```
 
+### polartools
+
+[polartools](https://github.com/APS-4ID-POLAR/polartools) provides higher-level
+data loading and inspection utilities available in the session namespace:
+
+```python
+# Print metadata summary for a run
+show_meta(-1, cat)
+
+# Query runs matching metadata fields
+db_query(cat, sample="Fe3O4", proposal_id="GUP-12345")
+
+# Load a scan as a pandas DataFrame
+df = load_table(-1, cat)
+```
+
 ---
 
 ## Energy Tracking
@@ -228,6 +244,9 @@ peaks.com    # alias for center-of-mass
 Configure which devices follow the monochromator when energy changes:
 
 ```python
+# Iterative. Displays the available devices and you enter their corresponding numbers
+energy.tracking_setup()
+# Or not interactive:
 energy.tracking_setup(["undulators_ds", "pr2"])
 
 # Check which devices are currently tracked
