@@ -1,0 +1,69 @@
+id4_common.devices.hhl_mirror
+=============================
+
+.. py:module:: id4_common.devices.hhl_mirror
+
+.. autoapi-nested-parse::
+
+   HHL mirror
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: ToroidalMirror(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   Beamline toroidal mirror components.
+
+
+   .. py:attribute:: y
+
+
+   .. py:attribute:: x1
+
+
+   .. py:attribute:: x2
+
+
+   .. py:attribute:: us_bend
+
+
+   .. py:attribute:: ds_bend
+
+
+   .. py:attribute:: x
+
+
+   .. py:attribute:: pitch
+
+
+   .. py:attribute:: fine_pitch
+
+
+   .. py:attribute:: curvature
+
+
+   .. py:attribute:: elipticity
+
+
+   .. py:attribute:: stripe
+
+
+   .. py:attribute:: radius_target
+
+
+   .. py:attribute:: critical_energy
+
+
+   .. py:attribute:: beam_offset
+
+
+   .. py:attribute:: alpha
+
+

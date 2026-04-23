@@ -1,0 +1,13 @@
+/* polar-bits documentation — minor theme tweaks */
+
+/* Slightly tighter sidebar */
+.bd-sidebar-primary {
+    font-size: 0.9rem;
+}
+
+/* Highlight inline code in tables */
+td code {
+    background-color: var(--pst-color-surface);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+}
