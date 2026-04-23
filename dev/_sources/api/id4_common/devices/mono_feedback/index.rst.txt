@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Single-axis PID feedback loop device for monochromator position stabilization.
+
+
    .. py:attribute:: status
 
 
@@ -69,6 +72,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Pair of horizontal and vertical PID feedback loops for one beamline station.
+
+
    .. py:attribute:: horizontal
 
 
@@ -78,6 +84,9 @@ Module Contents
 .. py:class:: MonoFeedback
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Top-level monochromator feedback device with per-station feedback loops.
 
 
    .. py:attribute:: station

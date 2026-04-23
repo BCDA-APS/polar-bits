@@ -771,12 +771,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.StatsPlugin.start_auto_kind">
 <span class="sig-name descname"><span class="pre">start_auto_kind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.StatsPlugin.start_auto_kind" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Subscribe all compute signals to auto-update component kinds.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.StatsPlugin.stop_auto_kind">
 <span class="sig-name descname"><span class="pre">stop_auto_kind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.StatsPlugin.stop_auto_kind" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unsubscribe all compute signals from auto kind updates.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -899,6 +901,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.VortexDetectorCam">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">VortexDetectorCam</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.VortexDetectorCam" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apstools.devices.CamMixin_V34</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.Xspress3DetectorCam</span></code></p>
+<p>Vortex fluorescence detector camera with simplified trigger and erase controls.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.VortexDetectorCam.trigger_mode">
 <span class="sig-name descname"><span class="pre">trigger_mode</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.VortexDetectorCam.trigger_mode" title="Link to this definition">#</a></dt>
@@ -930,20 +933,24 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">FileStorePluginBaseEpicsName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ioc_path_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.filestore_mixins.FileStoreBase</span></code></p>
+<p>FileStore base that derives file paths from EPICS PV values rather than templates.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName.use_dm">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">use_dm</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName.use_dm" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return True if data management path is used for file writing.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName.make_write_read_paths">
 <span class="sig-name descname"><span class="pre">make_write_read_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName.make_write_read_paths" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the IOC write path, full file path, and relative file path.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Stage the file plugin, checking path existence and file collision.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -951,6 +958,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">FileStoreHDF5IterativeWriteEpicsName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName" title="id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileStorePluginBaseEpicsName</span></code></a></p>
+<p>HDF5 iterative-write filestore that reads file name from EPICS PVs.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.filestore_spec">
 <span class="sig-name descname"><span class="pre">filestore_spec</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'AD_HDF5'</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.filestore_spec" title="Link to this definition">#</a></dt>
@@ -959,22 +967,26 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.get_frames_per_point">
 <span class="sig-name descname"><span class="pre">get_frames_per_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.get_frames_per_point" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the number of frames expected per scan point.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Stage the HDF5 plugin and generate the resource document.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unstage the HDF5 plugin and reset the point counter.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.generate_datum">
 <span class="sig-name descname"><span class="pre">generate_datum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datum_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.generate_datum" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Generate a datum document with the current point number.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -982,7 +994,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.HDF5Plugin">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">HDF5Plugin</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.HDF5Plugin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_mixins.PluginMixin" title="id4_common.devices.ad_mixins.PluginMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PluginMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.plugins.HDF5Plugin_V34</span></code></p>
-<p>Remove property attribute found in AD IOCs now.</p>
+<p>HDF5 plugin with the property attribute removed for compatibility.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -998,22 +1010,26 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.PolarHDF5Plugin.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.PolarHDF5Plugin.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Stage the HDF5 plugin, enabling image saving if autosave is on.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.PolarHDF5Plugin.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.PolarHDF5Plugin.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unstage the HDF5 plugin, disabling image saving if autosave is on.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.PolarHDF5Plugin.warmup_signals">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">warmup_signals</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.PolarHDF5Plugin.warmup_signals" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return ordered dict of (signal, value) pairs used for detector warmup.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.PolarHDF5Plugin.warmup">
 <span class="sig-name descname"><span class="pre">warmup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.PolarHDF5Plugin.warmup" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Run the warmup sequence to prime the HDF5 plugin for fast acquisition.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1030,6 +1046,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.ADTriggerStatus">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">ADTriggerStatus</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.ADTriggerStatus" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.trigger_mixins.ADTriggerStatus</span></code></p>
+<p>AreaDetector trigger status that clears array-counter subscriptions on completion.</p>
 </dd></dl>
 
 </section>

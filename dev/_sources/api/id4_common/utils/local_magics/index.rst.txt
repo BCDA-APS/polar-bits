@@ -3,6 +3,11 @@ id4_common.utils.local_magics
 
 .. py:module:: id4_common.utils.local_magics
 
+.. autoapi-nested-parse::
+
+   IPython magic commands for motor control at the POLAR beamline.
+
+
 
 
 
@@ -14,13 +19,25 @@ Module Contents
    Bases: :py:obj:`bluesky.magics.BlueskyMagics`
 
 
+   Custom IPython line magics for motor readback and movement at POLAR.
+
+
    .. py:method:: wm(line)
+
+      Print position and travel limits for the named motors.
+
 
 
    .. py:method:: mov(line)
 
+      Move one or more motors to absolute positions via the RunEngine.
+
+
 
    .. py:method:: movr(line)
+
+      Move one or more motors by relative offsets via the RunEngine.
+
 
 
    .. py:method:: wa(line)

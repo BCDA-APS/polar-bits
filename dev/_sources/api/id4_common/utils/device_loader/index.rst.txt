@@ -3,6 +3,11 @@ id4_common.utils.device_loader
 
 .. py:module:: id4_common.utils.device_loader
 
+.. autoapi-nested-parse::
+
+   Device loading, connecting, and registry management utilities.
+
+
 
 
 

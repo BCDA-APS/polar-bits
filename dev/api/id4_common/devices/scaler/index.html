@@ -704,7 +704,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.PresetMonitorSignal.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler.PresetMonitorSignal.get" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the monitor preset converted to seconds for the time channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.PresetMonitorSignal.put">
@@ -735,6 +736,7 @@ pass through).
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.scaler.</span></span><span class="sig-name descname"><span class="pre">LocalScalerCH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.scaler.ScalerCH</span></code></p>
+<p>ScalerCH subclass with a flexible monitor channel and plot/read channel selection.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.preset_time">
 <span class="sig-name descname"><span class="pre">preset_time</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.preset_time" title="Link to this definition">#</a></dt>
@@ -753,12 +755,14 @@ pass through).
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.channels_name_map">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">channels_name_map</span></span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.channels_name_map" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return a dict mapping EPICS channel name strings to component attribute names.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.select_plot_channels">
 <span class="sig-name descname"><span class="pre">select_plot_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.select_plot_channels" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set the Kind of each channel to hinted (in chan_names) or normal (others).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.select_read_channels">
@@ -776,22 +780,26 @@ If <em>None</em>, select all channels named in the EPICS scaler.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">monitor</span></span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the EPICS name of the currently selected monitor channel.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.plot_options">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.plot_options" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return a list of all named scaler channel names available for plotting.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.select_plot">
 <span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.select_plot" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set the hinted kind for the given channels by delegating to select_plot_channels.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set default monitor to chan01 and select all named read and plot channels.</p>
+</dd></dl>
 
 </dd></dl>
 

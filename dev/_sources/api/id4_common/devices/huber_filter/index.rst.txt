@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Single Huber filter slot with label, thickness, and insertion status signals.
+
+
    .. py:attribute:: label
 
 
@@ -36,6 +39,9 @@ Module Contents
 .. py:class:: HuberFilter
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Six-slot Huber filter wheel device.
 
 
    .. py:attribute:: slot1

@@ -19,21 +19,41 @@ Module Contents
    Bases: :py:obj:`apstools.devices.SRS570_PreAmplifier`
 
 
+   SRS570 pre-amplifier with built-in Bluesky plans for sensitivity and offset optimization.
+
+
    .. py:property:: shutter
+
+      Return the beam shutter device used by the optimization plans.
 
 
    .. py:method:: opt_sens_plan(scaler_channel=None, time=0.1, delay=1)
 
+      Bluesky plan to find the optimal sensitivity for the target count rate.
+
+
 
    .. py:method:: opt_offset_plan(scaler_channel=None, time=0.1, delay=1)
+
+      Bluesky plan to find the optimal offset current that minimizes dark counts.
+
 
 
    .. py:method:: opt_fine_plan(scaler_channel=None, start=None, end=None, steps=11, time=0.1, delay=1)
 
+      Bluesky plan to scan offset_fine and fit a linear model to reach 200 counts/s.
+
+
 
    .. py:method:: optimize_plan(scaler_channel=None, time=0.1, delay=1)
 
+      Bluesky plan to fully optimize sensitivity, offset, and fine offset with the shutter.
+
+
 
    .. py:method:: default_settings()
+
+      Disable string mode on offset_fine and enable put_complete on control signals.
+
 
 

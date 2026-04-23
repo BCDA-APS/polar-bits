@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Optical table in 4IDB with upstream/downstream X and Y positioning motors.
+
+
    .. py:attribute:: x_us
 
 

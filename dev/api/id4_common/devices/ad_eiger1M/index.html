@@ -704,37 +704,44 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.TriggerTime.acquisition_signal">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">acquisition_signal</span></span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.TriggerTime.acquisition_signal" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the acquisition signal object.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.TriggerTime.delay">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">delay</span></span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.TriggerTime.delay" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the post-trigger delay in seconds.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.TriggerTime.min_period">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">min_period</span></span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.TriggerTime.min_period" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the minimum time between triggers in seconds.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.TriggerTime.setup_manual_trigger">
 <span class="sig-name descname"><span class="pre">setup_manual_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.TriggerTime.setup_manual_trigger" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure detector stage signals for manual (software) triggering.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.TriggerTime.setup_external_trigger">
 <span class="sig-name descname"><span class="pre">setup_external_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trigger_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gate'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.TriggerTime.setup_external_trigger" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure detector stage signals for external hardware triggering.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.TriggerTime.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.TriggerTime.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Stage the detector, optionally enabling external trigger for flyscans.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.TriggerTime.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.TriggerTime.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unstage the detector, stopping acquisition and waiting for processing to finish.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.TriggerTime.trigger">
@@ -748,7 +755,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_eiger1M.</span></span><span class="sig-name descname"><span class="pre">Eiger1MDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_name_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_eiger1M.TriggerTime" title="id4_common.devices.ad_eiger1M.TriggerTime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TriggerTime</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
-<p>This trigger mixin class takes one acquisition per trigger.</p>
+<p>Eiger 1M area detector with HDF5 file writing and statistics plugins.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.cam">
 <span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.cam" title="Link to this definition">#</a></dt>
@@ -847,7 +854,8 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.preset_monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the signal used to set exposure time.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.align_on">
@@ -864,62 +872,74 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.save_images_on">
 <span class="sig-name descname"><span class="pre">save_images_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.save_images_on" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Enable HDF5 image saving.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.save_images_off">
 <span class="sig-name descname"><span class="pre">save_images_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.save_images_off" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Disable HDF5 image saving.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.auto_save_on">
 <span class="sig-name descname"><span class="pre">auto_save_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.auto_save_on" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Enable automatic HDF5 saving on each acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.auto_save_off">
 <span class="sig-name descname"><span class="pre">auto_save_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.auto_save_off" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Disable automatic HDF5 saving on each acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Apply default detector settings and stage signal configuration.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_all">
 <span class="sig-name descname"><span class="pre">plot_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_all" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set all five stats channels to be plotted.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats1">
 <span class="sig-name descname"><span class="pre">plot_stats1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set only Stats1 total to be plotted.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats2">
 <span class="sig-name descname"><span class="pre">plot_stats2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats2" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set only Stats2 total to be plotted.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats3">
 <span class="sig-name descname"><span class="pre">plot_stats3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats3" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set only Stats3 total to be plotted.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats4">
 <span class="sig-name descname"><span class="pre">plot_stats4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats4" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set only Stats4 total to be plotted.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats5">
 <span class="sig-name descname"><span class="pre">plot_stats5</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats5" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set only Stats5 total to be plotted.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.setup_images">
 <span class="sig-name descname"><span class="pre">setup_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flyscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.setup_images" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure HDF5 file path, name, and number for the upcoming scan.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_select">
@@ -936,22 +956,26 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.save_image_flag">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">save_image_flag</span></span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.save_image_flag" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return True if images will be saved on next acquisition.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.label_option_map">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.label_option_map" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return mapping of stats channel label names to their index numbers.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_options">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_options" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return list of available channel names for plot selection.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_eiger1M.Eiger1MDetector.select_plot">
 <span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_eiger1M.Eiger1MDetector.select_plot" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Select which stats channels to plot by label name.</p>
+</dd></dl>
 
 </dd></dl>
 

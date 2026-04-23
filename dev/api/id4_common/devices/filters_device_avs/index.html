@@ -705,6 +705,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.filters_device_avs.FilterSlot">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.filters_device_avs.</span></span><span class="sig-name descname"><span class="pre">FilterSlot</span></span><a class="headerlink" href="#id4_common.devices.filters_device_avs.FilterSlot" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Single AVS filter slot with insertion control, lock, material, and PV routing.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.filters_device_avs.FilterSlot.setpoint">
 <span class="sig-name descname"><span class="pre">setpoint</span></span><a class="headerlink" href="#id4_common.devices.filters_device_avs.FilterSlot.setpoint" title="Link to this definition">#</a></dt>
@@ -760,12 +761,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.devices.filters_device_avs.make_filter_slots">
 <span class="sig-prename descclassname"><span class="pre">id4_common.devices.filters_device_avs.</span></span><span class="sig-name descname"><span class="pre">make_filter_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.filters_device_avs.make_filter_slots" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return an OrderedDict of FilterSlot component definitions for a DynamicDeviceComponent.</p>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.filters_device_avs.APSFilter">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.filters_device_avs.</span></span><span class="sig-name descname"><span class="pre">APSFilter</span></span><a class="headerlink" href="#id4_common.devices.filters_device_avs.APSFilter" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>AVS-style APS filter bank with attenuation control and per-slot management.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.filters_device_avs.APSFilter.energy_select">
 <span class="sig-name descname"><span class="pre">energy_select</span></span><a class="headerlink" href="#id4_common.devices.filters_device_avs.APSFilter.energy_select" title="Link to this definition">#</a></dt>

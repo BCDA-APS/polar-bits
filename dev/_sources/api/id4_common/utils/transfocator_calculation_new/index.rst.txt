@@ -30,6 +30,9 @@ Module Contents
 
 .. py:function:: read_delta(energy, path=BE_REFR_INDEX_FILE)
 
+   Return the refractive index delta for beryllium at the given energy (eV).
+
+
 .. py:function:: transfocator_calculation(energy, optimize_position: float = None, experiment: str = 'diffractometer', reference_distance: float = 2591, distance_only: bool = False, selected_lenses: list = None, verbose: bool = True)
 
    Calculate the transfocator position and lenses set.

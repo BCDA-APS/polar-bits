@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.PseudoPositioner`
 
 
+   Double-crystal monochromator as a pseudo-positioner converting energy to theta and y2.
+
+
    .. py:attribute:: energy
 
 
@@ -66,11 +69,20 @@ Module Contents
 
    .. py:method:: convert_energy_to_theta(energy)
 
+      Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing.
+
+
 
    .. py:method:: convert_energy_to_y(energy)
 
+      Convert photon energy (keV) to second-crystal vertical position (mm).
+
+
 
    .. py:method:: convert_theta_to_energy(theta)
+
+      Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing.
+
 
 
    .. py:method:: forward(pseudo_pos)
@@ -87,7 +99,13 @@ Module Contents
 
    .. py:method:: set_energy(energy)
 
+      Update the theta readback offset so that the current theta corresponds to energy (keV).
+
+
 
    .. py:method:: default_settings()
+
+      Remove crystal_select from the sub-device list so it is not staged.
+
 
 

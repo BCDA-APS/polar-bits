@@ -39,10 +39,17 @@ Module Contents
 
    .. py:property:: settle_time
 
+      Return the settle time in seconds after a move completes.
+
 
    .. py:property:: egu
 
+      Return the engineering units string from the EPICS units signal.
+
 
    .. py:method:: stop(*, success=False)
+
+      Stop the positioner; hold current position if not successful.
+
 
 

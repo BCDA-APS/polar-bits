@@ -43,6 +43,9 @@ Module Contents
    Bases: :py:obj:`ophyd.PseudoPositioner`
 
 
+   Crystal polarization analyzer with pseudo-energy axis and crystal setup.
+
+
    .. py:attribute:: energy
 
 
@@ -78,20 +81,36 @@ Module Contents
 
    .. py:method:: move_single(pseudo, position, **kwargs)
 
+      Guard move_single to require analyzer setup before moving energy.
+
+
 
    .. py:property:: beamline_wavelength
+
+      Return the current beamline wavelength from the parent diffractometer beam object.
 
 
    .. py:property:: beamline_energy
 
+      Return the current beamline energy in keV from the parent diffractometer beam object.
+
 
    .. py:method:: convert_energy_to_theta(energy)
+
+      Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing.
+
 
 
    .. py:method:: convert_energy_to_tth_trans(energy)
 
+      Convert photon energy (keV) to the two-theta translation stage position (mm).
+
+
 
    .. py:method:: convert_theta_to_energy(theta)
+
+      Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing.
+
 
 
    .. py:method:: forward(pseudo_pos)
@@ -108,16 +127,28 @@ Module Contents
 
    .. py:method:: set_energy(energy)
 
+      Calibrate the Bragg-angle motor to match the given photon energy (keV).
+
+
 
    .. py:method:: calc()
 
+      Print analyzer Bragg angles for the current crystal at the current beamline energy.
+
+
 
    .. py:method:: setup(analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH)
+
+      List compatible analyzer crystals and interactively configure d-spacing and crystal.
+
 
 
 .. py:class:: DiffractometerMixin
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Mixin adding table, area-detector, filter, slit, and analyzer components to a diffractometer.
 
 
    .. py:attribute:: tablex
@@ -143,6 +174,9 @@ Module Contents
 
    .. py:method:: default_settings()
 
+      Apply default settings for the diffractometer mixin (no-op; subclasses override).
+
+
 
 .. py:data:: mono_kwargs
 
@@ -151,6 +185,9 @@ Module Contents
 .. py:class:: CradleDiffractometer
 
    Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+
+
+   hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation.
 
 
    .. py:attribute:: x
@@ -167,6 +204,9 @@ Module Contents
 .. py:class:: HPDiffractometer
 
    Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+
+
+   hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
 
 
    .. py:attribute:: basex

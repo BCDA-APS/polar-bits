@@ -42,6 +42,9 @@ Module Contents
 
 .. py:function:: change_diffractometer(*args)
 
+   Interactively prompt the user to switch the active diffractometer.
+
+
 .. py:function:: plotselect(detector=None)
 
    Selects scalers plotted during scan

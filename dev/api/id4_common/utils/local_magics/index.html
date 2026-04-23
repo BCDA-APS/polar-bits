@@ -693,26 +693,31 @@
                   
   <section id="module-id4_common.utils.local_magics">
 <span id="id4-common-utils-local-magics"></span><h1>id4_common.utils.local_magics<a class="headerlink" href="#module-id4_common.utils.local_magics" title="Link to this heading">#</a></h1>
+<p>IPython magic commands for motor control at the POLAR beamline.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.utils.local_magics.LocalMagics">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.utils.local_magics.</span></span><span class="sig-name descname"><span class="pre">LocalMagics</span></span><a class="headerlink" href="#id4_common.utils.local_magics.LocalMagics" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">bluesky.magics.BlueskyMagics</span></code></p>
+<p>Custom IPython line magics for motor readback and movement at POLAR.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.utils.local_magics.LocalMagics.wm">
 <span class="sig-name descname"><span class="pre">wm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.local_magics.LocalMagics.wm" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Print position and travel limits for the named motors.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.utils.local_magics.LocalMagics.mov">
 <span class="sig-name descname"><span class="pre">mov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.local_magics.LocalMagics.mov" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Move one or more motors to absolute positions via the RunEngine.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.utils.local_magics.LocalMagics.movr">
 <span class="sig-name descname"><span class="pre">movr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.local_magics.LocalMagics.movr" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Move one or more motors by relative offsets via the RunEngine.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.utils.local_magics.LocalMagics.wa">

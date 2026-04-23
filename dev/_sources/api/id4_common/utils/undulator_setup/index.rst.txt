@@ -3,6 +3,11 @@ id4_common.utils.undulator_setup
 
 .. py:module:: id4_common.utils.undulator_setup
 
+.. autoapi-nested-parse::
+
+   Utility for configuring upstream and downstream undulator setpoints.
+
+
 
 
 

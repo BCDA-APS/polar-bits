@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Lakeshore 475 gaussmeter with field readback and scan trigger.
+
+
    .. py:attribute:: field
 
 
@@ -35,5 +38,7 @@ Module Contents
 
 
    .. py:property:: preset_monitor
+
+      Return the dummy acquire signal used as a no-op preset monitor.
 
 

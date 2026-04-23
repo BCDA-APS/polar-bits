@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.MotorBundle`
 
 
+   Three-axis (X, Y, Z) nanopositioning motor bundle.
+
+
    .. py:attribute:: x
 
 

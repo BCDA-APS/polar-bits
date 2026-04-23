@@ -705,6 +705,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idg.KepcoDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_kepco_4idg.</span></span><span class="sig-name descname"><span class="pre">KepcoDevice</span></span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idg.KepcoDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Kepco power supply device with field/current/voltage positioners and protection limits.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idg.KepcoDevice.manufacturer">
 <span class="sig-name descname"><span class="pre">manufacturer</span></span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idg.KepcoDevice.manufacturer" title="Link to this definition">#</a></dt>
@@ -863,17 +864,20 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idg.KepcoDevice.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idg.KepcoDevice.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Enable automatic current-mode enforcement on connect.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idg.KepcoDevice.start_auto_mode">
 <span class="sig-name descname"><span class="pre">start_auto_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idg.KepcoDevice.start_auto_mode" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Subscribe to mode changes so voltage mode is automatically corrected to current mode.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idg.KepcoDevice.stop_auto_mode">
 <span class="sig-name descname"><span class="pre">stop_auto_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idg.KepcoDevice.stop_auto_mode" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unsubscribe all auto-mode callbacks so voltage mode is no longer enforced.</p>
+</dd></dl>
 
 </dd></dl>
 

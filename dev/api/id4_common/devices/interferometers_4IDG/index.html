@@ -700,6 +700,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.interferometers_4IDG.InterferometerDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.interferometers_4IDG.</span></span><span class="sig-name descname"><span class="pre">InterferometerDevice</span></span><a class="headerlink" href="#id4_common.devices.interferometers_4IDG.InterferometerDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Six-channel interferometer readout for mirror horizontal and vertical positions.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.interferometers_4IDG.InterferometerDevice.mhor_up">
 <span class="sig-name descname"><span class="pre">mhor_up</span></span><a class="headerlink" href="#id4_common.devices.interferometers_4IDG.InterferometerDevice.mhor_up" title="Link to this definition">#</a></dt>
@@ -733,12 +734,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.interferometers_4IDG.InterferometerDevice.plot_first_pos1">
 <span class="sig-name descname"><span class="pre">plot_first_pos1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.interferometers_4IDG.InterferometerDevice.plot_first_pos1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set only the mhor_up channel as hinted and all others to normal.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.interferometers_4IDG.InterferometerDevice.plot_all">
 <span class="sig-name descname"><span class="pre">plot_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.interferometers_4IDG.InterferometerDevice.plot_all" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set all six interferometer channels to hinted kind for plotting.</p>
+</dd></dl>
 
 </dd></dl>
 

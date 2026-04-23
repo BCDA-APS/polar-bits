@@ -717,6 +717,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idb.KepcoController">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_kepco_4idb.</span></span><span class="sig-name descname"><span class="pre">KepcoController</span></span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idb.KepcoController" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Kepco bipolar power supply with voltage and current positioners and mode control.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idb.KepcoController.voltage">
 <span class="sig-name descname"><span class="pre">voltage</span></span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idb.KepcoController.voltage" title="Link to this definition">#</a></dt>
@@ -760,12 +761,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idb.KepcoController.mode_change">
 <span class="sig-name descname"><span class="pre">mode_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idb.KepcoController.mode_change" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Update readback visibility when the Kepco mode (Current/Voltage) changes.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_kepco_4idb.KepcoController.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.magnet_kepco_4idb.KepcoController.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure scan rate, remote control, model ID, and set current mode.</p>
+</dd></dl>
 
 </dd></dl>
 

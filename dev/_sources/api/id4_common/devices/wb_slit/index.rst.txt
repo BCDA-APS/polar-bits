@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   White-beam slit with horizontal, diagonal, pitch, and yaw blade motors.
+
+
    .. py:attribute:: horizontal
 
 

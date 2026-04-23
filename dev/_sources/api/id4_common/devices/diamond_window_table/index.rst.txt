@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Two-axis (X, Y) motorized stage for diamond window positioning.
+
+
    .. py:attribute:: x
 
 

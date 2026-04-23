@@ -726,6 +726,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.EdgeDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">EdgeDevice</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.EdgeDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Device storing start, end, step, and time-factor parameters for the edge region.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.EdgeDevice.Estart">
 <span class="sig-name descname"><span class="pre">Estart</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.EdgeDevice.Estart" title="Link to this definition">#</a></dt>
@@ -752,6 +753,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PreEdgeRegion">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">PreEdgeRegion</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PreEdgeRegion" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Device holding start energy, step, and time-factor for a single pre-edge region.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PreEdgeRegion.Estart">
 <span class="sig-name descname"><span class="pre">Estart</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PreEdgeRegion.Estart" title="Link to this definition">#</a></dt>
@@ -773,6 +775,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PreEdgeDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">PreEdgeDevice</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PreEdgeDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Device grouping up to five pre-edge scan regions and their count.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PreEdgeDevice.num_regions">
 <span class="sig-name descname"><span class="pre">num_regions</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PreEdgeDevice.num_regions" title="Link to this definition">#</a></dt>
@@ -809,6 +812,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PostEdgeRegion">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">PostEdgeRegion</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PostEdgeRegion" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Device holding k-end, k-step, and time-factor for a single post-edge region.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PostEdgeRegion.Kend">
 <span class="sig-name descname"><span class="pre">Kend</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PostEdgeRegion.Kend" title="Link to this definition">#</a></dt>
@@ -830,6 +834,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PostEdgeDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">PostEdgeDevice</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PostEdgeDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Device grouping up to five post-edge k-space scan regions and their count.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PostEdgeDevice.num_regions">
 <span class="sig-name descname"><span class="pre">num_regions</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PostEdgeDevice.num_regions" title="Link to this definition">#</a></dt>
@@ -866,6 +871,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.QxscanParams">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">QxscanParams</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.QxscanParams" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Device storing all qxscan energy-region parameters and the resulting energy list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.QxscanParams.pre_edge">
 <span class="sig-name descname"><span class="pre">pre_edge</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.QxscanParams.pre_edge" title="Link to this definition">#</a></dt>
@@ -930,7 +936,8 @@ self._read_params_dict.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.QxscanParams.load_from_scan">
 <span class="sig-name descname"><span class="pre">load_from_scan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">cat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.qxscan_device.QxscanParams.load_from_scan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Restore qxscan parameters from the baseline stream of a previously recorded scan.</p>
+</dd></dl>
 
 </dd></dl>
 

@@ -45,8 +45,14 @@ Module Contents
 
    .. py:method:: stage()
 
+      Subscribe to detector state changes and stage the detector.
+
+
 
    .. py:method:: unstage()
+
+      Unstage the detector and unsubscribe from detector state changes.
+
 
 
    .. py:method:: trigger()
@@ -99,6 +105,9 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.filestore_mixins.FileStoreHDF5SingleIterativeWrite`, :py:obj:`ophyd.areadetector.plugins.HDF5Plugin_V34`
 
 
+   HDF5 plugin for the Lambda 250k detector with POLAR-specific filestore spec.
+
+
    .. py:attribute:: filestore_spec
       :value: 'AD_HDF5_Lambda250k_APSPolar'
 
@@ -109,14 +118,7 @@ Module Contents
    Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   This trigger mixin class takes one acquisition per trigger.
-   .. rubric:: Examples
-
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+   Lambda 250k area detector with HDF5 file writing and statistics plugins.
 
 
    .. py:attribute:: cam
@@ -157,10 +159,18 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return the signal used to set exposure time.
+
 
    .. py:method:: default_kinds()
 
+      Configure default kind settings for all detector plugins and components.
+
+
 
    .. py:method:: default_settings()
+
+      Apply default stage signal settings for the Lambda detector.
+
 
 

@@ -700,6 +700,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.polar_status.HutchStatus">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_status.</span></span><span class="sig-name descname"><span class="pre">HutchStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hutch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_status.HutchStatus" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>EPICS status device for a single APS sector-4 experimental hutch.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_status.HutchStatus.user_enable">
 <span class="sig-name descname"><span class="pre">user_enable</span></span><a class="headerlink" href="#id4_common.devices.polar_status.HutchStatus.user_enable" title="Link to this definition">#</a></dt>
@@ -731,6 +732,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.polar_status.AStatus">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_status.</span></span><span class="sig-name descname"><span class="pre">AStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hutch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_status.AStatus" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.polar_status.HutchStatus" title="id4_common.devices.polar_status.HutchStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HutchStatus</span></code></a></p>
+<p>HutchStatus variant for the A hutch with its front-end shutter PV.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_status.AStatus.shutter">
 <span class="sig-name descname"><span class="pre">shutter</span></span><a class="headerlink" href="#id4_common.devices.polar_status.AStatus.shutter" title="Link to this definition">#</a></dt>
@@ -742,6 +744,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.polar_status.Status4ID">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_status.</span></span><span class="sig-name descname"><span class="pre">Status4ID</span></span><a class="headerlink" href="#id4_common.devices.polar_status.Status4ID" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Aggregate status device for all hutches and the front-end at APS sector 4.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_status.Status4ID.online">
 <span class="sig-name descname"><span class="pre">online</span></span><a class="headerlink" href="#id4_common.devices.polar_status.Status4ID.online" title="Link to this definition">#</a></dt>

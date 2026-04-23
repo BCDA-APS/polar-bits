@@ -25,6 +25,9 @@ Module Contents
    Bases: :py:obj:`ophyd.mca.SaturnDXP`
 
 
+   SaturnDXP subclass that removes unused live_time_output and trigger_output components.
+
+
    .. py:attribute:: live_time_output
       :value: None
 
@@ -38,6 +41,9 @@ Module Contents
 .. py:class:: MyMCA
 
    Bases: :py:obj:`ophyd.mca.EpicsMCARecord`
+
+
+   EpicsMCARecord subclass that adds a check_acquiring signal for polling acquisition state.
 
 
    .. py:attribute:: check_acquiring
@@ -60,8 +66,14 @@ Module Contents
 
    .. py:method:: stage()
 
+      Subscribe the status-signal callback and delegate to parent stage.
+
+
 
    .. py:method:: unstage()
+
+      Unsubscribe the status-signal callback and delegate to parent unstage.
+
 
 
    .. py:method:: trigger()
@@ -85,20 +97,16 @@ Module Contents
 
    .. py:method:: get(**kwargs)
 
+      Return the sum of deadtime-corrected ROI counts across all XMAP channels.
+
+
 
 .. py:class:: VortexXMAP(*args, **kwargs)
 
    Bases: :py:obj:`SingleTrigger`
 
 
-   This trigger mixin class takes one acquisition per trigger.
-   .. rubric:: Examples
-
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+   Four-element Vortex detector driven by an XIA XMAP DXP controller.
 
 
    .. py:attribute:: start
@@ -178,40 +186,75 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return the real_preset signal as the scan count-time control.
+
 
    .. py:method:: default_kinds()
+
+      Set default read/configuration attribute lists for MCA channels (placeholder).
+
 
 
    .. py:method:: default_settings()
 
+      Set default stage signals for erase-on-start and real-time preset mode.
+
+
 
    .. py:property:: read_rois
+
+      Return the list of ROI indices that are currently included in reads.
 
 
    .. py:method:: select_roi(rois)
 
+      Set the hinted ROI totals to those in rois, keeping other read_rois as normal.
+
+
 
    .. py:method:: plot_roi0()
+
+      Set ROI 0 as the hinted plot channel.
+
 
 
    .. py:method:: plot_roi1()
 
+      Set ROI 1 as the hinted plot channel.
+
+
 
    .. py:method:: plot_roi2()
+
+      Set ROI 2 as the hinted plot channel.
+
 
 
    .. py:method:: plot_roi3()
 
+      Set ROI 3 as the hinted plot channel.
+
+
 
    .. py:method:: plot_roi4()
+
+      Set ROI 4 as the hinted plot channel.
+
 
 
    .. py:property:: label_option_map
 
+      Return a mapping from human-readable ROI label strings to ROI index integers.
+
 
    .. py:property:: plot_options
 
+      Return all available ROI label strings for plot channel selection.
+
 
    .. py:method:: select_plot(channels)
+
+      Select which ROI channels are plotted by label name.
+
 
 

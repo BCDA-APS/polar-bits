@@ -712,12 +712,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.MySingleTrigger.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.MySingleTrigger.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Subscribe to detector state changes and stage the detector.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.MySingleTrigger.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.MySingleTrigger.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unstage the detector and unsubscribe from detector state changes.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.MySingleTrigger.trigger">
@@ -731,11 +733,12 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LF_HDF">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lightfield.</span></span><span class="sig-name descname"><span class="pre">LF_HDF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_path_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LF_HDF" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../ad_mixins/index.html#id4_common.devices.ad_mixins.PolarHDF5Plugin" title="id4_common.devices.ad_mixins.PolarHDF5Plugin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.ad_mixins.PolarHDF5Plugin</span></code></a></p>
-<p>Using the filename from EPICS.</p>
+<p>HDF5 plugin for LightField that translates Windows paths to Linux read paths.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LF_HDF.make_write_read_paths">
 <span class="sig-name descname"><span class="pre">make_write_read_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LF_HDF.make_write_read_paths" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return write path, full read path, and relative read path for HDF5 file.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -757,17 +760,20 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldFilePlugin.base_name">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">base_name</span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldFilePlugin.base_name" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the base filename from the LightField camera.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldFilePlugin.make_write_read_paths">
 <span class="sig-name descname"><span class="pre">make_write_read_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldFilePlugin.make_write_read_paths" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return write path, full read path, and relative read path for SPE file.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldFilePlugin.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldFilePlugin.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Stage the file plugin, verifying the output file does not already exist.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldFilePlugin.generate_datum">
@@ -781,6 +787,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.MyLightFieldCam">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lightfield.</span></span><span class="sig-name descname"><span class="pre">MyLightFieldCam</span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.MyLightFieldCam" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.LightFieldDetectorCam</span></code></p>
+<p>LightField camera with additional file naming and grating wavelength PVs.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.MyLightFieldCam.file_name_base">
 <span class="sig-name descname"><span class="pre">file_name_base</span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.MyLightFieldCam.file_name_base" title="Link to this definition">#</a></dt>
@@ -842,15 +849,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lightfield.</span></span><span class="sig-name descname"><span class="pre">LightFieldDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_name_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bluesky_files_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows_files_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_lightfield.MySingleTrigger" title="id4_common.devices.ad_lightfield.MySingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MySingleTrigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
-<p>This trigger mixin class takes one acquisition per trigger.
-.. rubric:: Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">SimDetector</span><span class="p">(</span><span class="n">SingleTrigger</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">pass</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">det</span> <span class="o">=</span> <span class="n">SimDetector</span><span class="p">(</span><span class="s1">&#39;..pv..&#39;</span><span class="p">)</span>
-<span class="go"># optionally, customize name of image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">det</span> <span class="o">=</span> <span class="n">SimDetector</span><span class="p">(</span><span class="s1">&#39;..pv..&#39;</span><span class="p">,</span> <span class="n">image_name</span><span class="o">=</span><span class="s1">&#39;fast_detector_image&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>Princeton Instruments LightField spectrometer detector with HDF5 and SPE file writing.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.cam">
 <span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.cam" title="Link to this definition">#</a></dt>
@@ -894,42 +893,50 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.preset_monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the signal used to set exposure time.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.save_images_on">
 <span class="sig-name descname"><span class="pre">save_images_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.save_images_on" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Enable HDF5 image saving.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.save_images_off">
 <span class="sig-name descname"><span class="pre">save_images_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.save_images_off" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Disable HDF5 image saving.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.auto_save_on">
 <span class="sig-name descname"><span class="pre">auto_save_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.auto_save_on" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Enable automatic HDF5 saving on each acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.auto_save_off">
 <span class="sig-name descname"><span class="pre">auto_save_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.auto_save_off" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Disable automatic HDF5 saving on each acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Apply default detector settings and stage signal configuration.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.setup_images">
 <span class="sig-name descname"><span class="pre">setup_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flyscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.setup_images" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure HDF5 and SPE file paths and names for the upcoming scan.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.save_image_flag">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">save_image_flag</span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.save_image_flag" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return True; LightField detector always saves images.</p>
+</dd></dl>
 
 </dd></dl>
 

@@ -700,6 +700,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.PositionStreamCam">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_positionstream.</span></span><span class="sig-name descname"><span class="pre">PositionStreamCam</span></span><a class="headerlink" href="#id4_common.devices.ad_positionstream.PositionStreamCam" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.ADBase</span></code></p>
+<p>ADBase subclass for position-stream cameras with acquire, counter, and callback signals.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.PositionStreamCam.port_name">
 <span class="sig-name descname"><span class="pre">port_name</span></span><a class="headerlink" href="#id4_common.devices.ad_positionstream.PositionStreamCam.port_name" title="Link to this definition">#</a></dt>
@@ -761,15 +762,18 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.MySingleTrigger">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_positionstream.</span></span><span class="sig-name descname"><span class="pre">MySingleTrigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_positionstream.MySingleTrigger" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.BlueskyInterface</span></code></p>
+<p>BlueskyInterface mixin that triggers a single acquisition and waits for the busy signal.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.MySingleTrigger.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_positionstream.MySingleTrigger.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Subscribe to acquire_busy changes and call the parent stage method.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.MySingleTrigger.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_positionstream.MySingleTrigger.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Call parent unstage and unsubscribe the acquire_busy callback.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.MySingleTrigger.trigger">
@@ -783,6 +787,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.PositionStreamDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_positionstream.</span></span><span class="sig-name descname"><span class="pre">PositionStreamDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_name_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h5'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_positionstream.PositionStreamDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_positionstream.MySingleTrigger" title="id4_common.devices.ad_positionstream.MySingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MySingleTrigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
+<p>AreaDetector device for position-stream data with HDF5 file output.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.PositionStreamDevice.cam">
 <span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.ad_positionstream.PositionStreamDevice.cam" title="Link to this definition">#</a></dt>
@@ -806,22 +811,26 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.PositionStreamDevice.preset_monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.ad_positionstream.PositionStreamDevice.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the dummy acquire_time signal used as a no-op preset monitor.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.PositionStreamDevice.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_positionstream.PositionStreamDevice.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set the HDF1 plugin warmup signal sequence for proper plugin initialization.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.PositionStreamDevice.setup_images">
 <span class="sig-name descname"><span class="pre">setup_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flyscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_positionstream.PositionStreamDevice.setup_images" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure HDF1 file path, name, and number for an upcoming acquisition.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_positionstream.PositionStreamDevice.save_image_flag">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">save_image_flag</span></span><a class="headerlink" href="#id4_common.devices.ad_positionstream.PositionStreamDevice.save_image_flag" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return True if the HDF1 plugin is enabled or autosave is active.</p>
+</dd></dl>
 
 </dd></dl>
 

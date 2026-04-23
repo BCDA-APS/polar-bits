@@ -19,7 +19,7 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.StatsPlugin`
 
 
-   Remove property attribute found in AD IOCs now.
+   StatsPlugin variant for QuadEM that disables auto-kind subscriptions.
 
 
    .. py:attribute:: kind
@@ -30,6 +30,9 @@ Module Contents
 .. py:class:: QuadEMPOLAR
 
    Bases: :py:obj:`ophyd.QuadEM`
+
+
+   QuadEM device with POLAR-specific statistics plugins and fast readback signals.
 
 
    .. py:attribute:: image
@@ -115,10 +118,15 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return the averaging_time signal as the count-time preset for scan plans.
+
 
 .. py:class:: TetrAMM
 
    Bases: :py:obj:`QuadEMPOLAR`
+
+
+   QuadEMPOLAR subclass for the Sydor TetrAMM 4-channel electrometer.
 
 
    .. py:attribute:: conf
@@ -129,24 +137,41 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Mixin that replaces the QuadEM trigger/preset with a no-op for read-only use.
+
+
    .. py:attribute:: dummy
 
 
    .. py:property:: preset_monitor
 
+      Return a dummy signal so scan plans have a no-op preset target.
+
 
    .. py:method:: trigger()
+
+      Immediately mark acquisition complete without driving the hardware.
+
 
 
    .. py:method:: stage()
 
+      Stage using base Device logic, bypassing QuadEM staging.
+
+
 
    .. py:method:: unstage()
+
+      Unstage using base Device logic, bypassing QuadEM unstaging.
+
 
 
 .. py:class:: SydorEMRO
 
    Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`QuadEMPOLAR`
+
+
+   Read-only Sydor T4U beam position monitor using the QuadEM framework.
 
 
    .. py:attribute:: conf
@@ -204,12 +229,21 @@ Module Contents
 
    .. py:method:: default_settings()
 
+      Set calibration and configuration signals to config kind and clear stage_sigs.
+
+
 
 .. py:class:: TetrAMMRO
 
    Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`TetrAMM`
 
 
+   Read-only TetrAMM 4-channel electrometer that disables staging and triggering.
+
+
    .. py:method:: default_settings()
+
+      Set calibration and configuration signals to config kind and clear stage_sigs.
+
 
 

@@ -719,27 +719,32 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.setup_manual_trigger">
 <span class="sig-name descname"><span class="pre">setup_manual_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.setup_manual_trigger" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure stage_sigs for software-triggered (manual) single-shot acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.setup_external_trigger">
 <span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setup_external_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.setup_external_trigger" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Raise NotImplementedError; the Dante cannot be used in flyscans.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Subscribe the busy-signal callback and arm the detector before staging.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Stop the Dante, unsubscribe the busy callback, and restore manual-trigger mode.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.trigger">
 <span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.trigger" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Start one Dante acquisition and return a status object that completes when done.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -756,7 +761,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.TotalCorrectedSignal.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.TotalCorrectedSignal.get" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the sum of deadtime-corrected ROI counts across all Dante channels.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -764,7 +770,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_dante_me1.</span></span><span class="sig-name descname"><span class="pre">VortexDante1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d.h5'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.vortex_dante_me1.Trigger" title="id4_common.devices.vortex_dante_me1.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
-<p>This trigger mixin class takes one acquisition per trigger.</p>
+<p>Single-element Vortex detector driven by a Dante MCA with HDF5 file saving.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.cam">
 <span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.cam" title="Link to this definition">#</a></dt>
@@ -803,12 +809,14 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.preset_monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the cam real-time preset signal as the scan count-time control.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.num_channels">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">num_channels</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.num_channels" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the number of MCA channels for this detector.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.align_on">
@@ -825,87 +833,104 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.save_images_on">
 <span class="sig-name descname"><span class="pre">save_images_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_images_on" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Enable the HDF5 plugin so acquisitions are written to disk.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.save_images_off">
 <span class="sig-name descname"><span class="pre">save_images_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_images_off" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Disable the HDF5 plugin so acquisitions are not written to disk.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_on">
 <span class="sig-name descname"><span class="pre">auto_save_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_on" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Enable HDF5 autosave so files are written automatically.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_off">
 <span class="sig-name descname"><span class="pre">auto_save_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_off" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Disable HDF5 autosave.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure HDF5 path, stage signals, ROIs, and manual-trigger mode.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.read_rois">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">read_rois</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.read_rois" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the list of ROI indices that are currently included in reads.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.select_roi">
 <span class="sig-name descname"><span class="pre">select_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rois</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.select_roi" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set the hinted ROI totals to those in rois, keeping other read_rois as normal.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi0">
 <span class="sig-name descname"><span class="pre">plot_roi0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi0" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 0 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi1">
 <span class="sig-name descname"><span class="pre">plot_roi1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 1 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi2">
 <span class="sig-name descname"><span class="pre">plot_roi2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi2" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 2 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi3">
 <span class="sig-name descname"><span class="pre">plot_roi3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi3" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 3 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi4">
 <span class="sig-name descname"><span class="pre">plot_roi4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi4" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 4 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.label_option_map">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.label_option_map" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return a mapping from human-readable ROI label strings to ROI index integers.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_options">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_options" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return all available ROI label strings for plot channel selection.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.select_plot">
 <span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.select_plot" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Select which ROI channels are plotted by label name.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.setup_images">
 <span class="sig-name descname"><span class="pre">setup_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flyscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.setup_images" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.save_image_flag">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">save_image_flag</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_image_flag" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return True if the HDF5 plugin is enabled or autosave is on.</p>
+</dd></dl>
 
 </dd></dl>
 

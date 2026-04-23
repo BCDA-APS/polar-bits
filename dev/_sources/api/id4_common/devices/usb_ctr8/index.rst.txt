@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`apstools.devices.MeasCompCtr`
 
 
+   MeasCompCtr subclass for the USB-CTR8, omitting unconnected I/O channels.
+
+
    .. py:attribute:: long_in
       :value: None
 

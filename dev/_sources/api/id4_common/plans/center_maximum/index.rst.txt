@@ -3,6 +3,11 @@ id4_common.plans.center_maximum
 
 .. py:module:: id4_common.plans.center_maximum
 
+.. autoapi-nested-parse::
+
+   Plans for moving a motor to the center, maximum, or minimum of the last scan.
+
+
 
 
 

@@ -3,6 +3,11 @@ id4_common.utils.shorts
 
 .. py:module:: id4_common.utils.shorts
 
+.. autoapi-nested-parse::
+
+   Short convenience wrappers for common session operations.
+
+
 
 
 

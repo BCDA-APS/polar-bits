@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Polarization analyzer assembly with theta/y motors and two pre-amplifiers.
+
+
    .. py:attribute:: y
 
 
@@ -32,5 +35,8 @@ Module Contents
 
 
    .. py:method:: default_settings()
+
+      Configure pre-amplifier signals for put_complete and disable string mode on offset_fine.
+
 
 

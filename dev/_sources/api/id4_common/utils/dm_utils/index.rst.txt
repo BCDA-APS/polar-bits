@@ -63,7 +63,7 @@ Module Contents
 
 
 
-.. py:function:: list_esafs(year=datetime.now().year, sector=STATION)
+.. py:function:: list_esafs(year=None, sector=STATION)
 
 .. py:function:: get_esaf_info(id)
 
@@ -73,7 +73,7 @@ Module Contents
 
 .. py:function:: get_current_run_name()
 
-.. py:function:: dm_experiment_setup(experiment_name, esaf_id=None, users_name_list: list = [], title: str = None, **kwargs)
+.. py:function:: dm_experiment_setup(experiment_name, esaf_id=None, users_name_list: list = None, title: str = None, **kwargs)
 
 .. py:function:: create_dm_experiment(experiment_name, description='', rootPath=None, startDate=None, endDate=None)
 

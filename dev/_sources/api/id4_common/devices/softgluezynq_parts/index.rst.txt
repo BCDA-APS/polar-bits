@@ -23,6 +23,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue I/O signal device with signal and BI (binary-input) components.
+
+
    .. py:attribute:: signal
 
 
@@ -32,6 +35,9 @@ Module Contents
 .. py:class:: SGZDevideByN
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue divide-by-N frequency divider block.
 
 
    .. py:attribute:: enable
@@ -54,6 +60,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue up-counter block that accumulates clock pulses while enabled.
+
+
    .. py:attribute:: enable
 
 
@@ -69,6 +78,9 @@ Module Contents
 .. py:class:: SGZDownCounter
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue down-counter block that counts down from a preset value.
 
 
    .. py:attribute:: enable
@@ -91,6 +103,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue gate-and-delay block that produces a programmable-width output pulse.
+
+
    .. py:attribute:: input
 
 
@@ -111,6 +126,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue clock source block exposing 10/20/50 MHz and a variable-rate clock.
+
+
    .. py:attribute:: clock_10MHz
 
 
@@ -128,6 +146,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue two-input gate (AND/OR) block.
+
+
    .. py:attribute:: in1
 
 
@@ -140,6 +161,9 @@ Module Contents
 .. py:class:: SGZDFF
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue D flip-flop block with set, data, clock, clear, and output signals.
 
 
    .. py:attribute:: set_
@@ -160,6 +184,9 @@ Module Contents
 .. py:class:: SGZHistScal
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue histogram scaler block for time-resolved counting into histogram bins.
 
 
    .. py:attribute:: en
@@ -191,6 +218,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue DMA readout block for the histogram scaler data.
+
+
    .. py:attribute:: enable
 
 
@@ -212,6 +242,9 @@ Module Contents
 .. py:class:: SoftGlueScalToStream
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue scaler-to-DMA-stream block that serialises counter data for readout.
 
 
    .. py:attribute:: reset
@@ -244,6 +277,9 @@ Module Contents
 .. py:class:: SampleXY
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue sample-position device providing X/Y/pitch readbacks and offsets.
 
 
    .. py:attribute:: x_offset

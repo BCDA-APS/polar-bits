@@ -700,6 +700,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.monochromator.MonoDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.monochromator.</span></span><span class="sig-name descname"><span class="pre">MonoDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzt_thf2_pv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'4idaSoft:LJ:Ao5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzt_chi2_pv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'4idaSoft:LJ:Ao3'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.monochromator.MonoDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.PseudoPositioner</span></code></p>
+<p>Double-crystal monochromator as a pseudo-positioner converting energy to theta and y2.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.monochromator.MonoDevice.energy">
 <span class="sig-name descname"><span class="pre">energy</span></span><a class="headerlink" href="#id4_common.devices.monochromator.MonoDevice.energy" title="Link to this definition">#</a></dt>
@@ -778,17 +779,20 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.monochromator.MonoDevice.convert_energy_to_theta">
 <span class="sig-name descname"><span class="pre">convert_energy_to_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.monochromator.MonoDevice.convert_energy_to_theta" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.monochromator.MonoDevice.convert_energy_to_y">
 <span class="sig-name descname"><span class="pre">convert_energy_to_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.monochromator.MonoDevice.convert_energy_to_y" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Convert photon energy (keV) to second-crystal vertical position (mm).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.monochromator.MonoDevice.convert_theta_to_energy">
 <span class="sig-name descname"><span class="pre">convert_theta_to_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.monochromator.MonoDevice.convert_theta_to_energy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.monochromator.MonoDevice.forward">
@@ -805,12 +809,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.monochromator.MonoDevice.set_energy">
 <span class="sig-name descname"><span class="pre">set_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.monochromator.MonoDevice.set_energy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Update the theta readback offset so that the current theta corresponds to energy (keV).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.monochromator.MonoDevice.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.monochromator.MonoDevice.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Remove crystal_select from the sub-device list so it is not staged.</p>
+</dd></dl>
 
 </dd></dl>
 

@@ -3,6 +3,11 @@ id4_common.utils.load_vortex
 
 .. py:module:: id4_common.utils.load_vortex
 
+.. autoapi-nested-parse::
+
+   Utilities for loading and connecting Vortex detector devices.
+
+
 
 
 
@@ -15,7 +20,7 @@ Module Contents
 
 .. py:data:: DETECTORS
 
-.. py:function:: load_vortex(electronic: str, pv: str = None, name: str = 'vortex', labels: list = ['detector'], baseline: bool = False, **kwargs)
+.. py:function:: load_vortex(electronic: str, pv: str = None, name: str = 'vortex', labels: list = None, baseline: bool = False, **kwargs)
 
    Load Vortex detector. kwargs are passed to the detector class.
 

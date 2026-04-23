@@ -33,6 +33,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Kepco bipolar power supply with voltage and current positioners and mode control.
+
+
    .. py:attribute:: voltage
 
 
@@ -59,7 +62,13 @@ Module Contents
 
    .. py:method:: mode_change(value=None, **kwargs)
 
+      Update readback visibility when the Kepco mode (Current/Voltage) changes.
+
+
 
    .. py:method:: default_settings()
+
+      Configure scan rate, remote control, model ID, and set current mode.
+
 
 

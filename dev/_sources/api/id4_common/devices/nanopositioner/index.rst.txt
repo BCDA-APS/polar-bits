@@ -19,12 +19,21 @@ Module Contents
    Bases: :py:obj:`ophyd.EpicsMotor`
 
 
+   EpicsMotor subclass that removes velocity from stage signals on unstage.
+
+
    .. py:method:: unstage()
+
+      Remove velocity from stage_sigs before delegating to parent unstage.
+
 
 
 .. py:class:: NanoPositioner
 
    Bases: :py:obj:`ophyd.MotorBundle`
+
+
+   Three-axis nanopositioner (X, Y, Z) using Jena piezo motors.
 
 
    .. py:attribute:: nanoy

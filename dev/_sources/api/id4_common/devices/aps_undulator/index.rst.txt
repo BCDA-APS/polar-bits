@@ -19,12 +19,21 @@ Module Contents
    Bases: :py:obj:`apstools.devices.aps_undulator.UndulatorPositioner`
 
 
+   UndulatorPositioner that skips waiting if the target is within the energy deadband.
+
+
    .. py:method:: set(new_position: Any, *, timeout: float = None, moved_cb: Callable = None, wait: bool = False) -> ophyd.status.StatusBase
+
+      Move to new_position; return immediately done if already within the energy deadband.
+
 
 
 .. py:class:: PolarUndulator
 
    Bases: :py:obj:`apstools.devices.STI_Undulator`
+
+
+   STI undulator subclass with energy tracking, offset, and deadband signals.
 
 
    .. py:attribute:: tracking
@@ -47,6 +56,9 @@ Module Contents
 .. py:class:: PhaseShifterDevice(*args, **kwargs)
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Phase shifter device with gap positioner and start/stop control signals.
 
 
    .. py:attribute:: gap
@@ -82,6 +94,9 @@ Module Contents
 .. py:class:: PolarUndulatorPair
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Composite device grouping upstream and downstream undulators with a phase shifter.
 
 
    .. py:attribute:: us

@@ -727,12 +727,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MySingleTrigger.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.MySingleTrigger.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Subscribe to detector state changes and stage the detector.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MySingleTrigger.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.MySingleTrigger.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unstage the detector and unsubscribe from detector state changes.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MySingleTrigger.trigger">
@@ -794,6 +796,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MyHDF5Plugin">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">MyHDF5Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.MyHDF5Plugin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.filestore_mixins.FileStoreHDF5SingleIterativeWrite</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.plugins.HDF5Plugin_V34</span></code></p>
+<p>HDF5 plugin for the Lambda 250k detector with POLAR-specific filestore spec.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MyHDF5Plugin.filestore_spec">
 <span class="sig-name descname"><span class="pre">filestore_spec</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'AD_HDF5_Lambda250k_APSPolar'</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.MyHDF5Plugin.filestore_spec" title="Link to this definition">#</a></dt>
@@ -805,15 +808,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">Lambda250kDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_lambda.MySingleTrigger" title="id4_common.devices.ad_lambda.MySingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MySingleTrigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
-<p>This trigger mixin class takes one acquisition per trigger.
-.. rubric:: Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">SimDetector</span><span class="p">(</span><span class="n">SingleTrigger</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">pass</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">det</span> <span class="o">=</span> <span class="n">SimDetector</span><span class="p">(</span><span class="s1">&#39;..pv..&#39;</span><span class="p">)</span>
-<span class="go"># optionally, customize name of image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">det</span> <span class="o">=</span> <span class="n">SimDetector</span><span class="p">(</span><span class="s1">&#39;..pv..&#39;</span><span class="p">,</span> <span class="n">image_name</span><span class="o">=</span><span class="s1">&#39;fast_detector_image&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>Lambda 250k area detector with HDF5 file writing and statistics plugins.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.cam">
 <span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.cam" title="Link to this definition">#</a></dt>
@@ -877,17 +872,20 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.preset_monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the signal used to set exposure time.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.default_kinds">
 <span class="sig-name descname"><span class="pre">default_kinds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.default_kinds" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure default kind settings for all detector plugins and components.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Apply default stage signal settings for the Lambda detector.</p>
+</dd></dl>
 
 </dd></dl>
 

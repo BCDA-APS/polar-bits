@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Optical table in 4IDH with individual leg motors and combined X/Y/pitch/yaw pseudo-axes.
+
+
    .. py:attribute:: x_us
 
 

@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Device exposing APS ring current and operational status signals.
+
+
    .. py:attribute:: current
 
 

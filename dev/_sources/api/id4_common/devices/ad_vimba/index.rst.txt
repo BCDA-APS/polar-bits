@@ -24,24 +24,42 @@ Module Contents
 
    .. py:method:: setup_manual_trigger()
 
+      Configure stage_sigs for single-image manual-trigger mode.
+
+
 
    .. py:method:: setup_external_trigger()
       :abstractmethod:
 
 
+      Raise NotImplementedError — external trigger is not supported for Vimba detectors.
+
+
 
    .. py:method:: stage()
+
+      Disarm the detector, subscribe to busy signal, and call parent stage.
+
 
 
    .. py:method:: unstage()
 
+      Call parent unstage, stop acquisition, clear busy subscription, and restore manual trigger.
+
+
 
    .. py:method:: trigger()
+
+      Trigger one acquisition and return a status object that completes when acquire_busy drops.
+
 
 
 .. py:class:: VimbaCam
 
    Bases: :py:obj:`ophyd.areadetector.CamBase`
+
+
+   CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics signals.
 
 
    .. py:attribute:: pool_max_buffers
@@ -132,7 +150,7 @@ Module Contents
    Bases: :py:obj:`Trigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   This trigger mixin class takes one acquisition per trigger.
+   Vimba area detector with ROI/stats plugins, HDF5 output, and alignment helpers.
 
 
    .. py:attribute:: cam
@@ -185,8 +203,13 @@ Module Contents
 
    .. py:method:: wait_for_connection(all_signals=False, timeout=2)
 
+      Wait for the cam to fully connect before calling the parent wait_for_connection.
+
+
 
    .. py:property:: preset_monitor
+
+      Return the cam acquire_time signal used as the preset monitor.
 
 
    .. py:method:: align_on(time=0.1)
@@ -203,17 +226,32 @@ Module Contents
 
    .. py:method:: save_images_on()
 
+      Enable the HDF1 plugin to save images.
+
+
 
    .. py:method:: save_images_off()
+
+      Disable the HDF1 plugin so images are not saved.
+
 
 
    .. py:method:: auto_save_on()
 
+      Enable HDF1 autosave mode.
+
+
 
    .. py:method:: auto_save_off()
 
+      Disable HDF1 autosave mode.
+
+
 
    .. py:method:: default_settings()
+
+      Configure detector defaults: single-image mode, HDF1 template, and warmup sequence.
+
 
 
    .. py:method:: plot_select(rois)
@@ -229,34 +267,64 @@ Module Contents
 
    .. py:method:: plot_allrois()
 
+      Set all five stats ROIs to hinted kind for plotting.
+
+
 
    .. py:method:: plot_roi1()
+
+      Set only ROI1 stats to hinted kind for plotting.
+
 
 
    .. py:method:: plot_roi2()
 
+      Set only ROI2 stats to hinted kind for plotting.
+
+
 
    .. py:method:: plot_roi3()
+
+      Set only ROI3 stats to hinted kind for plotting.
+
 
 
    .. py:method:: plot_roi4()
 
+      Set only ROI4 stats to hinted kind for plotting.
+
+
 
    .. py:method:: plot_roi5()
+
+      Set only ROI5 (full detector) stats to hinted kind for plotting.
+
 
 
    .. py:method:: setup_images(base_path, name_template, file_number, flyscan=False)
 
+      Configure HDF1 file path, name, and number for an upcoming acquisition.
+
+
 
    .. py:property:: save_image_flag
+
+      Return True if HDF1 plugin is enabled or autosave is active.
 
 
    .. py:property:: label_option_map
 
+      Return a mapping from ROI label strings to ROI numbers for plot selection.
+
 
    .. py:property:: plot_options
 
+      Return a list of all ROI label strings available for plot selection.
+
 
    .. py:method:: select_plot(channels)
+
+      Set hinted kind for the given channel label list, delegating to plot_select.
+
 
 

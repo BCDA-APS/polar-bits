@@ -374,6 +374,9 @@ Module Contents
 
    .. py:method:: event(doc)
 
+      Handle *event* documents and write data rows on-the-fly.
+
+
 
    .. py:method:: start(doc)
 

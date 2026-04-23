@@ -24,6 +24,9 @@ Module Contents
 
    .. py:method:: get(**kwargs)
 
+      Return the monitor preset converted to seconds for the time channel.
+
+
 
    .. py:method:: put(value, *, timestamp=None, force=False, metadata=None)
 
@@ -50,6 +53,9 @@ Module Contents
    Bases: :py:obj:`ophyd.scaler.ScalerCH`
 
 
+   ScalerCH subclass with a flexible monitor channel and plot/read channel selection.
+
+
    .. py:attribute:: preset_time
       :value: None
 
@@ -63,8 +69,13 @@ Module Contents
 
    .. py:property:: channels_name_map
 
+      Return a dict mapping EPICS channel name strings to component attribute names.
+
 
    .. py:method:: select_plot_channels(chan_names=None)
+
+      Set the Kind of each channel to hinted (in chan_names) or normal (others).
+
 
 
    .. py:method:: select_read_channels(chan_names=None)
@@ -80,13 +91,23 @@ Module Contents
 
    .. py:property:: monitor
 
+      Return the EPICS name of the currently selected monitor channel.
+
 
    .. py:property:: plot_options
+
+      Return a list of all named scaler channel names available for plotting.
 
 
    .. py:method:: select_plot(channels)
 
+      Set the hinted kind for the given channels by delegating to select_plot_channels.
+
+
 
    .. py:method:: default_settings()
+
+      Set default monitor to chan01 and select all named read and plot channels.
+
 
 

@@ -700,6 +700,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.TableMotors">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">TableMotors</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.TableMotors" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Three-axis (X, Y, Z) table motor bundle with sample rotation and tilt for the 911 magnet.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.TableMotors.x">
 <span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.TableMotors.x" title="Link to this definition">#</a></dt>
@@ -736,6 +737,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.RamanMotors">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">RamanMotors</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.RamanMotors" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Raman spectrometer motor bundle with XYZ translation and tilt/rotation axes.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.RamanMotors.x">
 <span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.RamanMotors.x" title="Link to this definition">#</a></dt>
@@ -767,6 +769,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.MagnetMotors">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">MagnetMotors</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.MagnetMotors" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Magnet sample stage with Y translation and theta rotation motors.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.MagnetMotors.y">
 <span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.MagnetMotors.y" title="Link to this definition">#</a></dt>
@@ -783,6 +786,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.FieldPositioner">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">FieldPositioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.magnet_911.FieldPositioner" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.PVPositioner</span></code></p>
+<p>PVPositioner for the 9T superconducting magnet field ramp with heater interlock.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.FieldPositioner.setpoint">
 <span class="sig-name descname"><span class="pre">setpoint</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.FieldPositioner.setpoint" title="Link to this definition">#</a></dt>
@@ -836,7 +840,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.FieldPositioner.move">
 <span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.magnet_911.FieldPositioner.move" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Move to position; return immediately done if heater is ON and within tolerance.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -844,6 +849,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.PowerSupply">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">PowerSupply</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.PowerSupply" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>9T magnet power supply with field ramp control, safety status, and heater monitoring.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.PowerSupply.field">
 <span class="sig-name descname"><span class="pre">field</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.PowerSupply.field" title="Link to this definition">#</a></dt>
@@ -945,6 +951,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.MonChannel">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">MonChannel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.magnet_911.MonChannel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Single monitoring channel with temperature and Hall-probe resistance/field readbacks.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.MonChannel.temperature_name">
 <span class="sig-name descname"><span class="pre">temperature_name</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.MonChannel.temperature_name" title="Link to this definition">#</a></dt>
@@ -986,6 +993,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.VTIDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">VTIDevice</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.VTIDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Variable Temperature Insert device with four temperature sensors and setpoint positioners.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.VTIDevice.sensor_a">
 <span class="sig-name descname"><span class="pre">sensor_a</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.VTIDevice.sensor_a" title="Link to this definition">#</a></dt>
@@ -1042,6 +1050,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.NVDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">NVDevice</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.NVDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Needle valve controller device with temperature and pressure positioners.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.NVDevice.control_mode">
 <span class="sig-name descname"><span class="pre">control_mode</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.NVDevice.control_mode" title="Link to this definition">#</a></dt>
@@ -1078,6 +1087,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.Magnet911">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.magnet_911.</span></span><span class="sig-name descname"><span class="pre">Magnet911</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.Magnet911" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Complete 9T superconducting magnet system with table motors, field control, and temperature.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.magnet_911.Magnet911.connection">
 <span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#id4_common.devices.magnet_911.Magnet911.connection" title="Link to this definition">#</a></dt>

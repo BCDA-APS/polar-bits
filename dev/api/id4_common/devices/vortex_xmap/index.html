@@ -705,6 +705,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.MyDXP">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xmap.</span></span><span class="sig-name descname"><span class="pre">MyDXP</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.MyDXP" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.mca.SaturnDXP</span></code></p>
+<p>SaturnDXP subclass that removes unused live_time_output and trigger_output components.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.MyDXP.live_time_output">
 <span class="sig-name descname"><span class="pre">live_time_output</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.MyDXP.live_time_output" title="Link to this definition">#</a></dt>
@@ -721,6 +722,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.MyMCA">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xmap.</span></span><span class="sig-name descname"><span class="pre">MyMCA</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.MyMCA" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.mca.EpicsMCARecord</span></code></p>
+<p>EpicsMCARecord subclass that adds a check_acquiring signal for polling acquisition state.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.MyMCA.check_acquiring">
 <span class="sig-name descname"><span class="pre">check_acquiring</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.MyMCA.check_acquiring" title="Link to this definition">#</a></dt>
@@ -744,12 +746,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.SingleTrigger.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.SingleTrigger.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Subscribe the status-signal callback and delegate to parent stage.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.SingleTrigger.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.SingleTrigger.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unsubscribe the status-signal callback and delegate to parent unstage.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.SingleTrigger.trigger">
@@ -772,7 +776,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.TotalCorrectedSignal.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.TotalCorrectedSignal.get" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the sum of deadtime-corrected ROI counts across all XMAP channels.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -780,15 +785,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xmap.</span></span><span class="sig-name descname"><span class="pre">VortexXMAP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.vortex_xmap.SingleTrigger" title="id4_common.devices.vortex_xmap.SingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleTrigger</span></code></a></p>
-<p>This trigger mixin class takes one acquisition per trigger.
-.. rubric:: Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">SimDetector</span><span class="p">(</span><span class="n">SingleTrigger</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">pass</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">det</span> <span class="o">=</span> <span class="n">SimDetector</span><span class="p">(</span><span class="s1">&#39;..pv..&#39;</span><span class="p">)</span>
-<span class="go"># optionally, customize name of image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">det</span> <span class="o">=</span> <span class="n">SimDetector</span><span class="p">(</span><span class="s1">&#39;..pv..&#39;</span><span class="p">,</span> <span class="n">image_name</span><span class="o">=</span><span class="s1">&#39;fast_detector_image&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>Four-element Vortex detector driven by an XIA XMAP DXP controller.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.start">
 <span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.start" title="Link to this definition">#</a></dt>
@@ -917,67 +914,80 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.preset_monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the real_preset signal as the scan count-time control.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.default_kinds">
 <span class="sig-name descname"><span class="pre">default_kinds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.default_kinds" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set default read/configuration attribute lists for MCA channels (placeholder).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set default stage signals for erase-on-start and real-time preset mode.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.read_rois">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">read_rois</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.read_rois" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the list of ROI indices that are currently included in reads.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.select_roi">
 <span class="sig-name descname"><span class="pre">select_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rois</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.select_roi" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set the hinted ROI totals to those in rois, keeping other read_rois as normal.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.plot_roi0">
 <span class="sig-name descname"><span class="pre">plot_roi0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_roi0" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 0 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.plot_roi1">
 <span class="sig-name descname"><span class="pre">plot_roi1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_roi1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 1 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.plot_roi2">
 <span class="sig-name descname"><span class="pre">plot_roi2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_roi2" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 2 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.plot_roi3">
 <span class="sig-name descname"><span class="pre">plot_roi3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_roi3" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 3 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.plot_roi4">
 <span class="sig-name descname"><span class="pre">plot_roi4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_roi4" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set ROI 4 as the hinted plot channel.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.label_option_map">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.label_option_map" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return a mapping from human-readable ROI label strings to ROI index integers.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.plot_options">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_options" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return all available ROI label strings for plot channel selection.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.select_plot">
 <span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.select_plot" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Select which ROI channels are plotted by label name.</p>
+</dd></dl>
 
 </dd></dl>
 

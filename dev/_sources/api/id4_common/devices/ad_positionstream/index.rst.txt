@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.ADBase`
 
 
+   ADBase subclass for position-stream cameras with acquire, counter, and callback signals.
+
+
    .. py:attribute:: port_name
 
 
@@ -57,10 +60,19 @@ Module Contents
    Bases: :py:obj:`ophyd.BlueskyInterface`
 
 
+   BlueskyInterface mixin that triggers a single acquisition and waits for the busy signal.
+
+
    .. py:method:: stage()
+
+      Subscribe to acquire_busy changes and call the parent stage method.
+
 
 
    .. py:method:: unstage()
+
+      Call parent unstage and unsubscribe the acquire_busy callback.
+
 
 
    .. py:method:: trigger()
@@ -72,6 +84,9 @@ Module Contents
 .. py:class:: PositionStreamDevice(*args, default_folder='', hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', **kwargs)
 
    Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+
+
+   AreaDetector device for position-stream data with HDF5 file output.
 
 
    .. py:attribute:: cam
@@ -92,13 +107,23 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return the dummy acquire_time signal used as a no-op preset monitor.
+
 
    .. py:method:: default_settings()
+
+      Set the HDF1 plugin warmup signal sequence for proper plugin initialization.
+
 
 
    .. py:method:: setup_images(base_path, name_template, file_number, flyscan=False)
 
+      Configure HDF1 file path, name, and number for an upcoming acquisition.
+
+
 
    .. py:property:: save_image_flag
+
+      Return True if the HDF1 plugin is enabled or autosave is active.
 
 
