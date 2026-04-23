@@ -7,6 +7,48 @@ defaults (counters, monitor selection, DM integration).
 
 ---
 
+## Common Scan Flags
+
+Most scan plans (`lup`, `ascan`, `th2th`, `qxscan`, `grid_scan`) share three
+optional boolean flags that enable advanced measurement modes.
+
+The `dichro` and `lockin` flags require running `pr_setup` first to configure
+the scan (see [4IDH Examples](examples/4idh_magnet.md#phase-retarder-pr2-setup)).
+
+### `dichro` — circular dichroism
+
+Switches the X-ray helicity at every point using the phase retarder (PR2) in a
+user defined sequence (usually `+, −, −, +`). The readings are accumulated
+by the dichro data stream into XAS and XMCD signals.
+
+```python
+RE(lup(energy, -0.05, 0.05, 50, 1.0, dichro=True))
+RE(ascan(field, -3, 3, 60, 2.0, dichro=True))
+```
+
+### `lockin` — lock-in detection
+
+Oscillates the phase retarder continuously and reads the lock-in amplifier
+signal instead of the scaler. Use for high-sensitivity dichroism measurements.
+
+```python
+RE(lup(energy, -0.05, 0.05, 50, 1.0, lockin=True))
+```
+
+### `fixq` — fixed reciprocal-space position
+
+Keeps the diffractometer at a fixed HKL position throughout the scan by
+adjusting the real-space angles after each motor move. Useful for energy scans
+where you want to track a specific Bragg reflection as the energy changes.
+The HKL correction is applied *after* all other motors have moved.
+
+```python
+RE(qxscan(7.514, 1.0, fixq=True))
+RE(lup(energy, -0.05, 0.05, 50, 1.0, fixq=True))
+```
+
+---
+
 ## Positioner Motions
 
 Motions are an exception in that it can be done using both the RE wrapper and through the `mov` and `movr` python magics.
