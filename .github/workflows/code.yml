@@ -61,6 +61,8 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y \
+            libcairo2-dev \
+            libgirepository1.0-dev \
             libxcb-icccm4 \
             libxcb-image0 \
             libxcb-keysyms1 \
