@@ -156,11 +156,6 @@ field.get()       # read current field value
 %mov field -3.0   # apply -3 T (reverse polarity)
 ```
 
-:::{warning}
-Always ramp to zero before reversing field direction. Confirm with the
-magnet operator before exceeding safe ramp rates.
-:::
-
 ---
 
 ## Field-Dependent Scans
@@ -198,7 +193,7 @@ RE(qxscan(7.514, 0.5))
 ## Detector Selection
 
 Select which scaler channels to plot and use as the monitor
-(see [General Examples](general.md#detector-selection)):
+(see [General Examples → Detector Selection](general.md)):
 
 ```python
 counters.plotselect(9, 8)     # detector ch 9, monitor ch 8
@@ -215,7 +210,10 @@ counters.plotselect(9, 8)
 
 ## Reading XAS/XMCD Data
 
-Load the signal from a recent run and plot it:
+The functions below are from [polartools](https://github.com/APS-4ID-POLAR/polartools)
+and are available in the session namespace after startup.
+
+Load a single XAS scan and plot it:
 
 ```python
 import matplotlib.pyplot as plt
@@ -230,6 +228,40 @@ plt.figure()
 plt.plot(en, xas)
 plt.xlabel("Energy (keV)")
 plt.ylabel("XAS (I/I₀)")
+```
+
+Load XMCD from a single dichro scan (returns positioner, XAS, and XMCD arrays):
+
+```python
+en, xas, xmcd = load_dichro(
+    -1, cat,
+    positioner="energy",
+    detector="4idhI1",
+    monitor="4idhI0",
+)
+```
+
+Process and plot XMCD from scans collected at opposing magnetic fields.
+`scans_plus` and `scans_minus` are lists of scan IDs at +field and −field:
+
+```python
+plus, minus = process_xmcd(
+    scans_plus=[10, 12, 14],
+    scans_minus=[11, 13, 15],
+    source=cat,
+)
+plot_xmcd(plus, minus)
+```
+
+Average XAS over multiple scans:
+
+```python
+en, xas = load_multi_xas(
+    [10, 11, 12], cat,
+    positioner="energy",
+    detector="4idhI1",
+    monitor="4idhI0",
+)
 ```
 
 ---

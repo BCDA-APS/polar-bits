@@ -37,7 +37,7 @@ pip install -e ".[doc]"
 
 ## Starting polar-bits
 
-Startup scripts are provided in `startup_scrips/`:
+Startup scripts are provided in `startup_scripts/`:
 - `bluesky-4idb`
 - `bluesky-4idg`
 - `bluesky-4idh`
@@ -50,6 +50,16 @@ The "b", "g", and "h" scripts start the corresponding endstation support. The ma
 The "core" startup will ask whether you want to connect all devices or none. See next section for more details on loading specific devices.
 
 Note that all devices are always loaded, but not connected.
+
+---
+
+## Data Analysis
+
+[polartools](https://github.com/APS-4ID-POLAR/polartools) is the companion
+Python package for loading, processing, and plotting data collected at POLAR.
+It provides routines for XAS/XMCD analysis, diffraction peak fitting, image
+processing, and general data utilities. polartools functions are available in
+the session namespace after startup.
 
 ---
 
