@@ -276,7 +276,7 @@ RE(rel_grid_scan(
 
 ## Detector Selection
 
-See [General Examples → Detector Selection](general.md#detector-selection) for
+See [General Examples → Detector Selection](general.md) for
 the full `counters.plotselect()` walkthrough.
 
 ```python
@@ -331,13 +331,14 @@ run.primary.read()         # read as xarray Dataset
 routines for diffraction data analysis, available in the session namespace:
 
 ```python
-# Load and fit a single peak scan
-x, y, fit = fit_peak(-1, cat, positioner="delta", detector="scaler1_ch14")
-plot_fit(x, y, fit)
+# Fit a single peak: load data first, then fit the arrays
+df = load_table(-1, cat)
+fit = fit_peak(df["delta"], df["scaler1_ch14"])
 
-# Load a series of scans (e.g. temperature series)
-data = load_series([10, 11, 12, 13], cat, positioner="delta", detector="scaler1_ch14")
-fit_series(data)
+# Fit and plot a series of scans (scan IDs as start, stop, step triplet)
+# e.g. scans 10 through 20 in steps of 1
+plot_fit([10, 20, 1], cat, positioner="delta", detector="scaler1_ch14")
+fit_series([10, 20, 1], cat, positioner="delta", detector="scaler1_ch14")
 
 # Load and display a 2D mesh scan
 mesh = load_mesh(-1, cat, xmotor="sx", ymotor="sy", detector="scaler1_ch14")

@@ -193,7 +193,7 @@ RE(qxscan(7.514, 0.5))
 ## Detector Selection
 
 Select which scaler channels to plot and use as the monitor
-(see [General Examples](general.md#detector-selection)):
+(see [General Examples → Detector Selection](general.md)):
 
 ```python
 counters.plotselect(9, 8)     # detector ch 9, monitor ch 8
@@ -230,23 +230,30 @@ plt.xlabel("Energy (keV)")
 plt.ylabel("XAS (I/I₀)")
 ```
 
-Load and process XMCD data from a dichro scan:
+Load XMCD from a single dichro scan (returns positioner, XAS, and XMCD arrays):
 
 ```python
-# Load the two helicity channels from a dichro scan
-en, xas_plus, xas_minus = load_dichro(
+en, xas, xmcd = load_dichro(
     -1, cat,
     positioner="energy",
     detector="4idhI1",
     monitor="4idhI0",
 )
-
-# Compute and plot XMCD
-en, xmcd, xas = process_xmcd(en, xas_plus, xas_minus)
-plot_xmcd(en, xmcd, xas)
 ```
 
-Average over multiple scans:
+Process and plot XMCD from scans collected at opposing magnetic fields.
+`scans_plus` and `scans_minus` are lists of scan IDs at +field and −field:
+
+```python
+plus, minus = process_xmcd(
+    scans_plus=[10, 12, 14],
+    scans_minus=[11, 13, 15],
+    source=cat,
+)
+plot_xmcd(plus, minus)
+```
+
+Average XAS over multiple scans:
 
 ```python
 en, xas = load_multi_xas(

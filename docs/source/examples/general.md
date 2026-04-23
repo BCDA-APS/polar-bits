@@ -227,11 +227,12 @@ peaks.com    # alias for center-of-mass
 data loading and inspection utilities available in the session namespace:
 
 ```python
-# Print metadata summary for a run
-show_meta(-1, cat)
+# Print metadata summary for recent runs
+show_meta(last=-1, db=cat)      # most recent run
+show_meta(db=cat)               # all runs in catalog
 
 # Query runs matching metadata fields
-db_query(cat, sample="Fe3O4", proposal_id="GUP-12345")
+db_query(cat, {"sample": "Fe3O4", "proposal_id": "GUP-12345"})
 
 # Load a scan as a pandas DataFrame
 df = load_table(-1, cat)

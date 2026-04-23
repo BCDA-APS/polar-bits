@@ -37,7 +37,7 @@ pip install -e ".[doc]"
 
 ## Starting polar-bits
 
-Startup scripts are provided in `startup_scrips/`:
+Startup scripts are provided in `startup_scripts/`:
 - `bluesky-4idb`
 - `bluesky-4idg`
 - `bluesky-4idh`

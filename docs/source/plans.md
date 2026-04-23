@@ -13,7 +13,7 @@ Most scan plans (`lup`, `ascan`, `th2th`, `qxscan`, `grid_scan`) share three
 optional boolean flags that enable advanced measurement modes.
 
 The `dichro` and `lockin` flags require running `pr_setup` first to configure
-the scan (see [4IDH Examples](examples/4idh_magnet.md#phase-retarder-pr2-setup)).
+the scan (see [Phase Retarder setup](examples/4idh_magnet.md)).
 
 ### `dichro` — circular dichroism
 
@@ -89,8 +89,8 @@ RE(abs_set(motor, position))
 Scan `motor` from `start` to `stop` relative to its current position, collecting `npts` points.
 
 ```python
-RE(lup(motor, start, stop, npts))
-RE(lup(motor, start, stop, npts, md={"sample": "Fe3O4"}))
+RE(lup(motor, start, stop, npts, time))
+RE(lup(motor, start, stop, npts, time, md={"sample": "Fe3O4"}))
 ```
 
 ### `ascan` — absolute scan
@@ -98,7 +98,7 @@ RE(lup(motor, start, stop, npts, md={"sample": "Fe3O4"}))
 Scan `motor` from `start` to `stop` in absolute coordinates.
 
 ```python
-RE(ascan(motor, start, stop, npts))
+RE(ascan(motor, start, stop, npts, time))
 ```
 
 ### `th2th` — relative theta/2theta scan
@@ -127,9 +127,9 @@ RE(th2th(tth_start, tth_end, npts, time_per_point, fixq=True))
 
 ```python
 RE(grid_scan(
-    [detector],
     motor1, start1, stop1, npts1,
     motor2, start2, stop2, npts2,
+    time,
 ))
 ```
 
@@ -142,7 +142,8 @@ Same as `grid_scan` but offsets are relative to current motor positions.
 ## Simple Count
 
 ```python
-RE(count(num=1, delay=None))    # count once, or num times with optional delay
+RE(count(num, time))              # count num times with time per point
+RE(count(num, time, delay=1.0))   # add delay (seconds) between readings
 ```
 
 ---
