@@ -2,21 +2,33 @@
 QuadEMs for POLAR
 """
 
-from ophyd import Component, QuadEM, EpicsSignalRO, Device, Signal
-from ophyd.quadem import QuadEMPort
 from collections import OrderedDict
-from .ad_mixins import ImagePlugin, StatsPlugin
+
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignalRO
+from ophyd import QuadEM
+from ophyd import Signal
+from ophyd.quadem import QuadEMPort
+
+from .ad_mixins import ImagePlugin
+from .ad_mixins import StatsPlugin
 
 
 class StatsPluginQuadEM(StatsPlugin):
+    """StatsPlugin variant for QuadEM that disables auto-kind subscriptions."""
+
     # Remove subscriptions from StatsPlugin
     def __init__(self, *args, **kwargs):
+        """Initialize and immediately stop auto-kind updates, setting kind to config."""
         super().__init__(*args, **kwargs)
         self.stop_auto_kind()
         self.kind = "config"
 
 
 class QuadEMPOLAR(QuadEM):
+    """QuadEM device with POLAR-specific statistics plugins and fast readback signals."""
+
     image = Component(ImagePlugin, "image1:")
     current1 = Component(StatsPluginQuadEM, "Current1:")
     current2 = Component(StatsPluginQuadEM, "Current2:")
@@ -59,10 +71,13 @@ class QuadEMPOLAR(QuadEM):
 
     @property
     def preset_monitor(self):
+        """Return the averaging_time signal as the count-time preset for scan plans."""
         return self.averaging_time
 
 
 class TetrAMM(QuadEMPOLAR):
+    """QuadEMPOLAR subclass for the Sydor TetrAMM 4-channel electrometer."""
+
     conf = Component(QuadEMPort, port_name="TetrAMM")
 
     # TODO: If we ever want to trigger the TetrAMM, we need
@@ -70,27 +85,34 @@ class TetrAMM(QuadEMPOLAR):
 
 
 class QuadEMRO_mixins(Device):
+    """Mixin that replaces the QuadEM trigger/preset with a no-op for read-only use."""
+
     # Disables preset_monitor and trigger
 
     dummy = Component(Signal, value=0, kind="omitted")
 
     @property
     def preset_monitor(self):
+        """Return a dummy signal so scan plans have a no-op preset target."""
         return self.dummy
 
     def trigger(self):
+        """Immediately mark acquisition complete without driving the hardware."""
         self._status = self._status_type(self)
         self._status.set_finished()
         return self._status
 
     def stage(self):
+        """Stage using base Device logic, bypassing QuadEM staging."""
         Device.stage(self)
 
     def unstage(self):
+        """Unstage using base Device logic, bypassing QuadEM unstaging."""
         Device.unstage(self)
 
 
 class SydorEMRO(QuadEMRO_mixins, QuadEMPOLAR):
+    """Read-only Sydor T4U beam position monitor using the QuadEM framework."""
 
     conf = Component(QuadEMPort, port_name="T4U_BPM")
 
@@ -108,6 +130,7 @@ class SydorEMRO(QuadEMRO_mixins, QuadEMPOLAR):
     image = None
 
     def default_settings(self):
+        """Set calibration and configuration signals to config kind and clear stage_sigs."""
         # Remove all these from read_attrs
         for item in (
             "conf",
@@ -144,8 +167,10 @@ class SydorEMRO(QuadEMRO_mixins, QuadEMPOLAR):
 
 
 class TetrAMMRO(QuadEMRO_mixins, TetrAMM):
+    """Read-only TetrAMM 4-channel electrometer that disables staging and triggering."""
 
     def default_settings(self):
+        """Set calibration and configuration signals to config kind and clear stage_sigs."""
         # Remove all these from read_attrs
         for item in (
             "conf",

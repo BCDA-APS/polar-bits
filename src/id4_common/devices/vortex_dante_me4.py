@@ -1,13 +1,21 @@
 """Vortex 4 element with Dante electronics"""
 
-from ophyd import ADComponent, Staged, SignalRO, DynamicDeviceComponent
-from ophyd.mca import EpicsMCARecord
-from ophyd.areadetector import DetectorBase
-from pathlib import Path
 from collections import OrderedDict
+from pathlib import Path
 from time import time as ttime
-from .ad_mixins import TriggerBase, ADTriggerStatus
-from .vortex_dante_parts import DanteCAM4, DanteHDF1Plugin, DanteSCA
+
+from ophyd import ADComponent
+from ophyd import DynamicDeviceComponent
+from ophyd import SignalRO
+from ophyd import Staged
+from ophyd.areadetector import DetectorBase
+from ophyd.mca import EpicsMCARecord
+
+from .ad_mixins import ADTriggerStatus
+from .ad_mixins import TriggerBase
+from .vortex_dante_parts import DanteCAM4
+from .vortex_dante_parts import DanteHDF1Plugin
+from .vortex_dante_parts import DanteSCA
 
 MAX_TIME = 60 * 60  # time used in align mode
 MAX_ROIS = 32
@@ -22,6 +30,7 @@ class Trigger(TriggerBase):
     # _status_type = DeviceStatus
 
     def __init__(self, *args, image_name=None, **kwargs):
+        """Initialize Trigger, wiring acquisition and busy signals from the Dante CAM."""
         super().__init__(
             *args,
             acquisition_signal_dev="cam.acquire_start",
@@ -50,10 +59,12 @@ class Trigger(TriggerBase):
         )
 
     def setup_manual_trigger(self):
+        """Configure stage_sigs for software-triggered (manual) single-shot acquisition."""
         # Stage signals
         self.cam.stage_sigs["wait_for_plugins"] = "Yes"
 
     def setup_external_trigger(self):
+        """Raise NotImplementedError; the Dante cannot be used in flyscans."""
         # Stage signals
         # self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
         # self.cam.stage_sigs["num_images"] = MAX_IMAGES
@@ -61,7 +72,7 @@ class Trigger(TriggerBase):
         raise NotImplementedError("This detector cannot be used in flyscans")
 
     def stage(self):
-
+        """Subscribe the busy-signal callback and arm the detector before staging."""
         if self._flysetup:
             self.setup_external_trigger()
 
@@ -74,6 +85,7 @@ class Trigger(TriggerBase):
             self._acquisition_signal.set(1).wait(timeout=10)
 
     def unstage(self):
+        """Stop the Dante, unsubscribe the busy callback, and restore manual-trigger mode."""
         super().unstage()
         self._acquisition_signal_stop.set(1).wait(timeout=10)
         self._flysetup = False
@@ -82,6 +94,7 @@ class Trigger(TriggerBase):
         self.setup_manual_trigger()
 
     def trigger(self):
+        """Start one Dante acquisition and return a status object that completes when done."""
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
@@ -112,15 +125,15 @@ class TotalCorrectedSignal(SignalRO):
     """Signal that returns the deadtime corrected total counts"""
 
     def __init__(self, prefix, roi_index=0, **kwargs):
+        """Initialize TotalCorrectedSignal, storing the ROI index for deadtime-corrected summation."""
         self.roi_index = roi_index
         super().__init__(**kwargs)
 
     def get(self, **kwargs):
+        """Return the sum of deadtime-corrected ROI counts across all Dante channels."""
         value = 0
         for ch_num in range(1, self.root._num_channels + 1):
-            roi = getattr(
-                self.root.mcas, f"mca{ch_num}.rois.roi{self.roi_index}"
-            )
+            roi = getattr(self.root.mcas, f"mca{ch_num}.rois.roi{self.roi_index}")
             sca = getattr(self.root.scas, f"sca{ch_num}")
             _ocr = sca.ocr.get(**kwargs)
             correction = 1.0 if _ocr == 0 else sca.icr.get(**kwargs) / _ocr
@@ -155,6 +168,7 @@ def _scas(num_channels):
 
 
 class VortexDante4(Trigger, DetectorBase):
+    """Four-element Vortex detector driven by a Dante MCA with HDF5 file saving."""
 
     _default_configuration_attrs = ("cam",)
     _default_read_attrs = ("hdf1", "mcas", "scas", "total")
@@ -178,12 +192,11 @@ class VortexDante4(Trigger, DetectorBase):
     def __init__(
         self,
         *args,
-        default_folder=Path(
-            "/net/s4data/export/sector4/4idd/bluesky_images/vortex"
-        ),
+        default_folder=Path("/net/s4data/export/sector4/4idd/bluesky_images/vortex"),
         hdf1_file_format="%s/%s_%6.6d.h5",
         **kwargs,
     ):
+        """Initialize VortexDante4 with default HDF5 save folder and file-name format."""
         self.default_folder = default_folder
         self.hdf1_file_format = hdf1_file_format
         super().__init__(*args, **kwargs)
@@ -191,10 +204,12 @@ class VortexDante4(Trigger, DetectorBase):
     # Make this compatible with other detectors
     @property
     def preset_monitor(self):
+        """Return the cam real-time preset signal as the scan count-time control."""
         return self.cam.real_time_preset
 
     @property
     def num_channels(self):
+        """Return the number of MCA channels for this detector."""
         return self._num_channels
 
     def align_on(self):
@@ -209,19 +224,23 @@ class VortexDante4(Trigger, DetectorBase):
         self.cam.acquire_stop.set(1).wait(timeout=10)
 
     def save_images_on(self):
+        """Enable the HDF5 plugin so acquisitions are written to disk."""
         self.hdf1.enable.set("Enable").wait(timeout=10)
 
     def save_images_off(self):
+        """Disable the HDF5 plugin so acquisitions are not written to disk."""
         self.hdf1.enable.set("Disable").wait(timeout=10)
 
     def auto_save_on(self):
+        """Enable HDF5 autosave so files are written automatically."""
         self.hdf1.autosave.put("on")
 
     def auto_save_off(self):
+        """Disable HDF5 autosave."""
         self.hdf1.autosave.put("off")
 
     def default_settings(self):
-
+        """Configure HDF5 path, stage signals, ROIs, and manual-trigger mode."""
         self.hdf1.file_template.put(self.hdf1_file_format)
         self.hdf1.file_path.put(str(self.default_folder))
         self.hdf1.num_capture.put(0)
@@ -270,10 +289,12 @@ class VortexDante4(Trigger, DetectorBase):
     #         getattr(self.total, f"roi{i}").kind = kr
     @property
     def read_rois(self):
+        """Return the list of ROI indices that are currently included in reads."""
         return self._read_rois
 
     @read_rois.setter
     def read_rois(self, rois):
+        """Set which ROI indices are read and update component kinds accordingly."""
         # Change total kinds
         for i in range(MAX_ROIS):
             if i in rois:
@@ -293,11 +314,14 @@ class VortexDante4(Trigger, DetectorBase):
         self._read_rois = list(rois)
 
     def select_roi(self, rois):
+        """Set the hinted ROI totals to those in rois, keeping other read_rois as normal."""
         for i in range(MAX_ROIS):
             k = (
                 "hinted"
                 if i in rois
-                else "normal" if i in self.read_rois else "omitted"
+                else "normal"
+                if i in self.read_rois
+                else "omitted"
             )
 
             getattr(self.total, f"roi{i}").kind = k
@@ -306,37 +330,43 @@ class VortexDante4(Trigger, DetectorBase):
                 self.read_rois.append(i)
 
     def plot_roi0(self):
+        """Set ROI 0 as the hinted plot channel."""
         self.select_roi([0])
 
     def plot_roi1(self):
+        """Set ROI 1 as the hinted plot channel."""
         self.select_roi([1])
 
     def plot_roi2(self):
+        """Set ROI 2 as the hinted plot channel."""
         self.select_roi([2])
 
     def plot_roi3(self):
+        """Set ROI 3 as the hinted plot channel."""
         self.select_roi([3])
 
     def plot_roi4(self):
+        """Set ROI 4 as the hinted plot channel."""
         self.select_roi([4])
 
     @property
     def label_option_map(self):
+        """Return a mapping from human-readable ROI label strings to ROI index integers."""
         return {f"ROI{i} Total": i for i in range(0, 8)}
 
     @property
     def plot_options(self):
+        """Return all available ROI label strings for plot channel selection."""
         # Return all named scaler channels
         return list(self.label_option_map.keys())
 
     def select_plot(self, channels):
+        """Select which ROI channels are plotted by label name."""
         chans = [self.label_option_map[i] for i in channels]
         self.select_roi(chans)
 
-    def setup_images(
-        self, base_folder, file_name_base, file_number, flyscan=False
-    ):
-
+    def setup_images(self, base_folder, file_name_base, file_number, flyscan=False):
+        """Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan."""
         self.hdf1.file_name.set(file_name_base).wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.auto_save_on()
@@ -348,14 +378,13 @@ class VortexDante4(Trigger, DetectorBase):
         base_folder2 = self._local_folder
         self.hdf1.file_path.set(base_folder2).wait(timeout=10)
 
-        _, full_path, relative_path = self.hdf1.make_write_read_paths(
-            base_folder
-        )
+        _, full_path, relative_path = self.hdf1.make_write_read_paths(base_folder)
 
         return Path(full_path), Path(relative_path)
 
     @property
     def save_image_flag(self):
+        """Return True if the HDF5 plugin is enabled or autosave is on."""
         _hdf1_auto = True if self.hdf1.autosave.get() == "on" else False
         _hdf1_on = True if self.hdf1.enable.get() == "Enable" else False
         return _hdf1_on or _hdf1_auto

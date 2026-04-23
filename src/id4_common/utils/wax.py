@@ -1,13 +1,16 @@
-from epics import caget, caput
-from pyRestTable import Table
-from polartools.load_data import load_catalog
-from apsbits.core.instrument_init import oregistry
+"""Motor position display utilities (wm, wax, wa_scan, wa_new)."""
+
 import warnings
+
+from apsbits.core.instrument_init import oregistry
+from polartools.load_data import load_catalog
+from pyRestTable import Table
 
 cat = load_catalog("4id_polar")
 
 
 def wm(*args):
+    """Print a table of current position and travel limits for the given motors."""
     result = Table()
     result.labels = ("Motor", "Position", "Limits")
     for arg in args:
@@ -58,7 +61,7 @@ def wax(scan=None, motor=None, device="motor", display_missed=False):
                 else:
                     pos = cat[scan].baseline.read()[name]
                     result.rows.append((name, f"{pos.values[0]}"))
-            except:
+            except Exception:
                 missed.append(arg.name)
         print("")
         print(f"Values from scan #{scan}")
@@ -78,11 +81,9 @@ def wax(scan=None, motor=None, device="motor", display_missed=False):
                     llm = arg.low_limit_travel.get()
                     hlm = arg.high_limit_travel.get()
                     name = arg.name
-                    result.rows.append(
-                        (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
-                    )
+                    result.rows.append((name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]"))
                     # print(arg)
-                except:
+                except Exception:
                     missed.append(arg.name)
         print("")
         print(result.reST(fmt="markdown"))
@@ -103,11 +104,9 @@ def wax(scan=None, motor=None, device="motor", display_missed=False):
                             (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
                         )
                 else:
-                    result.rows.append(
-                        (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
-                    )
+                    result.rows.append((name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]"))
 
-            except:
+            except Exception:
                 missed.append(arg.name)
 
         print("")
@@ -118,6 +117,7 @@ def wax(scan=None, motor=None, device="motor", display_missed=False):
 
 
 def wa_scan(scan=None, motor=None):
+    """Print motor positions recorded in the baseline stream of a past scan."""
     result = Table()
     result.labels = ("Motor", "Position")
     devices = oregistry.findall("motor")
@@ -134,7 +134,7 @@ def wa_scan(scan=None, motor=None):
                 else:
                     pos = cat[scan].baseline.read()[name]
                     result.rows.append((name, f"{pos.values[0]}"))
-            except:
+            except Exception:
                 missed.append(arg.name)
         print("")
         print(f"Motor positions from scan #{scan}")
@@ -150,6 +150,7 @@ def wa_scan(scan=None, motor=None):
 
 
 def wa_new(motor=None):
+    """Print current position and limits for all motors, optionally filtered by name."""
     result = Table()
     result.labels = ("Motor", "Position", "Limits")
     devices = oregistry.findall("motor")
@@ -162,15 +163,11 @@ def wa_new(motor=None):
             name = arg.name
             if motor:
                 if motor in name:
-                    result.rows.append(
-                        (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
-                    )
+                    result.rows.append((name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]"))
             else:
-                result.rows.append(
-                    (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
-                )
+                result.rows.append((name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]"))
 
-        except:
+        except Exception:
             missed.append(arg.name)
     print("")
     print(result.reST(fmt="markdown"))

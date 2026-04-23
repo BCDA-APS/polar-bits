@@ -29,4 +29,3 @@ Module Contents
 .. py:function:: transfocator_calc(distance=None, energy=None, experiment='diffractometer', beamline='polar', verbose=True)
 
 .. py:function:: transfocator_calc_old(distance=None, energy=None, experiment='diffractometer', beamline='polar')
-

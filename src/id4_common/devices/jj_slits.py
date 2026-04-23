@@ -2,11 +2,14 @@
 JJ Slits
 """
 
-from ophyd import Device, FormattedComponent, EpicsMotor
 from apstools.devices import PVPositionerSoftDoneWithStop
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import FormattedComponent
 
 
 class SlitDevice(Device):
+    """JJ slit device with individual blade motors and pseudo-positioners for center and size."""
 
     # Setting motors
     top = FormattedComponent(
@@ -55,7 +58,7 @@ class SlitDevice(Device):
     )
 
     def __init__(self, PV, motorsDict, slitnum, **kwargs):
-
+        """Initialize SlitDevice with PV prefix, motor PV mapping, and slit number."""
         self._motorsDict = motorsDict
         self._slit_prefix = f"Slit{slitnum}"
 

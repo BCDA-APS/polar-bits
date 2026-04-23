@@ -17,6 +17,7 @@ BE_REFR_INDEX_FILE = (
 
 
 def read_delta(energy=None, path=BE_REFR_INDEX_FILE):
+    """Return the refractive index delta for beryllium at the given photon energy (eV)."""
     if energy < 2700 or energy > 27000:
         raise ValueError("Energy {} out of range [2700, 27000].".format(energy))
 
@@ -31,27 +32,23 @@ def transfocator_calc(
     beamline="polar",
     verbose=True,
 ):
+    """Calculate the CRL lens configuration for the requested focus distance and energy."""
     _geom_ = current_diffractometer()
     if not distance:
         distance = 1800
         distance = float(
-            input("Distance to sample in mm [{}]: ".format(distance))
-            or distance
+            input("Distance to sample in mm [{}]: ".format(distance)) or distance
         )
         distance = distance * 1e3
     elif distance > 200 and distance < 10000:
         distance = distance * 1e3
     else:
-        raise ValueError(
-            "Distance {} out of range [200, 10000].".format(energy)
-        )
+        raise ValueError("Distance {} out of range [200, 10000].".format(energy))
 
     if not energy:
         energy = _geom_.energy.get() * 1e3
     elif energy < 2600 or energy > 27000:
-        raise ValueError(
-            "Photon energy {} out of range [2600, 27000].".format(energy)
-        )
+        raise ValueError("Photon energy {} out of range [2600, 27000].".format(energy))
     else:
         pass
 
@@ -90,7 +87,7 @@ def transfocator_calc(
     iR_N = 1 / (2 * delta * focus)
     iR = 0
     lenses_used = []
-    for num, value in enumerate(iradius_eff):
+    for _, value in enumerate(iradius_eff):
         lenses_used.append(0)
         if value < iR_N and iR < iR_N:
             lenses_used[-1] = 1
@@ -100,23 +97,20 @@ def transfocator_calc(
                 lenses_used[-1] = 0
 
     focus_new = 1 / (2 * delta * iR)
-    distance_new = (
-        focus_new * source_crl_distance / (source_crl_distance - focus_new)
-    )
+    distance_new = focus_new * source_crl_distance / (source_crl_distance - focus_new)
 
     if verbose:
         print("-" * 65)
         print("Inserted lens packages = {}".format(lenses_used))
         print("Effective radius = {:3.1f} \u03bcm".format(1 / iR))
         print(
-            "Position correction = {:6.1f} mm".format(
-                (distance - distance_new) / 1e3
-            )
+            "Position correction = {:6.1f} mm".format((distance - distance_new) / 1e3)
         )
         print("-" * 65)
         print(
-            "Distance CRLs to sample = {:6.1f} mm at photon energy of "
-            "{} eV".format(distance_new / 1e3, energy)
+            "Distance CRLs to sample = {:6.1f} mm at photon energy of {} eV".format(
+                distance_new / 1e3, energy
+            )
         )
         print("-" * 65)
         print(
@@ -140,27 +134,23 @@ def transfocator_calc(
 def transfocator_calc_old(
     distance=None, energy=None, experiment="diffractometer", beamline="polar"
 ):
+    """Calculate CRL lens configuration using the legacy (non-verbose) algorithm."""
     _geom_ = current_diffractometer()
     if not distance:
         distance = 1800
         distance = float(
-            input("Distance to sample in mm [{}]: ".format(distance))
-            or distance
+            input("Distance to sample in mm [{}]: ".format(distance)) or distance
         )
         distance = distance * 1e3
     elif distance > 200 and distance < 10000:
         distance = distance * 1e3
     else:
-        raise ValueError(
-            "Distance {} out of range [200, 10000].".format(energy)
-        )
+        raise ValueError("Distance {} out of range [200, 10000].".format(energy))
 
     if not energy:
         energy = _geom_.energy.get() * 1e3
     elif energy < 2600 or energy > 27000:
-        raise ValueError(
-            "Photon energy {} out of range [2600, 27000].".format(energy)
-        )
+        raise ValueError("Photon energy {} out of range [2600, 27000].".format(energy))
     else:
         pass
 
@@ -208,14 +198,8 @@ def transfocator_calc_old(
     print("Inserted lens packages = {}".format(lenses_used))
     print("Effective radius = {:3.1f} \u03bcm".format(1 / iR))
     focus_new = 1 / (2 * delta * iR)
-    distance_new = (
-        focus_new * source_crl_distance / (source_crl_distance - focus_new)
-    )
-    print(
-        "Position correction = {:6.1f} mm".format(
-            (distance - distance_new) / 1e3
-        )
-    )
+    distance_new = focus_new * source_crl_distance / (source_crl_distance - focus_new)
+    print("Position correction = {:6.1f} mm".format((distance - distance_new) / 1e3))
     print("-" * 65)
     print(
         "Distance CRLs to sample = {:6.1f} mm at photon energy of {} eV".format(

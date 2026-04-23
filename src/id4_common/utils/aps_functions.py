@@ -53,6 +53,4 @@ def aps_dm_setup(dm_setup_file_path):
             workflow_owner = os.environ.get("DM_STATION_NAME", "").lower()
             logger.info("APS DM workflow owner: %s", workflow_owner)
         else:
-            logger.warning(
-                "APS DM setup file does not exist: '%s'", bash_script
-            )
+            logger.warning("APS DM setup file does not exist: '%s'", bash_script)

@@ -78,5 +78,3 @@ Submodules
    /api/id4_common/devices/vortex_xspress3_me7/index
    /api/id4_common/devices/wb_slit/index
    /api/id4_common/devices/xbpm/index
-
-

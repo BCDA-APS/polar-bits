@@ -14,48 +14,39 @@ __all__ = [
     "abs_set",
 ]
 
-from bluesky.plans import (
-    scan,
-    grid_scan as bp_grid_scan,
-    count as bp_count,
-    list_scan,
-)
-from bluesky.plan_stubs import (
-    mv as bps_mv,
-    abs_set as bps_abs_set,
-    rd,
-    trigger_and_read,
-    move_per_step,
-    sleep,
-)
-from bluesky.preprocessors import (
-    reset_positions_decorator,
-    relative_set_decorator,
-    subs_decorator,
-    monitor_during_decorator,
-)
-from bluesky.plan_patterns import chunk_outer_product_args
-from .local_preprocessors import (
-    configure_counts_decorator,
-    extra_devices_decorator,
-    stage_dichro_decorator,
-    stage_magnet911_decorator,
-    stage_4idg_softglue_decorator,
-)
-
-from toolz import partition
+from logging import getLogger
 from pathlib import Path
-from numpy import array
+
 from apsbits.core.instrument_init import oregistry
 from apsbits.utils.config_loaders import get_config
-from logging import getLogger
+from bluesky.plan_patterns import chunk_outer_product_args
+from bluesky.plan_stubs import abs_set as bps_abs_set
+from bluesky.plan_stubs import move_per_step
+from bluesky.plan_stubs import mv as bps_mv
+from bluesky.plan_stubs import rd
+from bluesky.plan_stubs import trigger_and_read
+from bluesky.plans import count as bp_count
+from bluesky.plans import grid_scan as bp_grid_scan
+from bluesky.plans import list_scan
+from bluesky.plans import scan
+from bluesky.preprocessors import monitor_during_decorator
+from bluesky.preprocessors import relative_set_decorator
+from bluesky.preprocessors import reset_positions_decorator
+from bluesky.preprocessors import subs_decorator
+from numpy import array
+from toolz import partition
 
-from ..callbacks.nexus_data_file_writer import nxwriter
 from ..callbacks.dichro_stream import dichro as dichro_device
-from ..utils.experiment_utils import experiment
-from ..utils.run_engine import RE
+from ..callbacks.nexus_data_file_writer import nxwriter
 from ..utils.counters_class import counters
+from ..utils.experiment_utils import experiment
 from ..utils.hkl_utils import current_diffractometer
+from ..utils.run_engine import RE
+from .local_preprocessors import configure_counts_decorator
+from .local_preprocessors import extra_devices_decorator
+from .local_preprocessors import stage_4idg_softglue_decorator
+from .local_preprocessors import stage_dichro_decorator
+from .local_preprocessors import stage_magnet911_decorator
 
 try:
     # change to import this only if needed?
@@ -241,7 +232,6 @@ def one_local_shot(detectors, take_reading=trigger_and_read):
 
 
 def _setup_paths(detectors):
-
     if None in (experiment.base_experiment_path, experiment.file_base_name):
         raise ValueError(
             "The experiment needs to be setup, please run experiment_setup()"
@@ -279,8 +269,7 @@ def _setup_paths(detectors):
     for _fname in [_master_fullpath] + list(_dets_file_paths.values()):
         if Path(_fname).is_file():
             raise FileExistsError(
-                f"The file {_fname} already exists! Will not overwrite, "
-                "quitting."
+                f"The file {_fname} already exists! Will not overwrite, quitting."
             )
 
     return _master_fullpath, _dets_file_paths, _rel_dets_paths
@@ -434,9 +423,7 @@ def count(
     flag.fixq = fixq
 
     if per_shot is not None and (fixq or dichro):
-        logger.warning(
-            "there is a custom per_shot, but fixQ or dichro was selected."
-        )
+        logger.warning("there is a custom per_shot, but fixQ or dichro was selected.")
     elif per_shot is None:
         per_shot = one_local_shot if (fixq or dichro or vortex_sgz) else None
 
@@ -444,9 +431,7 @@ def count(
         detectors if not g_sgz else detectors + [pos_stream]
     )
 
-    setup_nxwritter(
-        experiment.experiment_path, _master_fullpath, _rel_dets_paths
-    )
+    setup_nxwritter(experiment.experiment_path, _master_fullpath, _rel_dets_paths)
 
     extras = yield from _collect_extras(("",))
 
@@ -593,9 +578,7 @@ def ascan(
         detectors if not g_sgz else detectors + [pos_stream]
     )
 
-    setup_nxwritter(
-        experiment.experiment_path, _master_fullpath, _rel_dets_paths
-    )
+    setup_nxwritter(experiment.experiment_path, _master_fullpath, _rel_dets_paths)
 
     extras = yield from _collect_extras(args)
 
@@ -924,9 +907,7 @@ def grid_scan(
         detectors if not g_sgz else detectors + [pos_stream]
     )
 
-    setup_nxwritter(
-        experiment.experiment_path, _master_fullpath, _rel_dets_paths
-    )
+    setup_nxwritter(experiment.experiment_path, _master_fullpath, _rel_dets_paths)
 
     extras = yield from _collect_extras(args)
 
@@ -1181,9 +1162,7 @@ def qxscan(
         detectors if not g_sgz else detectors + [pos_stream]
     )
 
-    setup_nxwritter(
-        experiment.experiment_path, _master_fullpath, _rel_dets_paths
-    )
+    setup_nxwritter(experiment.experiment_path, _master_fullpath, _rel_dets_paths)
 
     _md = dict(
         hints={"monitor": counters.monitor, "detectors": []},
@@ -1218,9 +1197,7 @@ def qxscan(
     @extra_devices_decorator(extras)
     @subs_decorator(nxwriter.receiver)
     def _inner_qxscan():
-        yield from list_scan(
-            detectors + extras, *args, per_step=per_step, md=_md
-        )
+        yield from list_scan(detectors + extras, *args, per_step=per_step, md=_md)
 
         # put original times back.
         for det, preset in _ct.items():

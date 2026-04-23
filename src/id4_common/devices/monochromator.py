@@ -21,6 +21,7 @@ from .labjacks import AnalogOutput
 
 
 class MonoDevice(PseudoPositioner):
+    """Double-crystal monochromator as a pseudo-positioner converting energy to theta and y2."""
 
     energy = Component(PseudoSingle, limits=(2.6, 32))
     th = Component(EpicsMotor, "m1", labels=("motor",))
@@ -31,9 +32,7 @@ class MonoDevice(PseudoPositioner):
     _real = ["th", "y2"]
 
     # Other motors
-    crystal_select = Component(
-        EpicsMotor, "m2", labels=("motor",), kind="config"
-    )
+    crystal_select = Component(EpicsMotor, "m2", labels=("motor",), kind="config")
     thf2 = Component(EpicsMotor, "m4", labels=("motor",))
     chi2 = Component(EpicsMotor, "m5", labels=("motor",))
 
@@ -48,9 +47,7 @@ class MonoDevice(PseudoPositioner):
     crystal_l = Component(EpicsSignal, "BraggLAO.VAL", kind="config")
     crystal_a = Component(EpicsSignal, "BraggAAO.VAL", kind="config")
     crystal_2d = Component(EpicsSignal, "Bragg2dSpacingAO", kind="config")
-    crystal_type = Component(
-        EpicsSignal, "BraggTypeMO", string=True, kind="config"
-    )
+    crystal_type = Component(EpicsSignal, "BraggTypeMO", string=True, kind="config")
 
     def __init__(
         self,
@@ -66,17 +63,20 @@ class MonoDevice(PseudoPositioner):
         super().__init__(prefix, **kwargs)
 
     def convert_energy_to_theta(self, energy):
+        """Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing."""
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / self.crystal_2d.get()) * 180.0 / pi
         return theta
 
     def convert_energy_to_y(self, energy):
+        """Convert photon energy (keV) to second-crystal vertical position (mm)."""
         # lambda in angstroms, theta in degrees, energy in keV
         theta = self.convert_energy_to_theta(energy)
         return self.y_offset.get() / (2 * cos(theta * pi / 180))
 
     def convert_theta_to_energy(self, theta):
+        """Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing."""
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = self.crystal_2d.get() * sin(theta * pi / 180)
         energy = speed_of_light * Planck * 6.241509e15 * 1e10 / lamb
@@ -94,14 +94,14 @@ class MonoDevice(PseudoPositioner):
     def inverse(self, real_pos):
         """Run an inverse (real -> pseudo) calculation"""
         # Changing y does not change the energy.
-        return self.PseudoPosition(
-            energy=self.convert_theta_to_energy(real_pos.th)
-        )
+        return self.PseudoPosition(energy=self.convert_theta_to_energy(real_pos.th))
 
     def set_energy(self, energy):
+        """Update the theta readback offset so that the current theta corresponds to energy (keV)."""
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
     def default_settings(self):
+        """Remove crystal_select from the sub-device list so it is not staged."""
         self._sub_devices.remove("crystal_select")

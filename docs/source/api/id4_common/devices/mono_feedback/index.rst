@@ -249,5 +249,3 @@ Module Contents
 
 
    .. py:attribute:: h
-
-

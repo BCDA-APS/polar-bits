@@ -367,4 +367,3 @@ Module Contents
 
 
 .. py:function:: freeze_psi(*args)
-

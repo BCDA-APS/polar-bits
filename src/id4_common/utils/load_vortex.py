@@ -1,11 +1,15 @@
-from ..devices.vortex_dante_me4 import VortexDante4
+"""Utilities for loading and connecting Vortex detector devices."""
+
+from logging import getLogger
+
+from apsbits.core.instrument_init import oregistry
+
 from ..devices.vortex_dante_me1 import VortexDante1
+from ..devices.vortex_dante_me4 import VortexDante4
 from ..devices.vortex_xmap import VortexXMAP
 from ..devices.vortex_xspress3_me4 import VortexXspress34
 from ..devices.vortex_xspress3_me7 import VortexXspress37
 from .run_engine import sd
-from apsbits.core.instrument_init import oregistry
-from logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -23,9 +27,7 @@ def load_vortex(
     electronic: str,
     pv: str = None,
     name: str = "vortex",
-    labels: list = [
-        "detector",
-    ],
+    labels: list = None,
     baseline: bool = False,
     **kwargs,
 ):
@@ -49,6 +51,9 @@ def load_vortex(
     -------
         vortex_detector : Ophyd device
     """
+
+    if labels is None:
+        labels = ["detector"]
 
     if electronic not in DETECTORS.keys():
         raise ValueError(

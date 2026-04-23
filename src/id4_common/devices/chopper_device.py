@@ -2,22 +2,19 @@
 Chopper
 """
 
-from ophyd import (
-    Component,
-    FormattedComponent,
-    Device,
-    EpicsSignal,
-    EpicsSignalRO,
-    EpicsMotor,
-)
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
 
 
 class ChopperDevice(Device):
+    """Photon chopper with translation motor, Newport controller, and frequency readback."""
 
     # In/out motor
-    translation = FormattedComponent(
-        EpicsMotor, "4idbSoft:m14", labels=("motor",)
-    )
+    translation = FormattedComponent(EpicsMotor, "4idbSoft:m14", labels=("motor",))
 
     # Newport controller
     status = Component(EpicsSignalRO, "Connected", kind="config")

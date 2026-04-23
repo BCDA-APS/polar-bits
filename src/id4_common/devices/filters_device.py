@@ -2,18 +2,18 @@
 APS filter support
 """
 
-from ophyd import (
-    Component,
-    DynamicDeviceComponent,
-    Device,
-    EpicsSignal,
-    EpicsSignalRO,
-)
+from ophyd import Component
+from ophyd import Device
+from ophyd import DynamicDeviceComponent
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
 
 NUM_FILTERS = 12
 
 
 class FilterSlot(Device):
+    """Single filter slot with status, lock, material, and transmission readbacks."""
+
     status = Component(EpicsSignal, "Set", string=True)
     lock = Component(EpicsSignal, "Lock", string=True)
     material = Component(EpicsSignal, "Material", string=True)
@@ -23,6 +23,7 @@ class FilterSlot(Device):
 
 
 def make_filter_slots(num: int):
+    """Return an OrderedDict of FilterSlot component definitions for a DynamicDeviceComponent."""
     defn = {}
     for n in range(1, num + 1):
         defn[f"f{n}"] = (FilterSlot, f"Fi{n}:", dict(kind="config"))
@@ -30,12 +31,11 @@ def make_filter_slots(num: int):
 
 
 class APSFilter(Device):
+    """APS filter bank with energy-based transmission control and per-slot management."""
 
     # Status and information
 
-    energy_select = Component(
-        EpicsSignal, "EnergySelect", string=True, kind="config"
-    )
+    energy_select = Component(EpicsSignal, "EnergySelect", string=True, kind="config")
     mono_energy = Component(EpicsSignalRO, "EnergyBeamline", kind="config")
     local_energy = Component(EpicsSignal, "EnergyLocal", kind="config")
 
@@ -45,14 +45,10 @@ class APSFilter(Device):
     transmission_setpoint = Component(
         EpicsSignal, "TransmissionSetpoint", kind="config"
     )
-    transmission_factor = Component(
-        EpicsSignal, "TransmissionFactor", kind="config"
-    )
+    transmission_factor = Component(EpicsSignal, "TransmissionFactor", kind="config")
 
     mask_readback = Component(EpicsSignalRO, "FilterMask", kind="config")
-    mask_setpoint = Component(
-        EpicsSignalRO, "FilterMaskSetpoint", kind="config"
-    )
+    mask_setpoint = Component(EpicsSignalRO, "FilterMaskSetpoint", kind="config")
 
     message = Component(EpicsSignalRO, "Message", kind="config")
 

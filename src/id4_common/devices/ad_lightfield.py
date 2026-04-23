@@ -2,22 +2,25 @@
 LightField based area detector
 """
 
-from ophyd import ADComponent, EpicsSignalRO, Staged, Device, Signal
-from ophyd.areadetector import (
-    EpicsSignalWithRBV,
-    EpicsSignal,
-    DetectorBase,
-    TriggerBase,
-    LightFieldDetectorCam,
-)
-from ophyd.areadetector.trigger_mixins import ADTriggerStatus
-from ophyd.areadetector.filestore_mixins import FileStoreBase
-
-from os.path import join
 import time as ttime
+from os.path import join
 from pathlib import Path
 
-from .ad_mixins import PolarHDF5Plugin, ImagePlugin
+from ophyd import ADComponent
+from ophyd import Device
+from ophyd import EpicsSignalRO
+from ophyd import Signal
+from ophyd import Staged
+from ophyd.areadetector import DetectorBase
+from ophyd.areadetector import EpicsSignal
+from ophyd.areadetector import EpicsSignalWithRBV
+from ophyd.areadetector import LightFieldDetectorCam
+from ophyd.areadetector import TriggerBase
+from ophyd.areadetector.filestore_mixins import FileStoreBase
+from ophyd.areadetector.trigger_mixins import ADTriggerStatus
+
+from .ad_mixins import ImagePlugin
+from .ad_mixins import PolarHDF5Plugin
 
 
 class MySingleTrigger(TriggerBase):
@@ -35,6 +38,7 @@ class MySingleTrigger(TriggerBase):
     _status_type = ADTriggerStatus
 
     def __init__(self, *args, image_name=None, delay_time=0.1, **kwargs):
+        """Initialize MySingleTrigger with optional image name and settling delay."""
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -43,10 +47,12 @@ class MySingleTrigger(TriggerBase):
         self._sleep_time = delay_time
 
     def stage(self):
+        """Subscribe to detector state changes and stage the detector."""
         self._monitor_status.subscribe(self._acquire_changed)
         super().stage()
 
     def unstage(self):
+        """Unstage the detector and unsubscribe from detector state changes."""
         super().unstage()
         self._monitor_status.clear_sub(self._acquire_changed)
 
@@ -75,7 +81,10 @@ class MySingleTrigger(TriggerBase):
 
 
 class LF_HDF(PolarHDF5Plugin):
+    """HDF5 plugin for LightField that translates Windows paths to Linux read paths."""
+
     def make_write_read_paths(self, write_path=None, read_path=None):
+        """Return write path, full read path, and relative read path for HDF5 file."""
 
         if write_path is None:
             write_path = Path(self.file_path.get(as_string=True))
@@ -110,6 +119,7 @@ class LightFieldFilePlugin(Device, FileStoreBase):
     enable = ADComponent(Signal, value=True, kind="config")
 
     def __init__(self, *args, **kwargs):
+        """Initialize LightFieldFilePlugin and set the POLAR SPE filestore spec."""
         self.filestore_spec = "AD_SPE_APSPolar"
         super().__init__(*args, write_path_template="", **kwargs)
         self.enable.subscribe(self._set_kind)
@@ -122,14 +132,16 @@ class LightFieldFilePlugin(Device, FileStoreBase):
 
     @property
     def base_name(self):
+        """Return the base filename from the LightField camera."""
         return self.parent.cam.file_name_base.get()
 
     @base_name.setter
     def base_name(self, value):
+        """Set the base filename on the LightField camera."""
         self.parent.cam.file_name_base.put(value)
 
     def make_write_read_paths(self, write_path=None, read_path=None):
-
+        """Return write path, full read path, and relative read path for SPE file."""
         if write_path is None:
             write_path = Path(self.parent.cam.file_path.get(as_string=True))
         if read_path is None:
@@ -138,9 +150,7 @@ class LightFieldFilePlugin(Device, FileStoreBase):
             )
             read_path = Path(self.parent.bluesky_files_root) / _rel_path
 
-        fname_template = (
-            self.parent.cam.file_template.get(as_string=True) + ".spe"
-        )
+        fname_template = self.parent.cam.file_template.get(as_string=True) + ".spe"
 
         fname_base = self.parent.cam.file_name_base.get()
         fname_number = self.parent.cam.file_number.get()
@@ -152,15 +162,14 @@ class LightFieldFilePlugin(Device, FileStoreBase):
         return read_path, full_path, relative_path
 
     def stage(self):
-
+        """Stage the file plugin, verifying the output file does not already exist."""
         # TODO: is there a way to check if the file already exists? The issue is
         # that the IOC is in another windows machine.
         read_path, full_path, _ = self.make_write_read_paths()
 
         if full_path.is_file():
             raise FileExistsError(
-                f"The file {full_path} already exists! Please change the file "
-                "name."
+                f"The file {full_path} already exists! Please change the file name."
             )
 
         self._fn = str(read_path)
@@ -169,9 +178,7 @@ class LightFieldFilePlugin(Device, FileStoreBase):
 
         ipf = int(self.parent.cam.num_images.get())
 
-        fname_template = (
-            self.parent.cam.file_template.get(as_string=True) + ".spe"
-        )
+        fname_template = self.parent.cam.file_template.get(as_string=True) + ".spe"
 
         res_kwargs = {
             "template": join("%s", fname_template),
@@ -182,20 +189,16 @@ class LightFieldFilePlugin(Device, FileStoreBase):
 
     def generate_datum(self, key, timestamp, datum_kwargs):
         """Using the num_images_counter to pick image from scan."""
-        datum_kwargs.update(
-            {"point_number": int(self.parent.cam.file_number.get())}
-        )
+        datum_kwargs.update({"point_number": int(self.parent.cam.file_number.get())})
         return super().generate_datum(key + "_spe", timestamp, datum_kwargs)
 
 
 class MyLightFieldCam(LightFieldDetectorCam):
+    """LightField camera with additional file naming and grating wavelength PVs."""
+
     file_name_base = ADComponent(EpicsSignal, "FileName", string=True)
-    file_path = ADComponent(
-        EpicsSignalWithRBV, "FilePath", string=True, kind="normal"
-    )
-    file_name = ADComponent(
-        EpicsSignalRO, "LFFileName_RBV", string=True, kind="normal"
-    )
+    file_path = ADComponent(EpicsSignalWithRBV, "FilePath", string=True, kind="normal")
+    file_name = ADComponent(EpicsSignalRO, "LFFileName_RBV", string=True, kind="normal")
     file_number = ADComponent(EpicsSignalWithRBV, "FileNumber")
     file_template = ADComponent(EpicsSignalWithRBV, "FileTemplate")
     num_images_counter = ADComponent(EpicsSignalRO, "NumImagesCounter_RBV")
@@ -203,18 +206,15 @@ class MyLightFieldCam(LightFieldDetectorCam):
     # the grating reached the target.
     grating_wavelength = ADComponent(EpicsSignal, "LFGratingWL")
     pool_max_buffers = None
-    background_file = ADComponent(
-        EpicsSignalWithRBV, "LFBackgroundFile", string=True
-    )
+    background_file = ADComponent(EpicsSignalWithRBV, "LFBackgroundFile", string=True)
     background_full_file = ADComponent(
         EpicsSignalRO, "LFBackgroundFullFile_RBV", string=True
     )
-    background_path = ADComponent(
-        EpicsSignalWithRBV, "LFBackgroundPath", string=True
-    )
+    background_path = ADComponent(EpicsSignalWithRBV, "LFBackgroundPath", string=True)
 
 
 class LightFieldDetector(MySingleTrigger, DetectorBase):
+    """Princeton Instruments LightField spectrometer detector with HDF5 and SPE file writing."""
 
     _default_read_attrs = ("cam", "file", "hdf1")
     _default_configuration_attrs = ("image",)
@@ -234,6 +234,7 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
         relative_default_folder="",
         **kwargs,
     ):
+        """Initialize LightFieldDetector with file path roots and HDF5 naming settings."""
         self.hdf1_name_format = hdf1_name_template + "." + hdf1_file_extension
         self.default_ioc_folder = (
             rf"{windows_files_root}\{relative_default_folder}"
@@ -246,21 +247,27 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
 
     @property
     def preset_monitor(self):
+        """Return the signal used to set exposure time."""
         return self.cam.acquire_time
 
     def save_images_on(self):
+        """Enable HDF5 image saving."""
         self.hdf1.enable.set("Enable").wait(timeout=10)
 
     def save_images_off(self):
+        """Disable HDF5 image saving."""
         self.hdf1.enable.set("Disable").wait(timeout=10)
 
     def auto_save_on(self):
+        """Enable automatic HDF5 saving on each acquisition."""
         self.hdf1.autosave.put("on")
 
     def auto_save_off(self):
+        """Disable automatic HDF5 saving on each acquisition."""
         self.hdf1.autosave.put("off")
 
     def default_settings(self):
+        """Apply default detector settings and stage signal configuration."""
         self.stage_sigs["cam.image_mode"] = 0
 
         # Default to preview mode
@@ -288,10 +295,8 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
             (self.hdf1.parent.cam.acquire, 1),  # set by number
         ]
 
-    def setup_images(
-        self, base_path, name_template, file_number, flyscan=False
-    ):
-
+    def setup_images(self, base_path, name_template, file_number, flyscan=False):
+        """Configure HDF5 and SPE file paths and names for the upcoming scan."""
         # SPE has to be one file per point, so I'll put it in a new folder!
         # In the new folder, the file number will follow the point number.
         scan_folder = self.cam.file_template.get(as_string=True) % (
@@ -311,9 +316,7 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
         # HDF1 is one file per scan
         read_path = base_path / self.name
         _rel = read_path.relative_to(self.bluesky_files_root)
-        write_path = Path(
-            str(self.windows_files_root / _rel).replace("/", "\\")
-        )
+        write_path = Path(str(self.windows_files_root / _rel).replace("/", "\\"))
 
         self.hdf1.file_path.set(str(write_path) + "\\").wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)
@@ -332,6 +335,7 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
 
     @property
     def save_image_flag(self):
+        """Return True; LightField detector always saves images."""
         return True  # Forced to always save images.
 
 

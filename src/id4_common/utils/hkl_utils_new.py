@@ -68,18 +68,17 @@ __all__ = """
 """.split()
 
 try:
-    from hklpy2.user import (
-        set_diffractometer,
-        get_diffractometer,
-        cahkl,
-        add_sample,
-    )
-    from bluesky import RunEngine, RunEngineInterrupted
-    from bluesky.utils import ProgressBarManager
     import asyncio
-    from bluesky.plan_stubs import mv
+
     from apsbits.core.instrument_init import oregistry
-    import numpy as np
+    from bluesky import RunEngine
+    from bluesky import RunEngineInterrupted
+    from bluesky.plan_stubs import mv
+    from bluesky.utils import ProgressBarManager
+    from hklpy2.user import add_sample
+    from hklpy2.user import cahkl
+    from hklpy2.user import get_diffractometer
+    from hklpy2.user import set_diffractometer
 except ModuleNotFoundError:
     print("gi module is not installed, the hkl_utils functions will not work!")
 
@@ -134,9 +133,7 @@ class Geometries:
         self._huber_hp_psi = value
 
 
-geometries = Geometries(
-    "huber_euler", "huber_hp", "huber_euler_psi", "huber_hp_psi"
-)
+geometries = Geometries("huber_euler", "huber_hp", "huber_euler_psi", "huber_hp_psi")
 # geometries.psic = oregistry.find("psic")
 # geometries.sim = oregistry.find("psic_sim")
 # geometries.q2 = oregistry.find("psic_q")
@@ -207,9 +204,7 @@ def _sampleList():
         print("Lattice:", end=" ")
         #        print(*samples[x].lattice._fields, sep=", ", end=" = ")
         print(samples[x].lattice)
-        print(
-            "======================================================================"
-        )
+        print("======================================================================")
     print("\nCurrent sample: " + _geom_.sample.name)
 
 
@@ -240,12 +235,9 @@ def list_reflections(all_samples=False):
         header = (
             f"\n{'#':>{refl_width}}"
             + "".join(
-                f"{m:>{pseudo_width}}"
-                for m in _geom_.pseudo_positioners._fields
+                f"{m:>{pseudo_width}}" for m in _geom_.pseudo_positioners._fields
             ).upper()
-            + "".join(
-                f"{k:>{real_width}}" for k in _geom_.real_positioners._fields
-            )
+            + "".join(f"{k:>{real_width}}" for k in _geom_.real_positioners._fields)
             + "   orienting"
         )
         print(header)
@@ -261,10 +253,11 @@ def list_reflections(all_samples=False):
             elif len(orienting_refl) > 1 and key == orienting_refl[1]:
                 tag = "second"
 
-            row = f"{key:>{refl_width}}" f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}{l:{pseudo_width}.3f}" + "".join(
-                f"{v:{real_width}.3f}" for v in pos
-            ) + (
-                f"   {tag}" if tag else ""
+            row = (
+                f"{key:>{refl_width}}"
+                f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}{l:{pseudo_width}.3f}"
+                + "".join(f"{v:{real_width}.3f}" for v in pos)
+                + (f"   {tag}" if tag else "")
             )
             print(row)
 
@@ -335,9 +328,7 @@ def or_swap():
     sample.reflections.swap()
     list_reflections()
     print("Computing UB!")
-    sample.core.calc_UB(
-        sample.reflections.order[0], sample.reflections.order[1]
-    )
+    sample.core.calc_UB(sample.reflections.order[0], sample.reflections.order[1])
     _geom_.forward(1, 0, 0)
 
 
@@ -647,9 +638,7 @@ def set_orienting():
 
     # Recompute UB matrix
     print("Computing UB!")
-    sample.core.calc_UB(
-        sample.reflections.order[0], sample.reflections.order[1]
-    )
+    sample.core.calc_UB(sample.reflections.order[0], sample.reflections.order[1])
     _geom_.forward(1, 0, 0)
 
 
@@ -713,9 +702,7 @@ def del_reflection():
         print("Invalid index. Aborting delete.")
         return
     if keys[idx] in orienting_refl[:2]:
-        print(
-            "Cannot delete orienting reflections (first/second). Aborting delete."
-        )
+        print("Cannot delete orienting reflections (first/second). Aborting delete.")
         return
 
     # Delete reflection
@@ -755,7 +742,7 @@ def list_orienting():
 
     # Print only orienting reflections
     keys = list(sample.reflections.keys())
-    for tag, key in zip(["first", "second"], orienting_refl[:2]):
+    for tag, key in zip(["first", "second"], orienting_refl[:2], strict=False):
         if key not in sample.reflections:
             continue
         idx = keys.index(key)
@@ -794,9 +781,7 @@ def setmode(mode=None):
         _geom_.core.mode = _geom_.core.modes[int(mode) - 1]
         print("\nSet mode to {}".format(mode))
     else:
-        mode = input("\nMode ({})? ".format(current_index + 1)) or (
-            current_index + 1
-        )
+        mode = input("\nMode ({})? ".format(current_index + 1)) or (current_index + 1)
         _geom_.core.mode = _geom_.core.modes[int(mode) - 1]
 
 
@@ -875,11 +860,7 @@ def _wh():
         * 180
         / np.pi
     )
-    print(
-        "\n   Q = {:5f}  tth = {:5f}".format(
-            _geom_for_q_.inverse(0).q, tth_from_q
-        )
-    )
+    print("\n   Q = {:5f}  tth = {:5f}".format(_geom_for_q_.inverse(0).q, tth_from_q))
 
 
 def _ensure_idle():
@@ -927,9 +908,7 @@ def br(h, k, l):
     Generator for the bluesky Run Engine.
     """
     _geom_ = get_diffractometer()
-    yield from bps.mv(
-        _geom_.h, float(h), _geom_.k, float(k), _geom_.l, float(l)
-    )
+    yield from mv(_geom_.h, float(h), _geom_.k, float(k), _geom_.l, float(l))
 
 
 def uan(*args):
@@ -969,7 +948,7 @@ def uan(*args):
     return None
 
 
-def an(delta=None, eta=None):
+def an(*args):
     """
     Moves the delta and theta motors.
 
@@ -987,16 +966,15 @@ def an(delta=None, eta=None):
     """
     _geom_ = get_diffractometer()
     if len(args) != 2:
-        delta, eta = args
-        raise ValueError("Usage: uan(delta/tth,eta/th)")
+        raise ValueError("Usage: an(delta/tth,eta/th)")
     else:
         delta, eta = args
         if len(_geom_.real_position) == 6:
             print("Moving to (delta,eta)=({},{})".format(delta, eta))
-            yield from bps.mv(_geom_.delta, delta, _geom_.eta, eta)
+            yield from mv(_geom_.delta, delta, _geom_.eta, eta)
         elif len(_geom_.real_position) == 4:
             print("Moving to (tth,th)=({},{})".format(delta, eta))
-            yield from bps.mv(_geom_.tth, delta, _geom_.th, eta)
+            yield from mv(_geom_.tth, delta, _geom_.th, eta)
 
 
 def setlat(*args):
@@ -1028,7 +1006,7 @@ def setlat(*args):
     # Case 2: interactive input
     elif len(args) == 0:
         new_values = []
-        for name, current in zip(param_names, current_values):
+        for name, current in zip(param_names, current_values, strict=False):
             try:
                 val = input(f"Lattice {name} ({current})? ") or current
                 new_values.append(float(val))
@@ -1042,15 +1020,13 @@ def setlat(*args):
         )
 
     # Apply new lattice parameters
-    for name, val in zip(param_names, new_values):
+    for name, val in zip(param_names, new_values, strict=False):
         setattr(sample.lattice, name, float(val))
 
     # Recompute UB if orienting reflections exist
     if len(sample.reflections.order) > 1:
         print("Computing UB...")
-        sample.core.calc_UB(
-            sample.reflections.order[0], sample.reflections.order[1]
-        )
+        sample.core.calc_UB(sample.reflections.order[0], sample.reflections.order[1])
         _geom_.forward(1, 0, 0)
 
     # Final confirmation
@@ -1146,12 +1122,8 @@ def freeze_psi(*args):
         elif len(args) == 1:
             psi = args[0]
         else:
-            raise ValueError(
-                "either no argument or azimuth needs to be provided."
-            )
+            raise ValueError("either no argument or azimuth needs to be provided.")
         _geom_.core.extras = {"psi": psi}
         print("Psi = {}".format(psi))
     else:
-        raise ValueError(
-            "Function not available in mode '{}'".format(_geom_.core.mode)
-        )
+        raise ValueError("Function not available in mode '{}'".format(_geom_.core.mode))

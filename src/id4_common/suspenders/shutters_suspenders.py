@@ -1,6 +1,9 @@
-from ophyd import EpicsSignalRO
-from bluesky.suspenders import SuspendBoolHigh
+"""Bluesky RunEngine suspenders that pause scans when beamline shutters are closed."""
+
 from logging import getLogger
+
+from bluesky.suspenders import SuspendBoolHigh
+from ophyd import EpicsSignalRO
 
 logger = getLogger(__name__)
 

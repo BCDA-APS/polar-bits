@@ -16,4 +16,3 @@ Module Contents
 
 
 .. py:data:: shutter_suspenders
-

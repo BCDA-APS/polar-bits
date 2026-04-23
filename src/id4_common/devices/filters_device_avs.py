@@ -2,19 +2,19 @@
 APS filter support
 """
 
-from ophyd import (
-    Component,
-    DynamicDeviceComponent,
-    Device,
-    EpicsSignal,
-    EpicsSignalRO,
-    EpicsSignalWithRBV,
-)
+from ophyd import Component
+from ophyd import Device
+from ophyd import DynamicDeviceComponent
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import EpicsSignalWithRBV
 
 NUM_FILTERS = 12
 
 
 class FilterSlot(Device):
+    """Single AVS filter slot with insertion control, lock, material, and PV routing."""
+
     setpoint = Component(EpicsSignal, "", string=True)
     readback = Component(EpicsSignalRO, "_RBV", string=True)
 
@@ -31,19 +31,19 @@ class FilterSlot(Device):
 
 
 def make_filter_slots(num: int):
+    """Return an OrderedDict of FilterSlot component definitions for a DynamicDeviceComponent."""
     defn = {}
     for n in range(1, num + 1):
-        defn[f"f{n}"] = (FilterSlot, f"filter{n :02d}", dict(kind="config"))
+        defn[f"f{n}"] = (FilterSlot, f"filter{n:02d}", dict(kind="config"))
     return defn
 
 
 class APSFilter(Device):
+    """AVS-style APS filter bank with attenuation control and per-slot management."""
 
     # Status and information
 
-    energy_select = Component(
-        EpicsSignal, "EnergySelect", string=True, kind="config"
-    )
+    energy_select = Component(EpicsSignal, "EnergySelect", string=True, kind="config")
     mono_energy = Component(EpicsSignalRO, "EnergyBeamline", kind="config")
     local_energy = Component(EpicsSignal, "EnergyLocal", kind="config")
 
@@ -52,9 +52,7 @@ class APSFilter(Device):
     status = Component(EpicsSignalRO, "filterBusy", string=True)
 
     attenuation_setpoint = Component(EpicsSignal, "attenuation")
-    attenuation_readback = Component(
-        EpicsSignalRO, "attenuation_actual", kind="config"
-    )
+    attenuation_readback = Component(EpicsSignalRO, "attenuation_actual", kind="config")
 
     sorted_index = Component(EpicsSignalWithRBV, "sortedIndex")
 
@@ -62,8 +60,6 @@ class APSFilter(Device):
     attenuation_3e_harmonic = Component(EpicsSignalRO, "attenuation_3E_actual")
 
     # Configuration
-    inter_filter_delay = Component(
-        EpicsSignal, "interFilterDelay", kind="config"
-    )
+    inter_filter_delay = Component(EpicsSignal, "interFilterDelay", kind="config")
 
     filters = DynamicDeviceComponent(make_filter_slots(NUM_FILTERS))

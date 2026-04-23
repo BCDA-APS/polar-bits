@@ -93,5 +93,3 @@ Module Contents
 
 
    .. py:method:: plot_all()
-
-

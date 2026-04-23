@@ -16,7 +16,3 @@ Module Contents
    usage: RE(opt())
        optional argument:      method = 'cen' (default)
                                                method = 'max'
-
-
-
-

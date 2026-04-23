@@ -33,10 +33,12 @@ class MicronsSignal(DerivedSignal):
     """A signal that converts the offset from degrees to microns"""
 
     def __init__(self, parent_attr, *, parent=None, **kwargs):
+        """Initialize with parent attribute name for the underlying degrees signal."""
         degrees_signal = getattr(parent, parent_attr)
         super().__init__(derived_from=degrees_signal, parent=parent, **kwargs)
 
     def describe(self):
+        """Override describe to report units as microns."""
         desc = super().describe()
         desc[self.name]["units"] = "microns"
         return desc
@@ -89,15 +91,11 @@ class PRPzt(Device):
         put_complete=True,
     )
 
-    ACstatus = FormattedComponent(
-        EpicsSignal, "{_drio}status", kind="config"
-    )
+    ACstatus = FormattedComponent(EpicsSignal, "{_drio}status", kind="config")
 
     conversion_factor = Component(Signal, value=0.1, kind="config")
 
-    def __init__(
-        self, PV, *args, drio_prefix="4idaSoft:232DRIO:1:", **kwargs
-    ):
+    def __init__(self, PV, *args, drio_prefix="4idaSoft:232DRIO:1:", **kwargs):
         """Initialize PRPzt with parametric DRIO IOC prefix."""
         self._prnum = PV.split(":")[-2]
         self._drio = drio_prefix
@@ -105,22 +103,17 @@ class PRPzt(Device):
 
 
 class PRDeviceBase(PseudoPositioner):
+    """Base class for phase retarder devices mapping energy to Bragg angle."""
 
     energy = Component(PseudoSingle, limits=(2.7, 20))
-    th = FormattedComponent(
-        EpicsMotor, "{prefix}:{_motorsDict[th]}", labels=("motor",)
-    )
+    th = FormattedComponent(EpicsMotor, "{prefix}:{_motorsDict[th]}", labels=("motor",))
 
     # Explicitly selects the real motor
     _real = ["th"]
 
-    x = FormattedComponent(
-        EpicsMotor, "{prefix}:{_motorsDict[x]}", labels=("motor",)
-    )
+    x = FormattedComponent(EpicsMotor, "{prefix}:{_motorsDict[x]}", labels=("motor",))
 
-    y = FormattedComponent(
-        EpicsMotor, "{prefix}:{_motorsDict[y]}", labels=("motor",)
-    )
+    y = FormattedComponent(EpicsMotor, "{prefix}:{_motorsDict[y]}", labels=("motor",))
 
     d_spacing = Component(Signal, value=0, kind="config")
 
@@ -131,11 +124,13 @@ class PRDeviceBase(PseudoPositioner):
     tracking = Component(TrackingSignal, value=False, kind="config")
 
     def __init__(self, prefix, name, motorsDict, **kwargs):
+        """Initialize PRDeviceBase with a dict mapping axis names to motor PV suffixes."""
         self._motorsDict = motorsDict
         super().__init__(prefix, name=name, **kwargs)
         self._energy_cid = None
 
     def convert_energy_to_theta(self, energy):
+        """Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing."""
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / 2 / self.d_spacing.get()) * 180.0 / pi
@@ -147,6 +142,7 @@ class PRDeviceBase(PseudoPositioner):
         return theta
 
     def convert_theta_to_energy(self, theta):
+        """Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing."""
         # If we are using the motor to switch polarization, then the correct
         # energy will be based on the theta minus the offset
         if self.motor_switch.get():
@@ -161,18 +157,15 @@ class PRDeviceBase(PseudoPositioner):
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """Run a forward (pseudo -> real) calculation"""
-        return self.RealPosition(
-            th=self.convert_energy_to_theta(pseudo_pos.energy)
-        )
+        return self.RealPosition(th=self.convert_energy_to_theta(pseudo_pos.energy))
 
     @real_position_argument
     def inverse(self, real_pos):
         """Run an inverse (real -> pseudo) calculation"""
-        return self.PseudoPosition(
-            energy=self.convert_theta_to_energy(real_pos.th)
-        )
+        return self.PseudoPosition(energy=self.convert_theta_to_energy(real_pos.th))
 
     def set_energy(self, energy):
+        """Calibrate the Bragg-angle motor to match the given photon energy (keV)."""
         _motor_switch = self.motor_switch.get()
         if _motor_switch:
             self.motor_switch.put(False)
@@ -185,12 +178,14 @@ class PRDeviceBase(PseudoPositioner):
             self.motor_switch.put(True)
 
     def default_settings(self):
+        """Apply default d-spacing and motor-switch settings for this phase retarder."""
         if self.name == "pr3":
             self.d_spacing.put(3.135)
             self.motor_switch.put(True)
 
 
 class PRDevice(PRDeviceBase):
+    """Phase retarder with PZT piezo control and crystal-plane auto-selection."""
 
     pzt = FormattedComponent(PRPzt, "{prefix}Soft:E665:{_prnum}:")
     select_pr = FormattedComponent(
@@ -202,6 +197,7 @@ class PRDevice(PRDeviceBase):
     )
 
     def __init__(self, prefix, name, prnum, motorsDict, **kwargs):
+        """Initialize PRDevice with phase retarder number and motor PV mapping."""
         self._prnum = prnum
         super().__init__(prefix, name, motorsDict, **kwargs)
 
@@ -213,6 +209,7 @@ class PRDevice(PRDeviceBase):
         self.d_spacing.put(spacing_dictionary[plane])
 
     def default_settings(self):
+        """Set PZT conversion factor and d-spacing based on the selected crystal plane."""
         conv_factor = 0.00165122 if self._prnum == 1 else 0.00190893
         self.pzt.conversion_factor.put(conv_factor)
 

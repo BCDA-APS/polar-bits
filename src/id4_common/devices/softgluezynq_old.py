@@ -2,17 +2,16 @@
 SoftGlueZynq
 """
 
-from ophyd import (
-    Component,
-    Device,
-    EpicsSignal,
-    EpicsSignalRO,
-    DynamicDeviceComponent,
-    Signal,
-)
 from collections import OrderedDict
-from bluesky.plan_stubs import mv
 from logging import getLogger
+
+from bluesky.plan_stubs import mv
+from ophyd import Component
+from ophyd import Device
+from ophyd import DynamicDeviceComponent
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import Signal
 
 logger = getLogger(__name__)
 
@@ -62,18 +61,22 @@ def _dma_fields(num=8, first_letter="I"):
         )
         defn[f"channel_{i}_scale"] = (
             EpicsSignal,
-            f"1acquireDma.{chr(ord(first_letter)+i-1)}",
+            f"1acquireDma.{chr(ord(first_letter) + i - 1)}",
             {"kind": "config"},
         )
     return defn
 
 
 class SoftGlueSignal(Device):
+    """SoftGlue I/O signal device with signal and BI (binary-input) components."""
+
     signal = Component(EpicsSignal, "_Signal", kind="config")
     bi = Component(EpicsSignal, "_BI", kind="config")
 
 
 class SoftGlueZynqDevideByN(Device):
+    """SoftGlue divide-by-N frequency divider block."""
+
     enable = Component(SoftGlueSignal, "ENABLE", kind="config")
     clock = Component(SoftGlueSignal, "CLOCK", kind="config")
     reset = Component(SoftGlueSignal, "RESET", kind="config")
@@ -82,6 +85,8 @@ class SoftGlueZynqDevideByN(Device):
 
 
 class SoftGlueZynqUpCounter(Device):
+    """SoftGlue up-counter block that accumulates clock pulses while enabled."""
+
     enable = Component(SoftGlueSignal, "ENABLE", kind="config")
     clock = Component(SoftGlueSignal, "CLOCK", kind="config")
     reset = Component(SoftGlueSignal, "CLEAR", kind="config")
@@ -89,6 +94,8 @@ class SoftGlueZynqUpCounter(Device):
 
 
 class SoftGlueZynqGateDly(Device):
+    """SoftGlue gate-and-delay block that produces a programmable-width output pulse."""
+
     input = Component(SoftGlueSignal, "IN", kind="config")
     clock = Component(SoftGlueSignal, "CLK", kind="config")
     delay = Component(EpicsSignal, "DLY", kind="config")
@@ -97,6 +104,8 @@ class SoftGlueZynqGateDly(Device):
 
 
 class SoftGlueScalToStream(Device):
+    """SoftGlue scaler-to-DMA-stream block that serialises counter data for readout."""
+
     reset = Component(SoftGlueSignal, "RESET", kind="config")
     chadv = Component(SoftGlueSignal, "CHADV", kind="config")
     imtrig = Component(SoftGlueSignal, "IMTRIG", kind="config")
@@ -109,6 +118,8 @@ class SoftGlueScalToStream(Device):
 
 
 class SoftGlueClocks(Device):
+    """SoftGlue clock source block exposing 10/20/50 MHz and a variable-rate clock."""
+
     clock_10MHz = Component(SoftGlueSignal, "10MHZ_CLOCK", kind="config")
     clock_20MHz = Component(SoftGlueSignal, "20MHZ_CLOCK", kind="config")
     clock_50MHz = Component(SoftGlueSignal, "50MHZ_CLOCK", kind="config")
@@ -116,6 +127,8 @@ class SoftGlueClocks(Device):
 
 
 class SoftGlueZynqDevice(Device):
+    """SoftGlue Zynq FPGA timing device (legacy version) with full default_settings setup."""
+
     dma = DynamicDeviceComponent(_dma_fields())
 
     # Buffer 1 --> general enable
@@ -128,34 +141,20 @@ class SoftGlueZynqDevice(Device):
     io = DynamicDeviceComponent(_io_fields())
 
     # Using channel #4 to count when the gate is off.
-    up_counter_count = Component(
-        SoftGlueZynqUpCounter, "SG:UpCntr-1_", kind="config"
-    )
-    up_counter_trigger = Component(
-        SoftGlueZynqUpCounter, "SG:UpCntr-2_", kind="config"
-    )
-    up_counter_gate_on = Component(
-        SoftGlueZynqUpCounter, "SG:UpCntr-3_", kind="config"
-    )
+    up_counter_count = Component(SoftGlueZynqUpCounter, "SG:UpCntr-1_", kind="config")
+    up_counter_trigger = Component(SoftGlueZynqUpCounter, "SG:UpCntr-2_", kind="config")
+    up_counter_gate_on = Component(SoftGlueZynqUpCounter, "SG:UpCntr-3_", kind="config")
     up_counter_gate_off = Component(
         SoftGlueZynqUpCounter, "SG:UpCntr-4_", kind="config"
     )
 
     # Setup the frequency of the count and trigger based on 10 MHz clock.
-    div_by_n_count = Component(
-        SoftGlueZynqDevideByN, "SG:DivByN-1_", kind="config"
-    )
-    div_by_n_trigger = Component(
-        SoftGlueZynqDevideByN, "SG:DivByN-2_", kind="config"
-    )
-    div_by_n_interrupt = Component(
-        SoftGlueZynqDevideByN, "SG:DivByN-3_", kind="config"
-    )
+    div_by_n_count = Component(SoftGlueZynqDevideByN, "SG:DivByN-1_", kind="config")
+    div_by_n_trigger = Component(SoftGlueZynqDevideByN, "SG:DivByN-2_", kind="config")
+    div_by_n_interrupt = Component(SoftGlueZynqDevideByN, "SG:DivByN-3_", kind="config")
 
     # Create a gate pulse
-    gate_trigger = Component(
-        SoftGlueZynqGateDly, "SG:GateDly-1_", kind="config"
-    )
+    gate_trigger = Component(SoftGlueZynqGateDly, "SG:GateDly-1_", kind="config")
 
     # Send data to DMA
     scaltostream = Component(SoftGlueScalToStream, "SG:scalToStream-1_")
@@ -164,41 +163,44 @@ class SoftGlueZynqDevice(Device):
     clocks = Component(SoftGlueClocks, "SG:", kind="config")
     clock_freq = Component(Signal, value=1e7, kind="config")
 
-    def __init__(
-        self, *args, reset_sleep_time=0.2, reference_clock=1e7, **kwargs
-    ):
+    def __init__(self, *args, reset_sleep_time=0.2, reference_clock=1e7, **kwargs):
+        """Initialize SoftGlueZynqDevice with reset sleep duration and reference clock rate."""
         super().__init__(*args, **kwargs)
         self._reset_sleep_time = reset_sleep_time
         self._reference_clock = reference_clock
 
     def start_softglue(self):
+        """Bluesky plan stub to assert the global enable buffer (in1 = '1')."""
         yield from mv(self.buffers.in1.signal, "1")
 
     def stop_softglue(self):
+        """Bluesky plan stub to de-assert the global enable buffer (in1 = '0')."""
         yield from mv(self.buffers.in1.signal, "0")
 
     def start_detectors(self):
+        """Bluesky plan stub to assert the detector enable buffer (in2 = '1')."""
         yield from mv(self.buffers.in2.signal, "1")
 
     def stop_detectors(self):
+        """Bluesky plan stub to de-assert the detector enable buffer (in2 = '0')."""
         yield from mv(self.buffers.in2.signal, "0")
 
     def reset_plan(self):
-        yield from mv(
-            self.buffers.in3.signal, "1!", self.buffers.in4.signal, "1!"
-        )
+        """Bluesky plan stub to pulse the counter-reset and DMA-reset buffers."""
+        yield from mv(self.buffers.in3.signal, "1!", self.buffers.in4.signal, "1!")
 
     def clear_enable_dma(self):
+        """Bluesky plan stub to clear the DMA buffer and then enable DMA acquisition."""
         yield from mv(self.dma.clear_button, 1, self.dma.clear_buffer, 1)
         yield from mv(self.dma.enable, 1)
 
     def clear_disable_dma(self):
+        """Bluesky plan stub to clear the DMA buffer and then disable DMA acquisition."""
         yield from mv(self.dma.clear_button, 1, self.dma.clear_buffer, 1)
         yield from mv(self.dma.enable, 0)
 
-    def setup_trigger_plan(
-        self, period_time, pulse_width_time, pulse_delay_time=0
-    ):
+    def setup_trigger_plan(self, period_time, pulse_width_time, pulse_delay_time=0):
+        """Bluesky plan stub to configure the trigger period, pulse width, and delay in clock ticks."""
         yield from mv(
             self.div_by_n_trigger.n,
             self._reference_clock * period_time,
@@ -209,9 +211,11 @@ class SoftGlueZynqDevice(Device):
         )
 
     def setup_count_plan(self, time):
+        """Bluesky plan stub to set the count divider N for the given count time in seconds."""
         yield from mv(self.div_by_n_count.n, self._reference_clock * time)
 
     def default_settings(self, timeout=10):
+        """Configure clocks, buffers, counters, I/O, DMA, and trigger for flyscan operation."""
 
         logger.info("Setting up clocks.")
 

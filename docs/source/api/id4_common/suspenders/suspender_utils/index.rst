@@ -18,4 +18,3 @@ Module Contents
 .. py:function:: suspender_restart(suspender_label=None)
 
 .. py:function:: suspender_change_sleep(suspender_label=None, sleep_time=None)
-

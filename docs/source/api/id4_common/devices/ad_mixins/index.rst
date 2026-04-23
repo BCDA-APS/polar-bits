@@ -609,5 +609,3 @@ Module Contents
 
    A special status object that notifies watches (progress bars)
    based on comparing device.cam.array_counter to  device.cam.num_images.
-
-

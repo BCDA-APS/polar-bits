@@ -2,10 +2,14 @@
 Table in middle of 4idb
 """
 
-from ophyd import Device, Component, EpicsMotor
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
 
 
 class Table4idb(Device):
+    """Optical table in 4IDB with upstream/downstream X and Y positioning motors."""
+
     x_us = Component(EpicsMotor, "m5", labels=("motor",))
     x_ds = Component(EpicsMotor, "m8", labels=("motor",))
 

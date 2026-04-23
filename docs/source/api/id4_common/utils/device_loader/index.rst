@@ -203,5 +203,3 @@ Module Contents
    If a device name (str) is provided, the function looks up the device in
    `oregistry`. The device is removed from `oregistry` and, if present, from
    `sd.baseline`.
-
-

@@ -1,44 +1,38 @@
 """AD mixins"""
 
-from ophyd import (
-    ADComponent,
-    EpicsSignal,
-    Signal,
-    Component,
-    BlueskyInterface,
-    OphydObject,
-)
-from ophyd.areadetector import (
-    EigerDetectorCam,
-    Xspress3DetectorCam,
-    EpicsSignalWithRBV,
-)
-from ophyd.areadetector.plugins import (
-    PluginBase_V34,
-    ImagePlugin_V34,
-    PvaPlugin_V34,
-    ROIPlugin_V34,
-    StatsPlugin_V34,
-    CodecPlugin_V34,
-    HDF5Plugin_V34,
-    ROIStatPlugin_V34,
-    ROIStatNPlugin_V25,
-    AttributePlugin_V34,
-    ProcessPlugin_V34,
-    TransformPlugin_V34,
-)
-from ophyd.areadetector.filestore_mixins import FileStoreBase
-from ophyd.areadetector.trigger_mixins import (
-    ADTriggerStatus as ophyd_ADTriggerStatus,
-)
-from ophyd.status import UnknownStatusFailure
-from apstools.devices import CamMixin_V34
-from os.path import isfile
-from itertools import count
-from pathlib import Path
 from collections import OrderedDict
+from itertools import count
 from logging import getLogger
-from time import sleep, time as ttime
+from os.path import isfile
+from pathlib import Path
+from time import sleep
+from time import time as ttime
+
+from apstools.devices import CamMixin_V34
+from ophyd import ADComponent
+from ophyd import BlueskyInterface
+from ophyd import Component
+from ophyd import EpicsSignal
+from ophyd import OphydObject
+from ophyd import Signal
+from ophyd.areadetector import EigerDetectorCam
+from ophyd.areadetector import EpicsSignalWithRBV
+from ophyd.areadetector import Xspress3DetectorCam
+from ophyd.areadetector.filestore_mixins import FileStoreBase
+from ophyd.areadetector.plugins import AttributePlugin_V34
+from ophyd.areadetector.plugins import CodecPlugin_V34
+from ophyd.areadetector.plugins import HDF5Plugin_V34
+from ophyd.areadetector.plugins import ImagePlugin_V34
+from ophyd.areadetector.plugins import PluginBase_V34
+from ophyd.areadetector.plugins import ProcessPlugin_V34
+from ophyd.areadetector.plugins import PvaPlugin_V34
+from ophyd.areadetector.plugins import ROIPlugin_V34
+from ophyd.areadetector.plugins import ROIStatNPlugin_V25
+from ophyd.areadetector.plugins import ROIStatPlugin_V34
+from ophyd.areadetector.plugins import StatsPlugin_V34
+from ophyd.areadetector.plugins import TransformPlugin_V34
+from ophyd.areadetector.trigger_mixins import ADTriggerStatus as ophyd_ADTriggerStatus
+from ophyd.status import UnknownStatusFailure
 
 logger = getLogger(__name__)
 
@@ -71,62 +65,56 @@ class ProcessPlugin(PluginMixin, ProcessPlugin_V34):
 class ROIPlugin(PluginMixin, ROIPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
-    _default_configuration_attrs = (
-        ROIPlugin_V34._default_configuration_attrs
-        + (
-            "driver_version",
-            "data_type",
-            "color_mode",
-            "enable",
-            "enable_scale",
-            "scale",
-            "collapse_dims",
-            "dimensions",
-            "data_type_out",
-            "name_",
-            "roi_enable",
-            "bin_",
-            "min_xyz",
-            "size",
-            "reverse",
-        )
+    _default_configuration_attrs = ROIPlugin_V34._default_configuration_attrs + (
+        "driver_version",
+        "data_type",
+        "color_mode",
+        "enable",
+        "enable_scale",
+        "scale",
+        "collapse_dims",
+        "dimensions",
+        "data_type_out",
+        "name_",
+        "roi_enable",
+        "bin_",
+        "min_xyz",
+        "size",
+        "reverse",
     )
 
 
 class StatsPlugin(PluginMixin, StatsPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
-    _default_configuration_attrs = (
-        StatsPlugin_V34._default_configuration_attrs
-        + (
-            "array_size",
-            "blocking_callbacks",
-            "color_mode",
-            "data_type",
-            "dimensions",
-            "enable",
-            "driver_version",
-            "compute_statistics",
-            "bgd_width",
-            "compute_centroid",
-            "centroid_threshold",
-            "compute_profiles",
-            "profile_average",
-            "profile_centroid",
-            "profile_cursor",
-            "profile_size",
-            "profile_threshold",
-            "cursor",
-            "compute_histogram",
-            "hist_entropy",
-            "hist_max",
-            "hist_min",
-            "hist_size",
-            "histogram",
-            "hist_above",
-            "hist_below",
-            "histogram_x",
-        )
+    _default_configuration_attrs = StatsPlugin_V34._default_configuration_attrs + (
+        "array_size",
+        "blocking_callbacks",
+        "color_mode",
+        "data_type",
+        "dimensions",
+        "enable",
+        "driver_version",
+        "compute_statistics",
+        "bgd_width",
+        "compute_centroid",
+        "centroid_threshold",
+        "compute_profiles",
+        "profile_average",
+        "profile_centroid",
+        "profile_cursor",
+        "profile_size",
+        "profile_threshold",
+        "cursor",
+        "compute_histogram",
+        "hist_entropy",
+        "hist_max",
+        "hist_min",
+        "hist_size",
+        "histogram",
+        "hist_above",
+        "hist_below",
+        "histogram_x",
     )
 
     _default_read_attrs = StatsPlugin_V34._default_read_attrs + (
@@ -157,6 +145,7 @@ class StatsPlugin(PluginMixin, StatsPlugin_V34):
 
     # This is to auto-set the kind depending on what is being computed.
     def __init__(self, *args, **kwargs):
+        """Initialize StatsPlugin and subscribe callbacks to auto-set signal kinds."""
         super().__init__(*args, **kwargs)
         self.compute_statistics.subscribe(self._control_stats, run=False)
         self.compute_centroid.subscribe(self._control_centroid, run=False)
@@ -164,12 +153,14 @@ class StatsPlugin(PluginMixin, StatsPlugin_V34):
         self.compute_histogram.subscribe(self._control_histogram, run=False)
 
     def start_auto_kind(self):
+        """Subscribe all compute signals to auto-update component kinds."""
         self.compute_statistics.subscribe(self._control_stats)
         self.compute_centroid.subscribe(self._control_centroid)
         self.compute_profiles.subscribe(self._control_profile)
         self.compute_histogram.subscribe(self._control_histogram)
 
     def stop_auto_kind(self):
+        """Unsubscribe all compute signals from auto kind updates."""
         for item in (
             "compute_statistics",
             "compute_centroid",
@@ -271,10 +262,10 @@ class EigerDetectorCam(CamMixin_V34, EigerDetectorCam):
 
 
 class VortexDetectorCam(CamMixin_V34, Xspress3DetectorCam):
+    """Vortex fluorescence detector camera with simplified trigger and erase controls."""
+
     trigger_mode = Component(EpicsSignalWithRBV, "TriggerMode", kind="config")
-    erase_on_start = Component(
-        EpicsSignal, "EraseOnStart", string=True, kind="config"
-    )
+    erase_on_start = Component(EpicsSignal, "EraseOnStart", string=True, kind="config")
 
     # Removed
     offset = None
@@ -283,8 +274,10 @@ class VortexDetectorCam(CamMixin_V34, Xspress3DetectorCam):
 
 
 class FileStorePluginBaseEpicsName(FileStoreBase):
+    """FileStore base that derives file paths from EPICS PV values rather than templates."""
 
     def __init__(self, *args, ioc_path_root=None, **kwargs):
+        """Initialize with optional IOC path root and set default stage signals."""
         super().__init__(*args, **kwargs)
         # if hasattr(self, "create_directory"):
         #     self.stage_sigs.update({"create_directory": -3})
@@ -306,10 +299,12 @@ class FileStorePluginBaseEpicsName(FileStoreBase):
 
     @property
     def use_dm(self):
+        """Return True if data management path is used for file writing."""
         return self._use_dm
 
     @use_dm.setter
     def use_dm(self, value):
+        """Set whether to use the data management path for file writing."""
         if isinstance(value, bool):
             self._use_dm = value
         else:
@@ -318,6 +313,7 @@ class FileStorePluginBaseEpicsName(FileStoreBase):
             )
 
     def make_write_read_paths(self, path=None):
+        """Return the IOC write path, full file path, and relative file path."""
         # This will generate the folder name and the full path.
         # - Folder is either determined by data management, or just use the one
         # in EPICS.
@@ -346,10 +342,9 @@ class FileStorePluginBaseEpicsName(FileStoreBase):
         return str(path), full_path, relative_path
 
     def stage(self):
-
+        """Stage the file plugin, checking path existence and file collision."""
         # Only save images if the enable is on...
         if self.enable.get() in (True, 1, "on", "Enable"):
-
             if self.file_write_mode.get(as_string=True) != "Single":
                 self.capture.set(0).wait()
 
@@ -362,9 +357,7 @@ class FileStorePluginBaseEpicsName(FileStoreBase):
                 )
 
             if not self.file_path_exists.get():
-                raise IOError(
-                    f"Path {self.file_path.get()} does not exist on IOC."
-                )
+                raise IOError(f"Path {self.file_path.get()} does not exist on IOC.")
 
             self.file_path.set(path).wait(timeout=10)
 
@@ -375,7 +368,10 @@ class FileStorePluginBaseEpicsName(FileStoreBase):
 
 
 class FileStoreHDF5IterativeWriteEpicsName(FileStorePluginBaseEpicsName):
+    """HDF5 iterative-write filestore that reads file name from EPICS PVs."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize with HDF5 stream mode stage signals and point counter."""
         super().__init__(*args, **kwargs)
         self.filestore_spec = "AD_HDF5"  # spec name stored in resource doc
         self.stage_sigs.update(
@@ -391,9 +387,11 @@ class FileStoreHDF5IterativeWriteEpicsName(FileStorePluginBaseEpicsName):
 
     @property
     def _num_images_signal(self):
+        """Return the signal used to determine frames per point."""
         return getattr(self.root, self._num_images_device)
 
     def get_frames_per_point(self):
+        """Return the number of frames expected per scan point."""
         num_capture = self.num_capture.get()
         # If num_capture is 0, then the plugin will capture however many frames
         # it is sent. We can get how many frames it will be sent (unless
@@ -405,6 +403,7 @@ class FileStoreHDF5IterativeWriteEpicsName(FileStorePluginBaseEpicsName):
         return num_capture
 
     def stage(self):
+        """Stage the HDF5 plugin and generate the resource document."""
         super().stage()
         res_kwargs = {"frame_per_point": self.get_frames_per_point()}
         if self._fn is None:
@@ -413,10 +412,12 @@ class FileStoreHDF5IterativeWriteEpicsName(FileStorePluginBaseEpicsName):
         self._point_counter = count()
 
     def unstage(self):
+        """Unstage the HDF5 plugin and reset the point counter."""
         self._point_counter = None
         super().unstage()
 
     def generate_datum(self, key, timestamp, datum_kwargs):
+        """Generate a datum document with the current point number."""
         i = next(self._point_counter)
         datum_kwargs = datum_kwargs or {}
         datum_kwargs.update({"point_number": i})
@@ -424,7 +425,7 @@ class FileStoreHDF5IterativeWriteEpicsName(FileStorePluginBaseEpicsName):
 
 
 class HDF5Plugin(PluginMixin, HDF5Plugin_V34):
-    pass
+    """HDF5 plugin with the property attribute removed for compatibility."""
 
 
 class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
@@ -469,10 +470,9 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
     autosave = ADComponent(Signal, value="off", kind="config")
 
     def __init__(self, *args, write_path_template="", **kwargs):
+        """Initialize PolarHDF5Plugin with warmup signals list."""
         # self.filestore_spec = "AD_EIGER_APSPolar"
-        super().__init__(
-            *args, write_path_template=write_path_template, **kwargs
-        )
+        super().__init__(*args, write_path_template=write_path_template, **kwargs)
         # self.enable.subscribe(self._setup_kind, run=False)
         self._warmup_signals = []
 
@@ -483,39 +483,41 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
             self.kind = "omitted"
 
     def stage(self):
+        """Stage the HDF5 plugin, enabling image saving if autosave is on."""
         if self.autosave.get() in (True, 1, "on", "Enable"):
             self.parent.save_images_on()
         super().stage()
 
     def unstage(self):
+        """Unstage the HDF5 plugin, disabling image saving if autosave is on."""
         if self.autosave.get() in (True, 1, "on", "Enable"):
             self.parent.save_images_off()
         super().unstage()
 
     @property
     def warmup_signals(self):
+        """Return ordered dict of (signal, value) pairs used for detector warmup."""
         return OrderedDict(self._warmup_signals)
 
     @warmup_signals.setter
     def warmup_signals(self, values):
+        """Set the list of (signal, value) pairs to use for detector warmup."""
         try:
             for sig, _ in list(values):
                 if not isinstance(sig, OphydObject):
                     raise ValueError(
-                        "warmup signal must be a list of "
-                        "(OphydObject, value) tuples."
+                        "warmup signal must be a list of (OphydObject, value) tuples."
                     )
             self._warmup_signals = values
         except TypeError:
             raise TypeError(
                 "warmup signal must be a list of (signal, value) tuples."
-            )
+            ) from None
 
     def warmup(self):
+        """Run the warmup sequence to prime the HDF5 plugin for fast acquisition."""
         if len(self.warmup_signals) == 0:
-            logger.warning(
-                f"The there are no warmup signals for {self.parent.name}"
-            )
+            logger.warning(f"The there are no warmup signals for {self.parent.name}")
 
         original_vals = {sig: sig.get() for sig in self.warmup_signals}
 
@@ -552,6 +554,7 @@ class TriggerBase(BlueskyInterface):
         acquire_busy_signal_dev="cam.acquire_busy",
         **kwargs,
     ):
+        """Initialize TriggerBase with acquisition and busy signal device paths."""
         super().__init__(*args, **kwargs)
         # settings
         # careful here: quadEM devices have areadetector components but,
@@ -578,6 +581,8 @@ class TriggerBase(BlueskyInterface):
 
 
 class ADTriggerStatus(ophyd_ADTriggerStatus):
+    """AreaDetector trigger status that clears array-counter subscriptions on completion."""
+
     def _notify_watchers(self, value, *args, **kwargs):
         # *args and **kwargs catch extra inputs from pyepics, not needed here
         if self.done:

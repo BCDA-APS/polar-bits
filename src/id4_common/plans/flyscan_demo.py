@@ -2,32 +2,35 @@
 Flyscan using area detector
 """
 
-from bluesky.preprocessors import stage_decorator, run_decorator, subs_decorator
-from bluesky.plan_stubs import rd, null, move_per_step, sleep
-from bluesky.plan_patterns import outer_product, inner_product
-from apstools.utils import (
-    validate_experiment_dataDirectory,
-    build_run_metadata_dict,
-)
 from collections import defaultdict
 from collections.abc import Iterable
-from pathlib import Path
 from json import dumps
-from warnings import warn
-from dm import ObjectNotFound
-from apsbits.utils.config_loaders import get_config
-from apsbits.core.instrument_init import oregistry
 from logging import getLogger
+from pathlib import Path
+from warnings import warn
 
+from apsbits.core.instrument_init import oregistry
+from apsbits.utils.config_loaders import get_config
+from apstools.utils import build_run_metadata_dict
+from apstools.utils import validate_experiment_dataDirectory
+from bluesky.plan_patterns import inner_product
+from bluesky.plan_patterns import outer_product
+from bluesky.plan_stubs import move_per_step
+from bluesky.plan_stubs import null
+from bluesky.plan_stubs import rd
+from bluesky.plan_stubs import sleep
+from bluesky.preprocessors import run_decorator
+from bluesky.preprocessors import stage_decorator
+from bluesky.preprocessors import subs_decorator
+from dm import ObjectNotFound
+
+from ..callbacks.nexus_data_file_writer import nxwriter
+from ..utils.dm_utils import dm_get_experiment_data_path
+from ..utils.dm_utils import dm_upload
+from ..utils.dm_utils import dm_upload_wait
+from ..utils.run_engine import RE
 from .local_scans import mv
 from .workflow_plan import run_workflow
-from ..callbacks.nexus_data_file_writer import nxwriter
-from ..utils.run_engine import RE
-from ..utils.dm_utils import (
-    dm_get_experiment_data_path,
-    dm_upload,
-    dm_upload_wait,
-)
 
 iconfig = get_config()
 
@@ -55,8 +58,8 @@ def flyscan_snake(
     detector_trigger_period: float = 0.02,
     detector_collection_time: float = 0.01,
     file_name_base: str = "scan",
-    master_file_templates: list = [],
-    md: dict = {},
+    master_file_templates: list = None,
+    md: dict = None,
     # internal kwargs ----------------------------------------
     dm_concise: bool = False,
     dm_wait: bool = False,
@@ -101,6 +104,11 @@ def flyscan_snake(
     :func:`bluesky.plan_patterns.outter_product`
     :func:`flyscan_cycler`
     """
+
+    if master_file_templates is None:
+        master_file_templates = []
+    if md is None:
+        md = {}
 
     if isinstance(detectors, str):
         raise TypeError("The detector argument cannot be a string.")
@@ -173,9 +181,9 @@ def flyscan_1d(
     speed,
     detector_trigger_period: float = 0.02,
     detector_collection_time: float = 0.01,
-    master_file_templates: list = [],
+    master_file_templates: list = None,
     file_name_base: str = "scan",
-    md: dict = {},
+    md: dict = None,
     # internal kwargs ------------------------------------------------------
     dm_concise: bool = False,
     dm_wait: bool = False,
@@ -219,6 +227,11 @@ def flyscan_1d(
     :func:`bluesky.plan_patterns.inner_product`
     :func:`flyscan_cycler`
     """
+    if master_file_templates is None:
+        master_file_templates = []
+    if md is None:
+        md = {}
+
     if isinstance(detectors, str):
         raise TypeError("The detector argument cannot be a string.")
 
@@ -272,9 +285,9 @@ def flyscan_cycler(
     speeds: list,
     detector_trigger_period: float = 0.02,
     detector_collection_time: float = 0.01,
-    master_file_templates: list = [],
+    master_file_templates: list = None,
     file_name_base: str = "scan",
-    md: dict = {},
+    md: dict = None,
     # internal kwargs ------------------------------------------------------
     dm_concise: bool = False,
     dm_wait: bool = False,
@@ -318,17 +331,22 @@ def flyscan_cycler(
     :func:`bluesky.plan_patterns.inner_product`
     """
 
+    if master_file_templates is None:
+        master_file_templates = []
+    if md is None:
+        md = {}
+
     ############################
     # Check potential problems #
     ############################
 
     try:
         validate_experiment_dataDirectory(dm_experiment.get())
-    except ObjectNotFound:
+    except ObjectNotFound as err:
         raise ValueError(
             f"Cannot find an experiment named: {dm_experiment.get()} in DM. "
             "Please see and run the setup_user function."
-        )
+        ) from err
 
     if detector_collection_time > detector_trigger_period:
         raise ValueError(
@@ -339,7 +357,7 @@ def flyscan_cycler(
     # Sample metadata will be used to sort data
     if "sample" not in RE.md.keys():
         RE.md["sample"] = "sample01"
-        warn(f"'sample' metadata not found! Using {RE.md['sample']}")
+        warn(f"'sample' metadata not found! Using {RE.md['sample']}", stacklevel=2)
 
     #####################
     # Setup files names #
@@ -370,16 +388,15 @@ def flyscan_cycler(
     for det in detectors:
         _setup_images = getattr(det, "setup_images", None)
         if _setup_images:
-            _dets_file_paths[det.name], _rel_dets_paths[det.name] = (
-                _setup_images(file_name_base, _scan_id, flyscan=True)
+            _dets_file_paths[det.name], _rel_dets_paths[det.name] = _setup_images(
+                file_name_base, _scan_id, flyscan=True
             )
 
     # Check if any of these files exists
     for _fname in [Path(_master_fullpath)] + list(_dets_file_paths.values()):
         if _fname.is_file():
             raise FileExistsError(
-                f"The file {_fname} already exists! Will not overwrite, "
-                "quitting."
+                f"The file {_fname} already exists! Will not overwrite, quitting."
             )
 
     #################################################
@@ -465,9 +482,7 @@ def flyscan_cycler(
     yield from sgz.clear_enable_dma()
 
     # Setup the eiger frequency
-    yield from sgz.setup_trigger_plan(
-        detector_trigger_period, detector_collection_time
-    )
+    yield from sgz.setup_trigger_plan(detector_trigger_period, detector_collection_time)
 
     logger.info("Moving motors to the start position.")
 
@@ -479,7 +494,7 @@ def flyscan_cycler(
 
     # Setup the motors stage signals
     speeds = speeds[::-1]  # The cycler inverts the motor list.
-    for motor, speed in zip(motors, speeds):
+    for motor, speed in zip(motors, speeds, strict=False):
         if speed is not None:
             motor.stage_sigs["velocity"] = speed
 
@@ -493,7 +508,6 @@ def flyscan_cycler(
     @stage_decorator(list(detectors) + motors)
     @run_decorator(md=_md)
     def inner_fly():
-
         yield from sgz.start_softglue()
 
         yield from sgz.start_detectors()
@@ -536,9 +550,7 @@ def flyscan_cycler(
             destDirectory=f"{RE.md['sample']}",
             reprocessFiles=False,
         )
-        logger.info(
-            f"DM upload of vortex files started, id = {upload_info['id']}."
-        )
+        logger.info(f"DM upload of vortex files started, id = {upload_info['id']}.")
 
     #############################
     # START THE APS DM WORKFLOW #

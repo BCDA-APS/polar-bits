@@ -58,18 +58,14 @@ def dm_kickoff_workflow(run, argsDict, timeout=None, wait=False):
     )
 
     # Upload bluesky run metadata to APS DM.
-    share_bluesky_metadata_with_dm(
-        argsDict["experimentName"], workflow_name, run
-    )
+    share_bluesky_metadata_with_dm(argsDict["experimentName"], workflow_name, run)
 
     # Users requested the DM workflow job ID be printed to the console.
     dm_workflow._update_processing_data()
     job_id = dm_workflow.job_id.get()
     job_stage = dm_workflow.stage_id.get()
     job_status = dm_workflow.status.get()
-    print(
-        f"DM workflow id: {job_id!r}  status: {job_status}  stage: {job_stage}"
-    )
+    print(f"DM workflow id: {job_id!r}  status: {job_status}  stage: {job_stage}")
 
 
 def dm_list_processing_jobs(exclude=None):

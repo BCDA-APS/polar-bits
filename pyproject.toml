@@ -76,6 +76,8 @@ select = [ "E", "F", "B", "I", "W", "D100", "D101", "D102", "D103", "D104", "D10
 fixable = [ "ALL",]
 unfixable = []
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+extend-select = []
+ignore = [ "E741", "E501",]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -91,6 +93,9 @@ line-ending = "auto"
 
 [tool.ruff.lint.per-file-ignores]
 "*.ipynb" = [ "F405",]
+"*utilities.py" = [ "E402",]
+"*hkl_utils*.py" = [ "E501",]
+"*apstools_spec_file_writer.py" = [ "E501",]
 
 [tool.ruff.lint.isort]
 force-single-line = true

@@ -6,22 +6,28 @@ Transfocator functions.
     ~transfocator
 """
 
-from numpy import loadtxt, array, eye, dot, inf
-from scipy.interpolate import interp1d
-from pandas import read_csv, DataFrame
 from itertools import combinations
+
+from numpy import array
+from numpy import dot
+from numpy import eye
+from numpy import inf
+from numpy import loadtxt
+from pandas import DataFrame
+from pandas import read_csv
+from scipy.interpolate import interp1d
 
 BE_REFR_INDEX_FILE = (
     "/home/beams/POLAR/polar_instrument/src/instrument/utils/Be_refr_index.dat"
 )
 
 LENS_SETTINGS = (
-    "/home/beams/POLAR/polar_instrument/src/instrument/utils/"
-    "transfocator_settings.csv"
+    "/home/beams/POLAR/polar_instrument/src/instrument/utils/transfocator_settings.csv"
 )
 
 
 def read_delta(energy, path=BE_REFR_INDEX_FILE):
+    """Return the refractive index delta for beryllium at the given energy (eV)."""
     if energy < 2700 or energy > 27000:
         raise ValueError("Energy {} out of range [2700, 27000].".format(energy))
 
@@ -51,7 +57,7 @@ def _compute_effective_focal_length(focuses, positions):
     distances = abs(positions[1:] - positions[:-1])
 
     # Multiply matrices for N lenses with spacing d between them
-    for f, d in zip(focuses, distances):
+    for f, d in zip(focuses, distances, strict=False):
         M = dot(_lens_matrix(f), M)  # Apply lens matrix
         M = dot(_propagation_matrix(d), M)  # Apply propagation matrix
 
@@ -70,7 +76,6 @@ def _compute_effective_focal_length(focuses, positions):
 
 
 def _find_optimal_combination(lenses, f_eff):
-
     lenses_list = [i for _, i in lenses.iterrows()]
 
     # Find the best combination of lens packages
@@ -141,22 +146,17 @@ def transfocator_calculation(
 
     # _geom_ = current_diffractometer()
     if optimize_position is None:
-        optimize_position = float(
-            input("Target CRL Z position in mm [0]: ") or 0
-        )
+        optimize_position = float(input("Target CRL Z position in mm [0]: ") or 0)
 
     if (optimize_position < -150) or (optimize_position > 150):
         raise ValueError("CRL Z {} out of range [-150, 150].".format(energy))
 
     if energy < 2.6 or energy > 27:
-        raise ValueError(
-            "Photon energy {} out of range [2.6, 27].".format(energy)
-        )
+        raise ValueError("Photon energy {} out of range [2.6, 27].".format(energy))
 
     if distance_only and not selected_lenses:
         _inp = input(
-            "Enter the number of the lenses that will be used (space separated)"
-            ": "
+            "Enter the number of the lenses that will be used (space separated): "
         )
         selected_lenses = [int(i) for i in _inp.split()]
 
@@ -175,9 +175,7 @@ def transfocator_calculation(
 
     # Effective focal point for the desired distance
 
-    optimize_distance = (
-        optimize_position + reference_distance
-    ) * 1e3  # microns
+    optimize_distance = (optimize_position + reference_distance) * 1e3  # microns
 
     source_crl_distance = source_sample_distance - optimize_distance
     f_eff = (
@@ -193,9 +191,7 @@ def transfocator_calculation(
     )
 
     if not distance_only:
-        best_combination, best_focal_length = _find_optimal_combination(
-            lenses, f_eff
-        )
+        best_combination, best_focal_length = _find_optimal_combination(lenses, f_eff)
     else:
         best_combination = selected_lenses
         best_focal_length = _find_optimal_focus(lenses.loc[selected_lenses])
@@ -226,14 +222,13 @@ def transfocator_calculation(
         else:
             print("Optimal lens packages = {}".format(best_combination))
 
-        print(
-            "Effective radius = {:3.1f} \u03bcm".format(best_effective_radius)
-        )
+        print("Effective radius = {:3.1f} \u03bcm".format(best_effective_radius))
         print("CRL Z position = {:6.1f} mm".format(crlz_position))
         print("-" * 65)
         print(
-            "Distance CRLs to sample = {:6.1f} mm at photon energy of "
-            "{} eV".format(best_sample_distance / 1e3, energy)
+            "Distance CRLs to sample = {:6.1f} mm at photon energy of {} eV".format(
+                best_sample_distance / 1e3, energy
+            )
         )
         print("-" * 65)
         print(

@@ -1,3 +1,5 @@
+"""Auxiliary utilities for querying and displaying the ophyd device registry."""
+
 from apsbits.core.instrument_init import oregistry
 from pyRestTable import Table
 

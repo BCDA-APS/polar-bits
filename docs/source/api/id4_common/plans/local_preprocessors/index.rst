@@ -76,4 +76,3 @@ Module Contents
 .. py:data:: stage_magnet911_decorator
 
 .. py:data:: stage_4idg_softglue_decorator
-

@@ -2,15 +2,18 @@
 Run DM workflow
 """
 
-from bluesky.plan_stubs import sleep
-from apstools.utils import share_bluesky_metadata_with_dm
-from databroker.core import BlueskyRun
-from pathlib import Path
-from yaml import load as yload, Loader as yloader
 from logging import getLogger
+from pathlib import Path
+
 from apsbits.core.instrument_init import oregistry
-from .local_scans import mv
+from apstools.utils import share_bluesky_metadata_with_dm
+from bluesky.plan_stubs import sleep
+from databroker.core import BlueskyRun
+from yaml import Loader as yloader
+from yaml import load as yload
+
 from ..utils.run_engine import cat
+from .local_scans import mv
 
 dm_workflow = oregistry.find("dm_workflow")
 dm_experiment = oregistry.find("dm_experiment")
@@ -107,15 +110,13 @@ def run_workflow(
     # Or you can enter the kwargs that will be just be passed to the workflow --
     **_kwargs,
 ):
-
+    """Submit a DM workflow plan and optionally share Bluesky run metadata with DM."""
     # Option to import workflow parameters from file.
     kwargs = {}
     if settings_file_path is not None:
         path = Path(settings_file_path)
         if not path.exists():
-            raise FileExistsError(
-                f"Configuration file '{path}' does not exist."
-            )
+            raise FileExistsError(f"Configuration file '{path}' does not exist.")
         kwargs = yload(open(path, "r").read(), yloader)
 
     # kwargs given in function call will have priority.
@@ -127,9 +128,7 @@ def run_workflow(
     # Check if kwargs have all argumnents needed.
     workflow = kwargs.get("workflow", None)
     if workflow is None:
-        raise ValueError(
-            "The 'workflow'  argument is required, but was not found."
-        )
+        raise ValueError("The 'workflow'  argument is required, but was not found.")
     if workflow not in EXPECTED_KWARGS.keys():
         raise ValueError(
             f"The 'workflow' argument must be one of {EXPECTED_KWARGS.keys()}, "
@@ -151,11 +150,10 @@ def run_workflow(
     if isinstance(bluesky_id, (str, int)):
         try:
             run = cat[bluesky_id]
-        except KeyError:
+        except KeyError as err:
             raise KeyError(
-                "Could not find a Bluesky run associated with the "
-                f"{bluesky_id=}."
-            )
+                f"Could not find a Bluesky run associated with the {bluesky_id=}."
+            ) from err
     elif isinstance(bluesky_id, BlueskyRun):
         run = bluesky_id
     else:

@@ -2,9 +2,13 @@
 SoftGlueZynq
 """
 
-from ophyd import Component, Device, EpicsSignal, EpicsSignalRO
 from collections import OrderedDict
 from logging import getLogger
+
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
 
 logger = getLogger(__name__)
 
@@ -30,7 +34,7 @@ def _dma_fields(num=8, first_letter="I"):
         )
         defn[f"channel_{i}_scale"] = (
             EpicsSignal,
-            f"1acquireDma.{chr(ord(first_letter)+i-1)}",
+            f"1acquireDma.{chr(ord(first_letter) + i - 1)}",
             {"kind": "config"},
         )
     return defn
@@ -61,11 +65,15 @@ def _buffer_fields(num=4):
 
 
 class SoftGlueSignal(Device):
+    """SoftGlue I/O signal device with signal and BI (binary-input) components."""
+
     signal = Component(EpicsSignal, "_Signal", kind="config")
     bi = Component(EpicsSignal, "_BI", kind="config")
 
 
 class SGZDevideByN(Device):
+    """SoftGlue divide-by-N frequency divider block."""
+
     enable = Component(SoftGlueSignal, "ENABLE", kind="config")
     clock = Component(SoftGlueSignal, "CLOCK", kind="config")
     reset = Component(SoftGlueSignal, "RESET", kind="config")
@@ -74,6 +82,8 @@ class SGZDevideByN(Device):
 
 
 class SGZUpCounter(Device):
+    """SoftGlue up-counter block that accumulates clock pulses while enabled."""
+
     enable = Component(SoftGlueSignal, "ENABLE", kind="config")
     clock = Component(SoftGlueSignal, "CLOCK", kind="config")
     reset = Component(SoftGlueSignal, "CLEAR", kind="config")
@@ -81,6 +91,8 @@ class SGZUpCounter(Device):
 
 
 class SGZDownCounter(Device):
+    """SoftGlue down-counter block that counts down from a preset value."""
+
     enable = Component(SoftGlueSignal, "ENABLE", kind="config")
     clock = Component(SoftGlueSignal, "CLOCK", kind="config")
     load = Component(SoftGlueSignal, "LOAD", kind="config")
@@ -89,6 +101,8 @@ class SGZDownCounter(Device):
 
 
 class SGZGateDly(Device):
+    """SoftGlue gate-and-delay block that produces a programmable-width output pulse."""
+
     input = Component(SoftGlueSignal, "IN", kind="config")
     clock = Component(SoftGlueSignal, "CLK", kind="config")
     delay = Component(EpicsSignal, "DLY", kind="config")
@@ -97,6 +111,8 @@ class SGZGateDly(Device):
 
 
 class SGZClocks(Device):
+    """SoftGlue clock source block exposing 10/20/50 MHz and a variable-rate clock."""
+
     clock_10MHz = Component(SoftGlueSignal, "10MHZ_CLOCK", kind="config")
     clock_20MHz = Component(SoftGlueSignal, "20MHZ_CLOCK", kind="config")
     clock_50MHz = Component(SoftGlueSignal, "50MHZ_CLOCK", kind="config")
@@ -104,12 +120,16 @@ class SGZClocks(Device):
 
 
 class SGZGates(Device):
+    """SoftGlue two-input gate (AND/OR) block."""
+
     in1 = Component(SoftGlueSignal, "IN1", kind="config")
     in2 = Component(SoftGlueSignal, "IN2", kind="config")
     out = Component(SoftGlueSignal, "OUT", kind="config")
 
 
 class SGZDFF(Device):
+    """SoftGlue D flip-flop block with set, data, clock, clear, and output signals."""
+
     set_ = Component(SoftGlueSignal, "SET", kind="config")
     d = Component(SoftGlueSignal, "D", kind="config")
     clock = Component(SoftGlueSignal, "CLOCK", kind="config")
@@ -118,6 +138,8 @@ class SGZDFF(Device):
 
 
 class SGZHistScal(Device):
+    """SoftGlue histogram scaler block for time-resolved counting into histogram bins."""
+
     en = Component(SoftGlueSignal, "EN", kind="config")
     sync = Component(SoftGlueSignal, "SYNC", kind="config")
     det = Component(SoftGlueSignal, "DET", kind="config")
@@ -129,6 +151,8 @@ class SGZHistScal(Device):
 
 
 class SGZhistScalerDma(Device):
+    """SoftGlue DMA readout block for the histogram scaler data."""
+
     enable = Component(EpicsSignal, "Enable", kind="config")
 
     scan = Component(EpicsSignal, ".SCAN", kind="config", string=True)
@@ -143,6 +167,8 @@ class SGZhistScalerDma(Device):
 
 
 class SoftGlueScalToStream(Device):
+    """SoftGlue scaler-to-DMA-stream block that serialises counter data for readout."""
+
     reset = Component(SoftGlueSignal, "RESET", kind="config")
     chadv = Component(SoftGlueSignal, "CHADV", kind="config")
     imtrig = Component(SoftGlueSignal, "IMTRIG", kind="config")
@@ -155,6 +181,8 @@ class SoftGlueScalToStream(Device):
 
 
 class SampleXY(Device):
+    """SoftGlue sample-position device providing X/Y/pitch readbacks and offsets."""
+
     x_offset = Component(EpicsSignal, "SAMPLE_XOFF", kind="config")
     y_offset = Component(EpicsSignal, "SAMPLE_YOFF", kind="config")
     pitch_offset = Component(EpicsSignal, "SAMPLE_POFF", kind="config")

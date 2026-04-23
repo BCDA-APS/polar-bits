@@ -1,13 +1,18 @@
+"""Device loading, connecting, and registry management utilities."""
+
+import sys
+from logging import getLogger
 from pathlib import Path
+
 import yaml
-from pyRestTable import Table
+from apsbits.core.instrument_init import make_devices
 from apsbits.core.instrument_init import oregistry
 from apstools.utils import dynamic_import
-from logging import getLogger
-import sys
-from apsbits.core.instrument_init import make_devices
 from ophyd import OphydObject
-from .run_engine import sd, RE
+from pyRestTable import Table
+
+from .run_engine import RE
+from .run_engine import sd
 
 logger = getLogger(__name__)
 
@@ -101,7 +106,7 @@ def find_loadable_devices(name=None, label=None, exact_name=False):
 
     # Find names
     if name is not None:
-        for key, item in AVAILABLE_DEVICES.items():
+        for key, _ in AVAILABLE_DEVICES.items():
             if not func(name, key):
                 del output[key]
 
@@ -173,9 +178,7 @@ def connect_device(device, baseline=None, raise_error=True):
                 return
 
         baseline = (
-            True
-            if "baseline" in AVAILABLE_DEVICES[device.name]["labels"]
-            else False
+            True if "baseline" in AVAILABLE_DEVICES[device.name]["labels"] else False
         )
 
     try:
@@ -221,9 +224,7 @@ def connect_device(device, baseline=None, raise_error=True):
                     AD_prime_plugin2(hdf1)
 
     except TimeoutError:
-        message = (
-            f"Device {device.name} is disconnected, removing it from baseline."
-        )
+        message = f"Device {device.name} is disconnected, removing it from baseline."
 
         if device in sd.baseline:
             sd.baseline.remove(device)
@@ -266,9 +267,7 @@ def load_device(name, file=None):
         return
 
     # Load devices from specified file or default file
-    _devices = (
-        AVAILABLE_DEVICES.copy() if file is None else load_yaml_devices(file)
-    )
+    _devices = AVAILABLE_DEVICES.copy() if file is None else load_yaml_devices(file)
 
     # Check if device is available in the loaded configurations
     if name not in _devices:
@@ -283,8 +282,7 @@ def load_device(name, file=None):
     class_path = params.pop("class", None)
     if class_path is None:
         raise ValueError(
-            "Could not find the class of the device. Please check the .yaml "
-            "file."
+            "Could not find the class of the device. Please check the .yaml file."
         )
 
     baseline = False

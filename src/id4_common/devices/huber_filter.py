@@ -2,10 +2,15 @@
 Huber filters
 """
 
-from ophyd import Component, FormattedComponent, Device, EpicsSignal
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignal
+from ophyd import FormattedComponent
 
 
 class SlotDevice(Device):
+    """Single Huber filter slot with label, thickness, and insertion status signals."""
+
     label = FormattedComponent(
         EpicsSignal,
         "{prefix}text{i}_in",
@@ -25,11 +30,14 @@ class SlotDevice(Device):
     )
 
     def __init__(self, *args, slot=1, **kwargs):
+        """Initialize the slot device and record the slot index for FormattedComponent substitution."""
         self.i = slot
         super().__init__(*args, **kwargs)
 
 
 class HuberFilter(Device):
+    """Six-slot Huber filter wheel device."""
+
     slot1 = Component(SlotDevice, "", slot=1)
     slot2 = Component(SlotDevice, "", slot=2)
     slot3 = Component(SlotDevice, "", slot=3)

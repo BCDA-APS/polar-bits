@@ -14,12 +14,13 @@ from pathlib import Path
 
 from apsbits.core.instrument_init import init_instrument
 from apsbits.core.instrument_init import make_devices
-from id4_common.utils.aps_functions import aps_dm_setup
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
 from IPython import get_ipython
+
+from id4_common.utils.aps_functions import aps_dm_setup
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -50,7 +51,12 @@ from .utils.local_magics import LocalMagics  # noqa: E402
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
-from .utils.run_engine import RE, sd, bec, cat, cat_legacy, peaks  # noqa: F401, E402
+from .utils.run_engine import RE  # noqa: F401, E402
+from .utils.run_engine import bec  # noqa: F401, E402
+from .utils.run_engine import cat  # noqa: F401, E402
+from .utils.run_engine import cat_legacy  # noqa: F401, E402
+from .utils.run_engine import peaks  # noqa: F401, E402
+from .utils.run_engine import sd  # noqa: F401, E402
 
 # Import optional components based on configuration
 if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
@@ -69,11 +75,9 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
     # devices that are disconnected.
     _ = RE.preprocessors.pop()
 
-from .callbacks.dichro_stream import (  # noqa: F401, E402
-    dichro,
-    plot_dichro_settings,
-    dichro_bec,
-)
+from .callbacks.dichro_stream import dichro  # noqa: F401, E402
+from .callbacks.dichro_stream import dichro_bec  # noqa: F401, E402
+from .callbacks.dichro_stream import plot_dichro_settings  # noqa: F401, E402
 
 # These imports must come after the above setup.
 if running_in_queueserver():
@@ -89,43 +93,37 @@ else:
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
 
-    from .suspenders.shutters_suspenders import (  # noqa: F401
-        shutter_suspenders,
-    )
-    from .suspenders.suspender_utils import (  # noqa: F401
-        suspender_restart,
-        suspender_stop,
-        suspender_change_sleep,
-    )
-
-    from .utils.wax import wm, wax, wa_new  # noqa: F401
-    from .utils.counters_class import counters  # noqa: F401
-    from .utils.pr_setup import pr_setup  # noqa: F401
+    from .suspenders.shutters_suspenders import shutter_suspenders  # noqa: F401
+    from .suspenders.suspender_utils import suspender_change_sleep  # noqa: F401
+    from .suspenders.suspender_utils import suspender_restart  # noqa: F401
+    from .suspenders.suspender_utils import suspender_stop  # noqa: F401
     from .utils.attenuator_utils import atten  # noqa: F401
+    from .utils.counters_class import counters  # noqa: F401
     from .utils.dm_utils import *  # noqa: F401, F403
     from .utils.experiment_utils import *  # noqa: F401, F403
     from .utils.hkl_utils import *  # noqa: F401, F403
-    from .utils.undulator_setup import undulator_setup  # noqa: F401
+    from .utils.pr_setup import pr_setup  # noqa: F401
     from .utils.shorts import opt  # noqa: F401
+    from .utils.undulator_setup import undulator_setup  # noqa: F401
+    from .utils.wax import wa_new  # noqa: F401
+    from .utils.wax import wax  # noqa: F401
+    from .utils.wax import wm  # noqa: F401
 
     # TODO: DM, hklpy, experiment_utils seems to be changing the
     # logging level. I don't know why.
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    from .utils.polartools_hklpy_imports import *  # noqa: F401, F403
-    from .utils.oregistry_auxiliar import get_devices  # noqa: F401
-    from .utils.load_vortex import load_vortex  # noqa: F401
-    from .utils.device_loader import (  # noqa: F401
-        load_yaml_devices,
-        find_loadable_devices,
-        load_device,
-        remove_device,
-        connect_device,
-        reload_all_devices,
-    )
-
     from .plans import *  # noqa: F401, F403
+    from .utils.device_loader import connect_device  # noqa: F401
+    from .utils.device_loader import find_loadable_devices  # noqa: F401
+    from .utils.device_loader import load_device  # noqa: F401
+    from .utils.device_loader import load_yaml_devices  # noqa: F401
+    from .utils.device_loader import reload_all_devices  # noqa: F401
+    from .utils.device_loader import remove_device  # noqa: F401
+    from .utils.load_vortex import load_vortex  # noqa: F401
+    from .utils.oregistry_auxiliar import get_devices  # noqa: F401
+    from .utils.polartools_hklpy_imports import *  # noqa: F401, F403
 
 _load_devices = input("\n==> Do you want to load all devices? [Y/n]: ") or "y"
 
@@ -142,7 +140,7 @@ try:
 
         # Diffractometer
         select_diffractometer(get_huber_euler())  # noqa: F405
-        select_engine_for_psi(get_huber_euler_psi())  # noqa: F40
+        select_engine_for_psi(get_huber_euler_psi())  # noqa: F405
     else:
         logger.info(
             "No device has been loaded. Please see the reload_all_devices, "

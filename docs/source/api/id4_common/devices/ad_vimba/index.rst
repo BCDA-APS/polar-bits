@@ -332,5 +332,3 @@ Module Contents
 
 
    .. py:method:: select_plot(channels)
-
-

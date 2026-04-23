@@ -111,5 +111,3 @@ Module Contents
 
 
    .. py:attribute:: laser_operation_time
-
-

@@ -1,17 +1,21 @@
-from bluesky.magics import (
-    BlueskyMagics,
-    _print_devices,
-    is_positioner,
-    # get_labeled_devices,
-)
-from IPython.core.magic import line_magic, magics_class
-from operator import attrgetter
-from bluesky import RunEngineInterrupted
-from numpy import round, ndarray
-from apsbits.core.instrument_init import oregistry
-from ..plans import mv, mvr
-from pyRestTable import Table
+"""IPython magic commands for motor control at the POLAR beamline."""
+
 import re
+from operator import attrgetter
+
+from apsbits.core.instrument_init import oregistry
+from bluesky import RunEngineInterrupted
+from bluesky.magics import BlueskyMagics
+from bluesky.magics import _print_devices
+from bluesky.magics import is_positioner  # get_labeled_devices,
+from IPython.core.magic import line_magic
+from IPython.core.magic import magics_class
+from numpy import ndarray
+from numpy import round
+from pyRestTable import Table
+
+from ..plans import mv
+from ..plans import mvr
 
 try:
     # cytools is a drop-in replacement for toolz, implemented in Cython
@@ -22,6 +26,7 @@ except ImportError:
 
 @magics_class
 class LocalMagics(BlueskyMagics):
+    """Custom IPython line magics for motor readback and movement at POLAR."""
 
     # @line_magic
     # def att(self, line):
@@ -32,6 +37,7 @@ class LocalMagics(BlueskyMagics):
 
     @line_magic
     def wm(self, line):
+        """Print position and travel limits for the named motors."""
         result = Table()
         result.labels = ("Motor", "Position", "Limits")
         for arg in re.split(r"[, ]+", line):
@@ -50,6 +56,7 @@ class LocalMagics(BlueskyMagics):
 
     @line_magic
     def mov(self, line):
+        """Move one or more motors to absolute positions via the RunEngine."""
         if len(line.split()) % 2 != 0:
             raise TypeError(
                 "Wrong parameters. Expected: "
@@ -71,6 +78,7 @@ class LocalMagics(BlueskyMagics):
 
     @line_magic
     def movr(self, line):
+        """Move one or more motors by relative offsets via the RunEngine."""
         if len(line.split()) % 2 != 0:
             raise TypeError(
                 "Wrong parameters. Expected: "
@@ -129,8 +137,7 @@ class LocalMagics(BlueskyMagics):
                 # Show all labels.
                 # labels = list(devices_dict.keys())
                 raise ValueError(
-                    "Use labels like motor, detector, 4ida, 4idb, 4idg, 4idh, "
-                    "preamp, "
+                    "Use labels like motor, detector, 4ida, 4idb, 4idg, 4idh, preamp, "
                 )
             for label in labels:
                 print(label)
@@ -192,7 +199,7 @@ def _print_positioners(positioners, sort=True, precision=6, prefix=""):
     LINE_FMT = prefix + "{: <30} {: <11} {: <11} {: <11} {: <11}"
     lines = []
     lines.append(LINE_FMT.format(*headers))
-    for p, v in zip(positioners, values):
+    for p, v in zip(positioners, values, strict=False):
         if not isinstance(v, Exception):
             try:
                 prec = int(p.precision)
@@ -202,7 +209,9 @@ def _print_positioners(positioners, sort=True, precision=6, prefix=""):
             value = (
                 value
                 if not isinstance(value, ndarray)
-                else str(value) if len(value) > 1 else value[0]
+                else str(value)
+                if len(value) > 1
+                else value[0]
             )
             try:
                 low_limit, high_limit = p.limits
@@ -221,7 +230,5 @@ def _print_positioners(positioners, sort=True, precision=6, prefix=""):
             value = v.__class__.__name__  # e.g. 'DisconnectedError'
             low_limit = high_limit = offset = ""
 
-        lines.append(
-            LINE_FMT.format(p.name, value, low_limit, high_limit, offset)
-        )
+        lines.append(LINE_FMT.format(p.name, value, low_limit, high_limit, offset))
     print("\n".join(lines))

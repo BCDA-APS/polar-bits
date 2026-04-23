@@ -5,13 +5,19 @@ Create new stream with processed XMCD data
 __all__ = ["dichro", "plot_dichro_settings", "dichro_bec"]
 
 
-from bluesky.callbacks.stream import LiveDispatcher
-from bluesky.callbacks.mpl_plotting import LivePlot
-from bluesky.callbacks.best_effort import BestEffortCallback
-from streamz import Source
-from numpy import mean, log, array, nan
-from ophyd import Signal, Device, Component
 from logging import getLogger
+
+from bluesky.callbacks.best_effort import BestEffortCallback
+from bluesky.callbacks.mpl_plotting import LivePlot
+from bluesky.callbacks.stream import LiveDispatcher
+from numpy import array
+from numpy import log
+from numpy import mean
+from numpy import nan
+from ophyd import Component
+from ophyd import Device
+from ophyd import Signal
+from streamz import Source
 
 logger = getLogger(__name__)
 
@@ -75,8 +81,7 @@ class DichroStream(LiveDispatcher):
             # Check that all of our events came from the same configuration
             if not all([desc_id == evt["descriptor"] for evt in cache]):
                 raise Exception(
-                    "The events in this bundle are from different"
-                    "configurations!"
+                    "The events in this bundle are from differentconfigurations!"
                 )
 
             # Use the last descriptor to avoid strings and objects
@@ -86,7 +91,6 @@ class DichroStream(LiveDispatcher):
                     for key in self.data_keys.values()
                 ]
             ):
-
                 for key, value in self.data_keys.items():
                     if "positioner1" in key:
                         processed_evt[value] = mean(
@@ -101,18 +105,12 @@ class DichroStream(LiveDispatcher):
                     elif "detector" in key:
                         _det = array([evt["data"][value] for evt in cache])
 
-                _xas = (
-                    log(_mon / _det)
-                    if self.settings.transmission
-                    else _det / _mon
-                )
+                _xas = log(_mon / _det) if self.settings.transmission else _det / _mon
 
                 processed_evt["xas"] = mean(_xas)
 
                 # This assumes that there is two polarization states
-                processed_evt["xmcd"] = (
-                    mean(_xas * array(self.settings.pattern)) * 2
-                )
+                processed_evt["xmcd"] = mean(_xas * array(self.settings.pattern)) * 2
             else:
                 logger.warning(
                     "The input data keys do not match entries in the database. "

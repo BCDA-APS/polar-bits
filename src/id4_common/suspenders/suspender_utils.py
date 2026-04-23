@@ -1,6 +1,9 @@
+"""Utility functions for managing and configuring beamline shutter suspenders."""
+
+from logging import getLogger
+
 from ..utils.run_engine import RE
 from .shutters_suspenders import shutter_suspenders
-from logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -8,9 +11,7 @@ logger = getLogger(__name__)
 def _query_label():
     while True:
         options = ["all"] + list(shutter_suspenders.keys())
-        suspender_label = input(
-            f"Which suspender? options: {options} - "
-        ).split()
+        suspender_label = input(f"Which suspender? options: {options} - ").split()
         check = [label not in options for label in suspender_label]
         if any(check):
             logger.info("One of the options {labels} is invalid.")
@@ -32,6 +33,7 @@ def _query_sleep_time(label):
 
 
 def suspender_stop(suspender_label=None):
+    """Remove one or more shutter suspenders from the RunEngine."""
     if suspender_label is None:
         suspender_label = _query_label()
 
@@ -44,7 +46,7 @@ def suspender_stop(suspender_label=None):
 
 
 def suspender_restart(suspender_label=None):
-
+    """Re-install one or more shutter suspenders on the RunEngine."""
     if suspender_label is None:
         suspender_label = _query_label()
 
@@ -60,6 +62,7 @@ def suspender_restart(suspender_label=None):
 
 
 def suspender_change_sleep(suspender_label=None, sleep_time=None):
+    """Change the post-beam-return sleep time for one or more shutter suspenders."""
     if suspender_label is None:
         suspender_label = _query_label()
 

@@ -270,5 +270,3 @@ Module Contents
 
 
    .. py:method:: warmup()
-
-

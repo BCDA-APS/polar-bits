@@ -1,8 +1,11 @@
-from pandas import DataFrame
-from ophydregistry import ComponentNotFound
-from apsbits.core.instrument_init import oregistry
-from logging import getLogger
+"""Detector and monitor selection class for dual-scaler beamline configurations."""
+
 from collections.abc import Iterable
+from logging import getLogger
+
+from apsbits.core.instrument_init import oregistry
+from ophydregistry import ComponentNotFound
+from pandas import DataFrame
 
 logger = getLogger(__name__)
 logger.bsdev(__file__)
@@ -47,10 +50,7 @@ class CountersClass:
         self._order = order
 
     def __repr__(self):
-
-        read_names = [
-            item.name for item in (self.detectors + self.extra_devices)
-        ]
+        read_names = [item.name for item in (self.detectors + self.extra_devices)]
 
         return (
             "Counters settings\n"
@@ -244,7 +244,6 @@ class CountersClass:
         return DataFrame(table)
 
     def select_plot_channels(self, selection):
-
         plot_options = self.detectors_plot_options
 
         # If "Time" is selected, then selects the "Time" of every scaler.
@@ -263,7 +262,7 @@ class CountersClass:
         for name, group in groups:
             det = oregistry.find(name)
             # det.select_plot(item) selects that channel to plot.
-            getattr(det, "select_plot")(list(group["channels"].values))
+            det.select_plot(list(group["channels"].values))
             dets.append(det)
 
         for scaler in self._available_scalers:
@@ -274,7 +273,6 @@ class CountersClass:
         self._dets = dets
 
     def plotselect(self, dets=None, mon=None):
-
         _valid_dets = False
         _valid_mon = False
 
@@ -328,10 +326,7 @@ class CountersClass:
 
                 # Check that the numbers are valid.
                 if not all(
-                    [
-                        i in self.detectors_plot_options.index.values
-                        for i in dets
-                    ]
+                    [i in self.detectors_plot_options.index.values for i in dets]
                 ):
                     print("The index values must be in the table.")
                     continue
@@ -347,8 +342,7 @@ class CountersClass:
             ].index[0]
             while True:
                 mon = (
-                    input(f"Enter index number of monitor detector. [{_mon}]: ")
-                    or _mon
+                    input(f"Enter index number of monitor detector. [{_mon}]: ") or _mon
                 )
 
                 try:

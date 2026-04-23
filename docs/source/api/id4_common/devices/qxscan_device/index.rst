@@ -483,5 +483,3 @@ Module Contents
 
 
    .. py:method:: load_from_scan(scan, cat=cat)
-
-

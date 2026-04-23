@@ -2,22 +2,22 @@
 Vimba cameras
 """
 
-from ophyd import EpicsSignal, EpicsSignalRO, Staged
-from ophyd.areadetector import (
-    CamBase,
-    DetectorBase,
-    ADComponent,
-    EpicsSignalWithRBV,
-)
 from pathlib import Path
 from time import time as ttime
-from .ad_mixins import (
-    PolarHDF5Plugin,
-    StatsPlugin,
-    ROIPlugin,
-    TriggerBase,
-    ADTriggerStatus,
-)
+
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import Staged
+from ophyd.areadetector import ADComponent
+from ophyd.areadetector import CamBase
+from ophyd.areadetector import DetectorBase
+from ophyd.areadetector import EpicsSignalWithRBV
+
+from .ad_mixins import ADTriggerStatus
+from .ad_mixins import PolarHDF5Plugin
+from .ad_mixins import ROIPlugin
+from .ad_mixins import StatsPlugin
+from .ad_mixins import TriggerBase
 
 
 class Trigger(TriggerBase):
@@ -28,6 +28,7 @@ class Trigger(TriggerBase):
     _status_type = ADTriggerStatus
 
     def __init__(self, *args, image_name=None, **kwargs):
+        """Initialize Trigger with an optional image name and set up acquisition status."""
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -36,6 +37,7 @@ class Trigger(TriggerBase):
         self._status = None
 
     def setup_manual_trigger(self):
+        """Configure stage_sigs for single-image manual-trigger mode."""
         # Stage signals
         self.cam.stage_sigs["image_mode"] = "Single"
         self.cam.stage_sigs["num_images"] = 1
@@ -44,6 +46,7 @@ class Trigger(TriggerBase):
         self.cam.stage_sigs["gain_auto"] = "Off"
 
     def setup_external_trigger(self):
+        """Raise NotImplementedError — external trigger is not supported for Vimba detectors."""
         # Stage signals
         # self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
         # self.cam.stage_sigs["num_images"] = MAX_IMAGES
@@ -53,7 +56,7 @@ class Trigger(TriggerBase):
         )
 
     def stage(self):
-
+        """Disarm the detector, subscribe to busy signal, and call parent stage."""
         # if self._flysetup:
         #     self.setup_external_trigger()
 
@@ -67,6 +70,7 @@ class Trigger(TriggerBase):
         #     self._acquisition_signal.set(1).wait(timeout=10)
 
     def unstage(self):
+        """Call parent unstage, stop acquisition, clear busy subscription, and restore manual trigger."""
         super().unstage()
         self.cam.acquire.set(0).wait(timeout=10)
         # self._flysetup = False
@@ -74,6 +78,7 @@ class Trigger(TriggerBase):
         self.setup_manual_trigger()
 
     def trigger(self):
+        """Trigger one acquisition and return a status object that completes when acquire_busy drops."""
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
@@ -101,6 +106,7 @@ class Trigger(TriggerBase):
 
 
 class VimbaCam(CamBase):
+    """CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics signals."""
 
     _default_configuration_attrs = CamBase._default_configuration_attrs + (
         "serial_number",
@@ -133,15 +139,9 @@ class VimbaCam(CamBase):
     connected_signal = ADComponent(EpicsSignalRO, "AsynIO.CNCT")
 
     # Trigger
-    trigger_source = ADComponent(
-        EpicsSignalWithRBV, "TriggerSource", string=True
-    )
-    trigger_overlap = ADComponent(
-        EpicsSignalWithRBV, "TriggerOverlap", string=True
-    )
-    trigger_exposure_mode = ADComponent(
-        EpicsSignalWithRBV, "ExposureMode", string=True
-    )
+    trigger_source = ADComponent(EpicsSignalWithRBV, "TriggerSource", string=True)
+    trigger_overlap = ADComponent(EpicsSignalWithRBV, "TriggerOverlap", string=True)
+    trigger_exposure_mode = ADComponent(EpicsSignalWithRBV, "ExposureMode", string=True)
     trigger_button = ADComponent(EpicsSignal, "TriggerSoftware", kind="omitted")
 
     # Exposure
@@ -170,6 +170,7 @@ class VimbaCam(CamBase):
 
 
 class VimbaDetector(Trigger, DetectorBase):
+    """Vimba area detector with ROI/stats plugins, HDF5 output, and alignment helpers."""
 
     _default_configuration_attrs = ("cam", "roi1", "roi2", "roi3", "roi4")
     _default_read_attrs = (
@@ -203,6 +204,7 @@ class VimbaDetector(Trigger, DetectorBase):
         max_num_images=65535,
         **kwargs,
     ):
+        """Initialize VimbaDetector with HDF5 folder, filename template, and max image count."""
         self.default_folder = default_folder
         self.hdf1_name_format = hdf1_name_template + "." + hdf1_file_extension
         self.max_num_images = max_num_images
@@ -210,12 +212,14 @@ class VimbaDetector(Trigger, DetectorBase):
         super().__init__(*args, **kwargs)
 
     def wait_for_connection(self, all_signals=False, timeout=2):
+        """Wait for the cam to fully connect before calling the parent wait_for_connection."""
         self.cam.wait_for_connection(all_signals=True, timeout=timeout)
         super().wait_for_connection(all_signals, timeout)
 
     # Make this compatible with other detectors
     @property
     def preset_monitor(self):
+        """Return the cam acquire_time signal used as the preset monitor."""
         return self.cam.acquire_time
 
     def align_on(self, time=0.1):
@@ -231,19 +235,23 @@ class VimbaDetector(Trigger, DetectorBase):
         self.cam.acquire.set(0).wait(timeout=10)
 
     def save_images_on(self):
+        """Enable the HDF1 plugin to save images."""
         self.hdf1.enable.set("Enable").wait(timeout=10)
 
     def save_images_off(self):
+        """Disable the HDF1 plugin so images are not saved."""
         self.hdf1.enable.set("Disable").wait(timeout=10)
 
     def auto_save_on(self):
+        """Enable HDF1 autosave mode."""
         self.hdf1.autosave.put("on")
 
     def auto_save_off(self):
+        """Disable HDF1 autosave mode."""
         self.hdf1.autosave.put("off")
 
     def default_settings(self):
-
+        """Configure detector defaults: single-image mode, HDF1 template, and warmup sequence."""
         self.cam.num_images.put(1)
         self.cam.image_mode.put("Single")
         self.cam.acquire.put(0)
@@ -286,32 +294,34 @@ class VimbaDetector(Trigger, DetectorBase):
         """
 
         for i in range(1, 5 + 1):
-            getattr(self, f"stats{i}").total.kind = (
-                "hinted" if i in rois else "normal"
-            )
+            getattr(self, f"stats{i}").total.kind = "hinted" if i in rois else "normal"
 
     def plot_allrois(self):
+        """Set all five stats ROIs to hinted kind for plotting."""
         self.plot_select([1, 2, 3, 4, 5])
 
     def plot_roi1(self):
+        """Set only ROI1 stats to hinted kind for plotting."""
         self.plot_select([1])
 
     def plot_roi2(self):
+        """Set only ROI2 stats to hinted kind for plotting."""
         self.plot_select([2])
 
     def plot_roi3(self):
+        """Set only ROI3 stats to hinted kind for plotting."""
         self.plot_select([3])
 
     def plot_roi4(self):
+        """Set only ROI4 stats to hinted kind for plotting."""
         self.plot_select([4])
 
     def plot_roi5(self):
+        """Set only ROI5 (full detector) stats to hinted kind for plotting."""
         self.plot_select([5])
 
-    def setup_images(
-        self, base_path, name_template, file_number, flyscan=False
-    ):
-
+    def setup_images(self, base_path, name_template, file_number, flyscan=False):
+        """Configure HDF1 file path, name, and number for an upcoming acquisition."""
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.hdf1.file_name.set(name_template).wait(timeout=10)
         # Make sure eiger will save image
@@ -328,19 +338,23 @@ class VimbaDetector(Trigger, DetectorBase):
 
     @property
     def save_image_flag(self):
+        """Return True if HDF1 plugin is enabled or autosave is active."""
         _hdf1_auto = True if self.hdf1.autosave.get() == "on" else False
         _hdf1_on = True if self.hdf1.enable.get() == "Enable" else False
         return _hdf1_on or _hdf1_auto
 
     @property
     def label_option_map(self):
+        """Return a mapping from ROI label strings to ROI numbers for plot selection."""
         return {f"ROI{i} Total": i for i in range(1, 5 + 1)}
 
     @property
     def plot_options(self):
+        """Return a list of all ROI label strings available for plot selection."""
         # Return all named scaler channels
         return list(self.label_option_map.keys())
 
     def select_plot(self, channels):
+        """Set hinted kind for the given channel label list, delegating to plot_select."""
         chans = [self.label_option_map[i] for i in channels]
         self.plot_select(chans)

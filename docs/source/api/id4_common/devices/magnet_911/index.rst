@@ -798,5 +798,3 @@ Module Contents
 
 
    .. py:attribute:: needle_valve
-
-

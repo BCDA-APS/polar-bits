@@ -1,10 +1,15 @@
-from epics import caget, caput
+"""Utility functions for controlling the POLAR beamline x-ray attenuator."""
+
 import math
 from time import sleep
+
+from epics import caget
+from epics import caput
 
 
 # def attenuator(atten_value_in=None):
 def atten(atten_value_in=None):
+    """Set or display the x-ray attenuation factor using the EPICS filter device."""
     # write attenuation factor to attenuator device
     # Input as attenuation value: power.first_decimal
     # e.g. attenuation value 6.3 corresponds to attenuation factor 3e6
@@ -18,9 +23,7 @@ def atten(atten_value_in=None):
         power = math.floor(math.log(atten_factor, 10))
         deci = 0.1 * (atten_factor / (10**power))
         atten_value = power + deci
-        atten_value = (
-            input(f"Attenuator value [{atten_value:.1f}]: ") or atten_value
-        )
+        atten_value = input(f"Attenuator value [{atten_value:.1f}]: ") or atten_value
         atten_value = (
             float(atten_value) if isinstance(atten_value, str) else atten_value
         )

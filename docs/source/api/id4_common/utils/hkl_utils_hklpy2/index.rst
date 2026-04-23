@@ -495,4 +495,3 @@ Module Contents
 
 
 .. py:function:: restore_huber_from_scan(scan_id, diffractometer=None, sample_name=None, force=False)
-

@@ -27,5 +27,3 @@ Module Contents
 
 .. py:data:: cat_legacy
    :value: None
-
-

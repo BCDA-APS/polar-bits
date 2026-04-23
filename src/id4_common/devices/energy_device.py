@@ -2,13 +2,17 @@
 Beamline energy
 """
 
-from ophyd import Signal, OphydObject
-from ophyd.status import Status, AndStatus, wait as status_wait
-from time import time as ttime
-from pyRestTable import Table
-from apsbits.core.instrument_init import oregistry
 from collections.abc import Iterable
 from logging import getLogger
+from time import time as ttime
+
+from apsbits.core.instrument_init import oregistry
+from ophyd import OphydObject
+from ophyd import Signal
+from ophyd.status import AndStatus
+from ophyd.status import Status
+from ophyd.status import wait as status_wait
+from pyRestTable import Table
 
 logger = getLogger(__name__)
 
@@ -27,6 +31,7 @@ class EnergySignal(Signal):
         feedback_tolerance=0.1,
         **kwargs,
     ):
+        """Initialize EnergySignal with mono and feedback device names and tolerance."""
         super().__init__(*args, **kwargs)
         self._status = {}  # Useful for debugging
         self._extra_devices = []
@@ -38,12 +43,14 @@ class EnergySignal(Signal):
 
     @property
     def mono(self):
+        """Return the monochromator device, resolving from registry on first access."""
         if self._mono is None:
             self._mono = oregistry.find(self._mono_name)
         return self._mono
 
     @property
     def trackable_devices(self):
+        """Return all track_energy-labelled devices plus any manually added extra devices."""
         devs = oregistry.findall("track_energy") + self.extra_devices
         return sorted(devs, key=lambda x: x.name)
 
@@ -52,10 +59,12 @@ class EnergySignal(Signal):
     # subdevices: "device.energy" positioner and "device.tracking" flag.
     @property
     def extra_devices(self):
+        """Return the list of manually added trackable devices."""
         return self._extra_devices
 
     @extra_devices.setter
     def extra_devices(self, devices):
+        """Add OphydObject devices to the extra trackable devices list, or clear it with []."""
         # Ensure that devices is a list
         devices = list(devices) if isinstance(devices, Iterable) else [devices]
 
@@ -67,14 +76,13 @@ class EnergySignal(Signal):
         # Check that all items are OphydObject instances
         for device in devices:
             if not isinstance(device, OphydObject):
-                raise ValueError(
-                    f"Device {device} is not an instance of OphydObject"
-                )
+                raise ValueError(f"Device {device} is not an instance of OphydObject")
 
         self._extra_devices.extend(devices)
 
     @property
     def tracking(self):
+        """Print a table of all trackable devices and their current tracking state."""
         result = Table()
         result.labels = ("Index", "Device", "Tracking?")
 
@@ -86,15 +94,13 @@ class EnergySignal(Signal):
         print("=== note that the monochromator is always tracked ===")
 
     def tracking_setup(self, devices_names: Iterable = []):
-
+        """Enable tracking for the named devices, or prompt interactively if names are empty."""
         # Checks needed in case one wants to skip the prompts.
 
         available_devices = {d.name: d for d in self.trackable_devices}
 
         # Check that devices_names is a valid iterable.
-        if isinstance(devices_names, str) or not isinstance(
-            devices_names, Iterable
-        ):
+        if isinstance(devices_names, str) or not isinstance(devices_names, Iterable):
             raise ValueError(
                 "devices_names must be an iterable with names of devices to be "
                 "tracked. Available names are: "
@@ -118,7 +124,7 @@ class EnergySignal(Signal):
                 device.tracking.put(flag)
 
     def _tracking_prompts(self):
-        self.tracking
+        _ = self.tracking
 
         current_selection = []
         for i, device in enumerate(self.trackable_devices):
@@ -129,8 +135,7 @@ class EnergySignal(Signal):
         while True:
             new_selection = (
                 input(
-                    "\nEnter the index of the devices to track "
-                    f"({current_selection}): "
+                    f"\nEnter the index of the devices to track ({current_selection}): "
                 )
                 or current_selection
             )
@@ -147,9 +152,7 @@ class EnergySignal(Signal):
                 )
                 continue
 
-            if not all(
-                0 < i <= len(self.trackable_devices) for i in new_selection
-            ):
+            if not all(0 < i <= len(self.trackable_devices) for i in new_selection):
                 logger.info("Invalid selection. Please choose valid indices.")
                 continue
 
@@ -160,18 +163,21 @@ class EnergySignal(Signal):
             device.tracking.put(track)
 
         print()
-        self.tracking
+        _ = self.tracking
 
     @property
     def position(self):
+        """Return the current monochromator energy position."""
         return self.mono.energy.position
 
     @property
     def limits(self):
+        """Return the monochromator energy soft limits."""
         return self.mono.energy.limits
 
     @property
     def feedback_device(self):
+        """Return the monochromator feedback device from the registry, or None if absent."""
         return oregistry.find(self._feedback_name, allow_none=True)
 
     def get(self, **kwargs):
@@ -203,7 +209,7 @@ class EnergySignal(Signal):
         settle_time=None,
         moved_cb=None,
     ):
-
+        """Move mono and all tracking devices to position (keV); disable feedback during the move."""
         # In case nothing needs to be moved, just create a finished status
         status = Status()
         status.set_finished()
@@ -282,4 +288,5 @@ class EnergySignal(Signal):
                 positioner.energy.stop(success=success)
 
     def default_settings(self):
+        """Resolve and cache the monochromator device from the registry."""
         self._mono = oregistry.find(self._mono_name)

@@ -252,5 +252,3 @@ Module Contents
 
 
    .. py:attribute:: phase_shifter
-
-

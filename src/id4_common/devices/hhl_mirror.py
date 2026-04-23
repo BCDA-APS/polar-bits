@@ -2,14 +2,12 @@
 HHL mirror
 """
 
-from ophyd import (
-    Component,
-    FormattedComponent,
-    Device,
-    EpicsMotor,
-    EpicsSignal,
-    EpicsSignalRO,
-)
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
 
 
 class ToroidalMirror(Device):
@@ -25,9 +23,7 @@ class ToroidalMirror(Device):
     # Combined motions
     x = Component(EpicsMotor, "pm1", labels=("motor",))
     pitch = Component(EpicsMotor, "pm2", labels=("motor",))
-    fine_pitch = FormattedComponent(
-        EpicsMotor, "4idaSoft:m1", labels=("motor",)
-    )
+    fine_pitch = FormattedComponent(EpicsMotor, "4idaSoft:m1", labels=("motor",))
     curvature = Component(EpicsMotor, "pm3", labels=("motor",))
     elipticity = Component(EpicsMotor, "pm4", labels=("motor",))
 

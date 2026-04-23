@@ -2,10 +2,14 @@
 Ring XBPM support
 """
 
-from ophyd import Component, Device, EpicsSignalRO
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignalRO
 
 
 class CMsDevice(Device):
+    """Beam position monitor current-mode readout device."""
+
     current1 = Component(EpicsSignalRO, "Current1:MeanValue_NormM")
     current2 = Component(EpicsSignalRO, "Current2:MeanValue_NormM")
     current3 = Component(EpicsSignalRO, "Current3:MeanValue_NormM")
@@ -13,6 +17,8 @@ class CMsDevice(Device):
 
 
 class MyXBPM(Device):
+    """X-ray beam position monitor with position, angle, and current-mode readbacks."""
+
     vertical_position = Component(EpicsSignalRO, ":ID:SrcPt:VPositionM")
     vertical_angle = Component(EpicsSignalRO, ":ID:SrcPt:VAngleM")
     horizontal_position = Component(EpicsSignalRO, ":ID:SrcPt:HPositionM")

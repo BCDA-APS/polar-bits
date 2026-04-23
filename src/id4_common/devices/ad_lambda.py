@@ -2,26 +2,24 @@
 Lambda area detector
 """
 
-from ophyd import ADComponent, EpicsSignalRO, Kind, Staged
-from ophyd.areadetector import (
-    CamBase,
-    EpicsSignalWithRBV,
-    DetectorBase,
-    TriggerBase,
-)
-from ophyd.areadetector.trigger_mixins import ADTriggerStatus
-from ophyd.areadetector.filestore_mixins import (
-    FileStoreHDF5SingleIterativeWrite,
-)
-from ophyd.areadetector.plugins import (
-    ROIPlugin_V34,
-    StatsPlugin_V34,
-    HDF5Plugin_V34,
-    CodecPlugin_V34,
-    ProcessPlugin_V34,
-)
-from os.path import join
 import time as ttime
+from os.path import join
+
+from ophyd import ADComponent
+from ophyd import EpicsSignalRO
+from ophyd import Kind
+from ophyd import Staged
+from ophyd.areadetector import CamBase
+from ophyd.areadetector import DetectorBase
+from ophyd.areadetector import EpicsSignalWithRBV
+from ophyd.areadetector import TriggerBase
+from ophyd.areadetector.filestore_mixins import FileStoreHDF5SingleIterativeWrite
+from ophyd.areadetector.plugins import CodecPlugin_V34
+from ophyd.areadetector.plugins import HDF5Plugin_V34
+from ophyd.areadetector.plugins import ProcessPlugin_V34
+from ophyd.areadetector.plugins import ROIPlugin_V34
+from ophyd.areadetector.plugins import StatsPlugin_V34
+from ophyd.areadetector.trigger_mixins import ADTriggerStatus
 
 LAMBDA_FILES_ROOT = "/extdisk/4idd/"
 BLUESKY_FILES_ROOT = "/home/sector4/4idd/bluesky_images"
@@ -43,6 +41,7 @@ class MySingleTrigger(TriggerBase):
     _status_type = ADTriggerStatus
 
     def __init__(self, *args, image_name=None, delay_time=0.1, **kwargs):
+        """Initialize MySingleTrigger with optional image name and settling delay."""
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -51,10 +50,12 @@ class MySingleTrigger(TriggerBase):
         self._sleep_time = delay_time
 
     def stage(self):
+        """Subscribe to detector state changes and stage the detector."""
         self._monitor_status.subscribe(self._acquire_changed)
         super().stage()
 
     def unstage(self):
+        """Unstage the detector and unsubscribe from detector state changes."""
         super().unstage()
         self._monitor_status.clear_sub(self._acquire_changed)
 
@@ -103,12 +104,16 @@ class Lambda250kCam(CamBase):
 
 
 class MyHDF5Plugin(FileStoreHDF5SingleIterativeWrite, HDF5Plugin_V34):
+    """HDF5 plugin for the Lambda 250k detector with POLAR-specific filestore spec."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize MyHDF5Plugin and set the POLAR filestore specification."""
         super().__init__(*args, **kwargs)
         self.filestore_spec = "AD_HDF5_Lambda250k_APSPolar"
 
 
 class Lambda250kDetector(MySingleTrigger, DetectorBase):
+    """Lambda 250k area detector with HDF5 file writing and statistics plugins."""
 
     _default_configuration_attrs = ("roi1", "roi2", "roi3", "roi4", "codec")
     _default_read_attrs = (
@@ -143,9 +148,11 @@ class Lambda250kDetector(MySingleTrigger, DetectorBase):
 
     @property
     def preset_monitor(self):
+        """Return the signal used to set exposure time."""
         return self.cam.acquire_time
 
     def default_kinds(self):
+        """Configure default kind settings for all detector plugins and components."""
 
         # TODO: This is setting A LOT of stuff as "configuration_attrs", should
         # be revised at some point.
@@ -197,9 +204,7 @@ class Lambda250kDetector(MySingleTrigger, DetectorBase):
 
         for name in self.component_names:
             comp = getattr(self, name)
-            if isinstance(
-                comp, (ROIPlugin_V34, StatsPlugin_V34, ProcessPlugin_V34)
-            ):
+            if isinstance(comp, (ROIPlugin_V34, StatsPlugin_V34, ProcessPlugin_V34)):
                 comp.configuration_attrs += [
                     item
                     for item in comp.component_names
@@ -210,4 +215,5 @@ class Lambda250kDetector(MySingleTrigger, DetectorBase):
                 comp.read_attrs += ["max_value", "min_value"]
 
     def default_settings(self):
+        """Apply default stage signal settings for the Lambda detector."""
         self.stage_sigs["cam.num_images"] = 1

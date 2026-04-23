@@ -2,10 +2,14 @@
 Polar status
 """
 
-from ophyd import Component, FormattedComponent, EpicsSignalRO, Device
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
 
 
 class HutchStatus(Device):
+    """EPICS status device for a single APS sector-4 experimental hutch."""
 
     user_enable = FormattedComponent(
         EpicsSignalRO, "{prefix}{_hutch}:UserKey:CM", string=True
@@ -24,23 +28,25 @@ class HutchStatus(Device):
     )
 
     shutter = FormattedComponent(
-        EpicsSignalRO,
-        "{self.parent.prefix}S{_hutch}S:BLEPS_Status:CM",
-        string=True
+        EpicsSignalRO, "{self.parent.prefix}S{_hutch}S:BLEPS_Status:CM", string=True
     )
 
     def __init__(self, prefix, hutch=None, **kwargs):
+        """Initialize HutchStatus with the single-letter hutch identifier (e.g. 'B')."""
         self._hutch = hutch
         super().__init__(prefix, **kwargs)
 
 
 class AStatus(HutchStatus):
+    """HutchStatus variant for the A hutch with its front-end shutter PV."""
+
     shutter = FormattedComponent(
         EpicsSignalRO, "{self.parent.prefix}FES:BeamBlocking:CM", string=True
     )
 
 
 class Status4ID(Device):
+    """Aggregate status device for all hutches and the front-end at APS sector 4."""
 
     online = Component(EpicsSignalRO, "FES:GlobalOnline:CM", string=True)
     acis = Component(EpicsSignalRO, "FES:ACISPermit:CM", string=True)

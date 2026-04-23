@@ -11,19 +11,18 @@ settings based on a configuration dictionary.
 """
 
 import logging
+from pathlib import Path
 from typing import Any
 from typing import Optional
-from pathlib import Path
 
 import bluesky
-from bluesky.utils import ProgressBarManager
-
 from apsbits.utils.controls_setup import connect_scan_id_pv
 from apsbits.utils.controls_setup import set_control_layer
 from apsbits.utils.controls_setup import set_timeouts
 from apsbits.utils.metadata import get_md_path
 from apsbits.utils.metadata import re_metadata
 from apsbits.utils.stored_dict import StoredDict
+from bluesky.utils import ProgressBarManager
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -87,9 +86,7 @@ def init_RE(
     MD_PATH = get_md_path(iconfig)
     # Save/restore RE.md dictionary in the specified order.
     if MD_PATH is not None:
-        handler_name = (
-            "StoredDict" if Path(MD_PATH).is_file() else "PersistentDict"
-        )
+        handler_name = "StoredDict" if Path(MD_PATH).is_file() else "PersistentDict"
         logger.debug(
             "Selected %r to store 'RE.md' dictionary in %s.",
             handler_name,
@@ -108,9 +105,7 @@ def init_RE(
             )
 
     if cat_instance is not None:
-        RE.md.update(
-            re_metadata(iconfig, cat_instance)
-        )  # programmatic metadata
+        RE.md.update(re_metadata(iconfig, cat_instance))  # programmatic metadata
         RE.md.update(re_config.get("DEFAULT_METADATA", {}))
         RE.subscribe(cat_instance.v1.insert)
     if bec_instance is not None:

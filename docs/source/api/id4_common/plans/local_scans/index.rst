@@ -330,5 +330,3 @@ Module Contents
    :Yields: **msg** (*Msg*)
 
    .. seealso:: :func:`bluesky.plan_stubs.rel_set`, :func:`bluesky.plan_stubs.wait`, :func:`bluesky.plan_stubs.mv`
-
-

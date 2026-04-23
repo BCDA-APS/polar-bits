@@ -206,5 +206,3 @@ Module Contents
 
 
    .. py:method:: default_settings()
-
-

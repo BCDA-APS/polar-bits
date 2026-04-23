@@ -2,11 +2,15 @@
 Table in middle of 4idb
 """
 
-from ophyd import Device, Component, EpicsMotor
 from apstools.devices import PVPositionerSoftDoneWithStop
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
 
 
 class Table4idh(Device):
+    """Optical table in 4IDH with individual leg motors and combined X/Y/pitch/yaw pseudo-axes."""
+
     x_us = Component(EpicsMotor, "m1", labels=("motor",))
     x_ds = Component(EpicsMotor, "m2", labels=("motor",))
 

@@ -2,10 +2,13 @@
 WB Slit
 """
 
-from ophyd import Device, FormattedComponent, EpicsMotor
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import FormattedComponent
 
 
 class SlitDevice(Device):
+    """White-beam slit with horizontal, diagonal, pitch, and yaw blade motors."""
 
     # Setting motors
     horizontal = FormattedComponent(
@@ -42,7 +45,7 @@ class SlitDevice(Device):
     )
 
     def __init__(self, prefix, name, motorsDict, slitnum, **kwargs):
-
+        """Initialize SlitDevice with motor PV suffix dict and slit number for pseudo-axis PVs."""
         self._motorsDict = motorsDict
         self._slit_prefix = f"Slit{slitnum}:"
 

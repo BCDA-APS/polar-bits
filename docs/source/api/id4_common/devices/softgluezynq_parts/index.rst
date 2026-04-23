@@ -889,5 +889,3 @@ Module Contents
 
 
    .. py:attribute:: pitch
-
-

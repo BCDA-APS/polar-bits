@@ -14,13 +14,13 @@ from pathlib import Path
 
 from apsbits.core.instrument_init import init_instrument
 from apsbits.core.instrument_init import make_devices
-from id4_common.utils.aps_functions import aps_dm_setup
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.config_loaders import load_config_yaml
 from apsbits.utils.config_loaders import update_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
+from id4_common.utils.aps_functions import aps_dm_setup
 from IPython import get_ipython
 
 logger = logging.getLogger(__name__)
@@ -58,41 +58,35 @@ from id4_common.utils.local_magics import LocalMagics  # noqa: E402
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
-from id4_common.utils.run_engine import (  # noqa: F401, E402
-    RE,
-    sd,
-    bec,
-    cat,
-    cat_legacy,
-    peaks,
-)
+from id4_common.utils.run_engine import RE  # noqa: F401, E402
+from id4_common.utils.run_engine import bec  # noqa: F401, E402
+from id4_common.utils.run_engine import cat  # noqa: F401, E402
+from id4_common.utils.run_engine import cat_legacy  # noqa: F401, E402
+from id4_common.utils.run_engine import peaks  # noqa: F401, E402
+from id4_common.utils.run_engine import sd  # noqa: F401, E402
 
 # Import optional components based on configuration
 if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
     # from .callbacks.nexus_data_file_writer import nxwriter_init
     # nxwriter = nxwriter_init(RE)
-    from id4_common.callbacks.nexus_data_file_writer import (  # noqa: F401
-        nxwriter,
-    )
+    from id4_common.callbacks.nexus_data_file_writer import nxwriter  # noqa: F401
 
 if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
     from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
         init_specwriter_with_RE,
-        newSpecFile,
-        spec_comment,
-        specwriter,
     )
+    from id4_common.callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
+    from id4_common.callbacks.spec_data_file_writer import spec_comment  # noqa: F401
+    from id4_common.callbacks.spec_data_file_writer import specwriter  # noqa: F401
 
     init_specwriter_with_RE(RE)
     # Remove specwritter preprocessor --> the extra stream tried to trigger
     # devices that are disconnected.
     _ = RE.preprocessors.pop()
 
-from id4_common.callbacks.dichro_stream import (  # noqa: F401, E402
-    dichro,
-    plot_dichro_settings,
-    dichro_bec,
-)
+from id4_common.callbacks.dichro_stream import dichro  # noqa: F401, E402
+from id4_common.callbacks.dichro_stream import dichro_bec  # noqa: F401, E402
+from id4_common.callbacks.dichro_stream import plot_dichro_settings  # noqa: F401, E402
 
 # These imports must come after the above setup.
 if running_in_queueserver():
@@ -107,42 +101,39 @@ else:
     # from apstools.utils import *  # noqa: F401, F403
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
-
     from id4_common.suspenders.shutters_suspenders import (  # noqa: F401
         shutter_suspenders,
     )
     from id4_common.suspenders.suspender_utils import (  # noqa: F401
-        suspender_restart,
-        suspender_stop,
         suspender_change_sleep,
     )
-
-    from id4_common.utils.wax import wm, wax, wa_new  # noqa: F401
-    from id4_common.utils.counters_class import counters  # noqa: F401
-    from id4_common.utils.pr_setup import pr_setup  # noqa: F401
+    from id4_common.suspenders.suspender_utils import suspender_restart  # noqa: F401
+    from id4_common.suspenders.suspender_utils import suspender_stop  # noqa: F401
     from id4_common.utils.attenuator_utils import atten  # noqa: F401
+    from id4_common.utils.counters_class import counters  # noqa: F401
     from id4_common.utils.dm_utils import *  # noqa: F401, F403
     from id4_common.utils.experiment_utils import *  # noqa: F401, F403
     from id4_common.utils.hkl_utils import *  # noqa: F401, F403
+    from id4_common.utils.pr_setup import pr_setup  # noqa: F401
+    from id4_common.utils.wax import wa_new  # noqa: F401
+    from id4_common.utils.wax import wax  # noqa: F401
+    from id4_common.utils.wax import wm  # noqa: F401
 
     # TODO: DM, hklpy, experiment_utils seems to be changing the
     # logging level. I don't know why.
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    from id4_common.utils.polartools_hklpy_imports import *  # noqa: F401, F403
-    from id4_common.utils.oregistry_auxiliar import get_devices  # noqa: F401
-    from id4_common.utils.load_vortex import load_vortex  # noqa: F401
-    from id4_common.utils.device_loader import (  # noqa: F401
-        load_yaml_devices,
-        find_loadable_devices,
-        load_device,
-        remove_device,
-        connect_device,
-        reload_all_devices,
-    )
-
     from id4_common.plans import *  # noqa: F401, F403
+    from id4_common.utils.device_loader import connect_device  # noqa: F401
+    from id4_common.utils.device_loader import find_loadable_devices  # noqa: F401
+    from id4_common.utils.device_loader import load_device  # noqa: F401
+    from id4_common.utils.device_loader import load_yaml_devices  # noqa: F401
+    from id4_common.utils.device_loader import reload_all_devices  # noqa: F401
+    from id4_common.utils.device_loader import remove_device  # noqa: F401
+    from id4_common.utils.load_vortex import load_vortex  # noqa: F401
+    from id4_common.utils.oregistry_auxiliar import get_devices  # noqa: F401
+    from id4_common.utils.polartools_hklpy_imports import *  # noqa: F401, F403
 
 logger.info("Loading 4-ID-B devices, this can take a few minutes.")
 make_devices(clear=True, file="devices.yml", device_manager=instrument)

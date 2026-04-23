@@ -49,5 +49,3 @@ Module Contents
    :param detector: Ophyd instance name of the detector used to center. This is only needed
                     if the scan had more than one hinted detector.
    :type detector: str, optional
-
-

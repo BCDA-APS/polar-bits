@@ -2,16 +2,15 @@
 Toroidal Mirror
 """
 
-from ophyd import (
-    Component,
-    Device,
-    EpicsMotor,
-    EpicsSignal,
-    EpicsSignalRO,
-)
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
 
 
 class MR3(Device):
+    """Toroidal mirror MR3 with combined and individual translation/pitch/yaw motors and bender."""
 
     # Combined motions motors
     y = Component(EpicsMotor, "m11", labels=("motor",))
@@ -46,6 +45,8 @@ class MR3(Device):
 
 
 class MR4(Device):
+    """Toroidal mirror MR4 with combined and individual translation/pitch/yaw motors."""
+
     # Combined motions motors
     y = Component(EpicsMotor, "m15", labels=("motor",))
     yaw = Component(EpicsMotor, "m16", labels=("motor",))
@@ -68,6 +69,7 @@ class MR4(Device):
 
 
 class ToroidalMirror(Device):
+    """Composite device grouping MR3 and MR4 toroidal mirrors."""
 
     # MR3
     mr3 = Component(MR3, "")

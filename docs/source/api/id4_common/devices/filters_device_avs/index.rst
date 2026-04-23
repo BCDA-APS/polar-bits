@@ -202,5 +202,3 @@ Module Contents
 
 
    .. py:attribute:: filters
-
-

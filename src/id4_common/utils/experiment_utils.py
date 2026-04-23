@@ -15,26 +15,26 @@ __all__ = """
 """.split()
 
 # TODO: Temporarily removed
-from apstools.utils import (
-    dm_start_daq,
-    dm_get_experiment_datadir_active_daq,
-    dm_setup,
-)
-from dm import ObjectNotFound, DmException
+from logging import getLogger
 from os import chdir
 from pathlib import Path
-from apsbits.utils.config_loaders import get_config
+
 from apsbits.core.instrument_init import oregistry
-from logging import getLogger
-from .dm_utils import (
-    get_esaf_info,
-    get_proposal_info,
-    get_experiment,
-    dm_experiment_setup,
-    get_current_run_name,
-)
-from .run_engine import RE, cat
+from apsbits.utils.config_loaders import get_config
+from apstools.utils import dm_get_experiment_datadir_active_daq
+from apstools.utils import dm_setup
+from apstools.utils import dm_start_daq
+from dm import DmException
+from dm import ObjectNotFound
+
 from ..callbacks.spec_data_file_writer import specwriter
+from .dm_utils import dm_experiment_setup
+from .dm_utils import get_current_run_name
+from .dm_utils import get_esaf_info
+from .dm_utils import get_experiment
+from .dm_utils import get_proposal_info
+from .run_engine import RE
+from .run_engine import cat
 
 logger = getLogger(__name__)
 logger.info(__file__)
@@ -53,8 +53,7 @@ def _get_dm_experiment():
     dm = oregistry.find("dm_experiment", allow_none=True)
     if dm is None:
         raise ValueError(
-            "The dm_experiment device was not found. Please load and register "
-            "it."
+            "The dm_experiment device was not found. Please load and register it."
         )
     return dm
 
@@ -101,10 +100,7 @@ class ExperimentClass:
     def __repr__(self):
         print("\n-- Experiment setup --")
         if isinstance(self.proposal, dict):
-            output = (
-                f"Proposal #{self.proposal['id']} - {self.proposal['title']}"
-                "\n"
-            )
+            output = f"Proposal #{self.proposal['id']} - {self.proposal['title']}\n"
         else:
             output = "No proposal entered\n"
         if isinstance(self.esaf, dict):
@@ -160,9 +156,7 @@ class ExperimentClass:
 
     def proposal_input(self, proposal_id: int = None):
         while True:
-            proposal_id = (
-                proposal_id or input("Enter proposal number: ") or None
-            )
+            proposal_id = proposal_id or input("Enter proposal number: ") or None
             if proposal_id == "dev":
                 print("No proposal will be associated to this experiment.")
                 self.proposal = proposal_id
@@ -199,9 +193,7 @@ class ExperimentClass:
 
     def sample_input(self, sample: str = None):
         self.sample = (
-            sample
-            or input("Enter sample name [DefaultSample]: ")
-            or "DefaultSample"
+            sample or input("Enter sample name [DefaultSample]: ") or "DefaultSample"
         )
         RE.md["sample"] = self.sample
 
@@ -235,9 +227,7 @@ class ExperimentClass:
         guess = self.experiment_name or None
         while True:
             self.experiment_name = experiment_name = (
-                experiment_name
-                or input(f"Enter experiment name ({guess}): ")
-                or guess
+                experiment_name or input(f"Enter experiment name ({guess}): ") or guess
             )
             if experiment_name is None:
                 print("An experiment name must be entered.")
@@ -288,9 +278,7 @@ class ExperimentClass:
                 self.data_management = None
                 self.server = "dserv"
             else:
-                _esaf_id = (
-                    self.esaf["esafId"] if isinstance(self.esaf, dict) else None
-                )
+                _esaf_id = self.esaf["esafId"] if isinstance(self.esaf, dict) else None
                 _exp, _ = dm_experiment_setup(experiment_name, esaf_id=_esaf_id)
 
         if self.server == "data management":
@@ -315,17 +303,12 @@ class ExperimentClass:
 
         # Check DM DAQ is running for this experiment, if not then start it.
         if (
-            dm_get_experiment_datadir_active_daq(
-                self.experiment_name, data_directory
-            )
+            dm_get_experiment_datadir_active_daq(self.experiment_name, data_directory)
             is None
         ):
-
             dm_setup(iconfig["DM_SETUP_FILE"])
 
-            logger.info(
-                "Starting DM voyager DAQ: experiment %r", self.experiment_name
-            )
+            logger.info("Starting DM voyager DAQ: experiment %r", self.experiment_name)
             dm_start_daq(self.experiment_name, "@sojourner")
 
     def setup_path(self):
@@ -380,7 +363,7 @@ class ExperimentClass:
         skip_DM: bool = False,
         useRE=False,
     ):
-        metadata = RE.md if useRE == True else cat[scan_id].metadata["start"]
+        metadata = RE.md if useRE is True else cat[scan_id].metadata["start"]
         kwargs = {
             key: metadata[key]
             for key in (
@@ -444,9 +427,7 @@ class ExperimentClass:
             self.windows_experiment_path = None  # windows cannot see DM?
         else:
             self.base_experiment_path = (
-                SERVERS[self.server]
-                / get_current_run_name()
-                / self.experiment_name
+                SERVERS[self.server] / get_current_run_name() / self.experiment_name
             )
             # self.windows_base_experiment_path = (
             #     rf"{SERVERS[self.server + '_windows']}"
@@ -506,7 +487,6 @@ class ExperimentClass:
         reset_scan_id: int = None,
         skip_DM: bool = False,
     ):
-
         self.setup(
             esaf_id,
             proposal_id,

@@ -1,12 +1,14 @@
+"""Polarization-ratio (PR) scan setup utilities."""
+
 __all__ = ["pr_setup"]
 
-from ..callbacks.dichro_stream import plot_dichro_settings
 from apsbits.core.instrument_init import oregistry
+
+from ..callbacks.dichro_stream import plot_dichro_settings
 
 
 # TODO: Need to change the query logic to include the oscillate pzt
 class PRSetup:
-
     positioner = None
     offset = None
     oscillate_pzt = True
@@ -25,7 +27,6 @@ class PRSetup:
         self._current_setup = {}
 
     def __repr__(self):
-
         tracked = ""
         for pr in oregistry.findall("phase retarder"):
             if pr.tracking.get():
@@ -49,19 +50,14 @@ class PRSetup:
         )
 
     def _get_setup(self, pr):
-
         _setup = {}
 
         if self.positioner is None:
             _setup["oscillate"] = "yes"
             _setup["method"] = "pzt"
         else:
-            _setup["oscillate"] = (
-                "yes" if self.positioner.name == pr.name else "no"
-            )
-            _setup["method"] = (
-                "pzt" if "pzt" in self.positioner.name else "motor"
-            )
+            _setup["oscillate"] = "yes" if self.positioner.name == pr.name else "no"
+            _setup["method"] = "pzt" if "pzt" in self.positioner.name else "motor"
 
         _setup["offset"] = pr.pzt.offset_degrees.get()
         _setup["center"] = pr.pzt.center.get()
@@ -72,7 +68,6 @@ class PRSetup:
         return self.__repr__()
 
     def __call__(self):
-
         print("Setup of the phase retarders for dichro scans.")
         print("Note that you can only oscillate one phase retarder stack.")
 
@@ -80,12 +75,9 @@ class PRSetup:
 
         # Transmission check
         while True:
-            _default = (
-                "yes" if plot_dichro_settings.settings.transmission else "no"
-            )
+            _default = "yes" if plot_dichro_settings.settings.transmission else "no"
             trans = (
-                input("Are you measuring in transmission? (" f"{_default}): ")
-                or _default
+                input(f"Are you measuring in transmission? ({_default}): ") or _default
             )
             if trans.lower() == "yes":
                 plot_dichro_settings.settings.transmission = True
@@ -98,7 +90,6 @@ class PRSetup:
 
         # Cycle through the PRs
         for pr in oregistry.findall("phase retarder"):
-
             print(" ++ {} ++ ".format(pr.name.upper()))
 
             # Track the energy?
@@ -135,10 +126,7 @@ class PRSetup:
                         else:
                             while True:
                                 method = (
-                                    input(
-                                        "\tUse motor or PZT? "
-                                        f"({setup['method']}): "
-                                    )
+                                    input(f"\tUse motor or PZT? ({setup['method']}): ")
                                     or setup["method"]
                                 )
                                 if method.lower() == "motor":
@@ -148,23 +136,17 @@ class PRSetup:
                                     _positioner = pr.pzt.localdc
                                     break
                                 else:
-                                    print(
-                                        "Only motor or pzt are acceptable "
-                                        "answers."
-                                    )
+                                    print("Only motor or pzt are acceptable answers.")
                         # Get offset
                         while True:
                             try:
                                 offset = (
                                     input(
-                                        "\tOffset (in degrees) "
-                                        f"({setup['offset']}): "
+                                        f"\tOffset (in degrees) ({setup['offset']}): "
                                     )
                                     or setup["offset"]
                                 )
-                                _positioner.parent.offset_degrees.put(
-                                    float(offset)
-                                )
+                                _positioner.parent.offset_degrees.put(float(offset))
                                 break
                             except ValueError:
                                 print("Must be a number.")
@@ -198,10 +180,7 @@ class PRSetup:
 
             else:
                 if _positioner and track == "yes":
-                    print(
-                        f"\tYou already selected {_positioner.name} to "
-                        "oscillate."
-                    )
+                    print(f"\tYou already selected {_positioner.name} to oscillate.")
 
         self.positioner = _positioner
 

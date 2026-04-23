@@ -288,5 +288,3 @@ Module Contents
 
 
    .. py:attribute:: mr4
-
-

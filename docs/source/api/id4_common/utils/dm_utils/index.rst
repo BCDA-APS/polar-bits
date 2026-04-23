@@ -90,4 +90,3 @@ Module Contents
 .. py:function:: get_proposal_info(proposal_id: int, run: str = None)
 
 .. py:function:: list_proposals(run: str = None)
-
