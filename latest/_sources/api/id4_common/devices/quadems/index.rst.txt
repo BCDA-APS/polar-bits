@@ -1,0 +1,215 @@
+id4_common.devices.quadems
+==========================
+
+.. py:module:: id4_common.devices.quadems
+
+.. autoapi-nested-parse::
+
+   QuadEMs for POLAR
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: StatsPluginQuadEM(*args, **kwargs)
+
+   Bases: :py:obj:`id4_common.devices.ad_mixins.StatsPlugin`
+
+
+   Remove property attribute found in AD IOCs now.
+
+
+   .. py:attribute:: kind
+      :value: 'config'
+
+
+
+.. py:class:: QuadEMPOLAR
+
+   Bases: :py:obj:`ophyd.QuadEM`
+
+
+   .. py:attribute:: image
+
+
+   .. py:attribute:: current1
+
+
+   .. py:attribute:: current2
+
+
+   .. py:attribute:: current3
+
+
+   .. py:attribute:: current4
+
+
+   .. py:attribute:: sum_all
+
+
+   .. py:attribute:: sumall_mean
+
+
+   .. py:attribute:: sumall_fast
+
+
+   .. py:attribute:: sumall_sigma
+
+
+   .. py:attribute:: sumx_mean
+
+
+   .. py:attribute:: sumx_fast
+
+
+   .. py:attribute:: sumx_sigma
+
+
+   .. py:attribute:: sumy_mean
+
+
+   .. py:attribute:: sumy_fast
+
+
+   .. py:attribute:: sumy_sigma
+
+
+   .. py:attribute:: diffx_mean
+
+
+   .. py:attribute:: diffx_fast
+
+
+   .. py:attribute:: diffx_sigma
+
+
+   .. py:attribute:: diffy_mean
+
+
+   .. py:attribute:: diffy_fast
+
+
+   .. py:attribute:: diffy_sigma
+
+
+   .. py:attribute:: posx_mean
+
+
+   .. py:attribute:: posx_fast
+
+
+   .. py:attribute:: posx_sigma
+
+
+   .. py:attribute:: posy_mean
+
+
+   .. py:attribute:: posy_fast
+
+
+   .. py:attribute:: posy_sigma
+
+
+   .. py:property:: preset_monitor
+
+
+.. py:class:: TetrAMM
+
+   Bases: :py:obj:`QuadEMPOLAR`
+
+
+   .. py:attribute:: conf
+
+
+.. py:class:: QuadEMRO_mixins
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: dummy
+
+
+   .. py:property:: preset_monitor
+
+
+   .. py:method:: trigger()
+
+
+   .. py:method:: stage()
+
+
+   .. py:method:: unstage()
+
+
+.. py:class:: SydorEMRO
+
+   Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`QuadEMPOLAR`
+
+
+   .. py:attribute:: conf
+
+
+   .. py:attribute:: num_channels
+      :value: None
+
+
+
+   .. py:attribute:: read_format
+      :value: None
+
+
+
+   .. py:attribute:: trigger_mode
+      :value: None
+
+
+
+   .. py:attribute:: bias_interlock
+      :value: None
+
+
+
+   .. py:attribute:: bias_state
+      :value: None
+
+
+
+   .. py:attribute:: bias_voltage
+      :value: None
+
+
+
+   .. py:attribute:: hvi_readback
+      :value: None
+
+
+
+   .. py:attribute:: hvs_readback
+      :value: None
+
+
+
+   .. py:attribute:: hvv_readback
+      :value: None
+
+
+
+   .. py:attribute:: image
+      :value: None
+
+
+
+   .. py:method:: default_settings()
+
+
+.. py:class:: TetrAMMRO
+
+   Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`TetrAMM`
+
+
+   .. py:method:: default_settings()
+
+

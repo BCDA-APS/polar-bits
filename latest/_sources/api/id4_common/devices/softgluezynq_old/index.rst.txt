@@ -1,0 +1,214 @@
+id4_common.devices.softgluezynq_old
+===================================
+
+.. py:module:: id4_common.devices.softgluezynq_old
+
+.. autoapi-nested-parse::
+
+   SoftGlueZynq
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: SoftGlueSignal
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: signal
+
+
+   .. py:attribute:: bi
+
+
+.. py:class:: SoftGlueZynqDevideByN
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: enable
+
+
+   .. py:attribute:: clock
+
+
+   .. py:attribute:: reset
+
+
+   .. py:attribute:: out
+
+
+   .. py:attribute:: n
+
+
+.. py:class:: SoftGlueZynqUpCounter
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: enable
+
+
+   .. py:attribute:: clock
+
+
+   .. py:attribute:: reset
+
+
+   .. py:attribute:: counts
+
+
+.. py:class:: SoftGlueZynqGateDly
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: input
+
+
+   .. py:attribute:: clock
+
+
+   .. py:attribute:: delay
+
+
+   .. py:attribute:: width
+
+
+   .. py:attribute:: out
+
+
+.. py:class:: SoftGlueScalToStream
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: reset
+
+
+   .. py:attribute:: chadv
+
+
+   .. py:attribute:: imtrig
+
+
+   .. py:attribute:: flush
+
+
+   .. py:attribute:: full
+
+
+   .. py:attribute:: advdone
+
+
+   .. py:attribute:: imdone
+
+
+   .. py:attribute:: fifo
+
+
+   .. py:attribute:: dmawords
+
+
+.. py:class:: SoftGlueClocks
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: clock_10MHz
+
+
+   .. py:attribute:: clock_20MHz
+
+
+   .. py:attribute:: clock_50MHz
+
+
+   .. py:attribute:: clock_variable
+
+
+.. py:class:: SoftGlueZynqDevice(*args, reset_sleep_time=0.2, reference_clock=10000000.0, **kwargs)
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: dma
+
+
+   .. py:attribute:: buffers
+
+
+   .. py:attribute:: io
+
+
+   .. py:attribute:: up_counter_count
+
+
+   .. py:attribute:: up_counter_trigger
+
+
+   .. py:attribute:: up_counter_gate_on
+
+
+   .. py:attribute:: up_counter_gate_off
+
+
+   .. py:attribute:: div_by_n_count
+
+
+   .. py:attribute:: div_by_n_trigger
+
+
+   .. py:attribute:: div_by_n_interrupt
+
+
+   .. py:attribute:: gate_trigger
+
+
+   .. py:attribute:: scaltostream
+
+
+   .. py:attribute:: clocks
+
+
+   .. py:attribute:: clock_freq
+
+
+   .. py:method:: start_softglue()
+
+
+   .. py:method:: stop_softglue()
+
+
+   .. py:method:: start_detectors()
+
+
+   .. py:method:: stop_detectors()
+
+
+   .. py:method:: reset_plan()
+
+
+   .. py:method:: clear_enable_dma()
+
+
+   .. py:method:: clear_disable_dma()
+
+
+   .. py:method:: setup_trigger_plan(period_time, pulse_width_time, pulse_delay_time=0)
+
+
+   .. py:method:: setup_count_plan(time)
+
+
+   .. py:method:: default_settings(timeout=10)
+
+

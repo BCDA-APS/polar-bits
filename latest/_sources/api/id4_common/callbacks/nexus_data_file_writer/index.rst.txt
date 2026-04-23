@@ -1,0 +1,71 @@
+id4_common.callbacks.nexus_data_file_writer
+===========================================
+
+.. py:module:: id4_common.callbacks.nexus_data_file_writer
+
+.. autoapi-nested-parse::
+
+   Write each run to a NeXus/HDF5 file.
+
+   Based on implementation from Sector 8
+   https://github.com/aps-8id-dys/bluesky/blob/d2481c7a865ecd2e6306378e405c2814c26a79d8/instrument/callbacks/nexus_data_file_writer.py
+
+   IMPORTANT
+   See the note about waiting for the nxwriter to finish AFTER EACH ACQUISITION!
+   https://bcda-aps.github.io/apstools/dev/api/_filewriters.html#apstools.callbacks.nexus_writer.NXWriter
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: iconfig
+
+.. py:data:: logger
+
+.. py:data:: LAYOUT_VERSION
+   :value: 'APS-POLAR-2024-10'
+
+
+.. py:data:: NEXUS_RELEASE
+   :value: 'v2022.07'
+
+
+.. py:class:: MyNXWriter
+
+   Bases: :py:obj:`apstools.callbacks.NXWriterAPS`
+
+
+   Modify the default behavior of NXWriter for XPCS.
+
+
+   .. py:attribute:: external_files
+
+
+   .. py:method:: write_root(filename)
+
+
+   .. py:method:: write_entry()
+
+      Called after stop document has been received.
+
+
+
+   .. py:method:: write_streams(parent)
+
+      group: /entry/instrument/bluesky/streams:NXnote
+
+      data from all the bluesky streams
+
+
+
+.. py:data:: nxwriter
+
+   The NeXus file writer object.
+
+.. py:data:: warn_missing
+

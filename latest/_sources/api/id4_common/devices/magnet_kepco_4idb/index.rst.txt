@@ -1,0 +1,65 @@
+id4_common.devices.magnet_kepco_4idb
+====================================
+
+.. py:module:: id4_common.devices.magnet_kepco_4idb
+
+.. autoapi-nested-parse::
+
+   Kepko power supply
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: LocalPositioner(*args, progtype, **kwargs)
+
+   Bases: :py:obj:`apstools.devices.PVPositionerSoftDone`
+
+
+   Voltage/Current positioner
+
+
+   .. py:attribute:: readback
+
+
+   .. py:attribute:: setpoint
+
+
+.. py:class:: KepcoController
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: voltage
+
+
+   .. py:attribute:: current
+
+
+   .. py:attribute:: mode
+
+
+   .. py:attribute:: remote
+
+
+   .. py:attribute:: enable
+
+
+   .. py:attribute:: id
+
+
+   .. py:attribute:: id_read
+
+
+   .. py:attribute:: scan_rate
+
+
+   .. py:method:: mode_change(value=None, **kwargs)
+
+
+   .. py:method:: default_settings()
+
+

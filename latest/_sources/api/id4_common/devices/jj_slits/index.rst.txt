@@ -1,0 +1,45 @@
+id4_common.devices.jj_slits
+===========================
+
+.. py:module:: id4_common.devices.jj_slits
+
+.. autoapi-nested-parse::
+
+   JJ Slits
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: SlitDevice(PV, motorsDict, slitnum, **kwargs)
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   .. py:attribute:: top
+
+
+   .. py:attribute:: bot
+
+
+   .. py:attribute:: out
+
+
+   .. py:attribute:: inb
+
+
+   .. py:attribute:: vcen
+
+
+   .. py:attribute:: vsize
+
+
+   .. py:attribute:: hcen
+
+
+   .. py:attribute:: hsize
+
+
