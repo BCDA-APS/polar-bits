@@ -297,6 +297,14 @@ def _configure_fixq(fixq):
         }
 
 
+def _hkl_motors(fixq):
+    """Return [h, k, l] pseudo-motors when fixq is True, else []."""
+    if not fixq:
+        return []
+    huber = current_diffractometer()
+    return [huber.h, huber.k, huber.l] if huber is not None else []
+
+
 def _default_per_step(fixq, dichro, vortex_sgz):
     """Return one_local_step when any special scan mode is active, else None."""
     return one_local_step if (fixq or dichro or vortex_sgz) else None
