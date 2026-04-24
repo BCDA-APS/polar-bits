@@ -141,7 +141,12 @@ def count(
     extras = yield from _collect_extras(("",))
 
     _md = _build_scan_md(
-        detectors, _master_fullpath, _dets_file_paths, _rel_dets_paths
+        detectors,
+        _master_fullpath,
+        _dets_file_paths,
+        _rel_dets_paths,
+        dichro=dichro,
+        lockin=lockin,
     )
     for item in detectors:
         _md["hints"]["detectors"].extend(item.hints["fields"])
@@ -255,7 +260,12 @@ def ascan(
     extras = yield from _collect_extras(args)
 
     _md = _build_scan_md(
-        detectors, _master_fullpath, _dets_file_paths, _rel_dets_paths
+        detectors,
+        _master_fullpath,
+        _dets_file_paths,
+        _rel_dets_paths,
+        dichro=dichro,
+        lockin=lockin,
     )
     for item in detectors:
         _md["hints"]["detectors"].extend(item.hints["fields"])
@@ -556,7 +566,12 @@ def grid_scan(
     extras = yield from _collect_extras(args)
 
     _md = _build_scan_md(
-        detectors, _master_fullpath, _dets_file_paths, _rel_dets_paths
+        detectors,
+        _master_fullpath,
+        _dets_file_paths,
+        _rel_dets_paths,
+        dichro=dichro,
+        lockin=lockin,
     )
     for item in detectors:
         _md["hints"]["detectors"].extend(item.hints["fields"])
@@ -771,7 +786,12 @@ def qxscan(
     )
 
     _md = _build_scan_md(
-        detectors, _master_fullpath, _dets_file_paths, _rel_dets_paths
+        detectors,
+        _master_fullpath,
+        _dets_file_paths,
+        _rel_dets_paths,
+        dichro=dichro,
+        lockin=lockin,
     )
     for item in detectors:
         _md["hints"]["detectors"].extend(item.hints["fields"])

@@ -320,10 +320,28 @@ def _default_per_shot(dichro, vortex_sgz):
     return one_local_shot if (dichro or vortex_sgz) else None
 
 
-def _build_scan_md(detectors, master_path, dets_file_paths, rel_dets_paths):
+def _build_scan_md(
+    detectors,
+    master_path,
+    dets_file_paths,
+    rel_dets_paths,
+    dichro=False,
+    lockin=False,
+):
     """Build the base metadata dict common to all local scan plans."""
+    if dichro:
+        polarization = "dichro"
+    elif lockin:
+        polarization = "lockin"
+    else:
+        polarization = "fixed"
+
     return dict(
-        hints={"monitor": counters.monitor_field, "detectors": []},
+        hints={
+            "monitor": counters.monitor_field,
+            "detectors": [],
+            "polarization": polarization,
+        },
         data_management=experiment.data_management or "None",
         esaf=experiment.esaf,
         proposal=experiment.proposal,
