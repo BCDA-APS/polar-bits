@@ -15,6 +15,7 @@ from ophyd.mca import EpicsMCARecord
 
 from .ad_mixins import ADTriggerStatus
 from .ad_mixins import TriggerBase
+from .counters_mixin import ROICountersMixin
 from .vortex_dante_parts import DanteCAM1
 from .vortex_dante_parts import DanteHDF1Plugin
 from .vortex_dante_parts import DanteSCA
@@ -191,7 +192,7 @@ def _scas(num_channels):
     return defn
 
 
-class VortexDante1(Trigger, DetectorBase):
+class VortexDante1(Trigger, ROICountersMixin, DetectorBase):
     """
     Single-element Vortex detector driven by a Dante MCA with HDF5 file saving.
     """
@@ -232,13 +233,7 @@ class VortexDante1(Trigger, DetectorBase):
         self.hdf1_file_format = hdf1_file_format
         super().__init__(*args, **kwargs)
 
-    # Make this compatible with other detectors
-    @property
-    def preset_monitor(self):
-        """
-        Return the cam real-time preset signal as the scan count-time control.
-        """
-        return self.cam.real_time_preset
+    _preset_monitor_attr = "cam.real_time_preset"
 
     @property
     def num_channels(self):
@@ -396,17 +391,6 @@ class VortexDante1(Trigger, DetectorBase):
         integers.
         """
         return {f"ROI{i} Total": i for i in range(0, 8)}
-
-    @property
-    def plot_options(self):
-        """Return all available ROI label strings for plot channel selection."""
-        # Return all named scaler channels
-        return list(self.label_option_map.keys())
-
-    def select_plot(self, channels):
-        """Select which ROI channels are plotted by label name."""
-        chans = [self.label_option_map[i] for i in channels]
-        self.select_roi(chans)
 
     def setup_images(
         self, base_folder, file_name_base, file_number, flyscan=False

@@ -27,6 +27,7 @@ from .ad_mixins import PolarHDF5Plugin
 from .ad_mixins import ROIPlugin
 from .ad_mixins import ROIStatPlugin
 from .ad_mixins import VortexDetectorCam
+from .counters_mixin import ROICountersMixin
 
 logger = getLogger(__name__)
 
@@ -320,7 +321,7 @@ def _totals(attr_fix, id_range):
     return defn
 
 
-class VortexXspress37(Trigger, DetectorBase):
+class VortexXspress37(Trigger, ROICountersMixin, DetectorBase):
     """
     Seven-element Vortex detector driven by an Xspress3 controller with HDF5
     file saving.
@@ -398,11 +399,7 @@ class VortexXspress37(Trigger, DetectorBase):
         self.hdf1_file_format = hdf1_file_format
         super().__init__(*args, **kwargs)
 
-    # Make this compatible with other detectors
-    @property
-    def preset_monitor(self):
-        """Return the cam acquire_time signal as the scan count-time control."""
-        return self.cam.acquire_time
+    _preset_monitor_attr = "cam.acquire_time"
 
     @property
     def num_channels(self):
@@ -574,17 +571,6 @@ class VortexXspress37(Trigger, DetectorBase):
         integers.
         """
         return {f"ROI{i} Total": i for i in range(1, MAX_ROIS + 1)}
-
-    @property
-    def plot_options(self):
-        """Return all available ROI label strings for plot channel selection."""
-        # Return all named scaler channels
-        return list(self.label_option_map.keys())
-
-    def select_plot(self, channels):
-        """Select which ROI channels are plotted by label name."""
-        chans = [self.label_option_map[i] for i in channels]
-        self.select_roi(chans)
 
     def setup_images(
         self, base_folder, file_name_base, file_number, flyscan=False

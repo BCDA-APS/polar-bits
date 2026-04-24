@@ -21,6 +21,7 @@ from ophyd.areadetector.trigger_mixins import ADTriggerStatus
 
 from .ad_mixins import ImagePlugin
 from .ad_mixins import PolarHDF5Plugin
+from .counters_mixin import CountersMixin
 
 
 class MySingleTrigger(TriggerBase):
@@ -242,7 +243,7 @@ class MyLightFieldCam(LightFieldDetectorCam):
     )
 
 
-class LightFieldDetector(MySingleTrigger, DetectorBase):
+class LightFieldDetector(MySingleTrigger, CountersMixin, DetectorBase):
     """
     Princeton Instruments LightField spectrometer detector with HDF5 and SPE
     file writing.
@@ -280,10 +281,24 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
         super().__init__(*args, **kwargs)
         self._flyscan = False
 
+    _preset_monitor_attr = "cam.acquire_time"
+
     @property
-    def preset_monitor(self):
-        """Return the signal used to set exposure time."""
-        return self.cam.acquire_time
+    def label_option_map(self) -> dict:
+        """No selectable plot channels — LightField saves full spectra."""
+        return {}
+
+    @property
+    def plot_options(self) -> list:
+        """Return empty list — LightField has no selectable plot channels."""
+        return []
+
+    def select_plot(self, channels: list) -> None:
+        """No-op — LightField has no selectable plot channels."""
+
+    def field_for_label(self, label: str) -> str:
+        """Return label unchanged — LightField has no channel mapping."""
+        return label
 
     def save_images_on(self):
         """Enable HDF5 image saving."""
@@ -376,6 +391,22 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
     def save_image_flag(self):
         """Return True; LightField detector always saves images."""
         return True  # Forced to always save images.
+
+    def predict_save_path(self, base_path, name_template, file_number):
+        """Return (full_path, relative_path) without any EPICS I/O.
+
+        Overrides CountersMixin default because LightField uses read_path.name
+        (not a trailing slash) as the directory token in make_write_read_paths.
+        """
+        read_path = Path(base_path) / self.name
+        full_path = Path(
+            self.hdf1_name_format
+            % (str(read_path), name_template, int(file_number))
+        )
+        relative_path = Path(
+            self.hdf1_name_format % (self.name, name_template, int(file_number))
+        )
+        return full_path, relative_path
 
 
 spectrometer = LightFieldDetector(

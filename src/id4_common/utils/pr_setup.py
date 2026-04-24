@@ -7,7 +7,6 @@ from apsbits.core.instrument_init import oregistry
 from ..callbacks.dichro_stream import plot_dichro_settings
 
 
-# TODO: Need to change the query logic to include the oscillate pzt
 class PRSetup:
     positioner = None
     offset = None
@@ -52,16 +51,22 @@ class PRSetup:
     def _get_setup(self, pr):
         _setup = {}
 
-        if self.positioner is None:
-            _setup["oscillate"] = "yes"
-            _setup["method"] = "pzt"
+        if self.positioner is not None:
+            # Positioner is pr.th (parent=pr) or pr.pzt.localdc (parent.parent=pr).
+            try:
+                oscillates = (
+                    self.positioner.parent is pr
+                    or self.positioner.parent.parent is pr
+                )
+            except AttributeError:
+                oscillates = False
+            _setup["oscillate"] = "yes" if oscillates else "no"
+            _setup["method"] = "pzt" if self.oscillate_pzt else "motor"
         else:
-            _setup["oscillate"] = (
-                "yes" if self.positioner.name == pr.name else "no"
-            )
-            _setup["method"] = (
-                "pzt" if "pzt" in self.positioner.name else "motor"
-            )
+            # No positioner set yet — use stored per-PR history if available.
+            saved = self._current_setup.get(pr.name, {})
+            _setup["oscillate"] = saved.get("oscillate", "no")
+            _setup["method"] = saved.get("method", "pzt")
 
         _setup["offset"] = pr.pzt.offset_degrees.get()
         _setup["center"] = pr.pzt.center.get()
@@ -166,6 +171,7 @@ class PRSetup:
 
                         # if PZT is used, then get the center.
                         if method.lower() == "pzt":
+                            self.oscillate_pzt = True
                             # Get offset signal
                             self.offset = _positioner.parent.offset_microns
                             # Get the PZT center.
@@ -183,10 +189,20 @@ class PRSetup:
                                 except ValueError:
                                     print("Must be a number.")
                         else:
+                            self.oscillate_pzt = False
                             # Get offset signal
                             self.offset = _positioner.parent.offset_degrees
+
+                        self._current_setup[pr.name] = {
+                            "oscillate": "yes",
+                            "method": method.lower(),
+                        }
                         break
                     elif oscillate.lower() == "no":
+                        self._current_setup[pr.name] = {
+                            "oscillate": "no",
+                            "method": setup["method"],
+                        }
                         break
                     else:
                         print("Only yes or no are acceptable answers.")
