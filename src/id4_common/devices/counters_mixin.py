@@ -2,6 +2,7 @@
 
 from abc import ABC
 from abc import abstractmethod
+from pathlib import Path
 
 __all__ = ["CountersMixin", "ROICountersMixin"]
 
@@ -55,6 +56,27 @@ class CountersMixin(ABC):
     @abstractmethod
     def field_for_label(self, label: str) -> str:
         """Return the ophyd field name for a plot-option label."""
+
+    def predict_save_path(self, base_path, name_template, file_number):
+        """Return (full_path, relative_path) without any EPICS I/O.
+
+        Mirrors setup_images + make_write_read_paths for detectors that store
+        their format string as hdf1_name_format or hdf1_file_format. Returns
+        (None, None) when neither attribute is found.
+        """
+        fmt = getattr(self, "hdf1_name_format", None) or getattr(
+            self, "hdf1_file_format", None
+        )
+        if fmt is None:
+            return None, None
+        det_path = str(base_path) + f"/{self.name}/"
+        full_path = Path(
+            fmt % (det_path + "/", name_template, int(file_number))
+        )
+        relative_path = Path(
+            fmt % (f"{self.name}/", name_template, int(file_number))
+        )
+        return full_path, relative_path
 
     def select_read(self, channels: list) -> None:  # noqa: B027
         """Mark channels as Kind.normal without plotting.

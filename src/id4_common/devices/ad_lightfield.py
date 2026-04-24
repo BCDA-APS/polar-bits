@@ -392,6 +392,22 @@ class LightFieldDetector(MySingleTrigger, CountersMixin, DetectorBase):
         """Return True; LightField detector always saves images."""
         return True  # Forced to always save images.
 
+    def predict_save_path(self, base_path, name_template, file_number):
+        """Return (full_path, relative_path) without any EPICS I/O.
+
+        Overrides CountersMixin default because LightField uses read_path.name
+        (not a trailing slash) as the directory token in make_write_read_paths.
+        """
+        read_path = Path(base_path) / self.name
+        full_path = Path(
+            self.hdf1_name_format
+            % (str(read_path), name_template, int(file_number))
+        )
+        relative_path = Path(
+            self.hdf1_name_format % (self.name, name_template, int(file_number))
+        )
+        return full_path, relative_path
+
 
 spectrometer = LightFieldDetector(
     "4LF1:", name="spectrometer", labels=("detector", "raman")

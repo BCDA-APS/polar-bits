@@ -55,6 +55,7 @@ class CountersClass:
         self._mon = "Time"
         self._extra_devices = []
         self._order = order
+        self.use_scalers: bool = True
 
     def __repr__(self):
         read_names = [
@@ -65,6 +66,8 @@ class CountersClass:
             "Counters settings\n"
             " Monitor:\n"
             f"  Channel = '{self._mon}'\n"
+            " Scalers:\n"
+            f"  use_scalers = {self.use_scalers}\n"
             " Detectors:\n"
             f"  Read devices = {read_names}\n"
             f"  Plot components = {self.plot_names}\n"
@@ -275,11 +278,13 @@ class CountersClass:
             det.select_plot(list(group["channels"].values))
             dets.append(det)
 
-        # Always include all scalers in _dets so timing / gating works.
-        for sc in self._available_scalers:
-            if sc not in dets:
-                dets.append(sc)
-                sc.select_plot_channels([""])
+        # Include all scalers in _dets so timing / gating works,
+        # unless use_scalers is False (scalers only added if explicitly selected).
+        if self.use_scalers:
+            for sc in self._available_scalers:
+                if sc not in dets:
+                    dets.append(sc)
+                    sc.select_plot_channels([""])
 
         self._dets = dets
 
