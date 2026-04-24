@@ -254,5 +254,14 @@ Module Contents
       Return True; LightField detector always saves images.
 
 
+   .. py:method:: predict_save_path(base_path, name_template, file_number)
+
+      Return (full_path, relative_path) without any EPICS I/O.
+
+      Overrides CountersMixin default because LightField uses read_path.name
+      (not a trailing slash) as the directory token in make_write_read_paths.
+
+
+
 .. py:data:: spectrometer
 

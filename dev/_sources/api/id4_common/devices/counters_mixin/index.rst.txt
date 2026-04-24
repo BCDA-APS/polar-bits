@@ -73,6 +73,16 @@ Module Contents
 
 
 
+   .. py:method:: predict_save_path(base_path, name_template, file_number)
+
+      Return (full_path, relative_path) without any EPICS I/O.
+
+      Mirrors setup_images + make_write_read_paths for detectors that store
+      their format string as hdf1_name_format or hdf1_file_format. Returns
+      (None, None) when neither attribute is found.
+
+
+
    .. py:method:: select_read(channels: list) -> None
 
       Mark channels as Kind.normal without plotting.

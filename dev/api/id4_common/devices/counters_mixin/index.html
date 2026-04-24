@@ -749,6 +749,15 @@ that class attribute in subclasses instead of overriding this property.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin.predict_save_path">
+<span class="sig-name descname"><span class="pre">predict_save_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin.predict_save_path" title="Link to this definition">#</a></dt>
+<dd><p>Return (full_path, relative_path) without any EPICS I/O.</p>
+<p>Mirrors setup_images + make_write_read_paths for detectors that store
+their format string as hdf1_name_format or hdf1_file_format. Returns
+(None, None) when neither attribute is found.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin.select_read">
 <span class="sig-name descname"><span class="pre">select_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin.select_read" title="Link to this definition">#</a></dt>
 <dd><p>Mark channels as Kind.normal without plotting.</p>
@@ -878,6 +887,7 @@ must still provide:</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.label_option_map"><code class="docutils literal notranslate"><span class="pre">CountersMixin.label_option_map</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.select_plot"><code class="docutils literal notranslate"><span class="pre">CountersMixin.select_plot()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.field_for_label"><code class="docutils literal notranslate"><span class="pre">CountersMixin.field_for_label()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.predict_save_path"><code class="docutils literal notranslate"><span class="pre">CountersMixin.predict_save_path()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.select_read"><code class="docutils literal notranslate"><span class="pre">CountersMixin.select_read()</span></code></a></li>
 </ul>
 </li>
