@@ -500,6 +500,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../aps_undulator/index.html">id4_common.devices.aps_undulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../chopper_device/index.html">id4_common.devices.chopper_device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -577,7 +578,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/aps_functions/index.html">id4_common.utils.aps_functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class/index.html">id4_common.utils.counters_class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class_for_dual/index.html">id4_common.utils.counters_class_for_dual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
@@ -997,7 +997,7 @@ channels.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.VortexXspress34">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xspress3_me4.</span></span><span class="sig-name descname"><span class="pre">VortexXspress34</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d.h5'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.vortex_xspress3_me4.Trigger" title="id4_common.devices.vortex_xspress3_me4.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.vortex_xspress3_me4.Trigger" title="id4_common.devices.vortex_xspress3_me4.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <a class="reference internal" href="../counters_mixin/index.html#id4_common.devices.counters_mixin.ROICountersMixin" title="id4_common.devices.counters_mixin.ROICountersMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.counters_mixin.ROICountersMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
 <p>Four-element Vortex detector driven by an Xspress3 controller with HDF5 file
 saving.</p>
 <dl class="py attribute">
@@ -1084,12 +1084,6 @@ saving.</p>
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.VortexXspress34.hdf1_file_format">
 <span class="sig-name descname"><span class="pre">hdf1_file_format</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%s/%s_%6.6d.h5'</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.hdf1_file_format" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.VortexXspress34.preset_monitor">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.preset_monitor" title="Link to this definition">#</a></dt>
-<dd><p>Return the cam acquire_time signal as the scan count-time control.</p>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.VortexXspress34.align_on">
@@ -1182,18 +1176,6 @@ normal.</p>
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.label_option_map" title="Link to this definition">#</a></dt>
 <dd><p>Return a mapping from human-readable ROI label strings to ROI index
 integers.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.VortexXspress34.plot_options">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.plot_options" title="Link to this definition">#</a></dt>
-<dd><p>Return all available ROI label strings for plot channel selection.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.VortexXspress34.select_plot">
-<span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.select_plot" title="Link to this definition">#</a></dt>
-<dd><p>Select which ROI channels are plotted by label name.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1346,7 +1328,6 @@ upcoming scan.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.hdf1"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.hdf1</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.default_folder"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.default_folder</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.hdf1_file_format"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.hdf1_file_format</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.preset_monitor"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.preset_monitor</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.align_on"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.align_on()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.align_off"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.align_off()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.save_images_on"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.save_images_on()</span></code></a></li>
@@ -1362,8 +1343,6 @@ upcoming scan.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.plot_roi3"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.plot_roi3()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.plot_roi4"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.plot_roi4()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.label_option_map"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.label_option_map</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.plot_options"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.plot_options</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.select_plot"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.select_plot()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.setup_images"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.setup_images()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.save_image_flag"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.save_image_flag</span></code></a></li>
 </ul>

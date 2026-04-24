@@ -50,7 +50,7 @@ Module Contents
 
 .. py:class:: LocalScalerCH(*args, **kwargs)
 
-   Bases: :py:obj:`ophyd.scaler.ScalerCH`
+   Bases: :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.scaler.ScalerCH`
 
 
    ScalerCH subclass with a flexible monitor channel and plot/read channel
@@ -63,6 +63,11 @@ Module Contents
 
 
    .. py:attribute:: preset_monitor
+
+      Return the ophyd signal used to control scan count time.
+
+      Resolved by walking the dotted path in _preset_monitor_attr. Set
+      that class attribute in subclasses instead of overriding this property.
 
 
    .. py:attribute:: freq
@@ -106,6 +111,21 @@ Module Contents
 
       Set the hinted kind for the given channels by delegating to
       select_plot_channels.
+
+
+
+   .. py:property:: label_option_map
+      :type: dict
+
+
+      Identity map — scaler labels are already field names after match_names().
+
+
+   .. py:method:: field_for_label(label)
+
+      Return the ophyd field name for a plot-option label.
+
+      For scalers the label is already the field name after match_names().
 
 
 

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>id4_common.devices.vortex_dante_me1 &#8212; polar-bits</title>
+    <title>id4_common.devices.counters_mixin &#8212; polar-bits</title>
   
   
   
@@ -46,12 +46,12 @@
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/devices/vortex_dante_me1/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/devices/counters_mixin/index';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="id4_common.devices.vortex_dante_me4" href="../vortex_dante_me4/index.html" />
-    <link rel="prev" title="id4_common.devices.ventus_laser" href="../ventus_laser/index.html" />
+    <link rel="next" title="id4_common.devices.diamond_window_table" href="../diamond_window_table/index.html" />
+    <link rel="prev" title="id4_common.devices.chopper_device" href="../chopper_device/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -500,7 +500,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../aps_undulator/index.html">id4_common.devices.aps_undulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../chopper_device/index.html">id4_common.devices.chopper_device</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.devices.counters_mixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -546,7 +546,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../transfocator_device/index.html">id4_common.devices.transfocator_device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../usb_ctr8/index.html">id4_common.devices.usb_ctr8</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../ventus_laser/index.html">id4_common.devices.ventus_laser</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.devices.vortex_dante_me1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../vortex_dante_me1/index.html">id4_common.devices.vortex_dante_me1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../vortex_dante_me4/index.html">id4_common.devices.vortex_dante_me4</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../vortex_dante_parts/index.html">id4_common.devices.vortex_dante_parts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../vortex_xmap/index.html">id4_common.devices.vortex_xmap</a></li>
@@ -674,7 +674,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">id4_common.devices</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.devices.vortex_dante_me1</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.devices.counters_mixin</span></li>
   </ul>
 </nav>
 </div>
@@ -691,234 +691,132 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-id4_common.devices.vortex_dante_me1">
-<span id="id4-common-devices-vortex-dante-me1"></span><h1>id4_common.devices.vortex_dante_me1<a class="headerlink" href="#module-id4_common.devices.vortex_dante_me1" title="Link to this heading">#</a></h1>
-<p>Vortex 4 element with Dante electronics</p>
+  <section id="module-id4_common.devices.counters_mixin">
+<span id="id4-common-devices-counters-mixin"></span><h1>id4_common.devices.counters_mixin<a class="headerlink" href="#module-id4_common.devices.counters_mixin" title="Link to this heading">#</a></h1>
+<p>Mixin classes for the detector channel-selection API used by CountersClass.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.MAX_TIME">
-<span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_dante_me1.</span></span><span class="sig-name descname"><span class="pre">MAX_TIME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3600</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.MAX_TIME" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.MAX_ROIS">
-<span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_dante_me1.</span></span><span class="sig-name descname"><span class="pre">MAX_ROIS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">32</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.MAX_ROIS" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 <dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_dante_me1.</span></span><span class="sig-name descname"><span class="pre">Trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../ad_mixins/index.html#id4_common.devices.ad_mixins.TriggerBase" title="id4_common.devices.ad_mixins.TriggerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.ad_mixins.TriggerBase</span></code></a></p>
-<p>This trigger mixin class takes one acquisition per trigger.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.stage_sigs">
-<span class="sig-name descname"><span class="pre">stage_sigs</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.stage_sigs" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.counters_mixin.</span></span><span class="sig-name descname"><span class="pre">CountersMixin</span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>API contract for detectors used with CountersClass.plotselect().</p>
+<p>Concrete implementations must provide plot_options, label_option_map,
+select_plot, and field_for_label. select_read defaults to a no-op, which
+is correct for detectors where all channels are always read (eiger, vimba).</p>
+<p>For preset_monitor, set the class attribute _preset_monitor_attr to a
+dotted attribute path string (e.g. “cam.acquire_time”). Devices that
+cannot use this pattern (e.g. LocalScalerCH which has preset_monitor as
+an ophyd Component) may override preset_monitor directly in the class body.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin.preset_monitor">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin.preset_monitor" title="Link to this definition">#</a></dt>
+<dd><p>Return the ophyd signal used to control scan count time.</p>
+<p>Resolved by walking the dotted path in _preset_monitor_attr. Set
+that class attribute in subclasses instead of overriding this property.</p>
+</dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.setup_manual_trigger">
-<span class="sig-name descname"><span class="pre">setup_manual_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.setup_manual_trigger" title="Link to this definition">#</a></dt>
-<dd><p>Configure stage_sigs for software-triggered (manual) single-shot
-acquisition.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin.plot_options">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin.plot_options" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Abstractmethod<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<p>Return human-readable channel labels available for plot selection.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin.label_option_map">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin.label_option_map" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Abstractmethod<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<p>Return mapping from human-readable label to internal index.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.setup_external_trigger">
-<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setup_external_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.setup_external_trigger" title="Link to this definition">#</a></dt>
-<dd><p>Raise NotImplementedError; the Dante cannot be used in flyscans.</p>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin.select_plot">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin.select_plot" title="Link to this definition">#</a></dt>
+<dd><p>Configure Kind.hinted for the given channel labels.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.stage">
-<span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.stage" title="Link to this definition">#</a></dt>
-<dd><p>Subscribe the busy-signal callback and arm the detector before staging.</p>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin.field_for_label">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">field_for_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin.field_for_label" title="Link to this definition">#</a></dt>
+<dd><p>Return the ophyd field name for a plot-option label.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.unstage">
-<span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.unstage" title="Link to this definition">#</a></dt>
-<dd><p>Stop the Dante, unsubscribe the busy callback, and restore manual-
-trigger mode.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.Trigger.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.Trigger.trigger" title="Link to this definition">#</a></dt>
-<dd><p>Start one Dante acquisition and return a status object that completes
-when done.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.TotalCorrectedSignal">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_dante_me1.</span></span><span class="sig-name descname"><span class="pre">TotalCorrectedSignal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.TotalCorrectedSignal" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.SignalRO</span></code></p>
-<p>Signal that returns the deadtime corrected total counts</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.TotalCorrectedSignal.roi_index">
-<span class="sig-name descname"><span class="pre">roi_index</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.TotalCorrectedSignal.roi_index" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.TotalCorrectedSignal.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.TotalCorrectedSignal.get" title="Link to this definition">#</a></dt>
-<dd><p>Return the sum of deadtime-corrected ROI counts across all Dante
-channels.</p>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.CountersMixin.select_read">
+<span class="sig-name descname"><span class="pre">select_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.CountersMixin.select_read" title="Link to this definition">#</a></dt>
+<dd><p>Mark channels as Kind.normal without plotting.</p>
+<p>No-op by default. Override in devices where channels can be omitted
+(i.e. where Kind.omitted is a valid resting state).</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_dante_me1.</span></span><span class="sig-name descname"><span class="pre">VortexDante1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d.h5'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.vortex_dante_me1.Trigger" title="id4_common.devices.vortex_dante_me1.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <a class="reference internal" href="../counters_mixin/index.html#id4_common.devices.counters_mixin.ROICountersMixin" title="id4_common.devices.counters_mixin.ROICountersMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.counters_mixin.ROICountersMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
-<p>Single-element Vortex detector driven by a Dante MCA with HDF5 file saving.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.cam">
-<span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.cam" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.mcas">
-<span class="sig-name descname"><span class="pre">mcas</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.mcas" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.scas">
-<span class="sig-name descname"><span class="pre">scas</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.scas" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.total">
-<span class="sig-name descname"><span class="pre">total</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.total" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.hdf1">
-<span class="sig-name descname"><span class="pre">hdf1</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.hdf1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.default_folder">
-<span class="sig-name descname"><span class="pre">default_folder</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.default_folder" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.hdf1_file_format">
-<span class="sig-name descname"><span class="pre">hdf1_file_format</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%s/%s_%6.6d.h5'</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.hdf1_file_format" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.ROICountersMixin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.counters_mixin.</span></span><span class="sig-name descname"><span class="pre">ROICountersMixin</span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.ROICountersMixin" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.counters_mixin.CountersMixin" title="id4_common.devices.counters_mixin.CountersMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CountersMixin</span></code></a></p>
+<p>Shared plot-selection implementation for ROI-based MCA detectors.</p>
+<p>Provides concrete implementations of plot_options, select_plot,
+field_for_label, select_read, and the read_rois getter. Subclasses
+must still provide:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">label_option_map</span></code> — maps label strings to ROI index integers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">select_roi(rois)</span></code> — device-specific Kind manipulation across all ROIs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_rois</span></code> setter if per-pixel stats kinds must also be updated</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">_read_rois</span></code> class attribute sets the default readable ROI index.</p>
 <dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.num_channels">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">num_channels</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.num_channels" title="Link to this definition">#</a></dt>
-<dd><p>Return the number of MCA channels for this detector.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.align_on">
-<span class="sig-name descname"><span class="pre">align_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.align_on" title="Link to this definition">#</a></dt>
-<dd><p>Start detector in alignment mode</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.align_off">
-<span class="sig-name descname"><span class="pre">align_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.align_off" title="Link to this definition">#</a></dt>
-<dd><p>Stop detector</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.save_images_on">
-<span class="sig-name descname"><span class="pre">save_images_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_images_on" title="Link to this definition">#</a></dt>
-<dd><p>Enable the HDF5 plugin so acquisitions are written to disk.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.save_images_off">
-<span class="sig-name descname"><span class="pre">save_images_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_images_off" title="Link to this definition">#</a></dt>
-<dd><p>Disable the HDF5 plugin so acquisitions are not written to disk.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_on">
-<span class="sig-name descname"><span class="pre">auto_save_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_on" title="Link to this definition">#</a></dt>
-<dd><p>Enable HDF5 autosave so files are written automatically.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_off">
-<span class="sig-name descname"><span class="pre">auto_save_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_off" title="Link to this definition">#</a></dt>
-<dd><p>Disable HDF5 autosave.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.default_settings">
-<span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.default_settings" title="Link to this definition">#</a></dt>
-<dd><p>Configure HDF5 path, stage signals, ROIs, and manual-trigger mode.</p>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.ROICountersMixin.read_rois">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">read_rois</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><a class="headerlink" href="#id4_common.devices.counters_mixin.ROICountersMixin.read_rois" title="Link to this definition">#</a></dt>
+<dd><p>ROI indices currently included in reads (Kind.normal or hinted).</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.read_rois">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">read_rois</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.read_rois" title="Link to this definition">#</a></dt>
-<dd><p>Return the list of ROI indices that are currently included in reads.</p>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.ROICountersMixin.label_option_map">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><a class="headerlink" href="#id4_common.devices.counters_mixin.ROICountersMixin.label_option_map" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Abstractmethod<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<p>Map label strings to ROI index integers.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.select_roi">
-<span class="sig-name descname"><span class="pre">select_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rois</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.select_roi" title="Link to this definition">#</a></dt>
-<dd><p>Set the hinted ROI totals to those in rois, keeping other read_rois as
-normal.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi0">
-<span class="sig-name descname"><span class="pre">plot_roi0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi0" title="Link to this definition">#</a></dt>
-<dd><p>Set ROI 0 as the hinted plot channel.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi1">
-<span class="sig-name descname"><span class="pre">plot_roi1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi1" title="Link to this definition">#</a></dt>
-<dd><p>Set ROI 1 as the hinted plot channel.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi2">
-<span class="sig-name descname"><span class="pre">plot_roi2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi2" title="Link to this definition">#</a></dt>
-<dd><p>Set ROI 2 as the hinted plot channel.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi3">
-<span class="sig-name descname"><span class="pre">plot_roi3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi3" title="Link to this definition">#</a></dt>
-<dd><p>Set ROI 3 as the hinted plot channel.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi4">
-<span class="sig-name descname"><span class="pre">plot_roi4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi4" title="Link to this definition">#</a></dt>
-<dd><p>Set ROI 4 as the hinted plot channel.</p>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.ROICountersMixin.select_roi">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">select_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rois</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.ROICountersMixin.select_roi" title="Link to this definition">#</a></dt>
+<dd><p>Set Kind.hinted/normal/omitted for ROIs; implementation is per-device.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.label_option_map">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.label_option_map" title="Link to this definition">#</a></dt>
-<dd><p>Return a mapping from human-readable ROI label strings to ROI index
-integers.</p>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.ROICountersMixin.plot_options">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><a class="headerlink" href="#id4_common.devices.counters_mixin.ROICountersMixin.plot_options" title="Link to this definition">#</a></dt>
+<dd><p>Return all available ROI label strings for plot channel selection.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.setup_images">
-<span class="sig-name descname"><span class="pre">setup_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flyscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.setup_images" title="Link to this definition">#</a></dt>
-<dd><p>Configure HDF5 file name, number, path, and flysetup flag for an
-upcoming scan.</p>
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.ROICountersMixin.select_plot">
+<span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.ROICountersMixin.select_plot" title="Link to this definition">#</a></dt>
+<dd><p>Select which ROI channels are plotted by label name.</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.vortex_dante_me1.VortexDante1.save_image_flag">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">save_image_flag</span></span><a class="headerlink" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_image_flag" title="Link to this definition">#</a></dt>
-<dd><p>Return True if the HDF5 plugin is enabled or autosave is on.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.ROICountersMixin.field_for_label">
+<span class="sig-name descname"><span class="pre">field_for_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.ROICountersMixin.field_for_label" title="Link to this definition">#</a></dt>
+<dd><p>Return the ophyd field name for a plot-option label.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.counters_mixin.ROICountersMixin.select_read">
+<span class="sig-name descname"><span class="pre">select_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#id4_common.devices.counters_mixin.ROICountersMixin.select_read" title="Link to this definition">#</a></dt>
+<dd><p>Mark channels as Kind.normal without plotting.</p>
+<p>Must be called after select_plot because select_roi resets ROI kinds.</p>
 </dd></dl>
 
 </dd></dl>
@@ -937,20 +835,20 @@ upcoming scan.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../ventus_laser/index.html"
+       href="../chopper_device/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">id4_common.devices.ventus_laser</p>
+        <p class="prev-next-title">id4_common.devices.chopper_device</p>
       </div>
     </a>
     <a class="right-next"
-       href="../vortex_dante_me4/index.html"
+       href="../diamond_window_table/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">id4_common.devices.vortex_dante_me4</p>
+        <p class="prev-next-title">id4_common.devices.diamond_window_table</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -974,48 +872,23 @@ upcoming scan.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.MAX_TIME"><code class="docutils literal notranslate"><span class="pre">MAX_TIME</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.MAX_ROIS"><code class="docutils literal notranslate"><span class="pre">MAX_ROIS</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.Trigger"><code class="docutils literal notranslate"><span class="pre">Trigger</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.Trigger.stage_sigs"><code class="docutils literal notranslate"><span class="pre">Trigger.stage_sigs</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.Trigger.setup_manual_trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.setup_manual_trigger()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.Trigger.setup_external_trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.setup_external_trigger()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.Trigger.stage"><code class="docutils literal notranslate"><span class="pre">Trigger.stage()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.Trigger.unstage"><code class="docutils literal notranslate"><span class="pre">Trigger.unstage()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.Trigger.trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.trigger()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin"><code class="docutils literal notranslate"><span class="pre">CountersMixin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.preset_monitor"><code class="docutils literal notranslate"><span class="pre">CountersMixin.preset_monitor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.plot_options"><code class="docutils literal notranslate"><span class="pre">CountersMixin.plot_options</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.label_option_map"><code class="docutils literal notranslate"><span class="pre">CountersMixin.label_option_map</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.select_plot"><code class="docutils literal notranslate"><span class="pre">CountersMixin.select_plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.field_for_label"><code class="docutils literal notranslate"><span class="pre">CountersMixin.field_for_label()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.CountersMixin.select_read"><code class="docutils literal notranslate"><span class="pre">CountersMixin.select_read()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.TotalCorrectedSignal"><code class="docutils literal notranslate"><span class="pre">TotalCorrectedSignal</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.TotalCorrectedSignal.roi_index"><code class="docutils literal notranslate"><span class="pre">TotalCorrectedSignal.roi_index</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.TotalCorrectedSignal.get"><code class="docutils literal notranslate"><span class="pre">TotalCorrectedSignal.get()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1"><code class="docutils literal notranslate"><span class="pre">VortexDante1</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.cam"><code class="docutils literal notranslate"><span class="pre">VortexDante1.cam</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.mcas"><code class="docutils literal notranslate"><span class="pre">VortexDante1.mcas</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.scas"><code class="docutils literal notranslate"><span class="pre">VortexDante1.scas</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.total"><code class="docutils literal notranslate"><span class="pre">VortexDante1.total</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.hdf1"><code class="docutils literal notranslate"><span class="pre">VortexDante1.hdf1</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.default_folder"><code class="docutils literal notranslate"><span class="pre">VortexDante1.default_folder</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.hdf1_file_format"><code class="docutils literal notranslate"><span class="pre">VortexDante1.hdf1_file_format</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.num_channels"><code class="docutils literal notranslate"><span class="pre">VortexDante1.num_channels</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.align_on"><code class="docutils literal notranslate"><span class="pre">VortexDante1.align_on()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.align_off"><code class="docutils literal notranslate"><span class="pre">VortexDante1.align_off()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_images_on"><code class="docutils literal notranslate"><span class="pre">VortexDante1.save_images_on()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_images_off"><code class="docutils literal notranslate"><span class="pre">VortexDante1.save_images_off()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_on"><code class="docutils literal notranslate"><span class="pre">VortexDante1.auto_save_on()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.auto_save_off"><code class="docutils literal notranslate"><span class="pre">VortexDante1.auto_save_off()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.default_settings"><code class="docutils literal notranslate"><span class="pre">VortexDante1.default_settings()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.read_rois"><code class="docutils literal notranslate"><span class="pre">VortexDante1.read_rois</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.select_roi"><code class="docutils literal notranslate"><span class="pre">VortexDante1.select_roi()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi0"><code class="docutils literal notranslate"><span class="pre">VortexDante1.plot_roi0()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi1"><code class="docutils literal notranslate"><span class="pre">VortexDante1.plot_roi1()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi2"><code class="docutils literal notranslate"><span class="pre">VortexDante1.plot_roi2()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi3"><code class="docutils literal notranslate"><span class="pre">VortexDante1.plot_roi3()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.plot_roi4"><code class="docutils literal notranslate"><span class="pre">VortexDante1.plot_roi4()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.label_option_map"><code class="docutils literal notranslate"><span class="pre">VortexDante1.label_option_map</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.setup_images"><code class="docutils literal notranslate"><span class="pre">VortexDante1.setup_images()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_dante_me1.VortexDante1.save_image_flag"><code class="docutils literal notranslate"><span class="pre">VortexDante1.save_image_flag</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.ROICountersMixin"><code class="docutils literal notranslate"><span class="pre">ROICountersMixin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.ROICountersMixin.read_rois"><code class="docutils literal notranslate"><span class="pre">ROICountersMixin.read_rois</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.ROICountersMixin.label_option_map"><code class="docutils literal notranslate"><span class="pre">ROICountersMixin.label_option_map</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.ROICountersMixin.select_roi"><code class="docutils literal notranslate"><span class="pre">ROICountersMixin.select_roi()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.ROICountersMixin.plot_options"><code class="docutils literal notranslate"><span class="pre">ROICountersMixin.plot_options</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.ROICountersMixin.select_plot"><code class="docutils literal notranslate"><span class="pre">ROICountersMixin.select_plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.ROICountersMixin.field_for_label"><code class="docutils literal notranslate"><span class="pre">ROICountersMixin.field_for_label()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.counters_mixin.ROICountersMixin.select_read"><code class="docutils literal notranslate"><span class="pre">ROICountersMixin.select_read()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1027,7 +900,7 @@ upcoming scan.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/devices/vortex_dante_me1/index.rst">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/devices/counters_mixin/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -1042,7 +915,7 @@ upcoming scan.</p>
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../../../_sources/api/id4_common/devices/vortex_dante_me1/index.rst.txt">
+    <a href="../../../../_sources/api/id4_common/devices/counters_mixin/index.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

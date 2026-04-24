@@ -148,7 +148,7 @@ Module Contents
 
 .. py:class:: LightFieldDetector(*args, hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', bluesky_files_root='', windows_files_root='', relative_default_folder='', **kwargs)
 
-   Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`MySingleTrigger`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
    Princeton Instruments LightField spectrometer detector with HDF5 and SPE
@@ -187,9 +187,30 @@ Module Contents
 
 
 
-   .. py:property:: preset_monitor
+   .. py:property:: label_option_map
+      :type: dict
 
-      Return the signal used to set exposure time.
+
+      No selectable plot channels — LightField saves full spectra.
+
+
+   .. py:property:: plot_options
+      :type: list
+
+
+      Return empty list — LightField has no selectable plot channels.
+
+
+   .. py:method:: select_plot(channels: list) -> None
+
+      No-op — LightField has no selectable plot channels.
+
+
+
+   .. py:method:: field_for_label(label: str) -> str
+
+      Return label unchanged — LightField has no channel mapping.
+
 
 
    .. py:method:: save_images_on()
