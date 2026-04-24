@@ -37,6 +37,12 @@ jobs:
           python -m pip install pre-commit
           pre-commit run --all-files
 
+      - name: Check code style with flake8
+        run: |
+          set -vxeuo pipefail
+          python -m pip install flake8 flake8-pyproject
+          flake8 src/
+
   test-matrix:
     name: Python ${{ matrix.python-version }} # - Redis ${{ matrix.redis-version }}
     runs-on: ubuntu-latest
