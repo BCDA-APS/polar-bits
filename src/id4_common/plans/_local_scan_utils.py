@@ -298,11 +298,16 @@ def _configure_fixq(fixq):
 
 
 def _hkl_motors(fixq):
-    """Return [h, k, l] pseudo-motors when fixq is True, else []."""
+    """Return the real (physical) motors of the diffractometer when fixq is True.
+
+    Uses the actual motors rather than pseudo-motors so that reset_positions_
+    decorator can restore hardware positions directly, without depending on the
+    current sample orientation or UB matrix.
+    """
     if not fixq:
         return []
     huber = current_diffractometer()
-    return [huber.h, huber.k, huber.l] if huber is not None else []
+    return list(huber.real_positioners) if huber is not None else []
 
 
 def _default_per_step(fixq, dichro, vortex_sgz):
