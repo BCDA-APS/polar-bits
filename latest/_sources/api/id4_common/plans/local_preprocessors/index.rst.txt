@@ -20,6 +20,9 @@ Module Contents
 
 .. py:function:: extra_devices_wrapper(plan, extras)
 
+   Stage extra devices during a plan without adding them to the plot hints.
+
+
 .. py:function:: configure_counts_wrapper(plan, detectors, count_time)
 
    Set all devices with a `preset_monitor` to the same value.
@@ -66,6 +69,9 @@ Module Contents
 
 
 .. py:function:: stage_4idg_softglue_wrapper(plan, use_sg)
+
+   Stage the 4IDG SoftGlue FPGA for fly-scan position streaming.
+
 
 .. py:data:: extra_devices_decorator
 

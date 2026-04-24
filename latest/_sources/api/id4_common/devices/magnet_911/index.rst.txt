@@ -19,6 +19,10 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Three-axis (X, Y, Z) table motor bundle with sample rotation and tilt for
+   the 911 magnet.
+
+
    .. py:attribute:: x
 
 
@@ -42,6 +46,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Raman spectrometer motor bundle with XYZ translation and tilt/rotation axes.
+
+
    .. py:attribute:: x
 
 
@@ -62,6 +69,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Magnet sample stage with Y translation and theta rotation motors.
+
+
    .. py:attribute:: y
 
 
@@ -71,6 +81,10 @@ Module Contents
 .. py:class:: FieldPositioner(*args, **kwargs)
 
    Bases: :py:obj:`ophyd.PVPositioner`
+
+
+   PVPositioner for the 9T superconducting magnet field ramp with heater
+   interlock.
 
 
    .. py:attribute:: setpoint
@@ -109,10 +123,18 @@ Module Contents
 
    .. py:method:: move(position, wait=True, timeout=None, moved_cb=None)
 
+      Move to position; return immediately done if heater is ON and within
+      tolerance.
+
+
 
 .. py:class:: PowerSupply
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   9T magnet power supply with field ramp control, safety status, and heater
+   monitoring.
 
 
    .. py:attribute:: field
@@ -177,6 +199,10 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Single monitoring channel with temperature and Hall-probe resistance/field
+   readbacks.
+
+
    .. py:attribute:: temperature_name
 
 
@@ -203,6 +229,10 @@ Module Contents
 .. py:class:: VTIDevice
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Variable Temperature Insert device with four temperature sensors and
+   setpoint positioners.
 
 
    .. py:attribute:: sensor_a
@@ -240,6 +270,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Needle valve controller device with temperature and pressure positioners.
+
+
    .. py:attribute:: control_mode
 
 
@@ -261,6 +294,10 @@ Module Contents
 .. py:class:: Magnet911
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Complete 9T superconducting magnet system with table motors, field control,
+   and temperature.
 
 
    .. py:attribute:: connection

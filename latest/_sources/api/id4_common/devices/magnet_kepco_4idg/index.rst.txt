@@ -23,6 +23,10 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Kepco power supply device with field/current/voltage positioners and
+   protection limits.
+
+
    .. py:attribute:: manufacturer
 
 
@@ -118,10 +122,21 @@ Module Contents
 
    .. py:method:: default_settings()
 
+      Enable automatic current-mode enforcement on connect.
+
+
 
    .. py:method:: start_auto_mode()
 
+      Subscribe to mode changes so voltage mode is automatically corrected to
+      current mode.
+
+
 
    .. py:method:: stop_auto_mode()
+
+      Unsubscribe all auto-mode callbacks so voltage mode is no longer
+      enforced.
+
 
 

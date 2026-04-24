@@ -3,6 +3,11 @@ id4_common.devices.gh_i0_motors
 
 .. py:module:: id4_common.devices.gh_i0_motors
 
+.. autoapi-nested-parse::
+
+   I0 monitor motor stages for 4IDG and 4IDH hutches.
+
+
 
 
 
@@ -14,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Two-axis (X, Y) I0 motor stage for the 4IDG hutch.
+
+
    .. py:attribute:: x
 
 
@@ -23,6 +31,9 @@ Module Contents
 .. py:class:: I04idh
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Two-axis (X, Y) I0 motor stage for the 4IDH hutch.
 
 
    .. py:attribute:: x

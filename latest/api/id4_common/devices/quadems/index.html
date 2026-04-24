@@ -700,7 +700,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.quadems.StatsPluginQuadEM">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.quadems.</span></span><span class="sig-name descname"><span class="pre">StatsPluginQuadEM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.quadems.StatsPluginQuadEM" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../ad_mixins/index.html#id4_common.devices.ad_mixins.StatsPlugin" title="id4_common.devices.ad_mixins.StatsPlugin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.ad_mixins.StatsPlugin</span></code></a></p>
-<p>Remove property attribute found in AD IOCs now.</p>
+<p>StatsPlugin variant for QuadEM that disables auto-kind subscriptions.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.StatsPluginQuadEM.kind">
 <span class="sig-name descname"><span class="pre">kind</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'config'</span></span><a class="headerlink" href="#id4_common.devices.quadems.StatsPluginQuadEM.kind" title="Link to this definition">#</a></dt>
@@ -712,6 +712,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMPOLAR">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.quadems.</span></span><span class="sig-name descname"><span class="pre">QuadEMPOLAR</span></span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMPOLAR" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.QuadEM</span></code></p>
+<p>QuadEM device with POLAR-specific statistics plugins and fast readback
+signals.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMPOLAR.image">
 <span class="sig-name descname"><span class="pre">image</span></span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMPOLAR.image" title="Link to this definition">#</a></dt>
@@ -850,7 +852,9 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMPOLAR.preset_monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMPOLAR.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the averaging_time signal as the count-time preset for scan
+plans.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -858,6 +862,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.quadems.TetrAMM">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.quadems.</span></span><span class="sig-name descname"><span class="pre">TetrAMM</span></span><a class="headerlink" href="#id4_common.devices.quadems.TetrAMM" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.quadems.QuadEMPOLAR" title="id4_common.devices.quadems.QuadEMPOLAR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QuadEMPOLAR</span></code></a></p>
+<p>QuadEMPOLAR subclass for the Sydor TetrAMM 4-channel electrometer.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.TetrAMM.conf">
 <span class="sig-name descname"><span class="pre">conf</span></span><a class="headerlink" href="#id4_common.devices.quadems.TetrAMM.conf" title="Link to this definition">#</a></dt>
@@ -869,6 +874,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMRO_mixins">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.quadems.</span></span><span class="sig-name descname"><span class="pre">QuadEMRO_mixins</span></span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMRO_mixins" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Mixin that replaces the QuadEM trigger/preset with a no-op for read-only
+use.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMRO_mixins.dummy">
 <span class="sig-name descname"><span class="pre">dummy</span></span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMRO_mixins.dummy" title="Link to this definition">#</a></dt>
@@ -877,22 +884,26 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMRO_mixins.preset_monitor">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMRO_mixins.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return a dummy signal so scan plans have a no-op preset target.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMRO_mixins.trigger">
 <span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMRO_mixins.trigger" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Immediately mark acquisition complete without driving the hardware.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMRO_mixins.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMRO_mixins.stage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Stage using base Device logic, bypassing QuadEM staging.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.QuadEMRO_mixins.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.quadems.QuadEMRO_mixins.unstage" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Unstage using base Device logic, bypassing QuadEM unstaging.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -900,6 +911,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.quadems.SydorEMRO">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.quadems.</span></span><span class="sig-name descname"><span class="pre">SydorEMRO</span></span><a class="headerlink" href="#id4_common.devices.quadems.SydorEMRO" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.quadems.QuadEMRO_mixins" title="id4_common.devices.quadems.QuadEMRO_mixins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QuadEMRO_mixins</span></code></a>, <a class="reference internal" href="#id4_common.devices.quadems.QuadEMPOLAR" title="id4_common.devices.quadems.QuadEMPOLAR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QuadEMPOLAR</span></code></a></p>
+<p>Read-only Sydor T4U beam position monitor using the QuadEM framework.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.SydorEMRO.conf">
 <span class="sig-name descname"><span class="pre">conf</span></span><a class="headerlink" href="#id4_common.devices.quadems.SydorEMRO.conf" title="Link to this definition">#</a></dt>
@@ -958,7 +970,9 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.SydorEMRO.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.quadems.SydorEMRO.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set calibration and configuration signals to config kind and clear
+stage_sigs.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -966,10 +980,14 @@
 <dt class="sig sig-object py" id="id4_common.devices.quadems.TetrAMMRO">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.quadems.</span></span><span class="sig-name descname"><span class="pre">TetrAMMRO</span></span><a class="headerlink" href="#id4_common.devices.quadems.TetrAMMRO" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.quadems.QuadEMRO_mixins" title="id4_common.devices.quadems.QuadEMRO_mixins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QuadEMRO_mixins</span></code></a>, <a class="reference internal" href="#id4_common.devices.quadems.TetrAMM" title="id4_common.devices.quadems.TetrAMM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TetrAMM</span></code></a></p>
+<p>Read-only TetrAMM 4-channel electrometer that disables staging and
+triggering.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.quadems.TetrAMMRO.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.quadems.TetrAMMRO.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set calibration and configuration signals to config kind and clear
+stage_sigs.</p>
+</dd></dl>
 
 </dd></dl>
 

@@ -33,8 +33,14 @@ Module Contents
 
    .. py:method:: stage()
 
+      Subscribe to detector state changes and stage the detector.
+
+
 
    .. py:method:: unstage()
+
+      Unstage the detector and unsubscribe from detector state changes.
+
 
 
    .. py:method:: trigger()
@@ -48,10 +54,14 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
 
-   Using the filename from EPICS.
+   HDF5 plugin for LightField that translates Windows paths to Linux read
+   paths.
 
 
    .. py:method:: make_write_read_paths(write_path=None, read_path=None)
+
+      Return write path, full read path, and relative read path for HDF5 file.
+
 
 
 .. py:class:: LightFieldFilePlugin(*args, **kwargs)
@@ -72,11 +82,19 @@ Module Contents
 
    .. py:property:: base_name
 
+      Return the base filename from the LightField camera.
+
 
    .. py:method:: make_write_read_paths(write_path=None, read_path=None)
 
+      Return write path, full read path, and relative read path for SPE file.
+
+
 
    .. py:method:: stage()
+
+      Stage the file plugin, verifying the output file does not already exist.
+
 
 
    .. py:method:: generate_datum(key, timestamp, datum_kwargs)
@@ -88,6 +106,9 @@ Module Contents
 .. py:class:: MyLightFieldCam
 
    Bases: :py:obj:`ophyd.areadetector.LightFieldDetectorCam`
+
+
+   LightField camera with additional file naming and grating wavelength PVs.
 
 
    .. py:attribute:: file_name_base
@@ -130,14 +151,8 @@ Module Contents
    Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   This trigger mixin class takes one acquisition per trigger.
-   .. rubric:: Examples
-
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+   Princeton Instruments LightField spectrometer detector with HDF5 and SPE
+   file writing.
 
 
    .. py:attribute:: cam
@@ -174,26 +189,48 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return the signal used to set exposure time.
+
 
    .. py:method:: save_images_on()
+
+      Enable HDF5 image saving.
+
 
 
    .. py:method:: save_images_off()
 
+      Disable HDF5 image saving.
+
+
 
    .. py:method:: auto_save_on()
+
+      Enable automatic HDF5 saving on each acquisition.
+
 
 
    .. py:method:: auto_save_off()
 
+      Disable automatic HDF5 saving on each acquisition.
+
+
 
    .. py:method:: default_settings()
+
+      Apply default detector settings and stage signal configuration.
+
 
 
    .. py:method:: setup_images(base_path, name_template, file_number, flyscan=False)
 
+      Configure HDF5 and SPE file paths and names for the upcoming scan.
+
+
 
    .. py:property:: save_image_flag
+
+      Return True; LightField detector always saves images.
 
 
 .. py:data:: spectrometer

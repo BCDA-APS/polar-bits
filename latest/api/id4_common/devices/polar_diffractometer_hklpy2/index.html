@@ -730,6 +730,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer_hklpy2.</span></span><span class="sig-name descname"><span class="pre">AnalyzerDevice</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.PseudoPositioner</span></code></p>
+<p>Crystal polarization analyzer with pseudo-energy axis and crystal setup.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.energy">
 <span class="sig-name descname"><span class="pre">energy</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.energy" title="Link to this definition">#</a></dt>
@@ -788,32 +789,43 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.move_single">
 <span class="sig-name descname"><span class="pre">move_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pseudo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.move_single" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Guard move_single to require analyzer setup before moving energy.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.beamline_wavelength">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">beamline_wavelength</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.beamline_wavelength" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the current beamline wavelength from the parent diffractometer
+beam object.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.beamline_energy">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">beamline_energy</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.beamline_energy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the current beamline energy in keV from the parent diffractometer
+beam object.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.convert_energy_to_theta">
 <span class="sig-name descname"><span class="pre">convert_energy_to_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.convert_energy_to_theta" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+d-spacing.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.convert_energy_to_tth_trans">
 <span class="sig-name descname"><span class="pre">convert_energy_to_tth_trans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.convert_energy_to_tth_trans" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Convert photon energy (keV) to the two-theta translation stage position
+(mm).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.convert_theta_to_energy">
 <span class="sig-name descname"><span class="pre">convert_theta_to_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.convert_theta_to_energy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+d-spacing.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.forward">
@@ -830,17 +842,22 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.set_energy">
 <span class="sig-name descname"><span class="pre">set_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.set_energy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Calibrate the Bragg-angle motor to match the given photon energy (keV).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.calc">
 <span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.calc" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Print analyzer Bragg angles for the current crystal at the current
+beamline energy.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.setup">
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analyzer_energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analyzer_list_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ANALYZER_LIST_PATH</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.setup" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>List compatible analyzer crystals and interactively configure d-spacing
+and crystal.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -848,6 +865,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer_hklpy2.</span></span><span class="sig-name descname"><span class="pre">DiffractometerMixin</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Mixin adding table, area-detector, filter, slit, and analyzer components to
+a diffractometer.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.tablex">
 <span class="sig-name descname"><span class="pre">tablex</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.tablex" title="Link to this definition">#</a></dt>
@@ -886,7 +905,9 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Apply default settings for the diffractometer mixin (no-op; subclasses
+override).</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -904,6 +925,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer_hklpy2.</span></span><span class="sig-name descname"><span class="pre">CradleDiffractometer</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerBase" title="id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CradleDiffractometerBase</span></code></a>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin" title="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerMixin</span></code></a></p>
+<p>hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer.x">
 <span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer.x" title="Link to this definition">#</a></dt>
@@ -930,6 +952,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer_hklpy2.</span></span><span class="sig-name descname"><span class="pre">HPDiffractometer</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerBase" title="id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CradleDiffractometerBase</span></code></a>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin" title="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerMixin</span></code></a></p>
+<p>hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer.basex">
 <span class="sig-name descname"><span class="pre">basex</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer.basex" title="Link to this definition">#</a></dt>

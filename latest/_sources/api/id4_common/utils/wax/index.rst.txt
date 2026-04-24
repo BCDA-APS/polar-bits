@@ -3,6 +3,11 @@ id4_common.utils.wax
 
 .. py:module:: id4_common.utils.wax
 
+.. autoapi-nested-parse::
+
+   Motor position display utilities (wm, wax, wa_scan, wa_new).
+
+
 
 
 
@@ -14,6 +19,9 @@ Module Contents
 .. py:data:: cat
 
 .. py:function:: wm(*args)
+
+   Print a table of current position and travel limits for the given motors.
+
 
 .. py:function:: wax(scan=None, motor=None, device='motor', display_missed=False)
 
@@ -37,5 +45,12 @@ Module Contents
 
 .. py:function:: wa_scan(scan=None, motor=None)
 
+   Print motor positions recorded in the baseline stream of a past scan.
+
+
 .. py:function:: wa_new(motor=None)
+
+   Print current position and limits for all motors, optionally filtered by
+   name.
+
 

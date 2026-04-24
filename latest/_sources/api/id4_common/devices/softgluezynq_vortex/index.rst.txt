@@ -3,6 +3,11 @@ id4_common.devices.softgluezynq_vortex
 
 .. py:module:: id4_common.devices.softgluezynq_vortex
 
+.. autoapi-nested-parse::
+
+   SoftGlue Zynq device for histogram-mode Vortex detector triggering.
+
+
 
 
 
@@ -12,6 +17,10 @@ Module Contents
 .. py:class:: SGZVortex(*args, reset_sleep_time=0.1, reference_clock=10000000.0, **kwargs)
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue Zynq device that sequences histogram-mode Vortex detector
+   acquisitions.
 
 
    .. py:attribute:: preset_monitor
@@ -67,25 +76,52 @@ Module Contents
 
    .. py:property:: frequency
 
+      Return the configured detector trigger frequency in Hz.
+
 
    .. py:method:: start_softglue()
+
+      Bluesky plan stub to assert the enable buffer (in1 = '1').
+
 
 
    .. py:method:: stop_softglue()
 
+      Bluesky plan stub to de-assert the enable buffer (in1 = '0').
+
+
 
    .. py:method:: reset()
+
+      Bluesky plan stub to pulse the reset buffer and clear the histogram
+      scaler.
+
 
 
    .. py:method:: stage()
 
+      Stop and reset the SGZ, then subscribe the acquire callback before
+      staging.
+
+
 
    .. py:method:: unstage()
+
+      Stop, reset the SGZ, and unsubscribe the acquire callback after
+      unstaging.
+
 
 
    .. py:method:: trigger()
 
+      Assert the enable buffer to start one histogram acquisition and return
+      its status.
+
+
 
    .. py:method:: default_settings(timeout=10)
+
+      Apply default SGZ Vortex settings (currently a no-op placeholder).
+
 
 

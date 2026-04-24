@@ -24,6 +24,9 @@ Module Contents
 
    .. py:method:: describe()
 
+      Override describe to report units as microns.
+
+
 
    .. py:method:: inverse(value)
 
@@ -89,6 +92,9 @@ Module Contents
    Bases: :py:obj:`ophyd.PseudoPositioner`
 
 
+   Base class for phase retarder devices mapping energy to Bragg angle.
+
+
    .. py:attribute:: energy
 
 
@@ -115,8 +121,16 @@ Module Contents
 
    .. py:method:: convert_energy_to_theta(energy)
 
+      Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+      d-spacing.
+
+
 
    .. py:method:: convert_theta_to_energy(theta)
+
+      Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+      d-spacing.
+
 
 
    .. py:method:: forward(pseudo_pos)
@@ -133,13 +147,23 @@ Module Contents
 
    .. py:method:: set_energy(energy)
 
+      Calibrate the Bragg-angle motor to match the given photon energy (keV).
+
+
 
    .. py:method:: default_settings()
+
+      Apply default d-spacing and motor-switch settings for this phase
+      retarder.
+
 
 
 .. py:class:: PRDevice(prefix, name, prnum, motorsDict, **kwargs)
 
    Bases: :py:obj:`PRDeviceBase`
+
+
+   Phase retarder with PZT piezo control and crystal-plane auto-selection.
 
 
    .. py:attribute:: pzt
@@ -149,5 +173,9 @@ Module Contents
 
 
    .. py:method:: default_settings()
+
+      Set PZT conversion factor and d-spacing based on the selected crystal
+      plane.
+
 
 

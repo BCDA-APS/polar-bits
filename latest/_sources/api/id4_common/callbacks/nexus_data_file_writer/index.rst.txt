@@ -48,6 +48,9 @@ Module Contents
 
    .. py:method:: write_root(filename)
 
+      Write the root group and set POLAR-specific NeXus version attributes.
+
+
 
    .. py:method:: write_entry()
 

@@ -700,6 +700,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.mono_feedback.FeedbackDirection">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.mono_feedback.</span></span><span class="sig-name descname"><span class="pre">FeedbackDirection</span></span><a class="headerlink" href="#id4_common.devices.mono_feedback.FeedbackDirection" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Single-axis PID feedback loop device for monochromator position
+stabilization.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.mono_feedback.FeedbackDirection.status">
 <span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#id4_common.devices.mono_feedback.FeedbackDirection.status" title="Link to this definition">#</a></dt>
@@ -781,6 +783,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.mono_feedback.FeedbackStation">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.mono_feedback.</span></span><span class="sig-name descname"><span class="pre">FeedbackStation</span></span><a class="headerlink" href="#id4_common.devices.mono_feedback.FeedbackStation" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Pair of horizontal and vertical PID feedback loops for one beamline station.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.mono_feedback.FeedbackStation.horizontal">
 <span class="sig-name descname"><span class="pre">horizontal</span></span><a class="headerlink" href="#id4_common.devices.mono_feedback.FeedbackStation.horizontal" title="Link to this definition">#</a></dt>
@@ -797,6 +800,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.mono_feedback.MonoFeedback">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.mono_feedback.</span></span><span class="sig-name descname"><span class="pre">MonoFeedback</span></span><a class="headerlink" href="#id4_common.devices.mono_feedback.MonoFeedback" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Top-level monochromator feedback device with per-station feedback loops.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.mono_feedback.MonoFeedback.station">
 <span class="sig-name descname"><span class="pre">station</span></span><a class="headerlink" href="#id4_common.devices.mono_feedback.MonoFeedback.station" title="Link to this definition">#</a></dt>

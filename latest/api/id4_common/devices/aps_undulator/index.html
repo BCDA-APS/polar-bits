@@ -700,10 +700,14 @@
 <dt class="sig sig-object py" id="id4_common.devices.aps_undulator.PolarUndulatorPositioner">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.aps_undulator.</span></span><span class="sig-name descname"><span class="pre">PolarUndulatorPositioner</span></span><a class="headerlink" href="#id4_common.devices.aps_undulator.PolarUndulatorPositioner" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://bcda-aps.github.io/apstools/latest/api/_devices.html#apstools.devices.aps_undulator.UndulatorPositioner" title="(in apstools v1.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apstools.devices.aps_undulator.UndulatorPositioner</span></code></a></p>
+<p>UndulatorPositioner that skips waiting if the target is within the energy
+deadband.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.aps_undulator.PolarUndulatorPositioner.set">
 <span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ophyd.status.StatusBase</span></span></span><a class="headerlink" href="#id4_common.devices.aps_undulator.PolarUndulatorPositioner.set" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Move to new_position; return immediately done if already within the
+energy deadband.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -711,6 +715,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.aps_undulator.PolarUndulator">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.aps_undulator.</span></span><span class="sig-name descname"><span class="pre">PolarUndulator</span></span><a class="headerlink" href="#id4_common.devices.aps_undulator.PolarUndulator" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apstools.devices.STI_Undulator</span></code></p>
+<p>STI undulator subclass with energy tracking, offset, and deadband signals.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.aps_undulator.PolarUndulator.tracking">
 <span class="sig-name descname"><span class="pre">tracking</span></span><a class="headerlink" href="#id4_common.devices.aps_undulator.PolarUndulator.tracking" title="Link to this definition">#</a></dt>
@@ -742,6 +747,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.aps_undulator.PhaseShifterDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.aps_undulator.</span></span><span class="sig-name descname"><span class="pre">PhaseShifterDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.aps_undulator.PhaseShifterDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Phase shifter device with gap positioner and start/stop control signals.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.aps_undulator.PhaseShifterDevice.gap">
 <span class="sig-name descname"><span class="pre">gap</span></span><a class="headerlink" href="#id4_common.devices.aps_undulator.PhaseShifterDevice.gap" title="Link to this definition">#</a></dt>
@@ -798,6 +804,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.aps_undulator.PolarUndulatorPair">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.aps_undulator.</span></span><span class="sig-name descname"><span class="pre">PolarUndulatorPair</span></span><a class="headerlink" href="#id4_common.devices.aps_undulator.PolarUndulatorPair" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Composite device grouping upstream and downstream undulators with a phase
+shifter.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.aps_undulator.PolarUndulatorPair.us">
 <span class="sig-name descname"><span class="pre">us</span></span><a class="headerlink" href="#id4_common.devices.aps_undulator.PolarUndulatorPair.us" title="Link to this definition">#</a></dt>

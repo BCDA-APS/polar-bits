@@ -19,6 +19,10 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Coherent Ventus CW laser with power/current control and temperature/status
+   readbacks.
+
+
    .. py:attribute:: power_setpoint
 
 

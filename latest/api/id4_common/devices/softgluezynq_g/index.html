@@ -705,6 +705,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_g.</span></span><span class="sig-name descname"><span class="pre">SoftGlueZynqDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_clock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue Zynq FPGA timing device for 4IDG flyscans (counters, DMA, I/O).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.preset_monitor">
 <span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.preset_monitor" title="Link to this definition">#</a></dt>
@@ -788,52 +789,66 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_softglue">
 <span class="sig-name descname"><span class="pre">start_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_softglue" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to assert the global enable buffer (in1 = ‘1’).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_softglue">
 <span class="sig-name descname"><span class="pre">stop_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_softglue" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to de-assert the global enable buffer (in1 = ‘0’).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_detectors">
 <span class="sig-name descname"><span class="pre">start_detectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_detectors" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to assert the detector enable buffer (in2 = ‘1’).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_detectors">
 <span class="sig-name descname"><span class="pre">stop_detectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_detectors" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to de-assert the detector enable buffer (in2 = ‘0’).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.reset_plan">
 <span class="sig-name descname"><span class="pre">reset_plan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.reset_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to pulse the counter-reset and DMA-reset buffers.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_enable_dma">
 <span class="sig-name descname"><span class="pre">clear_enable_dma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_enable_dma" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to clear the DMA buffer and then enable DMA
+acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_disable_dma">
 <span class="sig-name descname"><span class="pre">clear_disable_dma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_disable_dma" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to clear the DMA buffer and then disable DMA
+acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_trigger_plan">
 <span class="sig-name descname"><span class="pre">setup_trigger_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_width_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_delay_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_trigger_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to configure the trigger period, pulse width, and
+delay in clock ticks.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_count_plan">
 <span class="sig-name descname"><span class="pre">setup_count_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_count_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to set the count divider N for the given count time in
+seconds.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Apply default FPGA settings (no-op for this class; subclasses override).</p>
+</dd></dl>
 
 </dd></dl>
 

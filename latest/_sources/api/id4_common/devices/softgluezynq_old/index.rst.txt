@@ -23,6 +23,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue I/O signal device with signal and BI (binary-input) components.
+
+
    .. py:attribute:: signal
 
 
@@ -32,6 +35,9 @@ Module Contents
 .. py:class:: SoftGlueZynqDevideByN
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue divide-by-N frequency divider block.
 
 
    .. py:attribute:: enable
@@ -54,6 +60,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue up-counter block that accumulates clock pulses while enabled.
+
+
    .. py:attribute:: enable
 
 
@@ -69,6 +78,10 @@ Module Contents
 .. py:class:: SoftGlueZynqGateDly
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue gate-and-delay block that produces a programmable-width output
+   pulse.
 
 
    .. py:attribute:: input
@@ -89,6 +102,10 @@ Module Contents
 .. py:class:: SoftGlueScalToStream
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue scaler-to-DMA-stream block that serialises counter data for
+   readout.
 
 
    .. py:attribute:: reset
@@ -123,6 +140,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue clock source block exposing 10/20/50 MHz and a variable-rate clock.
+
+
    .. py:attribute:: clock_10MHz
 
 
@@ -138,6 +158,10 @@ Module Contents
 .. py:class:: SoftGlueZynqDevice(*args, reset_sleep_time=0.2, reference_clock=10000000.0, **kwargs)
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue Zynq FPGA timing device (legacy version) with full default_settings
+   setup.
 
 
    .. py:attribute:: dma
@@ -184,31 +208,66 @@ Module Contents
 
    .. py:method:: start_softglue()
 
+      Bluesky plan stub to assert the global enable buffer (in1 = '1').
+
+
 
    .. py:method:: stop_softglue()
+
+      Bluesky plan stub to de-assert the global enable buffer (in1 = '0').
+
 
 
    .. py:method:: start_detectors()
 
+      Bluesky plan stub to assert the detector enable buffer (in2 = '1').
+
+
 
    .. py:method:: stop_detectors()
+
+      Bluesky plan stub to de-assert the detector enable buffer (in2 = '0').
+
 
 
    .. py:method:: reset_plan()
 
+      Bluesky plan stub to pulse the counter-reset and DMA-reset buffers.
+
+
 
    .. py:method:: clear_enable_dma()
+
+      Bluesky plan stub to clear the DMA buffer and then enable DMA
+      acquisition.
+
 
 
    .. py:method:: clear_disable_dma()
 
+      Bluesky plan stub to clear the DMA buffer and then disable DMA
+      acquisition.
+
+
 
    .. py:method:: setup_trigger_plan(period_time, pulse_width_time, pulse_delay_time=0)
+
+      Bluesky plan stub to configure the trigger period, pulse width, and
+      delay in clock ticks.
+
 
 
    .. py:method:: setup_count_plan(time)
 
+      Bluesky plan stub to set the count divider N for the given count time in
+      seconds.
+
+
 
    .. py:method:: default_settings(timeout=10)
+
+      Configure clocks, buffers, counters, I/O, DMA, and trigger for flyscan
+      operation.
+
 
 

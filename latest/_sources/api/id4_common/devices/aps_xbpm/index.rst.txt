@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Beam position monitor current-mode readout device.
+
+
    .. py:attribute:: current1
 
 
@@ -34,6 +37,10 @@ Module Contents
 .. py:class:: MyXBPM
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   X-ray beam position monitor with position, angle, and current-mode
+   readbacks.
 
 
    .. py:attribute:: vertical_position

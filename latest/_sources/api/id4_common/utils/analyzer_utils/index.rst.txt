@@ -3,6 +3,11 @@ id4_common.utils.analyzer_utils
 
 .. py:module:: id4_common.utils.analyzer_utils
 
+.. autoapi-nested-parse::
+
+   Crystallographic d-spacing and structure factor utilities for analyzer crystals.
+
+
 
 
 
@@ -11,5 +16,12 @@ Module Contents
 
 .. py:function:: calcdhkl(h, k, l, alpha, beta, gamma, symmetry, a, b, c)
 
+   Calculate the d-spacing for an (hkl) reflection given lattice parameters.
+
+
 .. py:function:: check_structure_factor(h, k, l, spacegroupnumber, special)
+
+   Return True if the (hkl) reflection is allowed by the space group selection
+   rules.
+
 

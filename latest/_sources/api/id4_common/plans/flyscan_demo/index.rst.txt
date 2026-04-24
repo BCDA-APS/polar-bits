@@ -26,7 +26,7 @@ Module Contents
 
 .. py:data:: HDF1_NAME_FORMAT
 
-.. py:function:: flyscan_snake(detectors, stepping_motor, stepping_motor_start, stepping_motor_end, stepping_motor_number_of_points, flying_motor, flying_motor_start, flying_motor_end, flying_motor_speed, detector_trigger_period: float = 0.02, detector_collection_time: float = 0.01, file_name_base: str = 'scan', master_file_templates: list = [], md: dict = {}, dm_concise: bool = False, dm_wait: bool = False, dm_reporting_period: float = 10 * 60, dm_reporting_time_limit: float = 10**6, nxwriter_warn_missing: bool = False, wf_run: bool = False, wf_settings_file_path: str = None, **wf_kwargs)
+.. py:function:: flyscan_snake(detectors, stepping_motor, stepping_motor_start, stepping_motor_end, stepping_motor_number_of_points, flying_motor, flying_motor_start, flying_motor_end, flying_motor_speed, detector_trigger_period: float = 0.02, detector_collection_time: float = 0.01, file_name_base: str = 'scan', master_file_templates: list = None, md: dict = None, dm_concise: bool = False, dm_wait: bool = False, dm_reporting_period: float = 10 * 60, dm_reporting_time_limit: float = 10**6, nxwriter_warn_missing: bool = False, wf_run: bool = False, wf_settings_file_path: str = None, **wf_kwargs)
 
    Flyscan using a "snake" trajectory.
 
@@ -55,7 +55,7 @@ Module Contents
    .. seealso:: :func:`bluesky.plan_patterns.outter_product`, :func:`flyscan_cycler`
 
 
-.. py:function:: flyscan_1d(detectors, motor, start, end, speed, detector_trigger_period: float = 0.02, detector_collection_time: float = 0.01, master_file_templates: list = [], file_name_base: str = 'scan', md: dict = {}, dm_concise: bool = False, dm_wait: bool = False, dm_reporting_period: float = 10 * 60, dm_reporting_time_limit: float = 10**6, nxwriter_warn_missing: bool = False, wf_run: bool = False, wf_settings_file_path: str = None, **wf_kwargs)
+.. py:function:: flyscan_1d(detectors, motor, start, end, speed, detector_trigger_period: float = 0.02, detector_collection_time: float = 0.01, master_file_templates: list = None, file_name_base: str = 'scan', md: dict = None, dm_concise: bool = False, dm_wait: bool = False, dm_reporting_period: float = 10 * 60, dm_reporting_time_limit: float = 10**6, nxwriter_warn_missing: bool = False, wf_run: bool = False, wf_settings_file_path: str = None, **wf_kwargs)
 
    Flyscan in 1 dimension.
 
@@ -84,7 +84,7 @@ Module Contents
    .. seealso:: :func:`bluesky.plan_patterns.inner_product`, :func:`flyscan_cycler`
 
 
-.. py:function:: flyscan_cycler(detectors: list, cycler, speeds: list, detector_trigger_period: float = 0.02, detector_collection_time: float = 0.01, master_file_templates: list = [], file_name_base: str = 'scan', md: dict = {}, dm_concise: bool = False, dm_wait: bool = False, dm_reporting_period: float = 10 * 60, dm_reporting_time_limit: float = 10**6, nxwriter_warn_missing: bool = False, wf_run: bool = False, wf_settings_file_path: str = None, **wf_kwargs)
+.. py:function:: flyscan_cycler(detectors: list, cycler, speeds: list, detector_trigger_period: float = 0.02, detector_collection_time: float = 0.01, master_file_templates: list = None, file_name_base: str = 'scan', md: dict = None, dm_concise: bool = False, dm_wait: bool = False, dm_reporting_period: float = 10 * 60, dm_reporting_time_limit: float = 10**6, nxwriter_warn_missing: bool = False, wf_run: bool = False, wf_settings_file_path: str = None, **wf_kwargs)
 
    Flyscan using a generic path.
 

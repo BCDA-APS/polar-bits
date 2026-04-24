@@ -94,8 +94,14 @@ Module Contents
 
    .. py:method:: start_auto_kind()
 
+      Subscribe all compute signals to auto-update component kinds.
+
+
 
    .. py:method:: stop_auto_kind()
+
+      Unsubscribe all compute signals from auto kind updates.
+
 
 
 .. py:class:: CodecPlugin
@@ -219,6 +225,10 @@ Module Contents
    Bases: :py:obj:`apstools.devices.CamMixin_V34`, :py:obj:`ophyd.areadetector.Xspress3DetectorCam`
 
 
+   Vortex fluorescence detector camera with simplified trigger and erase
+   controls.
+
+
    .. py:attribute:: trigger_mode
 
 
@@ -245,18 +255,33 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.filestore_mixins.FileStoreBase`
 
 
+   FileStore base that derives file paths from EPICS PV values rather than
+   templates.
+
+
    .. py:property:: use_dm
+
+      Return True if data management path is used for file writing.
 
 
    .. py:method:: make_write_read_paths(path=None)
 
+      Return the IOC write path, full file path, and relative file path.
+
+
 
    .. py:method:: stage()
+
+      Stage the file plugin, checking path existence and file collision.
+
 
 
 .. py:class:: FileStoreHDF5IterativeWriteEpicsName(*args, **kwargs)
 
    Bases: :py:obj:`FileStorePluginBaseEpicsName`
+
+
+   HDF5 iterative-write filestore that reads file name from EPICS PVs.
 
 
    .. py:attribute:: filestore_spec
@@ -266,14 +291,26 @@ Module Contents
 
    .. py:method:: get_frames_per_point()
 
+      Return the number of frames expected per scan point.
+
+
 
    .. py:method:: stage()
+
+      Stage the HDF5 plugin and generate the resource document.
+
 
 
    .. py:method:: unstage()
 
+      Unstage the HDF5 plugin and reset the point counter.
+
+
 
    .. py:method:: generate_datum(key, timestamp, datum_kwargs)
+
+      Generate a datum document with the current point number.
+
 
 
 .. py:class:: HDF5Plugin
@@ -281,7 +318,7 @@ Module Contents
    Bases: :py:obj:`PluginMixin`, :py:obj:`ophyd.areadetector.plugins.HDF5Plugin_V34`
 
 
-   Remove property attribute found in AD IOCs now.
+   HDF5 plugin with the property attribute removed for compatibility.
 
 
 .. py:class:: PolarHDF5Plugin(*args, write_path_template='', **kwargs)
@@ -297,14 +334,25 @@ Module Contents
 
    .. py:method:: stage()
 
+      Stage the HDF5 plugin, enabling image saving if autosave is on.
+
+
 
    .. py:method:: unstage()
+
+      Unstage the HDF5 plugin, disabling image saving if autosave is on.
+
 
 
    .. py:property:: warmup_signals
 
+      Return ordered dict of (signal, value) pairs used for detector warmup.
+
 
    .. py:method:: warmup()
+
+      Run the warmup sequence to prime the HDF5 plugin for fast acquisition.
+
 
 
 .. py:class:: TriggerBase(*args, acquisition_signal_dev='cam.acquire', acquire_busy_signal_dev='cam.acquire_busy', **kwargs)
@@ -322,5 +370,9 @@ Module Contents
 .. py:class:: ADTriggerStatus
 
    Bases: :py:obj:`ophyd.areadetector.trigger_mixins.ADTriggerStatus`
+
+
+   AreaDetector trigger status that clears array-counter subscriptions on
+   completion.
 
 

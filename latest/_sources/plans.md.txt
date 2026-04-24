@@ -69,7 +69,7 @@ These are the same as:
 ```python
 # Absolute move
 RE(mv(motor, position))
-RE(mv(motor1, pos1, motor2, pos2))   
+RE(mv(motor1, pos1, motor2, pos2))
 
 # Relative move
 RE(mvr(motor, delta))

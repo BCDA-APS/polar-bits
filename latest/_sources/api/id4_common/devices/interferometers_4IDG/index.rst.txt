@@ -19,6 +19,10 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Six-channel interferometer readout for mirror horizontal and vertical
+   positions.
+
+
    .. py:attribute:: mhor_up
 
 
@@ -39,7 +43,13 @@ Module Contents
 
    .. py:method:: plot_first_pos1()
 
+      Set only the mhor_up channel as hinted and all others to normal.
+
+
 
    .. py:method:: plot_all()
+
+      Set all six interferometer channels to hinted kind for plotting.
+
 
 

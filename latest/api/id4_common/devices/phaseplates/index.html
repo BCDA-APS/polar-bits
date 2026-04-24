@@ -704,7 +704,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.MicronsSignal.describe">
 <span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.phaseplates.MicronsSignal.describe" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Override describe to report units as microns.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.MicronsSignal.inverse">
@@ -796,6 +797,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDeviceBase">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.phaseplates.</span></span><span class="sig-name descname"><span class="pre">PRDeviceBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motorsDict</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDeviceBase" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.PseudoPositioner</span></code></p>
+<p>Base class for phase retarder devices mapping energy to Bragg angle.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDeviceBase.energy">
 <span class="sig-name descname"><span class="pre">energy</span></span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDeviceBase.energy" title="Link to this definition">#</a></dt>
@@ -839,12 +841,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDeviceBase.convert_energy_to_theta">
 <span class="sig-name descname"><span class="pre">convert_energy_to_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDeviceBase.convert_energy_to_theta" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+d-spacing.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDeviceBase.convert_theta_to_energy">
 <span class="sig-name descname"><span class="pre">convert_theta_to_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDeviceBase.convert_theta_to_energy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+d-spacing.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDeviceBase.forward">
@@ -861,12 +867,15 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDeviceBase.set_energy">
 <span class="sig-name descname"><span class="pre">set_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDeviceBase.set_energy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Calibrate the Bragg-angle motor to match the given photon energy (keV).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDeviceBase.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDeviceBase.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Apply default d-spacing and motor-switch settings for this phase
+retarder.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -874,6 +883,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.phaseplates.</span></span><span class="sig-name descname"><span class="pre">PRDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prnum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motorsDict</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.phaseplates.PRDeviceBase" title="id4_common.devices.phaseplates.PRDeviceBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PRDeviceBase</span></code></a></p>
+<p>Phase retarder with PZT piezo control and crystal-plane auto-selection.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDevice.pzt">
 <span class="sig-name descname"><span class="pre">pzt</span></span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDevice.pzt" title="Link to this definition">#</a></dt>
@@ -887,7 +897,9 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.phaseplates.PRDevice.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.phaseplates.PRDevice.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Set PZT conversion factor and d-spacing based on the selected crystal
+plane.</p>
+</dd></dl>
 
 </dd></dl>
 

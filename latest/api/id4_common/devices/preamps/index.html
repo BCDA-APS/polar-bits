@@ -700,35 +700,47 @@
 <dt class="sig sig-object py" id="id4_common.devices.preamps.LocalPreAmp">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.preamps.</span></span><span class="sig-name descname"><span class="pre">LocalPreAmp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaler_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shutter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.preamps.LocalPreAmp" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apstools.devices.SRS570_PreAmplifier</span></code></p>
+<p>SRS570 pre-amplifier with built-in Bluesky plans for sensitivity and offset
+optimization.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.preamps.LocalPreAmp.shutter">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">shutter</span></span><a class="headerlink" href="#id4_common.devices.preamps.LocalPreAmp.shutter" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the beam shutter device used by the optimization plans.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.preamps.LocalPreAmp.opt_sens_plan">
 <span class="sig-name descname"><span class="pre">opt_sens_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.preamps.LocalPreAmp.opt_sens_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan to find the optimal sensitivity for the target count rate.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.preamps.LocalPreAmp.opt_offset_plan">
 <span class="sig-name descname"><span class="pre">opt_offset_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.preamps.LocalPreAmp.opt_offset_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan to find the optimal offset current that minimizes dark
+counts.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.preamps.LocalPreAmp.opt_fine_plan">
 <span class="sig-name descname"><span class="pre">opt_fine_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.preamps.LocalPreAmp.opt_fine_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan to scan offset_fine and fit a linear model to reach 200
+counts/s.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.preamps.LocalPreAmp.optimize_plan">
 <span class="sig-name descname"><span class="pre">optimize_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.preamps.LocalPreAmp.optimize_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan to fully optimize sensitivity, offset, and fine offset with
+the shutter.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.preamps.LocalPreAmp.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.preamps.LocalPreAmp.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Disable string mode on offset_fine and enable put_complete on control
+signals.</p>
+</dd></dl>
 
 </dd></dl>
 

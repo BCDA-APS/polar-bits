@@ -23,6 +23,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   SoftGlue Zynq FPGA timing device for 4IDG flyscans (counters, DMA, I/O).
+
+
    .. py:attribute:: preset_monitor
 
 
@@ -73,31 +76,65 @@ Module Contents
 
    .. py:method:: start_softglue()
 
+      Bluesky plan stub to assert the global enable buffer (in1 = '1').
+
+
 
    .. py:method:: stop_softglue()
+
+      Bluesky plan stub to de-assert the global enable buffer (in1 = '0').
+
 
 
    .. py:method:: start_detectors()
 
+      Bluesky plan stub to assert the detector enable buffer (in2 = '1').
+
+
 
    .. py:method:: stop_detectors()
+
+      Bluesky plan stub to de-assert the detector enable buffer (in2 = '0').
+
 
 
    .. py:method:: reset_plan()
 
+      Bluesky plan stub to pulse the counter-reset and DMA-reset buffers.
+
+
 
    .. py:method:: clear_enable_dma()
+
+      Bluesky plan stub to clear the DMA buffer and then enable DMA
+      acquisition.
+
 
 
    .. py:method:: clear_disable_dma()
 
+      Bluesky plan stub to clear the DMA buffer and then disable DMA
+      acquisition.
+
+
 
    .. py:method:: setup_trigger_plan(period_time, pulse_width_time, pulse_delay_time=0)
+
+      Bluesky plan stub to configure the trigger period, pulse width, and
+      delay in clock ticks.
+
 
 
    .. py:method:: setup_count_plan(time)
 
+      Bluesky plan stub to set the count divider N for the given count time in
+      seconds.
+
+
 
    .. py:method:: default_settings(timeout=10)
+
+      Apply default FPGA settings (no-op for this class; subclasses override).
+
 
 

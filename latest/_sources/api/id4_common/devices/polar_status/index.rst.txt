@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   EPICS status device for a single APS sector-4 experimental hutch.
+
+
    .. py:attribute:: user_enable
 
 
@@ -39,12 +42,18 @@ Module Contents
    Bases: :py:obj:`HutchStatus`
 
 
+   HutchStatus variant for the A hutch with its front-end shutter PV.
+
+
    .. py:attribute:: shutter
 
 
 .. py:class:: Status4ID
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   Aggregate status device for all hutches and the front-end at APS sector 4.
 
 
    .. py:attribute:: online

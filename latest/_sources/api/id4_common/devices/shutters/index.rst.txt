@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`apstools.devices.ApsPssShutterWithStatus`
 
 
+   APS PSS shutter with optional auto-reopen logic on beam loss.
+
+
    .. py:attribute:: sleep_time
       :value: 5
 
@@ -26,7 +29,14 @@ Module Contents
 
    .. py:method:: start_auto_shutter()
 
+      Subscribe to pss_state so the shutter reopens automatically on beam
+      loss.
+
+
 
    .. py:method:: stop_auto_shutter()
+
+      Unsubscribe all pss_state callbacks to disable automatic reopening.
+
 
 

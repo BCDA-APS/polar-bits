@@ -705,6 +705,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueSignal">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_old.</span></span><span class="sig-name descname"><span class="pre">SoftGlueSignal</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueSignal" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue I/O signal device with signal and BI (binary-input) components.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueSignal.signal">
 <span class="sig-name descname"><span class="pre">signal</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueSignal.signal" title="Link to this definition">#</a></dt>
@@ -721,6 +722,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_old.</span></span><span class="sig-name descname"><span class="pre">SoftGlueZynqDevideByN</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue divide-by-N frequency divider block.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN.enable">
 <span class="sig-name descname"><span class="pre">enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN.enable" title="Link to this definition">#</a></dt>
@@ -752,6 +754,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_old.</span></span><span class="sig-name descname"><span class="pre">SoftGlueZynqUpCounter</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue up-counter block that accumulates clock pulses while enabled.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter.enable">
 <span class="sig-name descname"><span class="pre">enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter.enable" title="Link to this definition">#</a></dt>
@@ -778,6 +781,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_old.</span></span><span class="sig-name descname"><span class="pre">SoftGlueZynqGateDly</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue gate-and-delay block that produces a programmable-width output
+pulse.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly.input">
 <span class="sig-name descname"><span class="pre">input</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly.input" title="Link to this definition">#</a></dt>
@@ -809,6 +814,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueScalToStream">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_old.</span></span><span class="sig-name descname"><span class="pre">SoftGlueScalToStream</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueScalToStream" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue scaler-to-DMA-stream block that serialises counter data for
+readout.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueScalToStream.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueScalToStream.reset" title="Link to this definition">#</a></dt>
@@ -860,6 +867,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueClocks">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_old.</span></span><span class="sig-name descname"><span class="pre">SoftGlueClocks</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueClocks" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue clock source block exposing 10/20/50 MHz and a variable-rate clock.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueClocks.clock_10MHz">
 <span class="sig-name descname"><span class="pre">clock_10MHz</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueClocks.clock_10MHz" title="Link to this definition">#</a></dt>
@@ -886,6 +894,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_old.</span></span><span class="sig-name descname"><span class="pre">SoftGlueZynqDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_clock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue Zynq FPGA timing device (legacy version) with full default_settings
+setup.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.dma">
 <span class="sig-name descname"><span class="pre">dma</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.dma" title="Link to this definition">#</a></dt>
@@ -959,52 +969,67 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.start_softglue">
 <span class="sig-name descname"><span class="pre">start_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.start_softglue" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to assert the global enable buffer (in1 = ‘1’).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.stop_softglue">
 <span class="sig-name descname"><span class="pre">stop_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.stop_softglue" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to de-assert the global enable buffer (in1 = ‘0’).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.start_detectors">
 <span class="sig-name descname"><span class="pre">start_detectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.start_detectors" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to assert the detector enable buffer (in2 = ‘1’).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.stop_detectors">
 <span class="sig-name descname"><span class="pre">stop_detectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.stop_detectors" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to de-assert the detector enable buffer (in2 = ‘0’).</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.reset_plan">
 <span class="sig-name descname"><span class="pre">reset_plan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.reset_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to pulse the counter-reset and DMA-reset buffers.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.clear_enable_dma">
 <span class="sig-name descname"><span class="pre">clear_enable_dma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.clear_enable_dma" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to clear the DMA buffer and then enable DMA
+acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.clear_disable_dma">
 <span class="sig-name descname"><span class="pre">clear_disable_dma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.clear_disable_dma" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to clear the DMA buffer and then disable DMA
+acquisition.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.setup_trigger_plan">
 <span class="sig-name descname"><span class="pre">setup_trigger_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_width_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_delay_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.setup_trigger_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to configure the trigger period, pulse width, and
+delay in clock ticks.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.setup_count_plan">
 <span class="sig-name descname"><span class="pre">setup_count_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.setup_count_plan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Bluesky plan stub to set the count divider N for the given count time in
+seconds.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.default_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Configure clocks, buffers, counters, I/O, DMA, and trigger for flyscan
+operation.</p>
+</dd></dl>
 
 </dd></dl>
 

@@ -19,6 +19,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Kirkpatrick-Baez mirror with X translation and rotation motors.
+
+
    .. py:attribute:: x
 
 

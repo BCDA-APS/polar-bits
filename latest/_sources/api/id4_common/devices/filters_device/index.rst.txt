@@ -27,6 +27,9 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
+   Single filter slot with status, lock, material, and transmission readbacks.
+
+
    .. py:attribute:: status
 
 
@@ -47,9 +50,17 @@ Module Contents
 
 .. py:function:: make_filter_slots(num: int)
 
+   Return an OrderedDict of FilterSlot component definitions for a
+   DynamicDeviceComponent.
+
+
 .. py:class:: APSFilter
 
    Bases: :py:obj:`ophyd.Device`
+
+
+   APS filter bank with energy-based transmission control and per-slot
+   management.
 
 
    .. py:attribute:: energy_select

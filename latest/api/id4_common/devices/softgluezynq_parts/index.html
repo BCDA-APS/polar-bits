@@ -705,6 +705,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SoftGlueSignal">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SoftGlueSignal</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SoftGlueSignal" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue I/O signal device with signal and BI (binary-input) components.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SoftGlueSignal.signal">
 <span class="sig-name descname"><span class="pre">signal</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SoftGlueSignal.signal" title="Link to this definition">#</a></dt>
@@ -721,6 +722,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZDevideByN">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZDevideByN</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZDevideByN" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue divide-by-N frequency divider block.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZDevideByN.enable">
 <span class="sig-name descname"><span class="pre">enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZDevideByN.enable" title="Link to this definition">#</a></dt>
@@ -752,6 +754,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZUpCounter">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZUpCounter</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZUpCounter" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue up-counter block that accumulates clock pulses while enabled.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZUpCounter.enable">
 <span class="sig-name descname"><span class="pre">enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZUpCounter.enable" title="Link to this definition">#</a></dt>
@@ -778,6 +781,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZDownCounter">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZDownCounter</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZDownCounter" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue down-counter block that counts down from a preset value.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZDownCounter.enable">
 <span class="sig-name descname"><span class="pre">enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZDownCounter.enable" title="Link to this definition">#</a></dt>
@@ -809,6 +813,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZGateDly">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZGateDly</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZGateDly" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue gate-and-delay block that produces a programmable-width output
+pulse.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZGateDly.input">
 <span class="sig-name descname"><span class="pre">input</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZGateDly.input" title="Link to this definition">#</a></dt>
@@ -840,6 +846,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZClocks">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZClocks</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZClocks" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue clock source block exposing 10/20/50 MHz and a variable-rate clock.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZClocks.clock_10MHz">
 <span class="sig-name descname"><span class="pre">clock_10MHz</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZClocks.clock_10MHz" title="Link to this definition">#</a></dt>
@@ -866,6 +873,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZGates">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZGates</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZGates" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue two-input gate (AND/OR) block.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZGates.in1">
 <span class="sig-name descname"><span class="pre">in1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZGates.in1" title="Link to this definition">#</a></dt>
@@ -887,6 +895,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZDFF">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZDFF</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZDFF" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue D flip-flop block with set, data, clock, clear, and output signals.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZDFF.set_">
 <span class="sig-name descname"><span class="pre">set_</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZDFF.set_" title="Link to this definition">#</a></dt>
@@ -918,6 +927,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZHistScal">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZHistScal</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZHistScal" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue histogram scaler block for time-resolved counting into histogram
+bins.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZHistScal.en">
 <span class="sig-name descname"><span class="pre">en</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZHistScal.en" title="Link to this definition">#</a></dt>
@@ -964,6 +975,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZhistScalerDma">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SGZhistScalerDma</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZhistScalerDma" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue DMA readout block for the histogram scaler data.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SGZhistScalerDma.enable">
 <span class="sig-name descname"><span class="pre">enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SGZhistScalerDma.enable" title="Link to this definition">#</a></dt>
@@ -1000,6 +1012,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SoftGlueScalToStream">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SoftGlueScalToStream</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SoftGlueScalToStream" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue scaler-to-DMA-stream block that serialises counter data for
+readout.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SoftGlueScalToStream.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SoftGlueScalToStream.reset" title="Link to this definition">#</a></dt>
@@ -1051,6 +1065,7 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SampleXY">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_parts.</span></span><span class="sig-name descname"><span class="pre">SampleXY</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SampleXY" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue sample-position device providing X/Y/pitch readbacks and offsets.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_parts.SampleXY.x_offset">
 <span class="sig-name descname"><span class="pre">x_offset</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_parts.SampleXY.x_offset" title="Link to this definition">#</a></dt>
