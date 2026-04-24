@@ -28,5 +28,3 @@ Module Contents
 
 
    .. py:method:: get_file_list(datum_kwarg_gen)
-
-

@@ -155,5 +155,3 @@ Module Contents
 
 
    .. py:property:: save_image_flag
-
-

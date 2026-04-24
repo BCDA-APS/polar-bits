@@ -9,12 +9,13 @@ See the note about waiting for the nxwriter to finish AFTER EACH ACQUISITION!
 https://bcda-aps.github.io/apstools/dev/api/_filewriters.html#apstools.callbacks.nexus_writer.NXWriter
 """
 
+from datetime import datetime
+from logging import getLogger
+
 import h5py
+from apsbits.utils.config_loaders import get_config
 from apstools.callbacks import NXWriterAPS
 from numpy import array
-from datetime import datetime
-from apsbits.utils.config_loaders import get_config
-from logging import getLogger
 
 iconfig = get_config()
 
@@ -34,6 +35,9 @@ class MyNXWriter(NXWriterAPS):
     external_files = {}
 
     def write_root(self, filename):
+        """
+        Write the root group and set POLAR-specific NeXus version attributes.
+        """
         super().write_root(filename)
         self.root.attrs["NeXus_version"] = NEXUS_RELEASE
         self.root.attrs["layout_version"] = LAYOUT_VERSION

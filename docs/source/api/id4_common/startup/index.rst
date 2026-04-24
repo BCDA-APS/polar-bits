@@ -33,5 +33,3 @@ Module Contents
 
 .. py:data:: stations
    :value: ['core', '4idb', '4idg', '4idh']
-
-

@@ -17,5 +17,3 @@ Submodules
 
    /api/id4_common/suspenders/shutters_suspenders/index
    /api/id4_common/suspenders/suspender_utils/index
-
-

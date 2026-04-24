@@ -15,7 +15,3 @@ Module Contents
 
    - Undulator offset denotes difference of undulator energy to monochromator energy
      - [c]alculate: calculates offset from monochromator and undulator current energies
-
-
-
-

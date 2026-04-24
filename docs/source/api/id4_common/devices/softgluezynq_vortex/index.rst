@@ -182,5 +182,3 @@ Module Contents
 
 
    .. py:method:: default_settings(timeout=10)
-
-

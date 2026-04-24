@@ -2,21 +2,28 @@
 Scalers
 """
 
+import time
+
+from ophyd import Component
+from ophyd import EpicsSignal
+from ophyd import Kind
 from ophyd.scaler import ScalerCH
 from ophyd.signal import Signal
-from ophyd import Kind, Component, EpicsSignal
-import time
 
 
 class PresetMonitorSignal(Signal):
     """Signal that control the selected monitor channel"""
 
     def __init__(self, *args, **kwargs):
+        """Initialize and cache a reference to the parent's frequency signal."""
         super().__init__(*args, **kwargs)
         self._readback = 0
         self._freq = getattr(self.parent, "freq", None)
 
     def get(self, **kwargs):
+        """
+        Return the monitor preset converted to seconds for the time channel.
+        """
         self._readback = self.parent._monitor.preset.get()
         if "chan01" in self.parent._monitor.name:
             freq = 1e7 if not self._freq else self._freq.get()
@@ -89,17 +96,28 @@ class PresetMonitorSignal(Signal):
 
 
 class LocalScalerCH(ScalerCH):
+    """
+    ScalerCH subclass with a flexible monitor channel and plot/read channel
+    selection.
+    """
 
     preset_time = None
     preset_monitor = Component(PresetMonitorSignal, kind=Kind.config)
     freq = Component(EpicsSignal, ".FREQ", kind=Kind.config)
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize LocalScalerCH and set chan01 (time) as the default monitor.
+        """
         super().__init__(*args, **kwargs)
         self._monitor = self.channels.chan01  # Time is the default monitor.
 
     @property
     def channels_name_map(self):
+        """
+        Return a dict mapping EPICS channel name strings to component attribute
+        names.
+        """
         name_map = {}
         for channel in self.channels.component_names:
             # as defined in self.match_names()
@@ -109,7 +127,10 @@ class LocalScalerCH(ScalerCH):
         return name_map
 
     def select_plot_channels(self, chan_names=None):
-
+        """
+        Set the Kind of each channel to hinted (in chan_names) or normal
+        (others).
+        """
         self.match_names()
         name_map = self.channels_name_map
 
@@ -119,12 +140,12 @@ class LocalScalerCH(ScalerCH):
         for ch in name_map.keys():
             try:
                 channel = getattr(self.channels, name_map[ch])
-            except KeyError:
+            except KeyError as err:
                 raise RuntimeError(
                     "The channel {} is not configured "
                     "on the scaler.  The named channels are "
                     "{}".format(ch, tuple(name_map))
-                )
+                ) from err
             if ch in chan_names:
                 channel.s.kind = Kind.hinted
             else:
@@ -152,12 +173,12 @@ class LocalScalerCH(ScalerCH):
         for ch in chan_names:
             try:
                 read_attrs.append(name_map[ch])
-            except KeyError:
+            except KeyError as err:
                 raise RuntimeError(
                     "The channel {} is not configured "
                     "on the scaler.  The named channels are "
                     "{}".format(ch, tuple(name_map))
-                )
+                ) from err
 
         self.channels.kind = Kind.normal
         self.channels.read_attrs = list(read_attrs)
@@ -167,6 +188,7 @@ class LocalScalerCH(ScalerCH):
 
     @property
     def monitor(self):
+        """Return the EPICS name of the currently selected monitor channel."""
         return self._monitor.s.name
 
     @monitor.setter
@@ -211,13 +233,24 @@ class LocalScalerCH(ScalerCH):
 
     @property
     def plot_options(self):
+        """
+        Return a list of all named scaler channel names available for plotting.
+        """
         # Return all named scaler channels
         return list(self.channels_name_map.keys())
 
     def select_plot(self, channels):
+        """
+        Set the hinted kind for the given channels by delegating to
+        select_plot_channels.
+        """
         self.select_plot_channels(chan_names=channels)
 
     def default_settings(self):
+        """
+        Set default monitor to chan01 and select all named read and plot
+        channels.
+        """
         self.monitor = "chan01"
         self.select_read_channels()
         self.select_plot_channels()

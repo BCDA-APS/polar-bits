@@ -1,12 +1,14 @@
+"""Polarization-ratio (PR) scan setup utilities."""
+
 __all__ = ["pr_setup"]
 
-from ..callbacks.dichro_stream import plot_dichro_settings
 from apsbits.core.instrument_init import oregistry
+
+from ..callbacks.dichro_stream import plot_dichro_settings
 
 
 # TODO: Need to change the query logic to include the oscillate pzt
 class PRSetup:
-
     positioner = None
     offset = None
     oscillate_pzt = True
@@ -25,7 +27,6 @@ class PRSetup:
         self._current_setup = {}
 
     def __repr__(self):
-
         tracked = ""
         for pr in oregistry.findall("phase retarder"):
             if pr.tracking.get():
@@ -49,7 +50,6 @@ class PRSetup:
         )
 
     def _get_setup(self, pr):
-
         _setup = {}
 
         if self.positioner is None:
@@ -72,7 +72,6 @@ class PRSetup:
         return self.__repr__()
 
     def __call__(self):
-
         print("Setup of the phase retarders for dichro scans.")
         print("Note that you can only oscillate one phase retarder stack.")
 
@@ -84,7 +83,7 @@ class PRSetup:
                 "yes" if plot_dichro_settings.settings.transmission else "no"
             )
             trans = (
-                input("Are you measuring in transmission? (" f"{_default}): ")
+                input(f"Are you measuring in transmission? ({_default}): ")
                 or _default
             )
             if trans.lower() == "yes":
@@ -98,7 +97,6 @@ class PRSetup:
 
         # Cycle through the PRs
         for pr in oregistry.findall("phase retarder"):
-
             print(" ++ {} ++ ".format(pr.name.upper()))
 
             # Track the energy?
@@ -136,8 +134,7 @@ class PRSetup:
                             while True:
                                 method = (
                                     input(
-                                        "\tUse motor or PZT? "
-                                        f"({setup['method']}): "
+                                        f"\tUse motor or PZT? ({setup['method']}): "
                                     )
                                     or setup["method"]
                                 )
@@ -149,16 +146,14 @@ class PRSetup:
                                     break
                                 else:
                                     print(
-                                        "Only motor or pzt are acceptable "
-                                        "answers."
+                                        "Only motor or pzt are acceptable answers."
                                     )
                         # Get offset
                         while True:
                             try:
                                 offset = (
                                     input(
-                                        "\tOffset (in degrees) "
-                                        f"({setup['offset']}): "
+                                        f"\tOffset (in degrees) ({setup['offset']}): "
                                     )
                                     or setup["offset"]
                                 )
@@ -199,8 +194,7 @@ class PRSetup:
             else:
                 if _positioner and track == "yes":
                     print(
-                        f"\tYou already selected {_positioner.name} to "
-                        "oscillate."
+                        f"\tYou already selected {_positioner.name} to oscillate."
                     )
 
         self.positioner = _positioner

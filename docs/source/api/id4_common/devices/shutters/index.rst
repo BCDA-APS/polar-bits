@@ -79,5 +79,3 @@ Module Contents
 
 
    .. py:method:: stop_auto_shutter()
-
-

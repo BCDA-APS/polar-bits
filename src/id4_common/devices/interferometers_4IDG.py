@@ -1,9 +1,16 @@
 """Interferometer setup"""
 
-from ophyd import Device, Component, EpicsSignalRO
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignalRO
 
 
 class InterferometerDevice(Device):
+    """
+    Six-channel interferometer readout for mirror horizontal and vertical
+    positions.
+    """
+
     mhor_up = Component(EpicsSignalRO, "pixelTrig-1_POS1")
 
     mhor_down = Component(EpicsSignalRO, "pixelTrig-1_POS2")
@@ -15,6 +22,7 @@ class InterferometerDevice(Device):
     svert = Component(EpicsSignalRO, "pixelTrig-3_POS2")
 
     def plot_first_pos1(self):
+        """Set only the mhor_up channel as hinted and all others to normal."""
         self.mhor_up.kind = "hinted"
         self.mhor_down.kind = "normal"
         self.shor.kind = "normal"
@@ -23,6 +31,7 @@ class InterferometerDevice(Device):
         self.svert.kind = "normal"
 
     def plot_all(self):
+        """Set all six interferometer channels to hinted kind for plotting."""
         self.mhor_up.kind = "hinted"
         self.mhor_down.kind = "hinted"
         self.shor.kind = "hinted"

@@ -87,5 +87,3 @@ Module Contents
 
 
    .. py:property:: preset_monitor
-
-

@@ -19,5 +19,3 @@ Submodules
 
    /api/id4_h/configs/index
    /api/id4_h/startup/index
-
-

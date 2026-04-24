@@ -10,4 +10,3 @@ Module Contents
 ---------------
 
 .. py:data:: counters
-

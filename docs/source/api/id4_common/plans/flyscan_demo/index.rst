@@ -110,5 +110,3 @@ Module Contents
    :type md: dictionary, optional
 
    .. seealso:: :func:`bluesky.plan_patterns.outter_product`, :func:`bluesky.plan_patterns.inner_product`
-
-

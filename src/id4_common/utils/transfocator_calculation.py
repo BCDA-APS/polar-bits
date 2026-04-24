@@ -17,6 +17,10 @@ BE_REFR_INDEX_FILE = (
 
 
 def read_delta(energy=None, path=BE_REFR_INDEX_FILE):
+    """
+    Return the refractive index delta for beryllium at the given photon energy
+    (eV).
+    """
     if energy < 2700 or energy > 27000:
         raise ValueError("Energy {} out of range [2700, 27000].".format(energy))
 
@@ -31,6 +35,10 @@ def transfocator_calc(
     beamline="polar",
     verbose=True,
 ):
+    """
+    Calculate the CRL lens configuration for the requested focus distance and
+    energy.
+    """
     _geom_ = current_diffractometer()
     if not distance:
         distance = 1800
@@ -90,7 +98,7 @@ def transfocator_calc(
     iR_N = 1 / (2 * delta * focus)
     iR = 0
     lenses_used = []
-    for num, value in enumerate(iradius_eff):
+    for _, value in enumerate(iradius_eff):
         lenses_used.append(0)
         if value < iR_N and iR < iR_N:
             lenses_used[-1] = 1
@@ -115,8 +123,9 @@ def transfocator_calc(
         )
         print("-" * 65)
         print(
-            "Distance CRLs to sample = {:6.1f} mm at photon energy of "
-            "{} eV".format(distance_new / 1e3, energy)
+            "Distance CRLs to sample = {:6.1f} mm at photon energy of {} eV".format(
+                distance_new / 1e3, energy
+            )
         )
         print("-" * 65)
         print(
@@ -140,6 +149,9 @@ def transfocator_calc(
 def transfocator_calc_old(
     distance=None, energy=None, experiment="diffractometer", beamline="polar"
 ):
+    """
+    Calculate CRL lens configuration using the legacy (non-verbose) algorithm.
+    """
     _geom_ = current_diffractometer()
     if not distance:
         distance = 1800

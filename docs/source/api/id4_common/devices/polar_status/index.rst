@@ -222,5 +222,3 @@ Module Contents
 
 
    .. py:attribute:: h_hutch
-
-

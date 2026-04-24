@@ -81,5 +81,3 @@ Module Contents
 
 
    .. py:attribute:: shutter_status
-
-

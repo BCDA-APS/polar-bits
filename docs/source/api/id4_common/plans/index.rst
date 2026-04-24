@@ -22,5 +22,3 @@ Submodules
    /api/id4_common/plans/local_scans/index
    /api/id4_common/plans/sim_plans/index
    /api/id4_common/plans/workflow_plan/index
-
-

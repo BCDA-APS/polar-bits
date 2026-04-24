@@ -1,8 +1,13 @@
-from pandas import DataFrame
-from ophydregistry import ComponentNotFound
-from apsbits.core.instrument_init import oregistry
-from logging import getLogger
+"""
+Detector and monitor selection class for single-scaler beamline configurations.
+"""
+
 from collections.abc import Iterable
+from logging import getLogger
+
+from apsbits.core.instrument_init import oregistry
+from ophydregistry import ComponentNotFound
+from pandas import DataFrame
 
 logger = getLogger(__name__)
 logger.bsdev(__file__)
@@ -45,7 +50,6 @@ class CountersClass:
         # self._available_scalers = [scaler_sim, scaler_ctr8]
 
     def __repr__(self):
-
         read_names = [
             item.name for item in (self.detectors + self.extra_devices)
         ]
@@ -190,7 +194,6 @@ class CountersClass:
         return DataFrame(table)
 
     def select_plot_channels(self, selection):
-
         groups = self.detectors_plot_options.iloc[list(selection)].groupby(
             "detectors"
         )
@@ -199,7 +202,7 @@ class CountersClass:
         for name, group in groups:
             det = oregistry.find(name)
             # det.select_plot(item) selects that channel to plot.
-            getattr(det, "select_plot")(list(group["channels"].values))
+            det.select_plot(list(group["channels"].values))
             dets.append(det)
 
         for scaler_name in self.available_scalers:
@@ -211,7 +214,6 @@ class CountersClass:
         self._dets = dets
 
     def plotselect(self, dets=None, mon=None):
-
         _valid_dets = False
         _valid_mon = False
 

@@ -65,5 +65,3 @@ Module Contents
 
 
    .. py:attribute:: alpha
-
-

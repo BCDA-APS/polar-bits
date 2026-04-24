@@ -73,5 +73,3 @@ Module Contents
 
 
    .. py:attribute:: nanoz
-
-

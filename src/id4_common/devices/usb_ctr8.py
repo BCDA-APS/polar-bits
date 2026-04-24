@@ -6,6 +6,9 @@ from apstools.devices import MeasCompCtr
 
 
 class CustomMeasCompCtr(MeasCompCtr):
+    """
+    MeasCompCtr subclass for the USB-CTR8, omitting unconnected I/O channels.
+    """
 
     # TODO: We don't have everything setup yet
 

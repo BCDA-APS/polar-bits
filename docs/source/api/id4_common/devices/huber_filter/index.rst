@@ -158,5 +158,3 @@ Module Contents
 
 
    .. py:attribute:: slot6
-
-

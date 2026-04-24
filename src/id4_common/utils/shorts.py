@@ -1,7 +1,12 @@
-from polartools.load_data import load_catalog
-from apsbits.core.instrument_init import oregistry
-from ..plans.center_maximum import cen, maxi
+"""Short convenience wrappers for common session operations."""
+
 from datetime import datetime
+
+from apsbits.core.instrument_init import oregistry
+from polartools.load_data import load_catalog
+
+from ..plans.center_maximum import cen
+from ..plans.center_maximum import maxi
 
 
 def opt(method="cen"):

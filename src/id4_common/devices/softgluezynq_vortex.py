@@ -1,31 +1,35 @@
-from ophyd import (
-    Device,
-    DynamicDeviceComponent,
-    Component,
-    DeviceStatus,
-    Staged,
-    Signal,
-)
-from bluesky.plan_stubs import mv, sleep
-from .softgluezynq_parts import (
-    _buffer_fields,
-    _io_fields,
-    SGZUpCounter,
-    SGZDownCounter,
-    SGZClocks,
-    SGZDevideByN,
-    SGZGateDly,
-    SGZGates,
-    SGZDFF,
-    SGZHistScal,
-    SGZhistScalerDma,
-)
+"""SoftGlue Zynq device for histogram-mode Vortex detector triggering."""
+
+from bluesky.plan_stubs import mv
+from bluesky.plan_stubs import sleep
+from ophyd import Component
+from ophyd import Device
+from ophyd import DeviceStatus
+from ophyd import DynamicDeviceComponent
+from ophyd import Signal
+from ophyd import Staged
+
+from .softgluezynq_parts import SGZDFF
+from .softgluezynq_parts import SGZClocks
+from .softgluezynq_parts import SGZDevideByN
+from .softgluezynq_parts import SGZDownCounter
+from .softgluezynq_parts import SGZGateDly
+from .softgluezynq_parts import SGZGates
+from .softgluezynq_parts import SGZHistScal
+from .softgluezynq_parts import SGZhistScalerDma
+from .softgluezynq_parts import SGZUpCounter
+from .softgluezynq_parts import _buffer_fields
+from .softgluezynq_parts import _io_fields
 
 # class TimeSettingSignal(Signal):
 #     def get()
 
 
 class SGZVortex(Device):
+    """
+    SoftGlue Zynq device that sequences histogram-mode Vortex detector
+    acquisitions.
+    """
 
     # TODO: This is a dummy that will do nothing for now,
     # but can be used to setup the time at some point.
@@ -78,6 +82,9 @@ class SGZVortex(Device):
     def __init__(
         self, *args, reset_sleep_time=0.1, reference_clock=1e7, **kwargs
     ):
+        """
+        Initialize SGZVortex with reset sleep duration and reference clock rate.
+        """
         super().__init__(*args, **kwargs)
         self._reset_sleep_time = reset_sleep_time
         self._reference_clock = reference_clock
@@ -87,22 +94,30 @@ class SGZVortex(Device):
 
     @property
     def frequency(self):
+        """Return the configured detector trigger frequency in Hz."""
         return self._frequency
 
     @frequency.setter
     def frequency(self, value):
+        """Set the detector trigger frequency; must be a numeric value."""
         if isinstance(value, (int, float)):
             self._frequency = value
         else:
             raise ValueError("Frequency must be a number.")
 
     def start_softglue(self):
+        """Bluesky plan stub to assert the enable buffer (in1 = '1')."""
         yield from mv(self.buffers.in1.signal, "1")
 
     def stop_softglue(self):
+        """Bluesky plan stub to de-assert the enable buffer (in1 = '0')."""
         yield from mv(self.buffers.in1.signal, "0")
 
     def reset(self):
+        """
+        Bluesky plan stub to pulse the reset buffer and clear the histogram
+        scaler.
+        """
         yield from mv(
             self.buffers.in2.signal, "1!", self.histscal.clear.signal, "1!"
         )
@@ -114,6 +129,10 @@ class SGZVortex(Device):
     #     return self.connected
 
     def stage(self):
+        """
+        Stop and reset the SGZ, then subscribe the acquire callback before
+        staging.
+        """
         # Make sure the sgz is not running and clear it.
         self.buffers.in1.signal.set("0").wait()
         self.buffers.in2.signal.set("1!").wait()
@@ -122,6 +141,10 @@ class SGZVortex(Device):
         super().stage()
 
     def unstage(self):
+        """
+        Stop, reset the SGZ, and unsubscribe the acquire callback after
+        unstaging.
+        """
         # Make sure the sgz is not running and clear it.
         self.buffers.in1.signal.set("0").wait()
         self.buffers.in2.signal.set("1!").wait()
@@ -130,6 +153,10 @@ class SGZVortex(Device):
         super().unstage()
 
     def trigger(self):
+        """
+        Assert the enable buffer to start one histogram acquisition and return
+        its status.
+        """
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger. "
@@ -150,6 +177,7 @@ class SGZVortex(Device):
                 self._status = None
 
     def default_settings(self, timeout=10):
+        """Apply default SGZ Vortex settings (currently a no-op placeholder)."""
         pass
 
         # logger.info("Setting up clocks.")

@@ -1,4 +1,10 @@
-from ophyd import Device, Component
+"""
+Descriptor classes for building ophyd sub-devices with instance-formatted PV
+strings.
+"""
+
+from ophyd import Component
+from ophyd import Device
 
 
 class FormattedDynamicSubDevice:
@@ -7,13 +13,24 @@ class FormattedDynamicSubDevice:
     """
 
     def __init__(self, factory_func):
+        """
+        Store the factory function that yields component definitions at instance
+        time.
+        """
         self.factory_func = factory_func
         self._name = None
 
     def __set_name__(self, owner, name):
+        """
+        Record the attribute name assigned to this descriptor on the owner
+        class.
+        """
         self._name = name
 
     def __get__(self, instance, owner):
+        """
+        Return the lazily-built sub-device, constructing it on first access.
+        """
         if instance is None:
             return self
 
@@ -56,13 +73,21 @@ class InstanceFormattedComponent:
     """
 
     def __init__(self, factory_func):
+        """
+        Store the factory callable that generates component definitions from an
+        instance.
+        """
         self.factory_func = factory_func
         self._name = None
 
     def __set_name__(self, owner, name):
+        """Record the descriptor's attribute name on the owning class."""
         self._name = name
 
     def __get__(self, instance, owner):
+        """
+        Return the lazily-instantiated sub-device, building it on first access.
+        """
         if instance is None:
             return self
         attr_name = f"_{self._name}_device"

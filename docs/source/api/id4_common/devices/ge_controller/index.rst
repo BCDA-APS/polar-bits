@@ -50,6 +50,3 @@ Module Contents
    .. py:method:: stop(*, success=False)
 
       Hold the current readback when stop() is called and not :meth:`inposition`.
-
-
-

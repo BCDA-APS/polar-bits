@@ -2,9 +2,12 @@
 Utility functions for flyscans
 """
 
-from h5py import File
-from numpy import array, empty, where
 from logging import getLogger
+
+from h5py import File
+from numpy import array
+from numpy import empty
+from numpy import where
 
 logger = getLogger(__name__)
 logger.info(__file__)

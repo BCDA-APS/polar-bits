@@ -64,5 +64,3 @@ Module Contents
    Subscriptions are added for the catalog and BestEffortCallback if provided, and
    additional configurations such as control layer, timeouts, and progress bar
    integration are applied.
-
-

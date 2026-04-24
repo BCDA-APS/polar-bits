@@ -1,3 +1,5 @@
+"""Utility for configuring upstream and downstream undulator setpoints."""
+
 from apsbits.core.instrument_init import oregistry
 
 
@@ -7,8 +9,10 @@ def undulator_setup(
     """
     Select undulators used and turn energy tracking on/off
 
-    - Undulator offset denotes difference of undulator energy to monochromator energy
-      - [c]alculate: calculates offset from monochromator and undulator current energies
+    - Undulator offset denotes difference of undulator energy to
+      monochromator energy
+      - [c]alculate: calculates offset from monochromator and
+        undulator current energies
 
 
     """
@@ -98,12 +102,12 @@ def undulator_setup(
                 print(f"Undulator uses harmonic {ds_harm:.0f}")
             else:
                 print("     Harmonics needs to be an odd integer!")
-        except:
+        except Exception:
             print("     Undulator currently disabled")
         print(f"DS undulator tracking with offset = {float(ds_off):.3f}\n")
     else:
         undulators.ds.tracking.put(False)
-        print(f"DS undulator tracking OFF\n")
+        print("DS undulator tracking OFF\n")
 
     us = us if us_inq else input(f"Use US undulator [{us}]: ") or us
     if us in ["Yes", "Y", "y", "yes"]:
@@ -141,9 +145,9 @@ def undulator_setup(
                 print(f"Undulator uses harmonic {us_harm:.0f}")
             else:
                 print("     Harmonics needs to be an odd integer!")
-        except:
+        except Exception:
             print("     Undulator currently disabled")
         print(f"US undulator tracking with offset = {float(us_off):.3f}")
     else:
         undulators.us.tracking.put(False)
-        print(f"US undulator tracking OFF")
+        print("US undulator tracking OFF")

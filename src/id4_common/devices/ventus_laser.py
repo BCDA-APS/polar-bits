@@ -2,10 +2,16 @@
 Ventus Laser
 """
 
-from ophyd import EpicsSignal, Component, Device
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignal
 
 
 class VentusLaser(Device):
+    """
+    Coherent Ventus CW laser with power/current control and temperature/status
+    readbacks.
+    """
 
     # TODO: Should power and current be PVPositioners?
     power_setpoint = Component(EpicsSignal, "PowerOut", kind="normal")

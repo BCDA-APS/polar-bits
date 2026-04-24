@@ -38,32 +38,31 @@ Auxilary HKL functions.
 """
 
 import pathlib
-from ophyd import SoftPositioner
-from bluesky import RunEngineInterrupted
-from bluesky.utils import ProgressBarManager
-from bluesky.plan_stubs import mv
 from logging import getLogger
+
 from apsbits.core.instrument_init import oregistry
-from .run_engine import RE, cat
+from bluesky import RunEngineInterrupted
+from bluesky.plan_stubs import mv
+from bluesky.utils import ProgressBarManager
+from ophyd import SoftPositioner
+
 from .polartools_hklpy_imports import pa
+from .run_engine import RE
+from .run_engine import cat
 
 try:
     from hkl import cahkl
-    from hkl.util import (
-        Lattice,
-        restore_sample,
-        restore_constraints,
-        restore_reflections,
-        run_orientation_info,
-    )
-    from hkl.user import (
-        _check_geom_selected,
-        select_diffractometer,
-        current_diffractometer,
-    )
-    from hkl.util import Constraint
     from hkl.configuration import DiffractometerConfiguration
     from hkl.diffract import Diffractometer
+    from hkl.user import _check_geom_selected
+    from hkl.user import current_diffractometer
+    from hkl.user import select_diffractometer
+    from hkl.util import Constraint
+    from hkl.util import Lattice
+    from hkl.util import restore_constraints
+    from hkl.util import restore_reflections
+    from hkl.util import restore_sample
+    from hkl.util import run_orientation_info
 except ModuleNotFoundError:
     print("gi module is not installed, the hkl_utils functions will not work!")
     cahkl = _check_geom_selected = _geom_ = None
@@ -81,6 +80,7 @@ fourc = None
 
 
 def get_huber_euler():
+    """Return the huber_euler diffractometer from the device registry."""
     huber_euler = oregistry.find("huber_euler", allow_none=True)
     if huber_euler is None:
         raise ValueError(
@@ -90,6 +90,7 @@ def get_huber_euler():
 
 
 def get_huber_hp():
+    """Return the huber_hp diffractometer from the device registry."""
     huber_hp = oregistry.find("huber_hp", allow_none=True)
     if huber_hp is None:
         raise ValueError(
@@ -99,6 +100,7 @@ def get_huber_hp():
 
 
 def get_huber_euler_psi():
+    """Return the huber_euler_psi diffractometer from the device registry."""
     huber_euler = oregistry.find("huber_euler_psi", allow_none=True)
     if huber_euler is None:
         raise ValueError(
@@ -137,8 +139,7 @@ def set_diffractometer(instrument=None):
         ) or _geom_.name
     else:
         raise ValueError(
-            "either no argument or diffractometer polar or fourc to be"
-            "provided."
+            "either no argument or diffractometer polar or fourc to beprovided."
         )
     if diff == "fourc":
         select_diffractometer(fourc)
@@ -381,8 +382,7 @@ def _sampleList():
         if len(orienting_refl) > 1:
             if len(_geom_.calc.physical_axes) == 6:
                 print(
-                    "\n{:>3}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}"
-                    "{:>9}".format(
+                    "\n{:>3}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
                         "#",
                         "H",
                         "K",
@@ -486,8 +486,7 @@ def _sampleList():
                             "Geometry {} not supported.".format(_geom_.name)
                         )
         print(
-            "================================================================="
-            "====="
+            "======================================================================"
         )
     print("\nCurrent sample: " + _geom_.calc.sample.name)
 
@@ -517,8 +516,7 @@ def list_reflections(all_samples=False):
         orienting_refl = sample._orientation_reflections
         if len(_geom_.calc.physical_axes) == 6:
             print(
-                "\n{:>2}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}   "
-                "{:<12}".format(
+                "\n{:>2}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}   {:<12}".format(
                     "#",
                     "H",
                     "K",
@@ -649,8 +647,7 @@ def list_reflections(all_samples=False):
                     )
                 elif len(_geom_.calc.physical_axes) == 4:
                     print(
-                        "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}"
-                        "{:>9.3f} ".format(
+                        "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f} ".format(
                             i,
                             int(h),
                             int(k),
@@ -1600,8 +1597,7 @@ def ca(h, k, l, energy=None):
     pos = cahkl(h, k, l)
 
     print(
-        f"\n   Lambda (Energy) = {wavelength:6.4f} \u212b"
-        f" ({energy:6.4f}) keV"
+        f"\n   Lambda (Energy) = {wavelength:6.4f} \u212b ({energy:6.4f}) keV"
     )
     if POLAR_DIFFRACTOMETER in _geom_.name:
         print(
@@ -1825,7 +1821,7 @@ def pa_new():
     print("{} mode".format(get_huber_euler().calc.engine.mode))
 
     print("Sample = {}".format(sample.name))
-    for i, ref in enumerate(sample._sample.reflections_get()):
+    for _, ref in enumerate(sample._sample.reflections_get()):
         if orienting_refl[0] == ref:
             print(
                 "\nPrimary reflection at (lambda = {:.3f})".format(
@@ -1859,8 +1855,6 @@ def pa_new():
                         pos[1],
                         pos[2],
                         pos[3],
-                        pos[5],
-                        pos[0],
                     )
                 )
                 print(
@@ -1871,7 +1865,7 @@ def pa_new():
                     )
                 )
 
-    for i, ref in enumerate(sample._sample.reflections_get()):
+    for _, ref in enumerate(sample._sample.reflections_get()):
         if orienting_refl[1] == ref:
             print(
                 "\nSecondary reflection at (lambda = {:.3f})".format(
@@ -1905,8 +1899,6 @@ def pa_new():
                         pos[1],
                         pos[2],
                         pos[3],
-                        pos[5],
-                        pos[0],
                     )
                 )
                 print(
@@ -2000,6 +1992,7 @@ def setlat(*args):
 
 
 def setaz(*args):
+    """Set the azimuthal reference vector (h k l) for psi-constant mode."""
     _geom_ = current_diffractometer()
     _geom_for_psi_ = engine_for_psi()
     _check_geom_selected()
@@ -2055,6 +2048,9 @@ def setaz(*args):
 
 
 def freeze(*args):
+    """
+    Freeze the psi angle for psi-constant scans on the current diffractometer.
+    """
     _geom_ = current_diffractometer()
     _check_geom_selected()
     if (
@@ -2323,6 +2319,9 @@ class whClass:
     """
 
     def __repr__(self):
+        """
+        Print the current diffractometer positions and return an empty string.
+        """
         print("")
         _wh()
         return ""
@@ -2337,6 +2336,7 @@ class sampleListClass:
     """
 
     def __repr__(self):
+        """Print the list of defined samples and return an empty string."""
         print("")
         _sampleList()
         return ""
@@ -2352,6 +2352,7 @@ class Sync_UB_Matrix:
     _geom_for_psi_ = engine_for_psi()
 
     def __init__(self, source: Diffractometer, target: Diffractometer):
+        """Initialize the UB matrix sync, subscribing to changes on source."""
         self.source = source
         self.target = target
         self.source.UB.subscribe(self.sync_callback)
@@ -2364,6 +2365,9 @@ class Sync_UB_Matrix:
         self.source.UB.clear_sub(self.sync_callback)
 
     def sync_callback(self, value=None, **kwargs):
+        """
+        Copy the UB matrix from source to target when a change is received.
+        """
         if value is None:
             raise RuntimeError(f"sync_callback: {value=!r}  {kwargs=!r}")
         ub_source = value
@@ -2383,13 +2387,17 @@ class Sync_UB_Matrix:
 def restore_huber_from_scan(
     scan_id, diffractometer=None, sample_name=None, force=False
 ):
+    """
+    Restore diffractometer orientation (sample, constraints, reflections) from a
+    saved scan.
+    """
     info = run_orientation_info(cat[scan_id])
 
     if diffractometer is None:
         diffractometer = current_diffractometer()
 
     if diffractometer.name not in info.keys():
-        if force == True:
+        if force is True:
             print(
                 "WARNING: could not find information on the "
                 f"{diffractometer.name} in the scan {scan_id}. "
@@ -2398,8 +2406,7 @@ def restore_huber_from_scan(
             )
         else:
             raise NameError(
-                f"Could not find a setup for {diffractometer.name} "
-                f"in scan {scan_id}."
+                f"Could not find a setup for {diffractometer.name} in scan {scan_id}."
             )
         inp = list(info.items())[0]
     else:
@@ -2412,8 +2419,8 @@ def restore_huber_from_scan(
         restore_sample(inp, diffractometer)
     except ValueError as exc:
         raise ValueError(
-            f"{exc} Use the sample_name keyword argument to change " "the name."
-        )
+            f"{exc} Use the sample_name keyword argument to change the name."
+        ) from exc
     restore_constraints(inp, diffractometer)
     restore_reflections(inp, diffractometer)
     print(pa())

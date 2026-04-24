@@ -269,4 +269,3 @@ Module Contents
 
 
 .. py:data:: TransfocatorClass
-

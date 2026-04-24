@@ -14,48 +14,39 @@ __all__ = [
     "abs_set",
 ]
 
-from bluesky.plans import (
-    scan,
-    grid_scan as bp_grid_scan,
-    count as bp_count,
-    list_scan,
-)
-from bluesky.plan_stubs import (
-    mv as bps_mv,
-    abs_set as bps_abs_set,
-    rd,
-    trigger_and_read,
-    move_per_step,
-    sleep,
-)
-from bluesky.preprocessors import (
-    reset_positions_decorator,
-    relative_set_decorator,
-    subs_decorator,
-    monitor_during_decorator,
-)
-from bluesky.plan_patterns import chunk_outer_product_args
-from .local_preprocessors import (
-    configure_counts_decorator,
-    extra_devices_decorator,
-    stage_dichro_decorator,
-    stage_magnet911_decorator,
-    stage_4idg_softglue_decorator,
-)
-
-from toolz import partition
+from logging import getLogger
 from pathlib import Path
-from numpy import array
+
 from apsbits.core.instrument_init import oregistry
 from apsbits.utils.config_loaders import get_config
-from logging import getLogger
+from bluesky.plan_patterns import chunk_outer_product_args
+from bluesky.plan_stubs import abs_set as bps_abs_set
+from bluesky.plan_stubs import move_per_step
+from bluesky.plan_stubs import mv as bps_mv
+from bluesky.plan_stubs import rd
+from bluesky.plan_stubs import trigger_and_read
+from bluesky.plans import count as bp_count
+from bluesky.plans import grid_scan as bp_grid_scan
+from bluesky.plans import list_scan
+from bluesky.plans import scan
+from bluesky.preprocessors import monitor_during_decorator
+from bluesky.preprocessors import relative_set_decorator
+from bluesky.preprocessors import reset_positions_decorator
+from bluesky.preprocessors import subs_decorator
+from numpy import array
+from toolz import partition
 
-from ..callbacks.nexus_data_file_writer import nxwriter
 from ..callbacks.dichro_stream import dichro as dichro_device
-from ..utils.experiment_utils import experiment
-from ..utils.run_engine import RE
+from ..callbacks.nexus_data_file_writer import nxwriter
 from ..utils.counters_class import counters
+from ..utils.experiment_utils import experiment
 from ..utils.hkl_utils import current_diffractometer
+from ..utils.run_engine import RE
+from .local_preprocessors import configure_counts_decorator
+from .local_preprocessors import extra_devices_decorator
+from .local_preprocessors import stage_4idg_softglue_decorator
+from .local_preprocessors import stage_dichro_decorator
+from .local_preprocessors import stage_magnet911_decorator
 
 try:
     # change to import this only if needed?
@@ -241,7 +232,6 @@ def one_local_shot(detectors, take_reading=trigger_and_read):
 
 
 def _setup_paths(detectors):
-
     if None in (experiment.base_experiment_path, experiment.file_base_name):
         raise ValueError(
             "The experiment needs to be setup, please run experiment_setup()"
@@ -279,8 +269,7 @@ def _setup_paths(detectors):
     for _fname in [_master_fullpath] + list(_dets_file_paths.values()):
         if Path(_fname).is_file():
             raise FileExistsError(
-                f"The file {_fname} already exists! Will not overwrite, "
-                "quitting."
+                f"The file {_fname} already exists! Will not overwrite, quitting."
             )
 
     return _master_fullpath, _dets_file_paths, _rel_dets_paths
@@ -744,7 +733,8 @@ def th2th(
     Parameters
     ----------
     tth_start : float
-            Relative 2theta start. The relative theta will be half of the 2theta.
+            Relative 2theta start. The relative theta will be half of
+            the 2theta.
     tth_end : float
             Relative 2theta end. The relative theta will be half of the 2theta.
     number_of_points : int
@@ -759,20 +749,24 @@ def th2th(
             lock-in scan.
     dichro : boolean, optional
             Flag to do a dichro scan. Please run pr_setup.config() prior do a
-            dichro scan. Note that this will switch the x-ray polarization at every
-            point using the +, -, -, + sequence, thus increasing the number of
+            dichro scan. Note that this will switch the x-ray
+            polarization at every point using the +, -, -, + sequence,
+            thus increasing the number of
             points by a factor of 4
     fixq : boolean, optional
             Flag for fixQ scans. If True, it will fix the diffractometer hkl
-            position during the scan. This is particularly useful for energy scan.
+            position during the scan. This is particularly useful for
+            energy scan.
             Note that hkl is moved ~after~ the other motors!
     vortex_sgz : boolean, optional
-            Measures the Vortex detector using the softgluezynq triggers. This is a
-            special mode that requires the 'vortex' and 'sgz_vortex' devices to
+            Measures the Vortex detector using the softgluezynq
+            triggers. This is a special mode that requires the 'vortex'
+            and 'sgz_vortex' devices to
             exist otherwise an error will be thrown.
     per_step: callable, optional
             hook for customizing action of inner loop (messages per step).
-            See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+            See docstring of
+            :func:`bluesky.plan_stubs.one_nd_step` (the default)
             for details.
     md : dictionary, optional
             Metadata to be added to the run start.

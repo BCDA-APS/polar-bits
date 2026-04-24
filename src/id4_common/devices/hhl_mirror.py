@@ -2,14 +2,12 @@
 HHL mirror
 """
 
-from ophyd import (
-    Component,
-    FormattedComponent,
-    Device,
-    EpicsMotor,
-    EpicsSignal,
-    EpicsSignalRO,
-)
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
 
 
 class ToroidalMirror(Device):

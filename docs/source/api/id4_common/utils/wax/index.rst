@@ -38,4 +38,3 @@ Module Contents
 .. py:function:: wa_scan(scan=None, motor=None)
 
 .. py:function:: wa_new(motor=None)
-

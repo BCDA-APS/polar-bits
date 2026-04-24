@@ -2,30 +2,37 @@
 Polar diffractometer
 """
 
-from ophyd import (
-    Component,
-    FormattedComponent,
-    PseudoSingle,
-    PseudoPositioner,
-    Kind,
-    Signal,
-    EpicsMotor,
-    EpicsSignal,
-    EpicsSignalRO,
-)
-from ophyd.pseudopos import pseudo_position_argument, real_position_argument
-from scipy.constants import speed_of_light, Planck
-from numpy import arcsin, pi, sin, tan
-from .jj_slits import SlitDevice
-from .huber_filter import HuberFilter
-from ..utils.analyzer_utils import check_structure_factor, calcdhkl
 from pathlib import Path
+
 import gi
+from numpy import arcsin
+from numpy import pi
+from numpy import sin
+from numpy import tan
+from ophyd import Component
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
+from ophyd import Kind
+from ophyd import PseudoPositioner
+from ophyd import PseudoSingle
+from ophyd import Signal
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
+from scipy.constants import Planck
+from scipy.constants import speed_of_light
+
+from ..utils.analyzer_utils import calcdhkl
+from ..utils.analyzer_utils import check_structure_factor
+from .huber_filter import HuberFilter
+from .jj_slits import SlitDevice
 
 gi.require_version("Hkl", "5.0")
 # MUST come before `import hkl`
-from hkl.geometries import ApsPolar  # noqa: E402
 import math  # noqa: E402
+
+from hkl.geometries import ApsPolar  # noqa: E402
 
 # Constants
 WAVELENGTH_CONSTANT = 12.39
@@ -40,6 +47,9 @@ ANALYZER_LIST_PATH = Path(__file__).parent / "analyzerlist.dat"
 
 
 class AnalyzerDevice(PseudoPositioner):
+    """
+    Crystal polarization analyzer with pseudo-energy axis and crystal setup.
+    """
 
     energy = Component(PseudoSingle, limits=(2.6, 34))
     th = Component(EpicsMotor, "pmth", labels=("motor",))
@@ -61,6 +71,7 @@ class AnalyzerDevice(PseudoPositioner):
     tracking = Component(Signal, value=False, kind="config")
 
     def move_single(self, pseudo, position, **kwargs):
+        """Guard move_single to require analyzer setup before moving energy."""
         if self.d_spacing.get() == 1e4:
             raise RuntimeError(
                 "The analyzer has not been setup, please run the .setup() "
@@ -71,19 +82,35 @@ class AnalyzerDevice(PseudoPositioner):
     # These assume that the analyzer is part of the diffractometer.
     @property
     def beamline_wavelength(self):
+        """
+        Return the current beamline wavelength from the parent diffractometer
+        calc.
+        """
         return self.parent.calc.wavelength
 
     @property
     def beamline_energy(self):
+        """
+        Return the current beamline energy in keV from the parent
+        diffractometer.
+        """
         return self.parent.energy.get()
 
     def convert_energy_to_theta(self, energy):
+        """
+        Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / 2 / self.d_spacing.get()) * 180.0 / pi
         return theta
 
     def convert_energy_to_tth_trans(self, energy):
+        """
+        Convert photon energy (keV) to the two-theta translation stage position
+        (mm).
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         th = self.convert_energy_to_theta(energy)
         tth = 2 * th
@@ -93,6 +120,10 @@ class AnalyzerDevice(PseudoPositioner):
         return tth_trans
 
     def convert_theta_to_energy(self, theta):
+        """
+        Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = 2 * self.d_spacing.get() * sin(theta * pi / 180)
         energy = speed_of_light * Planck * 6.241509e15 * 1e10 / lamb
@@ -115,11 +146,17 @@ class AnalyzerDevice(PseudoPositioner):
         )
 
     def set_energy(self, energy):
+        """
+        Calibrate the Bragg-angle motor to match the given photon energy (keV).
+        """
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
     def calc(self, acal="No"):
+        """
+        Print analyzer Bragg angles and optionally calibrate the theta motor.
+        """
         d_ana = self.d_spacing.get()
         if d_ana == 1e4:
             self.setup()
@@ -145,6 +182,10 @@ class AnalyzerDevice(PseudoPositioner):
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
     ):
+        """
+        List compatible analyzer crystals and interactively configure d-spacing
+        and crystal.
+        """
         if not analyzer_energy:
             energy = self.beamline_energy
             wavelength = self.beamline_wavelength
@@ -312,6 +353,10 @@ class SixCircleDiffractometer(ApsPolar):
     # TODO: This is needed to prevent busy plotting.
     @property
     def hints(self):
+        """
+        Return hinted fields, excluding non-hinted components to prevent busy
+        plotting.
+        """
         fields = []
         for _, component in self._get_components_of_kind(Kind.hinted):
             if (~Kind.normal & Kind.hinted) & component.kind:
@@ -320,10 +365,18 @@ class SixCircleDiffractometer(ApsPolar):
         return {"fields": fields}
 
     def default_settings(self):
+        """
+        Update the HKL calc engine energy from the EPICS monochromator readback.
+        """
         self._update_calc_energy()
 
 
 class CradleDiffractometer(SixCircleDiffractometer):
+    """
+    SixCircleDiffractometer with cradle chi/phi motors and sample XYZ
+    positioning.
+    """
+
     chi = Component(EpicsMotor, "m37", labels=("motor",))
     phi = Component(EpicsMotor, "m38", labels=("motor",))
 
@@ -333,6 +386,11 @@ class CradleDiffractometer(SixCircleDiffractometer):
 
 
 class HPDiffractometer(SixCircleDiffractometer):
+    """
+    SixCircleDiffractometer for the HP press setup with base and nano-
+    positioning motors.
+    """
+
     chi = Component(EpicsMotor, "m5", labels=("motor",))
     phi = Component(EpicsMotor, "m6", labels=("motor",))
 
@@ -378,10 +436,14 @@ class PolarPSI(ApsPolar):
 
 
 class CradlePSI(PolarPSI):
+    """PolarPSI diffractometer with cradle chi and phi motors."""
+
     chi = Component(EpicsMotor, "m37", labels=("motor",))
     phi = Component(EpicsMotor, "m38", labels=("motor",))
 
 
 class HPPSI(PolarPSI):
+    """PolarPSI diffractometer for the HP press with its chi and phi motors."""
+
     chi = Component(EpicsMotor, "m5", labels=("motor",))
     phi = Component(EpicsMotor, "m6", labels=("motor",))

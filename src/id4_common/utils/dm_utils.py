@@ -2,27 +2,26 @@
 Setup new user in Bluesky.
 """
 
-from apstools.utils import dm_api_ds, dm_api_proc, dm_api_daq
-from apstools.utils.aps_data_management import (
-    DEFAULT_UPLOAD_TIMEOUT,
-    DEFAULT_UPLOAD_POLL_PERIOD,
-)
-
-from dm import (
-    EsafApsDbApi,
-    BssApsDbApi,
-    ExperimentDsApi,
-    UserDsApi,
-    ObjectAlreadyExists,
-    ObjectNotFound,
-    DmException,
-)
 from datetime import datetime
-from numpy import unique
 from pathlib import Path
 from time import time
-from bluesky.plan_stubs import sleep, null
+
 from apsbits.core.instrument_init import oregistry
+from apstools.utils import dm_api_daq
+from apstools.utils import dm_api_ds
+from apstools.utils import dm_api_proc
+from apstools.utils.aps_data_management import DEFAULT_UPLOAD_POLL_PERIOD
+from apstools.utils.aps_data_management import DEFAULT_UPLOAD_TIMEOUT
+from bluesky.plan_stubs import null
+from bluesky.plan_stubs import sleep
+from dm import BssApsDbApi
+from dm import DmException
+from dm import EsafApsDbApi
+from dm import ExperimentDsApi
+from dm import ObjectAlreadyExists
+from dm import ObjectNotFound
+from dm import UserDsApi
+from numpy import unique
 
 __all__ = """
     dm_get_experiment_data_path
@@ -110,10 +109,12 @@ def dm_upload_wait(
         else:
             return
 
-    raise TimeoutError(f"DM upload timed out after {time()-t0 :.1f} s.")
+    raise TimeoutError(f"DM upload timed out after {time() - t0:.1f} s.")
 
 
-def list_esafs(year=datetime.now().year, sector=STATION):
+def list_esafs(year=None, sector=STATION):
+    if year is None:
+        year = datetime.now().year
     return esaf_api.listStationEsafs(sector, year=year)
 
 
@@ -139,8 +140,7 @@ def get_current_run_name():
     # This is needed in case the DM server is down.
     except DmException:
         print(
-            "WARNING: could not reach the DM server, the run information may "
-            "be wrong!"
+            "WARNING: could not reach the DM server, the run information may be wrong!"
         )
         from datetime import datetime
 
@@ -152,6 +152,7 @@ def get_current_run_name():
                 datetime(now.year, 9, 15),
                 datetime(now.year + 1, 1, 1),
             ),
+            strict=False,
         ):
             if now < date:
                 run = f"{now.year}-{i}"
@@ -163,10 +164,12 @@ def get_current_run_name():
 def dm_experiment_setup(
     experiment_name,
     esaf_id=None,
-    users_name_list: list = [],
+    users_name_list: list = None,
     title: str = None,
     **kwargs,
 ):
+    if users_name_list is None:
+        users_name_list = []
     # Gets the users from the ESAF.
     if esaf_id is not None:
         badges = get_esaf_users_badge(esaf_id)

@@ -15,40 +15,38 @@ Utility functions.
 
 """
 
-import gi
-
-gi.require_version("Hkl", "5.0")
-from gi.repository import Hkl
-from hkl.user import (
-    _check_geom_selected,
-    current_diffractometer,
-    select_diffractometer,
-)
-
-from hkl import user, util
-
-from hkl.util import Constraint
-
-from .run_engine import RE
-from ..devices import counters
-from ..devices import polar, diffract, fourc, scaler
-from ..utils import hkl_utils
-from inspect import getmembers, isfunction
-from polartools import (
-    load_data,
-    diffraction,
-    absorption,
-    pressure_calibration,
-    process_images,
-    area_detector_handlers,
-    manage_database,
-)
-from apstools import utils
-
-
 import fileinput
 import pathlib
 import sys
+from inspect import getmembers
+from inspect import isfunction
+
+import gi
+
+gi.require_version("Hkl", "5.0")
+from apstools import utils
+from gi.repository import Hkl  # noqa: E402
+from hkl import user
+from hkl import util
+from hkl.user import _check_geom_selected
+from hkl.user import current_diffractometer
+from hkl.user import select_diffractometer
+from hkl.util import Constraint
+from polartools import absorption
+from polartools import area_detector_handlers
+from polartools import diffraction
+from polartools import load_data
+from polartools import manage_database
+from polartools import pressure_calibration
+from polartools import process_images
+
+from ..devices import counters
+from ..devices import diffract
+from ..devices import fourc
+from ..devices import polar
+from ..devices import scaler
+from ..utils import hkl_utils
+from .run_engine import RE
 
 path = pathlib.Path("startup_experiment.py")
 
@@ -140,6 +138,7 @@ def freeze(*args):
 
 
 def change_diffractometer(*args):
+    """Interactively prompt the user to switch the active diffractometer."""
     _geom_ = current_diffractometer()
     list = ["diffract", "fourc", "polar", "sixcpsi"]
     print("Available diffractometers {}".format(list))
@@ -236,7 +235,6 @@ def set_counting_time(time=None, monitor=False):
                 )
 
     else:
-
         for item in scaler.preset_monitor.read().items():
             time = (
                 input("Counting time [{}]: ".format(item[1]["value"]))

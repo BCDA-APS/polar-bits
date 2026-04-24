@@ -193,5 +193,3 @@ Module Contents
 
 
    .. py:attribute:: debug_level
-
-

@@ -18,9 +18,7 @@ class Magnet2T(Device):
     my = FormattedComponent(EpicsMotor, "{_mp}m21", labels=("motor",))
     mrot = FormattedComponent(EpicsMotor, "{_mp}m20", labels=("motor",))
 
-    kepco = FormattedComponent(
-        KepcoController, "{_kp}", labels=("magnet",)
-    )
+    kepco = FormattedComponent(KepcoController, "{_kp}", labels=("magnet",))
 
     def __init__(self, prefix, *, motor_prefix, kepco_prefix, **kwargs):
         """Initialize Magnet2T with separate motor and Kepco IOC prefixes."""

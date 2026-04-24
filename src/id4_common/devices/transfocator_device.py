@@ -89,15 +89,11 @@ class PyCRL(Device):
     energy_select = Component(PyCRLSignal, "EnergySelect", kind="config")
 
     # Slits
-    slit_hor_size = Component(
-        PyCRLSignal, "1:slitSize_H_RBV", kind="config"
-    )
+    slit_hor_size = Component(PyCRLSignal, "1:slitSize_H_RBV", kind="config")
     slit_hor_pv = Component(
         EpicsSignal, "1:slitSize_H.DOL", string=True, kind="config"
     )
-    slit_vert_size = Component(
-        PyCRLSignal, "1:slitSize_V_RBV", kind="config"
-    )
+    slit_vert_size = Component(PyCRLSignal, "1:slitSize_V_RBV", kind="config")
     slit_vert_pv = Component(
         EpicsSignal, "1:slitSize_V.DOL", string=True, kind="config"
     )
@@ -115,15 +111,11 @@ class PyCRL(Device):
     # Parameters readbacks
     dq = Component(PyCRLSignal, "dq", kind="config")
     q = Component(PyCRLSignal, "q", kind="config")
-    z_offset = Component(
-        PyCRLSignal, "1:oePositionOffset_RBV", kind="config"
-    )
+    z_offset = Component(PyCRLSignal, "1:oePositionOffset_RBV", kind="config")
     z_offset_pv = Component(
         EpicsSignal, "1:oePositionOffset.DOL", kind="config"
     )
-    z_from_source = Component(
-        PyCRLSignal, "1:oePosition_RBV", kind="config"
-    )
+    z_from_source = Component(PyCRLSignal, "1:oePosition_RBV", kind="config")
     sample_offset = Component(
         PyCRLSignal, "samplePositionOffset_RBV", kind="config"
     )
@@ -134,21 +126,15 @@ class PyCRL(Device):
 
     # Lenses indices
     binary = Component(EpicsSignalRO, "1:lenses", kind="config")
-    ind_control = Component(
-        EpicsSignalRO, "1:lensConfig_BW", kind="config"
-    )
-    readbacks = Component(
-        EpicsSignalRO, "1:lensConfig_RBV", kind="config"
-    )
+    ind_control = Component(EpicsSignalRO, "1:lensConfig_BW", kind="config")
+    readbacks = Component(EpicsSignalRO, "1:lensConfig_RBV", kind="config")
 
     # Other options
     preview_index = Component(EpicsSignal, "previewIndex", kind="config")
     focal_size_preview = Component(
         EpicsSignalRO, "fSize_preview", kind="config"
     )
-    inter_lens_delay = Component(
-        EpicsSignal, "1:interLensDelay", kind="config"
-    )
+    inter_lens_delay = Component(EpicsSignal, "1:interLensDelay", kind="config")
     verbose_console = Component(EpicsSignal, "verbosity", kind="config")
     thickness_error_flag = Component(
         EpicsSignal, "thickerr_flag", kind="config"
@@ -172,9 +158,7 @@ class PyCRL(Device):
 
     def _post_connect_setup(self):
         """Set up EPICS subscriptions after connection is established."""
-        self.system_done.subscribe(
-            self._update_status_subscription, run=False
-        )
+        self.system_done.subscribe(self._update_status_subscription, run=False)
 
     def _update_status_subscription(self, value, old_value, **kwarg):
         if (
@@ -217,10 +201,7 @@ class EnergySignal(Signal):
         tsleep(self._epics_sleep)
         # this is needed because the scan of the transfocator is 0.1 s
 
-        zpos = (
-            self.parent.z.user_readback.get()
-            - self.parent.dq.get() * 1000.0
-        )
+        zpos = self.parent.z.user_readback.get() - self.parent.dq.get() * 1000.0
         # dq in meters
 
         return self.parent.z.set(zpos, **kwargs)
@@ -279,9 +260,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
     motors_ioc : str
         IOC prefix for the transfocator stage motors, e.g. ``"4idgSoft:"``.
     """
-    lens_list = [
-        f"{motors_ioc}m{n}" for n in [69, 68, 67, 66, 65, 64, 63, 62]
-    ]
+    lens_list = [f"{motors_ioc}m{n}" for n in [69, 68, 67, 66, 65, 64, 63, 62]]
 
     class TransfocatorClass(PyCRL):
         """Transfocator with parametric motor IOC prefix."""
@@ -296,9 +275,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
         y = FormattedComponent(
             EpicsMotor, "{_motors_IOC}m57", labels=("motor",)
         )
-        z = FormattedComponent(
-            ZMotor, "{_motors_IOC}m61", labels=("motor",)
-        )
+        z = FormattedComponent(ZMotor, "{_motors_IOC}m61", labels=("motor",))
         pitch = FormattedComponent(
             EpicsMotor, "{_motors_IOC}m60", labels=("motor",)
         )
@@ -342,9 +319,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
         def load_reference_data(self, fname, axis):
             """Load reference tracking data from file."""
             if axis not in "x y".split():
-                raise ValueError(
-                    f"axis must be x or y. {axis} is not valid."
-                )
+                raise ValueError(f"axis must be x or y. {axis} is not valid.")
             getattr(self, f"reference_data_{axis}").put(loadtxt(fname))
 
         def _update_interpolation_x(self, value, **kwargs):
@@ -416,13 +391,9 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
 
         def _setup_optimize_distance(self):
             if self.energy_select.get() in (1, "Local"):
-                logger.info(
-                    "WARNING: transfocator in 'Local' energy mode"
-                )
+                logger.info("WARNING: transfocator in 'Local' energy mode")
 
-            distance = (
-                self.z.user_readback.get() - self.dq.get() * 1000
-            )
+            distance = self.z.user_readback.get() - self.dq.get() * 1000
 
             if not self._check_z_lims(distance):
                 raise ValueError(
@@ -434,9 +405,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
 
         def optimize_lenses(self):
             """Optimize lens configuration for minimum focal size."""
-            self.focal_power_index.set(
-                self.focal_sizes.get().argmin()
-            ).wait()
+            self.focal_power_index.set(self.focal_sizes.get().argmin()).wait()
 
             self.z.move(self._setup_optimize_distance()).wait()
 
@@ -450,9 +419,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
                     self.focal_power_index,
                     self.focal_sizes.get().argmin(),
                 )
-                yield from mv(
-                    self.z, self._setup_optimize_distance(), self, 1
-                )
+                yield from mv(self.z, self._setup_optimize_distance(), self, 1)
 
             return (yield from _moves())
 

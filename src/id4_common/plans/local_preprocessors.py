@@ -1,14 +1,21 @@
 """Local decorators"""
 
-from bluesky.utils import make_decorator
-from bluesky.preprocessors import finalize_wrapper
-from bluesky.plan_stubs import mv, null, subscribe, unsubscribe, rd, sleep
-from ophyd import Kind
 from logging import getLogger
-from apsbits.core.instrument_init import oregistry
 from time import time
 
-from ..callbacks.dichro_stream import plot_dichro_settings, dichro_bec
+from apsbits.core.instrument_init import oregistry
+from bluesky.plan_stubs import mv
+from bluesky.plan_stubs import null
+from bluesky.plan_stubs import rd
+from bluesky.plan_stubs import sleep
+from bluesky.plan_stubs import subscribe
+from bluesky.plan_stubs import unsubscribe
+from bluesky.preprocessors import finalize_wrapper
+from bluesky.utils import make_decorator
+from ophyd import Kind
+
+from ..callbacks.dichro_stream import dichro_bec
+from ..callbacks.dichro_stream import plot_dichro_settings
 from ..utils.counters_class import counters
 from ..utils.pr_setup import pr_setup
 from ..utils.run_engine import bec
@@ -18,7 +25,9 @@ logger.info(__file__)
 
 
 def extra_devices_wrapper(plan, extras):
-
+    """
+    Stage extra devices during a plan without adding them to the plot hints.
+    """
     hinted_stash = []
 
     def _stage():
@@ -169,7 +178,6 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
                 )
 
         if lockin or sgz:
-
             # TODO: This is a bit of a workaround because the select DC and
             # select AC button have a bit of a lag. If we do multiple lockin
             # scans back to back, it may not turn on the AC because the
@@ -197,7 +205,7 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             for i in range(len(positioner)):
                 setattr(
                     plot_dichro_settings.settings,
-                    f"positioner{i+1}",
+                    f"positioner{i + 1}",
                     None if positioner[i] is None else positioner[i].name,
                 )
 
@@ -228,7 +236,6 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             yield from mv(pr_setup.positioner.parent.selectDC, 1)
 
     def _unstage():
-
         if pr_setup.positioner is not None:
             yield from mv(pr_setup.positioner.parent.selectDC, 1)
 
@@ -320,12 +327,11 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
 
 
 def stage_4idg_softglue_wrapper(plan, use_sg):
-
+    """Stage the 4IDG SoftGlue FPGA for fly-scan position streaming."""
     sg = oregistry.find("gsgz", allow_none=True)
     pos_stream = oregistry.find("pos_stream", allow_none=True)
 
     def _stage():
-
         if sg is None:
             raise ValueError("4idG softglue must be loaded in oregistry!")
 
