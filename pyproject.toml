@@ -44,7 +44,9 @@ exclude = "(\n  /(\n      \\.eggs         # exclude a few common directories in 
 
 [tool.flake8]
 max-line-length = 80
-extend-ignore = [ "E203", "E402", "E501", "F401", "F405", "F722", "F811", "W503", "W504",]
+extend-ignore = [ "E203", "E402", "E501", "E741", "F401", "F405", "F722", "F811", "W503", "W504",]
+per-file-ignores = [ "src/id4_common/callbacks/apstools_spec_file_writer.py:F841",]
+exclude = [ ".logs",]
 
 [tool.isort]
 force_single_line = true
