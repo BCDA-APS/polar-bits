@@ -129,11 +129,27 @@ Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry the `"core"
 
 ### Key Components in `id4_common/`
 
-- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `transfocator_device.py` (`make_transfocator_class` factory)
+- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `transfocator_device.py` (`make_transfocator_class` factory), `counters_mixin.py` (detector plotting API — see below)
 - **`plans/`** — Bluesky scan plans: `local_scans.py` (lup, ascan, grid_scan), `dm_plans.py` (DM workflow submission), `center_maximum.py`, `flyscan_demo.py`
 - **`callbacks/`** — `spec_data_file_writer.py`, `nexus_data_file_writer.py`, `dichro_stream.py`
-- **`utils/`** — ~36 modules including HKL/crystallography utilities, DM integration, counters class, attenuator control, device loader (`device_loader.py`), experiment utilities, and `polartools`/`hklpy2` import wrappers
+- **`utils/`** — ~36 modules including HKL/crystallography utilities, DM integration, counters class (`counters_class.py`, provides `CountersClass` with `is_scaler_monitor`, `monitor_field`, `plotselect()`), attenuator control, device loader (`device_loader.py`), experiment utilities, and `polartools`/`hklpy2` import wrappers
 - **`suspenders/`** — shutter-based RunEngine suspenders for beamline safety
+
+### Detector Plotting API
+
+All detectors used with `CountersClass.plotselect()` must inherit from one of:
+
+- **`CountersMixin`** (abstract) — defines the five-method contract: `plot_options`, `label_option_map`, `select_plot`, `field_for_label`, `select_read` (no-op default). Also provides `preset_monitor` resolved from a dotted-path class attribute.
+- **`ROICountersMixin(CountersMixin)`** — concrete shared implementation for MCA detectors (Xspress3, Dante, XMAP). Subclasses supply `label_option_map` and `select_roi`; everything else is inherited.
+
+Set the count-time signal via a class attribute instead of overriding the property:
+
+```python
+class MyDetector(Trigger, CountersMixin, DetectorBase):
+    _preset_monitor_attr = "cam.acquire_time"  # dotted path, resolved at runtime
+```
+
+For devices where `preset_monitor` is an ophyd `Component` (e.g. `LocalScalerCH`), the class-body descriptor shadows the inherited property automatically — no override needed.
 
 ### Device Loading at Runtime
 
@@ -187,8 +203,7 @@ and hosted on GitHub Pages. Source files live in `docs/source/`.
 
 **Build locally:**
 ```bash
-pip install -e ".[doc]" sphinx-autoapi
-sphinx-build -M html docs/source docs/build
+conda run -n p313 sphinx-build -M html docs/source docs/build
 # open docs/build/html/index.html
 ```
 
@@ -222,20 +237,6 @@ docs/source/
 - `devices_reference.md` is hand-maintained from `devices.yml` — update when devices change
 - Example pages only document functions **defined in this repo**; user-defined macros belong in `examples/writing_macros.md` as patterns, not as calls
 - `docs/source/api/` is committed but regenerated on every build; consider adding it to `.gitignore` if it becomes a maintenance burden
-
-## Usage Logs
-
-`.usage_logs/` contains IPython session logs and example macro/startup files
-from real beamtime sessions. These are the source of truth for example content
-in the docs. Key files:
-
-| File | Content |
-|------|---------|
-| `startup_4idg_1.py`, `startup_4idh.py` | Per-session startup pattern |
-| `startup_4idg_2.py` | Non-interactive `experiment_setup()` example |
-| `motor_shortcuts_4idh.py` | Motor shortcut pattern for magnet911 |
-| `macros_4idg.py` | 4IDG user macro examples (Bluesky plans) |
-| `macros_4idh_1.py` | 4IDH user macro examples (XMCD, field control) |
 
 ## Code Style
 
