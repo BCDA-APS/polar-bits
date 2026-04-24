@@ -19,7 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   JJ slit device with individual blade motors and pseudo-positioners for center and size.
+   JJ slit device with individual blade motors and pseudo-positioners for
+   center and size.
 
 
    .. py:attribute:: top

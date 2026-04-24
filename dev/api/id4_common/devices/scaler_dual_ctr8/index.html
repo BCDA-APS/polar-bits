@@ -715,7 +715,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.scaler_dual_ctr8.LocalScalerChannel">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.scaler_dual_ctr8.</span></span><span class="sig-name descname"><span class="pre">LocalScalerChannel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler_dual_ctr8.LocalScalerChannel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.scaler.ScalerChannel</span></code></p>
-<p>ScalerChannel subclass that tracks which physical scaler board owns this channel.</p>
+<p>ScalerChannel subclass that tracks which physical scaler board owns this
+channel.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -728,7 +729,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.scaler_dual_ctr8.</span></span><span class="sig-name descname"><span class="pre">DualCTR8Scaler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
-<p>Combined scaler device aggregating two CTR8 boards into a single 15-channel interface.</p>
+<p>Combined scaler device aggregating two CTR8 boards into a single 15-channel
+interface.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.prefix1">
 <span class="sig-name descname"><span class="pre">prefix1</span></span><a class="headerlink" href="#id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.prefix1" title="Link to this definition">#</a></dt>
@@ -797,7 +799,8 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.trigger">
 <span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.trigger" title="Link to this definition">#</a></dt>
-<dd><p>Trigger acquisition on scaler1; the second board follows via hardware connection.</p>
+<dd><p>Trigger acquisition on scaler1; the second board follows via hardware
+connection.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -809,7 +812,8 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.select_plot_channels">
 <span class="sig-name descname"><span class="pre">select_plot_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chan_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.select_plot_channels" title="Link to this definition">#</a></dt>
-<dd><p>Set the Kind of each channel to hinted (in chan_names) or normal (others).</p>
+<dd><p>Set the Kind of each channel to hinted (in chan_names) or normal
+(others).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -840,7 +844,8 @@ If <em>None</em>, select all channels named in the EPICS scaler.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.select_plot">
 <span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.select_plot" title="Link to this definition">#</a></dt>
-<dd><p>Set hinted kind for the given channel list, delegating to select_plot_channels.</p>
+<dd><p>Set hinted kind for the given channel list, delegating to
+select_plot_channels.</p>
 </dd></dl>
 
 <dl class="py method">

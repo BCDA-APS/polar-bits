@@ -53,7 +53,8 @@ Module Contents
    Bases: :py:obj:`ophyd.scaler.ScalerCH`
 
 
-   ScalerCH subclass with a flexible monitor channel and plot/read channel selection.
+   ScalerCH subclass with a flexible monitor channel and plot/read channel
+   selection.
 
 
    .. py:attribute:: preset_time
@@ -69,12 +70,14 @@ Module Contents
 
    .. py:property:: channels_name_map
 
-      Return a dict mapping EPICS channel name strings to component attribute names.
+      Return a dict mapping EPICS channel name strings to component attribute
+      names.
 
 
    .. py:method:: select_plot_channels(chan_names=None)
 
-      Set the Kind of each channel to hinted (in chan_names) or normal (others).
+      Set the Kind of each channel to hinted (in chan_names) or normal
+      (others).
 
 
 
@@ -101,13 +104,15 @@ Module Contents
 
    .. py:method:: select_plot(channels)
 
-      Set the hinted kind for the given channels by delegating to select_plot_channels.
+      Set the hinted kind for the given channels by delegating to
+      select_plot_channels.
 
 
 
    .. py:method:: default_settings()
 
-      Set default monitor to chan01 and select all named read and plot channels.
+      Set default monitor to chan01 and select all named read and plot
+      channels.
 
 
 

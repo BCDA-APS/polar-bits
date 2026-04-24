@@ -737,25 +737,29 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.Trigger.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.Trigger.stage" title="Link to this definition">#</a></dt>
-<dd><p>Erase the detector, configure the trigger mode, and arm the Xspress3 before staging.</p>
+<dd><p>Erase the detector, configure the trigger mode, and arm the Xspress3
+before staging.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.Trigger.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.Trigger.unstage" title="Link to this definition">#</a></dt>
-<dd><p>Stop the Xspress3, unsubscribe the busy callback, and restore manual-trigger mode.</p>
+<dd><p>Stop the Xspress3, unsubscribe the busy callback, and restore manual-
+trigger mode.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.Trigger.trigger">
 <span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.Trigger.trigger" title="Link to this definition">#</a></dt>
-<dd><p>Start one Xspress3 acquisition and return a status object that completes when done.</p>
+<dd><p>Start one Xspress3 acquisition and return a status object that completes
+when done.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.Trigger.arm_plan">
 <span class="sig-name descname"><span class="pre">arm_plan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.Trigger.arm_plan" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan that arms the Xspress3 and waits until the detector is ready.</p>
+<dd><p>Bluesky plan that arms the Xspress3 and waits until the detector is
+ready.</p>
 </dd></dl>
 
 </dd></dl>
@@ -764,7 +768,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.ROIStatN">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xspress3_me7.</span></span><span class="sig-name descname"><span class="pre">ROIStatN</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.ROIStatN" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
-<p>Single ROI statistics device with name, bounds, and integrated-count readbacks.</p>
+<p>Single ROI statistics device with name, bounds, and integrated-count
+readbacks.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.ROIStatN.roi_name">
 <span class="sig-name descname"><span class="pre">roi_name</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.ROIStatN.roi_name" title="Link to this definition">#</a></dt>
@@ -846,7 +851,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexROIStatPlugin">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xspress3_me7.</span></span><span class="sig-name descname"><span class="pre">VortexROIStatPlugin</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexROIStatPlugin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../ad_mixins/index.html#id4_common.devices.ad_mixins.ROIStatPlugin" title="id4_common.devices.ad_mixins.ROIStatPlugin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.ad_mixins.ROIStatPlugin</span></code></a></p>
-<p>ROIStatPlugin with eight named ROI statistics sub-devices for the Vortex Xspress3.</p>
+<p>ROIStatPlugin with eight named ROI statistics sub-devices for the Vortex
+Xspress3.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexROIStatPlugin.roi1">
 <span class="sig-name descname"><span class="pre">roi1</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexROIStatPlugin.roi1" title="Link to this definition">#</a></dt>
@@ -955,7 +961,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexHDF1Plugin">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xspress3_me7.</span></span><span class="sig-name descname"><span class="pre">VortexHDF1Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_path_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexHDF1Plugin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../ad_mixins/index.html#id4_common.devices.ad_mixins.PolarHDF5Plugin" title="id4_common.devices.ad_mixins.PolarHDF5Plugin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.ad_mixins.PolarHDF5Plugin</span></code></a></p>
-<p>HDF5 plugin for the Xspress3 7-element Vortex with a separate array-counter readback PV.</p>
+<p>HDF5 plugin for the Xspress3 7-element Vortex with a separate array-counter
+readback PV.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexHDF1Plugin.array_counter">
 <span class="sig-name descname"><span class="pre">array_counter</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexHDF1Plugin.array_counter" title="Link to this definition">#</a></dt>
@@ -981,7 +988,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.TotalCorrectedSignal.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.TotalCorrectedSignal.get" title="Link to this definition">#</a></dt>
-<dd><p>Return the sum of deadtime-corrected ROI counts across all Xspress3 channels.</p>
+<dd><p>Return the sum of deadtime-corrected ROI counts across all Xspress3
+channels.</p>
 </dd></dl>
 
 </dd></dl>
@@ -990,7 +998,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexXspress37">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xspress3_me7.</span></span><span class="sig-name descname"><span class="pre">VortexXspress37</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d.h5'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.vortex_xspress3_me7.Trigger" title="id4_common.devices.vortex_xspress3_me7.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
-<p>Seven-element Vortex detector driven by an Xspress3 controller with HDF5 file saving.</p>
+<p>Seven-element Vortex detector driven by an Xspress3 controller with HDF5
+file saving.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexXspress37.cam">
 <span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.cam" title="Link to this definition">#</a></dt>
@@ -1172,7 +1181,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexXspress37.wait_for_detector">
 <span class="sig-name descname"><span class="pre">wait_for_detector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.wait_for_detector" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan that waits until the detector array counter stops incrementing.</p>
+<dd><p>Bluesky plan that waits until the detector array counter stops
+incrementing.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1190,7 +1200,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexXspress37.select_roi">
 <span class="sig-name descname"><span class="pre">select_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rois</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.select_roi" title="Link to this definition">#</a></dt>
-<dd><p>Set the hinted ROI totals to those in rois, keeping other read_rois as normal.</p>
+<dd><p>Set the hinted ROI totals to those in rois, keeping other read_rois as
+normal.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1220,7 +1231,8 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexXspress37.label_option_map">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.label_option_map" title="Link to this definition">#</a></dt>
-<dd><p>Return a mapping from human-readable ROI label strings to ROI index integers.</p>
+<dd><p>Return a mapping from human-readable ROI label strings to ROI index
+integers.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -1238,7 +1250,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexXspress37.setup_images">
 <span class="sig-name descname"><span class="pre">setup_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flyscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.setup_images" title="Link to this definition">#</a></dt>
-<dd><p>Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan.</p>
+<dd><p>Configure HDF5 file name, number, path, and flysetup flag for an
+upcoming scan.</p>
 </dd></dl>
 
 <dl class="py property">

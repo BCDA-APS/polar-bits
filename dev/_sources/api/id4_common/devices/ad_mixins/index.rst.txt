@@ -225,7 +225,8 @@ Module Contents
    Bases: :py:obj:`apstools.devices.CamMixin_V34`, :py:obj:`ophyd.areadetector.Xspress3DetectorCam`
 
 
-   Vortex fluorescence detector camera with simplified trigger and erase controls.
+   Vortex fluorescence detector camera with simplified trigger and erase
+   controls.
 
 
    .. py:attribute:: trigger_mode
@@ -254,7 +255,8 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.filestore_mixins.FileStoreBase`
 
 
-   FileStore base that derives file paths from EPICS PV values rather than templates.
+   FileStore base that derives file paths from EPICS PV values rather than
+   templates.
 
 
    .. py:property:: use_dm
@@ -370,6 +372,7 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.trigger_mixins.ADTriggerStatus`
 
 
-   AreaDetector trigger status that clears array-counter subscriptions on completion.
+   AreaDetector trigger status that clears array-counter subscriptions on
+   completion.
 
 

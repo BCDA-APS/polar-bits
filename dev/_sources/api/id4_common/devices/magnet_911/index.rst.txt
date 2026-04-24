@@ -19,7 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Three-axis (X, Y, Z) table motor bundle with sample rotation and tilt for the 911 magnet.
+   Three-axis (X, Y, Z) table motor bundle with sample rotation and tilt for
+   the 911 magnet.
 
 
    .. py:attribute:: x
@@ -82,7 +83,8 @@ Module Contents
    Bases: :py:obj:`ophyd.PVPositioner`
 
 
-   PVPositioner for the 9T superconducting magnet field ramp with heater interlock.
+   PVPositioner for the 9T superconducting magnet field ramp with heater
+   interlock.
 
 
    .. py:attribute:: setpoint
@@ -121,7 +123,8 @@ Module Contents
 
    .. py:method:: move(position, wait=True, timeout=None, moved_cb=None)
 
-      Move to position; return immediately done if heater is ON and within tolerance.
+      Move to position; return immediately done if heater is ON and within
+      tolerance.
 
 
 
@@ -130,7 +133,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   9T magnet power supply with field ramp control, safety status, and heater monitoring.
+   9T magnet power supply with field ramp control, safety status, and heater
+   monitoring.
 
 
    .. py:attribute:: field
@@ -195,7 +199,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Single monitoring channel with temperature and Hall-probe resistance/field readbacks.
+   Single monitoring channel with temperature and Hall-probe resistance/field
+   readbacks.
 
 
    .. py:attribute:: temperature_name
@@ -226,7 +231,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Variable Temperature Insert device with four temperature sensors and setpoint positioners.
+   Variable Temperature Insert device with four temperature sensors and
+   setpoint positioners.
 
 
    .. py:attribute:: sensor_a
@@ -290,7 +296,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Complete 9T superconducting magnet system with table motors, field control, and temperature.
+   Complete 9T superconducting magnet system with table motors, field control,
+   and temperature.
 
 
    .. py:attribute:: connection

@@ -57,7 +57,8 @@ Module Contents
 
    .. py:method:: unstage()
 
-      Unstage the detector, stopping acquisition and waiting for processing to finish.
+      Unstage the detector, stopping acquisition and waiting for processing to
+      finish.
 
 
 

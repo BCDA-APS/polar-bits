@@ -35,7 +35,8 @@ Module Contents
    Bases: :py:obj:`ophyd.scaler.ScalerChannel`
 
 
-   ScalerChannel subclass that tracks which physical scaler board owns this channel.
+   ScalerChannel subclass that tracks which physical scaler board owns this
+   channel.
 
 
 .. py:function:: make_channels()
@@ -48,7 +49,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Combined scaler device aggregating two CTR8 boards into a single 15-channel interface.
+   Combined scaler device aggregating two CTR8 boards into a single 15-channel
+   interface.
 
 
    .. py:attribute:: prefix1
@@ -101,7 +103,8 @@ Module Contents
 
    .. py:method:: trigger()
 
-      Trigger acquisition on scaler1; the second board follows via hardware connection.
+      Trigger acquisition on scaler1; the second board follows via hardware
+      connection.
 
 
 
@@ -112,7 +115,8 @@ Module Contents
 
    .. py:method:: select_plot_channels(chan_names=None)
 
-      Set the Kind of each channel to hinted (in chan_names) or normal (others).
+      Set the Kind of each channel to hinted (in chan_names) or normal
+      (others).
 
 
 
@@ -139,7 +143,8 @@ Module Contents
 
    .. py:method:: select_plot(channels)
 
-      Set hinted kind for the given channel list, delegating to select_plot_channels.
+      Set hinted kind for the given channel list, delegating to
+      select_plot_channels.
 
 
 

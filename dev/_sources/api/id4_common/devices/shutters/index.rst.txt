@@ -29,7 +29,8 @@ Module Contents
 
    .. py:method:: start_auto_shutter()
 
-      Subscribe to pss_state so the shutter reopens automatically on beam loss.
+      Subscribe to pss_state so the shutter reopens automatically on beam
+      loss.
 
 
 

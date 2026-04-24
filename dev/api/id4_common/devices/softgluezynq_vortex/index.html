@@ -700,7 +700,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_vortex.SGZVortex">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_vortex.</span></span><span class="sig-name descname"><span class="pre">SGZVortex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_clock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_vortex.SGZVortex" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
-<p>SoftGlue Zynq device that sequences histogram-mode Vortex detector acquisitions.</p>
+<p>SoftGlue Zynq device that sequences histogram-mode Vortex detector
+acquisitions.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_vortex.SGZVortex.preset_monitor">
 <span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_vortex.SGZVortex.preset_monitor" title="Link to this definition">#</a></dt>
@@ -807,25 +808,29 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_vortex.SGZVortex.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_vortex.SGZVortex.reset" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to pulse the reset buffer and clear the histogram scaler.</p>
+<dd><p>Bluesky plan stub to pulse the reset buffer and clear the histogram
+scaler.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_vortex.SGZVortex.stage">
 <span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_vortex.SGZVortex.stage" title="Link to this definition">#</a></dt>
-<dd><p>Stop and reset the SGZ, then subscribe the acquire callback before staging.</p>
+<dd><p>Stop and reset the SGZ, then subscribe the acquire callback before
+staging.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_vortex.SGZVortex.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_vortex.SGZVortex.unstage" title="Link to this definition">#</a></dt>
-<dd><p>Stop, reset the SGZ, and unsubscribe the acquire callback after unstaging.</p>
+<dd><p>Stop, reset the SGZ, and unsubscribe the acquire callback after
+unstaging.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_vortex.SGZVortex.trigger">
 <span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_vortex.SGZVortex.trigger" title="Link to this definition">#</a></dt>
-<dd><p>Assert the enable buffer to start one histogram acquisition and return its status.</p>
+<dd><p>Assert the enable buffer to start one histogram acquisition and return
+its status.</p>
 </dd></dl>
 
 <dl class="py method">

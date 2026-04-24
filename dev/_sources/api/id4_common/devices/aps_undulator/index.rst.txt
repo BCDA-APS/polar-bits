@@ -19,12 +19,14 @@ Module Contents
    Bases: :py:obj:`apstools.devices.aps_undulator.UndulatorPositioner`
 
 
-   UndulatorPositioner that skips waiting if the target is within the energy deadband.
+   UndulatorPositioner that skips waiting if the target is within the energy
+   deadband.
 
 
    .. py:method:: set(new_position: Any, *, timeout: float = None, moved_cb: Callable = None, wait: bool = False) -> ophyd.status.StatusBase
 
-      Move to new_position; return immediately done if already within the energy deadband.
+      Move to new_position; return immediately done if already within the
+      energy deadband.
 
 
 
@@ -96,7 +98,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Composite device grouping upstream and downstream undulators with a phase shifter.
+   Composite device grouping upstream and downstream undulators with a phase
+   shifter.
 
 
    .. py:attribute:: us

@@ -19,7 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Single Huber filter slot with label, thickness, and insertion status signals.
+   Single Huber filter slot with label, thickness, and insertion status
+   signals.
 
 
    .. py:attribute:: label

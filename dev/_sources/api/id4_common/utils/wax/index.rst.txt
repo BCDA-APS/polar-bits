@@ -50,6 +50,7 @@ Module Contents
 
 .. py:function:: wa_new(motor=None)
 
-   Print current position and limits for all motors, optionally filtered by name.
+   Print current position and limits for all motors, optionally filtered by
+   name.
 
 

@@ -710,13 +710,15 @@ The monochromator defines the beamline energy.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.energy_device.EnergySignal.mono">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mono</span></span><a class="headerlink" href="#id4_common.devices.energy_device.EnergySignal.mono" title="Link to this definition">#</a></dt>
-<dd><p>Return the monochromator device, resolving from registry on first access.</p>
+<dd><p>Return the monochromator device, resolving from registry on first
+access.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.energy_device.EnergySignal.trackable_devices">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">trackable_devices</span></span><a class="headerlink" href="#id4_common.devices.energy_device.EnergySignal.trackable_devices" title="Link to this definition">#</a></dt>
-<dd><p>Return all track_energy-labelled devices plus any manually added extra devices.</p>
+<dd><p>Return all track_energy-labelled devices plus any manually added extra
+devices.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -734,7 +736,8 @@ The monochromator defines the beamline energy.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.energy_device.EnergySignal.tracking_setup">
 <span class="sig-name descname"><span class="pre">tracking_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">devices_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><span class="pre">collections.abc.Iterable</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.energy_device.EnergySignal.tracking_setup" title="Link to this definition">#</a></dt>
-<dd><p>Enable tracking for the named devices, or prompt interactively if names are empty.</p>
+<dd><p>Enable tracking for the named devices, or prompt interactively if names
+are empty.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -752,7 +755,8 @@ The monochromator defines the beamline energy.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.energy_device.EnergySignal.feedback_device">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">feedback_device</span></span><a class="headerlink" href="#id4_common.devices.energy_device.EnergySignal.feedback_device" title="Link to this definition">#</a></dt>
-<dd><p>Return the monochromator feedback device from the registry, or None if absent.</p>
+<dd><p>Return the monochromator feedback device from the registry, or None if
+absent.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -764,7 +768,8 @@ The monochromator defines the beamline energy.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.energy_device.EnergySignal.set">
 <span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settle_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.energy_device.EnergySignal.set" title="Link to this definition">#</a></dt>
-<dd><p>Move mono and all tracking devices to position (keV); disable feedback during the move.</p>
+<dd><p>Move mono and all tracking devices to position (keV); disable feedback
+during the move.</p>
 </dd></dl>
 
 <dl class="py method">

@@ -80,7 +80,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   SoftGlue gate-and-delay block that produces a programmable-width output pulse.
+   SoftGlue gate-and-delay block that produces a programmable-width output
+   pulse.
 
 
    .. py:attribute:: input
@@ -103,7 +104,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   SoftGlue scaler-to-DMA-stream block that serialises counter data for readout.
+   SoftGlue scaler-to-DMA-stream block that serialises counter data for
+   readout.
 
 
    .. py:attribute:: reset
@@ -158,7 +160,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   SoftGlue Zynq FPGA timing device (legacy version) with full default_settings setup.
+   SoftGlue Zynq FPGA timing device (legacy version) with full default_settings
+   setup.
 
 
    .. py:attribute:: dma
@@ -235,31 +238,36 @@ Module Contents
 
    .. py:method:: clear_enable_dma()
 
-      Bluesky plan stub to clear the DMA buffer and then enable DMA acquisition.
+      Bluesky plan stub to clear the DMA buffer and then enable DMA
+      acquisition.
 
 
 
    .. py:method:: clear_disable_dma()
 
-      Bluesky plan stub to clear the DMA buffer and then disable DMA acquisition.
+      Bluesky plan stub to clear the DMA buffer and then disable DMA
+      acquisition.
 
 
 
    .. py:method:: setup_trigger_plan(period_time, pulse_width_time, pulse_delay_time=0)
 
-      Bluesky plan stub to configure the trigger period, pulse width, and delay in clock ticks.
+      Bluesky plan stub to configure the trigger period, pulse width, and
+      delay in clock ticks.
 
 
 
    .. py:method:: setup_count_plan(time)
 
-      Bluesky plan stub to set the count divider N for the given count time in seconds.
+      Bluesky plan stub to set the count divider N for the given count time in
+      seconds.
 
 
 
    .. py:method:: default_settings(timeout=10)
 
-      Configure clocks, buffers, counters, I/O, DMA, and trigger for flyscan operation.
+      Configure clocks, buffers, counters, I/O, DMA, and trigger for flyscan
+      operation.
 
 
 

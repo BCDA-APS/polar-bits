@@ -19,7 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Toroidal mirror MR3 with combined and individual translation/pitch/yaw motors and bender.
+   Toroidal mirror MR3 with combined and individual translation/pitch/yaw
+   motors and bender.
 
 
    .. py:attribute:: y
@@ -87,7 +88,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Toroidal mirror MR4 with combined and individual translation/pitch/yaw motors.
+   Toroidal mirror MR4 with combined and individual translation/pitch/yaw
+   motors.
 
 
    .. py:attribute:: y

@@ -32,7 +32,8 @@ Module Contents
       :abstractmethod:
 
 
-      Raise NotImplementedError — external trigger is not supported for Vimba detectors.
+      Raise NotImplementedError — external trigger is not supported for Vimba
+      detectors.
 
 
 
@@ -44,13 +45,15 @@ Module Contents
 
    .. py:method:: unstage()
 
-      Call parent unstage, stop acquisition, clear busy subscription, and restore manual trigger.
+      Call parent unstage, stop acquisition, clear busy subscription, and
+      restore manual trigger.
 
 
 
    .. py:method:: trigger()
 
-      Trigger one acquisition and return a status object that completes when acquire_busy drops.
+      Trigger one acquisition and return a status object that completes when
+      acquire_busy drops.
 
 
 
@@ -59,7 +62,8 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.CamBase`
 
 
-   CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics signals.
+   CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics
+   signals.
 
 
    .. py:attribute:: pool_max_buffers
@@ -150,7 +154,8 @@ Module Contents
    Bases: :py:obj:`Trigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   Vimba area detector with ROI/stats plugins, HDF5 output, and alignment helpers.
+   Vimba area detector with ROI/stats plugins, HDF5 output, and alignment
+   helpers.
 
 
    .. py:attribute:: cam
@@ -203,7 +208,8 @@ Module Contents
 
    .. py:method:: wait_for_connection(all_signals=False, timeout=2)
 
-      Wait for the cam to fully connect before calling the parent wait_for_connection.
+      Wait for the cam to fully connect before calling the parent
+      wait_for_connection.
 
 
 
@@ -250,7 +256,8 @@ Module Contents
 
    .. py:method:: default_settings()
 
-      Configure detector defaults: single-image mode, HDF1 template, and warmup sequence.
+      Configure detector defaults: single-image mode, HDF1 template, and
+      warmup sequence.
 
 
 
@@ -314,7 +321,8 @@ Module Contents
 
    .. py:property:: label_option_map
 
-      Return a mapping from ROI label strings to ROI numbers for plot selection.
+      Return a mapping from ROI label strings to ROI numbers for plot
+      selection.
 
 
    .. py:property:: plot_options
@@ -324,7 +332,8 @@ Module Contents
 
    .. py:method:: select_plot(channels)
 
-      Set hinted kind for the given channel label list, delegating to plot_select.
+      Set hinted kind for the given channel label list, delegating to
+      plot_select.
 
 
 

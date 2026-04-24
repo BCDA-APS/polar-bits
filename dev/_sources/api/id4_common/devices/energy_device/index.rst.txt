@@ -29,12 +29,14 @@ Module Contents
 
    .. py:property:: mono
 
-      Return the monochromator device, resolving from registry on first access.
+      Return the monochromator device, resolving from registry on first
+      access.
 
 
    .. py:property:: trackable_devices
 
-      Return all track_energy-labelled devices plus any manually added extra devices.
+      Return all track_energy-labelled devices plus any manually added extra
+      devices.
 
 
    .. py:property:: extra_devices
@@ -49,7 +51,8 @@ Module Contents
 
    .. py:method:: tracking_setup(devices_names: collections.abc.Iterable = [])
 
-      Enable tracking for the named devices, or prompt interactively if names are empty.
+      Enable tracking for the named devices, or prompt interactively if names
+      are empty.
 
 
 
@@ -65,7 +68,8 @@ Module Contents
 
    .. py:property:: feedback_device
 
-      Return the monochromator feedback device from the registry, or None if absent.
+      Return the monochromator feedback device from the registry, or None if
+      absent.
 
 
    .. py:method:: get(**kwargs)
@@ -76,7 +80,8 @@ Module Contents
 
    .. py:method:: set(position, *, wait=False, timeout=None, settle_time=None, moved_cb=None)
 
-      Move mono and all tracking devices to position (keV); disable feedback during the move.
+      Move mono and all tracking devices to position (keV); disable feedback
+      during the move.
 
 
 

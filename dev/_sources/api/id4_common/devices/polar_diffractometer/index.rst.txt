@@ -87,29 +87,34 @@ Module Contents
 
    .. py:property:: beamline_wavelength
 
-      Return the current beamline wavelength from the parent diffractometer calc.
+      Return the current beamline wavelength from the parent diffractometer
+      calc.
 
 
    .. py:property:: beamline_energy
 
-      Return the current beamline energy in keV from the parent diffractometer.
+      Return the current beamline energy in keV from the parent
+      diffractometer.
 
 
    .. py:method:: convert_energy_to_theta(energy)
 
-      Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing.
+      Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+      d-spacing.
 
 
 
    .. py:method:: convert_energy_to_tth_trans(energy)
 
-      Convert photon energy (keV) to the two-theta translation stage position (mm).
+      Convert photon energy (keV) to the two-theta translation stage position
+      (mm).
 
 
 
    .. py:method:: convert_theta_to_energy(theta)
 
-      Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing.
+      Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+      d-spacing.
 
 
 
@@ -139,7 +144,8 @@ Module Contents
 
    .. py:method:: setup(analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH)
 
-      List compatible analyzer crystals and interactively configure d-spacing and crystal.
+      List compatible analyzer crystals and interactively configure d-spacing
+      and crystal.
 
 
 
@@ -206,7 +212,8 @@ Module Contents
 
    .. py:property:: hints
 
-      Return hinted fields, excluding non-hinted components to prevent busy plotting.
+      Return hinted fields, excluding non-hinted components to prevent busy
+      plotting.
 
 
    .. py:method:: default_settings()
@@ -220,7 +227,8 @@ Module Contents
    Bases: :py:obj:`SixCircleDiffractometer`
 
 
-   SixCircleDiffractometer with cradle chi/phi motors and sample XYZ positioning.
+   SixCircleDiffractometer with cradle chi/phi motors and sample XYZ
+   positioning.
 
 
    .. py:attribute:: chi
@@ -243,7 +251,8 @@ Module Contents
    Bases: :py:obj:`SixCircleDiffractometer`
 
 
-   SixCircleDiffractometer for the HP press setup with base and nano-positioning motors.
+   SixCircleDiffractometer for the HP press setup with base and nano-
+   positioning motors.
 
 
    .. py:attribute:: chi

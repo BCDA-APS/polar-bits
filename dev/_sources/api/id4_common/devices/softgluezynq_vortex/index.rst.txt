@@ -19,7 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   SoftGlue Zynq device that sequences histogram-mode Vortex detector acquisitions.
+   SoftGlue Zynq device that sequences histogram-mode Vortex detector
+   acquisitions.
 
 
    .. py:attribute:: preset_monitor
@@ -92,25 +93,29 @@ Module Contents
 
    .. py:method:: reset()
 
-      Bluesky plan stub to pulse the reset buffer and clear the histogram scaler.
+      Bluesky plan stub to pulse the reset buffer and clear the histogram
+      scaler.
 
 
 
    .. py:method:: stage()
 
-      Stop and reset the SGZ, then subscribe the acquire callback before staging.
+      Stop and reset the SGZ, then subscribe the acquire callback before
+      staging.
 
 
 
    .. py:method:: unstage()
 
-      Stop, reset the SGZ, and unsubscribe the acquire callback after unstaging.
+      Stop, reset the SGZ, and unsubscribe the acquire callback after
+      unstaging.
 
 
 
    .. py:method:: trigger()
 
-      Assert the enable buffer to start one histogram acquisition and return its status.
+      Assert the enable buffer to start one histogram acquisition and return
+      its status.
 
 
 

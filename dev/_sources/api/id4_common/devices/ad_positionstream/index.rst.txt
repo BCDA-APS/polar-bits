@@ -19,7 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.ADBase`
 
 
-   ADBase subclass for position-stream cameras with acquire, counter, and callback signals.
+   ADBase subclass for position-stream cameras with acquire, counter, and
+   callback signals.
 
 
    .. py:attribute:: port_name
@@ -60,7 +61,8 @@ Module Contents
    Bases: :py:obj:`ophyd.BlueskyInterface`
 
 
-   BlueskyInterface mixin that triggers a single acquisition and waits for the busy signal.
+   BlueskyInterface mixin that triggers a single acquisition and waits for the
+   busy signal.
 
 
    .. py:method:: stage()
@@ -112,7 +114,8 @@ Module Contents
 
    .. py:method:: default_settings()
 
-      Set the HDF1 plugin warmup signal sequence for proper plugin initialization.
+      Set the HDF1 plugin warmup signal sequence for proper plugin
+      initialization.
 
 
 

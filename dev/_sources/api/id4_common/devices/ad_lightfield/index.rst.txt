@@ -54,7 +54,8 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
 
-   HDF5 plugin for LightField that translates Windows paths to Linux read paths.
+   HDF5 plugin for LightField that translates Windows paths to Linux read
+   paths.
 
 
    .. py:method:: make_write_read_paths(write_path=None, read_path=None)
@@ -150,7 +151,8 @@ Module Contents
    Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   Princeton Instruments LightField spectrometer detector with HDF5 and SPE file writing.
+   Princeton Instruments LightField spectrometer detector with HDF5 and SPE
+   file writing.
 
 
    .. py:attribute:: cam

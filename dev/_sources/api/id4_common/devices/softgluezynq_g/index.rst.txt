@@ -106,25 +106,29 @@ Module Contents
 
    .. py:method:: clear_enable_dma()
 
-      Bluesky plan stub to clear the DMA buffer and then enable DMA acquisition.
+      Bluesky plan stub to clear the DMA buffer and then enable DMA
+      acquisition.
 
 
 
    .. py:method:: clear_disable_dma()
 
-      Bluesky plan stub to clear the DMA buffer and then disable DMA acquisition.
+      Bluesky plan stub to clear the DMA buffer and then disable DMA
+      acquisition.
 
 
 
    .. py:method:: setup_trigger_plan(period_time, pulse_width_time, pulse_delay_time=0)
 
-      Bluesky plan stub to configure the trigger period, pulse width, and delay in clock ticks.
+      Bluesky plan stub to configure the trigger period, pulse width, and
+      delay in clock ticks.
 
 
 
    .. py:method:: setup_count_plan(time)
 
-      Bluesky plan stub to set the count divider N for the given count time in seconds.
+      Bluesky plan stub to set the count divider N for the given count time in
+      seconds.
 
 
 

@@ -710,7 +710,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.Trigger.setup_external_trigger">
 <span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setup_external_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.Trigger.setup_external_trigger" title="Link to this definition">#</a></dt>
-<dd><p>Raise NotImplementedError — external trigger is not supported for Vimba detectors.</p>
+<dd><p>Raise NotImplementedError — external trigger is not supported for Vimba
+detectors.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -722,13 +723,15 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.Trigger.unstage">
 <span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.Trigger.unstage" title="Link to this definition">#</a></dt>
-<dd><p>Call parent unstage, stop acquisition, clear busy subscription, and restore manual trigger.</p>
+<dd><p>Call parent unstage, stop acquisition, clear busy subscription, and
+restore manual trigger.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.Trigger.trigger">
 <span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.Trigger.trigger" title="Link to this definition">#</a></dt>
-<dd><p>Trigger one acquisition and return a status object that completes when acquire_busy drops.</p>
+<dd><p>Trigger one acquisition and return a status object that completes when
+acquire_busy drops.</p>
 </dd></dl>
 
 </dd></dl>
@@ -737,7 +740,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaCam">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_vimba.</span></span><span class="sig-name descname"><span class="pre">VimbaCam</span></span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaCam" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.CamBase</span></code></p>
-<p>CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics signals.</p>
+<p>CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics
+signals.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaCam.pool_max_buffers">
 <span class="sig-name descname"><span class="pre">pool_max_buffers</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaCam.pool_max_buffers" title="Link to this definition">#</a></dt>
@@ -879,7 +883,8 @@
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_vimba.</span></span><span class="sig-name descname"><span class="pre">VimbaDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_name_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">65535</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_vimba.Trigger" title="id4_common.devices.ad_vimba.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
-<p>Vimba area detector with ROI/stats plugins, HDF5 output, and alignment helpers.</p>
+<p>Vimba area detector with ROI/stats plugins, HDF5 output, and alignment
+helpers.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector.cam">
 <span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.cam" title="Link to this definition">#</a></dt>
@@ -953,7 +958,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector.wait_for_connection">
 <span class="sig-name descname"><span class="pre">wait_for_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_signals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.wait_for_connection" title="Link to this definition">#</a></dt>
-<dd><p>Wait for the cam to fully connect before calling the parent wait_for_connection.</p>
+<dd><p>Wait for the cam to fully connect before calling the parent
+wait_for_connection.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -1001,7 +1007,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.default_settings" title="Link to this definition">#</a></dt>
-<dd><p>Configure detector defaults: single-image mode, HDF1 template, and warmup sequence.</p>
+<dd><p>Configure detector defaults: single-image mode, HDF1 template, and
+warmup sequence.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1067,7 +1074,8 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector.label_option_map">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.label_option_map" title="Link to this definition">#</a></dt>
-<dd><p>Return a mapping from ROI label strings to ROI numbers for plot selection.</p>
+<dd><p>Return a mapping from ROI label strings to ROI numbers for plot
+selection.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -1079,7 +1087,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector.select_plot">
 <span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.select_plot" title="Link to this definition">#</a></dt>
-<dd><p>Set hinted kind for the given channel label list, delegating to plot_select.</p>
+<dd><p>Set hinted kind for the given channel label list, delegating to
+plot_select.</p>
 </dd></dl>
 
 </dd></dl>

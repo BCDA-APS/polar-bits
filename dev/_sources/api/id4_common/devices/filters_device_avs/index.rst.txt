@@ -27,7 +27,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Single AVS filter slot with insertion control, lock, material, and PV routing.
+   Single AVS filter slot with insertion control, lock, material, and PV
+   routing.
 
 
    .. py:attribute:: setpoint
@@ -62,7 +63,8 @@ Module Contents
 
 .. py:function:: make_filter_slots(num: int)
 
-   Return an OrderedDict of FilterSlot component definitions for a DynamicDeviceComponent.
+   Return an OrderedDict of FilterSlot component definitions for a
+   DynamicDeviceComponent.
 
 
 .. py:class:: APSFilter

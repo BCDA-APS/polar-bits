@@ -21,6 +21,7 @@ Module Contents
 
 .. py:function:: check_structure_factor(h, k, l, spacegroupnumber, special)
 
-   Return True if the (hkl) reflection is allowed by the space group selection rules.
+   Return True if the (hkl) reflection is allowed by the space group selection
+   rules.
 
 

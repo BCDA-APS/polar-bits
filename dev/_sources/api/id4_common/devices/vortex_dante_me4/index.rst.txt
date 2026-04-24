@@ -37,7 +37,8 @@ Module Contents
 
    .. py:method:: setup_manual_trigger()
 
-      Configure stage_sigs for software-triggered (manual) single-shot acquisition.
+      Configure stage_sigs for software-triggered (manual) single-shot
+      acquisition.
 
 
 
@@ -57,13 +58,15 @@ Module Contents
 
    .. py:method:: unstage()
 
-      Stop the Dante, unsubscribe the busy callback, and restore manual-trigger mode.
+      Stop the Dante, unsubscribe the busy callback, and restore manual-
+      trigger mode.
 
 
 
    .. py:method:: trigger()
 
-      Start one Dante acquisition and return a status object that completes when done.
+      Start one Dante acquisition and return a status object that completes
+      when done.
 
 
 
@@ -82,7 +85,8 @@ Module Contents
 
    .. py:method:: get(**kwargs)
 
-      Return the sum of deadtime-corrected ROI counts across all Dante channels.
+      Return the sum of deadtime-corrected ROI counts across all Dante
+      channels.
 
 
 
@@ -176,7 +180,8 @@ Module Contents
 
    .. py:method:: select_roi(rois)
 
-      Set the hinted ROI totals to those in rois, keeping other read_rois as normal.
+      Set the hinted ROI totals to those in rois, keeping other read_rois as
+      normal.
 
 
 
@@ -212,7 +217,8 @@ Module Contents
 
    .. py:property:: label_option_map
 
-      Return a mapping from human-readable ROI label strings to ROI index integers.
+      Return a mapping from human-readable ROI label strings to ROI index
+      integers.
 
 
    .. py:property:: plot_options
@@ -228,7 +234,8 @@ Module Contents
 
    .. py:method:: setup_images(base_folder, file_name_base, file_number, flyscan=False)
 
-      Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan.
+      Configure HDF5 file name, number, path, and flysetup flag for an
+      upcoming scan.
 
 
 

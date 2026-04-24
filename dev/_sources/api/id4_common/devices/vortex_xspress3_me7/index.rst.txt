@@ -54,25 +54,29 @@ Module Contents
 
    .. py:method:: stage()
 
-      Erase the detector, configure the trigger mode, and arm the Xspress3 before staging.
+      Erase the detector, configure the trigger mode, and arm the Xspress3
+      before staging.
 
 
 
    .. py:method:: unstage()
 
-      Stop the Xspress3, unsubscribe the busy callback, and restore manual-trigger mode.
+      Stop the Xspress3, unsubscribe the busy callback, and restore manual-
+      trigger mode.
 
 
 
    .. py:method:: trigger()
 
-      Start one Xspress3 acquisition and return a status object that completes when done.
+      Start one Xspress3 acquisition and return a status object that completes
+      when done.
 
 
 
    .. py:method:: arm_plan()
 
-      Bluesky plan that arms the Xspress3 and waits until the detector is ready.
+      Bluesky plan that arms the Xspress3 and waits until the detector is
+      ready.
 
 
 
@@ -81,7 +85,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Single ROI statistics device with name, bounds, and integrated-count readbacks.
+   Single ROI statistics device with name, bounds, and integrated-count
+   readbacks.
 
 
    .. py:attribute:: roi_name
@@ -134,7 +139,8 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.ROIStatPlugin`
 
 
-   ROIStatPlugin with eight named ROI statistics sub-devices for the Vortex Xspress3.
+   ROIStatPlugin with eight named ROI statistics sub-devices for the Vortex
+   Xspress3.
 
 
    .. py:attribute:: roi1
@@ -207,7 +213,8 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
 
-   HDF5 plugin for the Xspress3 7-element Vortex with a separate array-counter readback PV.
+   HDF5 plugin for the Xspress3 7-element Vortex with a separate array-counter
+   readback PV.
 
 
    .. py:attribute:: array_counter
@@ -229,7 +236,8 @@ Module Contents
 
    .. py:method:: get(**kwargs)
 
-      Return the sum of deadtime-corrected ROI counts across all Xspress3 channels.
+      Return the sum of deadtime-corrected ROI counts across all Xspress3
+      channels.
 
 
 
@@ -238,7 +246,8 @@ Module Contents
    Bases: :py:obj:`Trigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   Seven-element Vortex detector driven by an Xspress3 controller with HDF5 file saving.
+   Seven-element Vortex detector driven by an Xspress3 controller with HDF5
+   file saving.
 
 
    .. py:attribute:: cam
@@ -369,7 +378,8 @@ Module Contents
 
    .. py:method:: wait_for_detector()
 
-      Bluesky plan that waits until the detector array counter stops incrementing.
+      Bluesky plan that waits until the detector array counter stops
+      incrementing.
 
 
 
@@ -386,7 +396,8 @@ Module Contents
 
    .. py:method:: select_roi(rois)
 
-      Set the hinted ROI totals to those in rois, keeping other read_rois as normal.
+      Set the hinted ROI totals to those in rois, keeping other read_rois as
+      normal.
 
 
 
@@ -416,7 +427,8 @@ Module Contents
 
    .. py:property:: label_option_map
 
-      Return a mapping from human-readable ROI label strings to ROI index integers.
+      Return a mapping from human-readable ROI label strings to ROI index
+      integers.
 
 
    .. py:property:: plot_options
@@ -432,7 +444,8 @@ Module Contents
 
    .. py:method:: setup_images(base_folder, file_name_base, file_number, flyscan=False)
 
-      Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan.
+      Configure HDF5 file name, number, path, and flysetup flag for an
+      upcoming scan.
 
 
 

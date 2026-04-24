@@ -5,7 +5,8 @@ id4_common.utils.formatted_dynamic_component
 
 .. autoapi-nested-parse::
 
-   Descriptor classes for building ophyd sub-devices with instance-formatted PV strings.
+   Descriptor classes for building ophyd sub-devices with instance-formatted PV
+   strings.
 
 
 

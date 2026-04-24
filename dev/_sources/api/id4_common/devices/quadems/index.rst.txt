@@ -32,7 +32,8 @@ Module Contents
    Bases: :py:obj:`ophyd.QuadEM`
 
 
-   QuadEM device with POLAR-specific statistics plugins and fast readback signals.
+   QuadEM device with POLAR-specific statistics plugins and fast readback
+   signals.
 
 
    .. py:attribute:: image
@@ -118,7 +119,8 @@ Module Contents
 
    .. py:property:: preset_monitor
 
-      Return the averaging_time signal as the count-time preset for scan plans.
+      Return the averaging_time signal as the count-time preset for scan
+      plans.
 
 
 .. py:class:: TetrAMM
@@ -137,7 +139,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Mixin that replaces the QuadEM trigger/preset with a no-op for read-only use.
+   Mixin that replaces the QuadEM trigger/preset with a no-op for read-only
+   use.
 
 
    .. py:attribute:: dummy
@@ -229,7 +232,8 @@ Module Contents
 
    .. py:method:: default_settings()
 
-      Set calibration and configuration signals to config kind and clear stage_sigs.
+      Set calibration and configuration signals to config kind and clear
+      stage_sigs.
 
 
 
@@ -238,12 +242,14 @@ Module Contents
    Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`TetrAMM`
 
 
-   Read-only TetrAMM 4-channel electrometer that disables staging and triggering.
+   Read-only TetrAMM 4-channel electrometer that disables staging and
+   triggering.
 
 
    .. py:method:: default_settings()
 
-      Set calibration and configuration signals to config kind and clear stage_sigs.
+      Set calibration and configuration signals to config kind and clear
+      stage_sigs.
 
 
 

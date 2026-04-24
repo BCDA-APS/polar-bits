@@ -103,7 +103,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   SoftGlue gate-and-delay block that produces a programmable-width output pulse.
+   SoftGlue gate-and-delay block that produces a programmable-width output
+   pulse.
 
 
    .. py:attribute:: input
@@ -186,7 +187,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   SoftGlue histogram scaler block for time-resolved counting into histogram bins.
+   SoftGlue histogram scaler block for time-resolved counting into histogram
+   bins.
 
 
    .. py:attribute:: en
@@ -244,7 +246,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   SoftGlue scaler-to-DMA-stream block that serialises counter data for readout.
+   SoftGlue scaler-to-DMA-stream block that serialises counter data for
+   readout.
 
 
    .. py:attribute:: reset

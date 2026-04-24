@@ -121,13 +121,15 @@ Module Contents
 
    .. py:method:: convert_energy_to_theta(energy)
 
-      Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing.
+      Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+      d-spacing.
 
 
 
    .. py:method:: convert_theta_to_energy(theta)
 
-      Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing.
+      Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+      d-spacing.
 
 
 
@@ -151,7 +153,8 @@ Module Contents
 
    .. py:method:: default_settings()
 
-      Apply default d-spacing and motor-switch settings for this phase retarder.
+      Apply default d-spacing and motor-switch settings for this phase
+      retarder.
 
 
 
@@ -171,7 +174,8 @@ Module Contents
 
    .. py:method:: default_settings()
 
-      Set PZT conversion factor and d-spacing based on the selected crystal plane.
+      Set PZT conversion factor and d-spacing based on the selected crystal
+      plane.
 
 
 

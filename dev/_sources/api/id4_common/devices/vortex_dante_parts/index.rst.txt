@@ -132,7 +132,8 @@ Module Contents
    Bases: :py:obj:`DanteCAM1`
 
 
-   DanteCAM1 variant for a 4-element Dante detector with SNL connectivity status.
+   DanteCAM1 variant for a 4-element Dante detector with SNL connectivity
+   status.
 
 
    .. py:attribute:: snl_connected
@@ -143,7 +144,8 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.ADBase`
 
 
-   Per-channel SCA (single-channel analyser) statistics and parameters for a Dante board.
+   Per-channel SCA (single-channel analyser) statistics and parameters for a
+   Dante board.
 
 
    .. py:attribute:: real_time
@@ -253,7 +255,8 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
 
-   HDF5 plugin for the Dante detector with Dante-specific array counter and warmup.
+   HDF5 plugin for the Dante detector with Dante-specific array counter and
+   warmup.
 
 
    .. py:attribute:: array_counter
@@ -264,7 +267,8 @@ Module Contents
 
    .. py:method:: warmup()
 
-      Perform a single-point MCA mapping acquisition to warm up the HDF5 plugin.
+      Perform a single-point MCA mapping acquisition to warm up the HDF5
+      plugin.
 
 
 

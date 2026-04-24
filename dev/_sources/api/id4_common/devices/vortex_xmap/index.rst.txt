@@ -25,7 +25,8 @@ Module Contents
    Bases: :py:obj:`ophyd.mca.SaturnDXP`
 
 
-   SaturnDXP subclass that removes unused live_time_output and trigger_output components.
+   SaturnDXP subclass that removes unused live_time_output and trigger_output
+   components.
 
 
    .. py:attribute:: live_time_output
@@ -43,7 +44,8 @@ Module Contents
    Bases: :py:obj:`ophyd.mca.EpicsMCARecord`
 
 
-   EpicsMCARecord subclass that adds a check_acquiring signal for polling acquisition state.
+   EpicsMCARecord subclass that adds a check_acquiring signal for polling
+   acquisition state.
 
 
    .. py:attribute:: check_acquiring
@@ -97,7 +99,8 @@ Module Contents
 
    .. py:method:: get(**kwargs)
 
-      Return the sum of deadtime-corrected ROI counts across all XMAP channels.
+      Return the sum of deadtime-corrected ROI counts across all XMAP
+      channels.
 
 
 
@@ -191,7 +194,8 @@ Module Contents
 
    .. py:method:: default_kinds()
 
-      Set default read/configuration attribute lists for MCA channels (placeholder).
+      Set default read/configuration attribute lists for MCA channels
+      (placeholder).
 
 
 
@@ -208,7 +212,8 @@ Module Contents
 
    .. py:method:: select_roi(rois)
 
-      Set the hinted ROI totals to those in rois, keeping other read_rois as normal.
+      Set the hinted ROI totals to those in rois, keeping other read_rois as
+      normal.
 
 
 
@@ -244,7 +249,8 @@ Module Contents
 
    .. py:property:: label_option_map
 
-      Return a mapping from human-readable ROI label strings to ROI index integers.
+      Return a mapping from human-readable ROI label strings to ROI index
+      integers.
 
 
    .. py:property:: plot_options

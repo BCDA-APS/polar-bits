@@ -37,7 +37,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Device storing start, end, step, and time-factor parameters for the edge region.
+   Device storing start, end, step, and time-factor parameters for the edge
+   region.
 
 
    .. py:attribute:: Estart
@@ -57,7 +58,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Device holding start energy, step, and time-factor for a single pre-edge region.
+   Device holding start energy, step, and time-factor for a single pre-edge
+   region.
 
 
    .. py:attribute:: Estart
@@ -143,7 +145,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Device storing all qxscan energy-region parameters and the resulting energy list.
+   Device storing all qxscan energy-region parameters and the resulting energy
+   list.
 
 
    .. py:attribute:: pre_edge
@@ -190,7 +193,8 @@ Module Contents
 
    .. py:method:: load_from_scan(scan, cat=cat)
 
-      Restore qxscan parameters from the baseline stream of a previously recorded scan.
+      Restore qxscan parameters from the baseline stream of a previously
+      recorded scan.
 
 
 

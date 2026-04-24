@@ -50,7 +50,8 @@ Module Contents
 
 .. py:function:: make_filter_slots(num: int)
 
-   Return an OrderedDict of FilterSlot component definitions for a DynamicDeviceComponent.
+   Return an OrderedDict of FilterSlot component definitions for a
+   DynamicDeviceComponent.
 
 
 .. py:class:: APSFilter
@@ -58,7 +59,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   APS filter bank with energy-based transmission control and per-slot management.
+   APS filter bank with energy-based transmission control and per-slot
+   management.
 
 
    .. py:attribute:: energy_select

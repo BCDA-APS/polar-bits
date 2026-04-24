@@ -19,7 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Photon chopper with translation motor, Newport controller, and frequency readback.
+   Photon chopper with translation motor, Newport controller, and frequency
+   readback.
 
 
    .. py:attribute:: translation

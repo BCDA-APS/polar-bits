@@ -21,7 +21,8 @@ Module Contents
    Bases: :py:obj:`apstools.devices.labjack.Output`
 
 
-   LabJack analog output channel with description, value, and drive-limit signals.
+   LabJack analog output channel with description, value, and drive-limit
+   signals.
 
 
    .. py:attribute:: description
@@ -69,7 +70,8 @@ Module Contents
    Bases: :py:obj:`apstools.devices.LabJackT7`
 
 
-   LabJack T7 with six analog outputs and digital I/O channels for 4ID beamlines.
+   LabJack T7 with six analog outputs and digital I/O channels for 4ID
+   beamlines.
 
 
    .. py:attribute:: analog_outputs
@@ -80,7 +82,8 @@ Module Contents
 
    .. py:method:: default_settings()
 
-      Set default visibility: show analog outputs, hide digitizer, digital I/O, and analog inputs.
+      Set default visibility: show analog outputs, hide digitizer, digital
+      I/O, and analog inputs.
 
 
 
