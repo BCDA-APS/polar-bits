@@ -313,9 +313,12 @@ def setup_detectors(time):
             sgz_vortex.down_counter_pulse.preset.set(pulses).wait(5)
 
         return dets  # this should have all scalers by default
-    # If counting against a monitor, it only works if the detectors is in the
-    # same scaler channel.
+    # If counting against a monitor, it only works if the monitor is a scaler
+    # channel and all detectors are in the same scaler.
     else:
+        if not counters.is_scaler_monitor:
+            return counters.detectors
+
         if counters.monitor == "Time":
             raise ValueError(
                 "Monitor is set to 'Time', but you are trying to count against "
@@ -442,7 +445,7 @@ def count(
     # TODO: The md handling might go well in a decorator.
     # TODO: May need to add reference to stream.
     _md = dict(
-        hints={"monitor": counters.monitor, "detectors": []},
+        hints={"monitor": counters.monitor_field, "detectors": []},
         data_management=experiment.data_management or "None",
         esaf=experiment.esaf,
         proposal=experiment.proposal,
@@ -589,7 +592,7 @@ def ascan(
     extras = yield from _collect_extras(args)
 
     _md = dict(
-        hints={"monitor": counters.monitor, "detectors": []},
+        hints={"monitor": counters.monitor_field, "detectors": []},
         data_management=experiment.data_management or "None",
         esaf=experiment.esaf,
         proposal=experiment.proposal,
@@ -925,7 +928,7 @@ def grid_scan(
     extras = yield from _collect_extras(args)
 
     _md = dict(
-        hints={"monitor": counters.monitor, "detectors": []},
+        hints={"monitor": counters.monitor_field, "detectors": []},
         data_management=experiment.data_management or "None",
         esaf=experiment.esaf,
         proposal=experiment.proposal,
@@ -1180,7 +1183,7 @@ def qxscan(
     )
 
     _md = dict(
-        hints={"monitor": counters.monitor, "detectors": []},
+        hints={"monitor": counters.monitor_field, "detectors": []},
         data_management=experiment.data_management or "None",
         esaf=experiment.esaf,
         proposal=experiment.proposal,

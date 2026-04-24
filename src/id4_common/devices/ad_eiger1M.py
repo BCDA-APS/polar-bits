@@ -21,6 +21,7 @@ from .ad_mixins import ROIPlugin
 from .ad_mixins import StatsPlugin
 from .ad_mixins import TransformPlugin
 from .ad_mixins import TriggerBase
+from .counters_mixin import CountersMixin
 
 
 class TriggerTime(TriggerBase):
@@ -175,7 +176,7 @@ class TriggerTime(TriggerBase):
         return self._status
 
 
-class Eiger1MDetector(TriggerTime, DetectorBase):
+class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
     """Eiger 1M area detector with HDF5 file writing and statistics plugins."""
 
     _default_configuration_attrs = (
@@ -233,11 +234,7 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
         self.max_num_images = max_num_images
         super().__init__(*args, **kwargs)
 
-    # Make this compatible with other detectors
-    @property
-    def preset_monitor(self):
-        """Return the signal used to set exposure time."""
-        return self.cam.acquire_time
+    _preset_monitor_attr = "cam.acquire_time"
 
     def align_on(self, time=0.1):
         """Start detector in alignment mode"""
@@ -381,3 +378,12 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
         """Select which stats channels to plot by label name."""
         chans = [self.label_option_map[i] for i in channels]
         self.plot_select(chans)
+
+    def field_for_label(self, label):
+        """Return the ophyd field name for a plot-option label."""
+        stats_index = self.label_option_map[label]
+        return getattr(self, f"stats{stats_index}").total.name
+
+    def select_read(self, channels):
+        """No-op: all stats channels are always read (only hinted/normal differ)."""
+        pass

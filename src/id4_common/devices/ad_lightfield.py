@@ -21,6 +21,7 @@ from ophyd.areadetector.trigger_mixins import ADTriggerStatus
 
 from .ad_mixins import ImagePlugin
 from .ad_mixins import PolarHDF5Plugin
+from .counters_mixin import CountersMixin
 
 
 class MySingleTrigger(TriggerBase):
@@ -242,7 +243,7 @@ class MyLightFieldCam(LightFieldDetectorCam):
     )
 
 
-class LightFieldDetector(MySingleTrigger, DetectorBase):
+class LightFieldDetector(MySingleTrigger, CountersMixin, DetectorBase):
     """
     Princeton Instruments LightField spectrometer detector with HDF5 and SPE
     file writing.
@@ -280,10 +281,24 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
         super().__init__(*args, **kwargs)
         self._flyscan = False
 
+    _preset_monitor_attr = "cam.acquire_time"
+
     @property
-    def preset_monitor(self):
-        """Return the signal used to set exposure time."""
-        return self.cam.acquire_time
+    def label_option_map(self) -> dict:
+        """No selectable plot channels — LightField saves full spectra."""
+        return {}
+
+    @property
+    def plot_options(self) -> list:
+        """Return empty list — LightField has no selectable plot channels."""
+        return []
+
+    def select_plot(self, channels: list) -> None:
+        """No-op — LightField has no selectable plot channels."""
+
+    def field_for_label(self, label: str) -> str:
+        """Return label unchanged — LightField has no channel mapping."""
+        return label
 
     def save_images_on(self):
         """Enable HDF5 image saving."""

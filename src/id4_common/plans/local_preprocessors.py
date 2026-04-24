@@ -75,11 +75,10 @@ def configure_counts_wrapper(plan, detectors, count_time):
 
     def setup():
         if count_time < 0:
-            if counters.monitor == "Time":
+            if counters.monitor == "Time" or not counters.is_scaler_monitor:
                 raise ValueError(
-                    'count_time cannot be < 0 because "Time" is the monitor.'
-                    "Run counters.plotselect() to change the monitor to a"
-                    "scaler channel."
+                    "count_time < 0 requires a scaler channel as monitor. "
+                    "Run counters.plotselect() to change the monitor."
                 )
 
             scaler = counters.monitor_detector
@@ -104,7 +103,7 @@ def configure_counts_wrapper(plan, detectors, count_time):
             raise ValueError("count_time cannot be zero.")
 
     def reset():
-        if count_time < 0:
+        if count_time < 0 and counters.is_scaler_monitor:
             scaler = counters.monitor_detector
             scaler_channel = getattr(
                 scaler.channels, scaler.channels_name_map[counters.monitor]
@@ -221,7 +220,7 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
 
                 plot_dichro_settings.settings.detector = counters.plot_names[0]
 
-            plot_dichro_settings.settings.monitor = counters.monitor
+            plot_dichro_settings.settings.monitor = counters.monitor_field
 
             dichro_bec.enable_plots()
             bec.disable_plots()

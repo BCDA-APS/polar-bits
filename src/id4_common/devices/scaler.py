@@ -10,6 +10,8 @@ from ophyd import Kind
 from ophyd.scaler import ScalerCH
 from ophyd.signal import Signal
 
+from .counters_mixin import CountersMixin
+
 
 class PresetMonitorSignal(Signal):
     """Signal that control the selected monitor channel"""
@@ -95,7 +97,7 @@ class PresetMonitorSignal(Signal):
         )
 
 
-class LocalScalerCH(ScalerCH):
+class LocalScalerCH(CountersMixin, ScalerCH):
     """
     ScalerCH subclass with a flexible monitor channel and plot/read channel
     selection.
@@ -245,6 +247,18 @@ class LocalScalerCH(ScalerCH):
         select_plot_channels.
         """
         self.select_plot_channels(chan_names=channels)
+
+    @property
+    def label_option_map(self) -> dict:
+        """Identity map — scaler labels are already field names after match_names()."""
+        return {name: name for name in self.channels_name_map}
+
+    def field_for_label(self, label):
+        """Return the ophyd field name for a plot-option label.
+
+        For scalers the label is already the field name after match_names().
+        """
+        return label
 
     def default_settings(self):
         """

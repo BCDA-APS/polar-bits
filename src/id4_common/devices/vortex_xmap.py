@@ -14,6 +14,8 @@ from ophyd.mca import EpicsMCARecord
 from ophyd.mca import SaturnDXP
 from ophyd.status import DeviceStatus
 
+from .counters_mixin import ROICountersMixin
+
 MAX_ROIS = 32
 
 
@@ -134,7 +136,7 @@ def _totals(attr_fix, id_range):
     return defn
 
 
-class VortexXMAP(SingleTrigger):
+class VortexXMAP(SingleTrigger, ROICountersMixin):
     """Four-element Vortex detector driven by an XIA XMAP DXP controller."""
 
     # Buttons
@@ -176,10 +178,7 @@ class VortexXMAP(SingleTrigger):
 
     _read_rois = [1]
 
-    @property
-    def preset_monitor(self):
-        """Return the real_preset signal as the scan count-time control."""
-        return self.real_preset
+    _preset_monitor_attr = "real_preset"
 
     def default_kinds(self):
         """
@@ -272,14 +271,3 @@ class VortexXMAP(SingleTrigger):
         integers.
         """
         return {f"ROI{i} Total": i for i in range(0, 8)}
-
-    @property
-    def plot_options(self):
-        """Return all available ROI label strings for plot channel selection."""
-        # Return all named scaler channels
-        return list(self.label_option_map.keys())
-
-    def select_plot(self, channels):
-        """Select which ROI channels are plotted by label name."""
-        chans = [self.label_option_map[i] for i in channels]
-        self.select_roi(chans)
