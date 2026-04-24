@@ -20,7 +20,10 @@ from .ad_mixins import PolarHDF5Plugin
 
 
 class PositionStreamCam(ADBase):
-    """ADBase subclass for position-stream cameras with acquire, counter, and callback signals."""
+    """
+    ADBase subclass for position-stream cameras with acquire, counter, and
+    callback signals.
+    """
 
     _default_configuration_attrs = ADBase._default_configuration_attrs + (
         "port_name",
@@ -50,12 +53,18 @@ class PositionStreamCam(ADBase):
 
 
 class MySingleTrigger(BlueskyInterface):
-    """BlueskyInterface mixin that triggers a single acquisition and waits for the busy signal."""
+    """
+    BlueskyInterface mixin that triggers a single acquisition and waits for the
+    busy signal.
+    """
 
     _status_type = DeviceStatus
 
     def __init__(self, *args, image_name=None, delay_time=0.1, **kwargs):
-        """Initialize MySingleTrigger with an optional image name and post-acquire delay."""
+        """
+        Initialize MySingleTrigger with an optional image name and post-acquire
+        delay.
+        """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -73,7 +82,9 @@ class MySingleTrigger(BlueskyInterface):
         return getattr(self, self._acquire_busy)
 
     def stage(self):
-        """Subscribe to acquire_busy changes and call the parent stage method."""
+        """
+        Subscribe to acquire_busy changes and call the parent stage method.
+        """
         self._acquire_busy.subscribe(self._acquire_changed)
         super().stage()
 
@@ -123,18 +134,26 @@ class PositionStreamDevice(MySingleTrigger, DetectorBase):
         hdf1_file_extension="h5",
         **kwargs,
     ):
-        """Initialize PositionStreamDevice with default HDF5 folder and filename template."""
+        """
+        Initialize PositionStreamDevice with default HDF5 folder and filename
+        template.
+        """
         self.default_folder = default_folder
         self.hdf1_name_format = hdf1_name_template + "." + hdf1_file_extension
         super().__init__(*args, **kwargs)
 
     @property
     def preset_monitor(self):
-        """Return the dummy acquire_time signal used as a no-op preset monitor."""
+        """
+        Return the dummy acquire_time signal used as a no-op preset monitor.
+        """
         return self.cam.acquire_time
 
     def default_settings(self):
-        """Set the HDF1 plugin warmup signal sequence for proper plugin initialization."""
+        """
+        Set the HDF1 plugin warmup signal sequence for proper plugin
+        initialization.
+        """
         self.hdf1.warmup_signals = [
             (self.hdf1.enable, 1),
             (self.hdf1.parent.cam.array_callbacks, 1),  # set by number
@@ -145,7 +164,9 @@ class PositionStreamDevice(MySingleTrigger, DetectorBase):
     def setup_images(
         self, base_path, name_template, file_number, flyscan=False
     ):
-        """Configure HDF1 file path, name, and number for an upcoming acquisition."""
+        """
+        Configure HDF1 file path, name, and number for an upcoming acquisition.
+        """
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.hdf1.file_name.set(name_template).wait(timeout=10)
         # Make sure eiger will save image

@@ -38,7 +38,9 @@ class MySingleTrigger(TriggerBase):
     _status_type = ADTriggerStatus
 
     def __init__(self, *args, image_name=None, delay_time=0.1, **kwargs):
-        """Initialize MySingleTrigger with optional image name and settling delay."""
+        """
+        Initialize MySingleTrigger with optional image name and settling delay.
+        """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -81,10 +83,15 @@ class MySingleTrigger(TriggerBase):
 
 
 class LF_HDF(PolarHDF5Plugin):
-    """HDF5 plugin for LightField that translates Windows paths to Linux read paths."""
+    """
+    HDF5 plugin for LightField that translates Windows paths to Linux read
+    paths.
+    """
 
     def make_write_read_paths(self, write_path=None, read_path=None):
-        """Return write path, full read path, and relative read path for HDF5 file."""
+        """
+        Return write path, full read path, and relative read path for HDF5 file.
+        """
 
         if write_path is None:
             write_path = Path(self.file_path.get(as_string=True))
@@ -119,7 +126,9 @@ class LightFieldFilePlugin(Device, FileStoreBase):
     enable = ADComponent(Signal, value=True, kind="config")
 
     def __init__(self, *args, **kwargs):
-        """Initialize LightFieldFilePlugin and set the POLAR SPE filestore spec."""
+        """
+        Initialize LightFieldFilePlugin and set the POLAR SPE filestore spec.
+        """
         self.filestore_spec = "AD_SPE_APSPolar"
         super().__init__(*args, write_path_template="", **kwargs)
         self.enable.subscribe(self._set_kind)
@@ -141,7 +150,9 @@ class LightFieldFilePlugin(Device, FileStoreBase):
         self.parent.cam.file_name_base.put(value)
 
     def make_write_read_paths(self, write_path=None, read_path=None):
-        """Return write path, full read path, and relative read path for SPE file."""
+        """
+        Return write path, full read path, and relative read path for SPE file.
+        """
         if write_path is None:
             write_path = Path(self.parent.cam.file_path.get(as_string=True))
         if read_path is None:
@@ -164,7 +175,9 @@ class LightFieldFilePlugin(Device, FileStoreBase):
         return read_path, full_path, relative_path
 
     def stage(self):
-        """Stage the file plugin, verifying the output file does not already exist."""
+        """
+        Stage the file plugin, verifying the output file does not already exist.
+        """
         # TODO: is there a way to check if the file already exists? The issue is
         # that the IOC is in another windows machine.
         read_path, full_path, _ = self.make_write_read_paths()
@@ -200,7 +213,9 @@ class LightFieldFilePlugin(Device, FileStoreBase):
 
 
 class MyLightFieldCam(LightFieldDetectorCam):
-    """LightField camera with additional file naming and grating wavelength PVs."""
+    """
+    LightField camera with additional file naming and grating wavelength PVs.
+    """
 
     file_name_base = ADComponent(EpicsSignal, "FileName", string=True)
     file_path = ADComponent(
@@ -228,7 +243,10 @@ class MyLightFieldCam(LightFieldDetectorCam):
 
 
 class LightFieldDetector(MySingleTrigger, DetectorBase):
-    """Princeton Instruments LightField spectrometer detector with HDF5 and SPE file writing."""
+    """
+    Princeton Instruments LightField spectrometer detector with HDF5 and SPE
+    file writing.
+    """
 
     _default_read_attrs = ("cam", "file", "hdf1")
     _default_configuration_attrs = ("image",)
@@ -248,7 +266,10 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
         relative_default_folder="",
         **kwargs,
     ):
-        """Initialize LightFieldDetector with file path roots and HDF5 naming settings."""
+        """
+        Initialize LightFieldDetector with file path roots and HDF5 naming
+        settings.
+        """
         self.hdf1_name_format = hdf1_name_template + "." + hdf1_file_extension
         self.default_ioc_folder = (
             rf"{windows_files_root}\{relative_default_folder}"

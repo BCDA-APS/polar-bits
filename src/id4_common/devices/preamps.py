@@ -19,10 +19,16 @@ from pint import Quantity
 
 
 class LocalPreAmp(SRS570_PreAmplifier):
-    """SRS570 pre-amplifier with built-in Bluesky plans for sensitivity and offset optimization."""
+    """
+    SRS570 pre-amplifier with built-in Bluesky plans for sensitivity and offset
+    optimization.
+    """
 
     def __init__(self, *args, scaler_channel=None, shutter=None, **kwargs):
-        """Initialize LocalPreAmp with optional scaler channel and beam shutter references."""
+        """
+        Initialize LocalPreAmp with optional scaler channel and beam shutter
+        references.
+        """
         super().__init__(*args, **kwargs)
         self._scaler_channel = scaler_channel
         self._shutter = shutter
@@ -70,7 +76,9 @@ class LocalPreAmp(SRS570_PreAmplifier):
         return DataFrame(convert).set_index("mags").sort_index()
 
     def opt_sens_plan(self, scaler_channel=None, time=0.1, delay=1):
-        """Bluesky plan to find the optimal sensitivity for the target count rate."""
+        """
+        Bluesky plan to find the optimal sensitivity for the target count rate.
+        """
         table = self._sensitivity_table
         if scaler_channel is None:
             scaler_channel = self._scaler_channel
@@ -130,7 +138,10 @@ class LocalPreAmp(SRS570_PreAmplifier):
             yield from mv(self.set_all, 1)
 
     def opt_offset_plan(self, scaler_channel=None, time=0.1, delay=1):
-        """Bluesky plan to find the optimal offset current that minimizes dark counts."""
+        """
+        Bluesky plan to find the optimal offset current that minimizes dark
+        counts.
+        """
         gain_pv_conversion = self._offset_current_table
         if scaler_channel is None:
             scaler_channel = self._scaler_channel
@@ -208,7 +219,10 @@ class LocalPreAmp(SRS570_PreAmplifier):
         time=0.1,
         delay=1,
     ):
-        """Bluesky plan to scan offset_fine and fit a linear model to reach 200 counts/s."""
+        """
+        Bluesky plan to scan offset_fine and fit a linear model to reach 200
+        counts/s.
+        """
         if scaler_channel is None:
             scaler_channel = self._scaler_channel
         scaler_channel.root.monitor = "Time"
@@ -245,7 +259,10 @@ class LocalPreAmp(SRS570_PreAmplifier):
         yield from mv(self.set_all, 1)
 
     def optimize_plan(self, scaler_channel=None, time=0.1, delay=1):
-        """Bluesky plan to fully optimize sensitivity, offset, and fine offset with the shutter."""
+        """
+        Bluesky plan to fully optimize sensitivity, offset, and fine offset with
+        the shutter.
+        """
         if self._shutter is None:
             raise ValueError("Shutter is not configured.")
 
@@ -297,7 +314,10 @@ class LocalPreAmp(SRS570_PreAmplifier):
         yield from mv(self.set_all, 1)
 
     def default_settings(self):
-        """Disable string mode on offset_fine and enable put_complete on control signals."""
+        """
+        Disable string mode on offset_fine and enable put_complete on control
+        signals.
+        """
         self.offset_fine._string = False
 
         for item in (

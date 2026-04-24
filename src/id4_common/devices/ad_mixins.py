@@ -153,7 +153,9 @@ class StatsPlugin(PluginMixin, StatsPlugin_V34):
 
     # This is to auto-set the kind depending on what is being computed.
     def __init__(self, *args, **kwargs):
-        """Initialize StatsPlugin and subscribe callbacks to auto-set signal kinds."""
+        """
+        Initialize StatsPlugin and subscribe callbacks to auto-set signal kinds.
+        """
         super().__init__(*args, **kwargs)
         self.compute_statistics.subscribe(self._control_stats, run=False)
         self.compute_centroid.subscribe(self._control_centroid, run=False)
@@ -270,7 +272,10 @@ class EigerDetectorCam(CamMixin_V34, EigerDetectorCam):
 
 
 class VortexDetectorCam(CamMixin_V34, Xspress3DetectorCam):
-    """Vortex fluorescence detector camera with simplified trigger and erase controls."""
+    """
+    Vortex fluorescence detector camera with simplified trigger and erase
+    controls.
+    """
 
     trigger_mode = Component(EpicsSignalWithRBV, "TriggerMode", kind="config")
     erase_on_start = Component(
@@ -284,10 +289,15 @@ class VortexDetectorCam(CamMixin_V34, Xspress3DetectorCam):
 
 
 class FileStorePluginBaseEpicsName(FileStoreBase):
-    """FileStore base that derives file paths from EPICS PV values rather than templates."""
+    """
+    FileStore base that derives file paths from EPICS PV values rather than
+    templates.
+    """
 
     def __init__(self, *args, ioc_path_root=None, **kwargs):
-        """Initialize with optional IOC path root and set default stage signals."""
+        """
+        Initialize with optional IOC path root and set default stage signals.
+        """
         super().__init__(*args, **kwargs)
         # if hasattr(self, "create_directory"):
         #     self.stage_sigs.update({"create_directory": -3})
@@ -510,7 +520,9 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
 
     @property
     def warmup_signals(self):
-        """Return ordered dict of (signal, value) pairs used for detector warmup."""
+        """
+        Return ordered dict of (signal, value) pairs used for detector warmup.
+        """
         return OrderedDict(self._warmup_signals)
 
     @warmup_signals.setter
@@ -529,7 +541,9 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
             ) from None
 
     def warmup(self):
-        """Run the warmup sequence to prime the HDF5 plugin for fast acquisition."""
+        """
+        Run the warmup sequence to prime the HDF5 plugin for fast acquisition.
+        """
         if len(self.warmup_signals) == 0:
             logger.warning(
                 f"The there are no warmup signals for {self.parent.name}"
@@ -570,7 +584,9 @@ class TriggerBase(BlueskyInterface):
         acquire_busy_signal_dev="cam.acquire_busy",
         **kwargs,
     ):
-        """Initialize TriggerBase with acquisition and busy signal device paths."""
+        """
+        Initialize TriggerBase with acquisition and busy signal device paths.
+        """
         super().__init__(*args, **kwargs)
         # settings
         # careful here: quadEM devices have areadetector components but,
@@ -597,7 +613,10 @@ class TriggerBase(BlueskyInterface):
 
 
 class ADTriggerStatus(ophyd_ADTriggerStatus):
-    """AreaDetector trigger status that clears array-counter subscriptions on completion."""
+    """
+    AreaDetector trigger status that clears array-counter subscriptions on
+    completion.
+    """
 
     def _notify_watchers(self, value, *args, **kwargs):
         # *args and **kwargs catch extra inputs from pyepics, not needed here

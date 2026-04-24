@@ -733,7 +733,8 @@ def th2th(
     Parameters
     ----------
     tth_start : float
-            Relative 2theta start. The relative theta will be half of the 2theta.
+            Relative 2theta start. The relative theta will be half of
+            the 2theta.
     tth_end : float
             Relative 2theta end. The relative theta will be half of the 2theta.
     number_of_points : int
@@ -748,20 +749,24 @@ def th2th(
             lock-in scan.
     dichro : boolean, optional
             Flag to do a dichro scan. Please run pr_setup.config() prior do a
-            dichro scan. Note that this will switch the x-ray polarization at every
-            point using the +, -, -, + sequence, thus increasing the number of
+            dichro scan. Note that this will switch the x-ray
+            polarization at every point using the +, -, -, + sequence,
+            thus increasing the number of
             points by a factor of 4
     fixq : boolean, optional
             Flag for fixQ scans. If True, it will fix the diffractometer hkl
-            position during the scan. This is particularly useful for energy scan.
+            position during the scan. This is particularly useful for
+            energy scan.
             Note that hkl is moved ~after~ the other motors!
     vortex_sgz : boolean, optional
-            Measures the Vortex detector using the softgluezynq triggers. This is a
-            special mode that requires the 'vortex' and 'sgz_vortex' devices to
+            Measures the Vortex detector using the softgluezynq
+            triggers. This is a special mode that requires the 'vortex'
+            and 'sgz_vortex' devices to
             exist otherwise an error will be thrown.
     per_step: callable, optional
             hook for customizing action of inner loop (messages per step).
-            See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+            See docstring of
+            :func:`bluesky.plan_stubs.one_nd_step` (the default)
             for details.
     md : dictionary, optional
             Metadata to be added to the run start.

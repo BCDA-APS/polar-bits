@@ -6,7 +6,10 @@ from ophyd import EpicsSignalRO
 
 
 class InterferometerDevice(Device):
-    """Six-channel interferometer readout for mirror horizontal and vertical positions."""
+    """
+    Six-channel interferometer readout for mirror horizontal and vertical
+    positions.
+    """
 
     mhor_up = Component(EpicsSignalRO, "pixelTrig-1_POS1")
 

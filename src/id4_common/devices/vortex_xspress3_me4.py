@@ -41,7 +41,10 @@ class Trigger(TriggerBase):
     _status_type = ADTriggerStatus
 
     def __init__(self, *args, image_name=None, **kwargs):
-        """Initialize Trigger, setting acquisition and busy signals from the Xspress3 CAM."""
+        """
+        Initialize Trigger, setting acquisition and busy signals from the
+        Xspress3 CAM.
+        """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -55,7 +58,9 @@ class Trigger(TriggerBase):
         self._sleep_after_trigger = 0.1
 
     def setup_manual_trigger(self):
-        """Configure stage_sigs for internal single-image triggered acquisition."""
+        """
+        Configure stage_sigs for internal single-image triggered acquisition.
+        """
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "Internal"
         self.cam.stage_sigs["num_images"] = 1
@@ -83,7 +88,10 @@ class Trigger(TriggerBase):
             )
 
     def stage(self):
-        """Erase the detector, configure the trigger mode, and arm the Xspress3 before staging."""
+        """
+        Erase the detector, configure the trigger mode, and arm the Xspress3
+        before staging.
+        """
         self.cam.erase.set(1).wait(timeout=10)
 
         if self._flysetup:
@@ -99,7 +107,10 @@ class Trigger(TriggerBase):
             self._acquisition_signal.set(1).wait(timeout=10)
 
     def unstage(self):
-        """Stop the Xspress3, unsubscribe the busy callback, and restore manual-trigger mode."""
+        """
+        Stop the Xspress3, unsubscribe the busy callback, and restore manual-
+        trigger mode.
+        """
         super().unstage()
         self.cam.acquire.set(0).wait(timeout=10)
         self._flysetup = False
@@ -108,7 +119,10 @@ class Trigger(TriggerBase):
         self.setup_manual_trigger()
 
     def trigger(self):
-        """Start one Xspress3 acquisition and return a status object that completes when done."""
+        """
+        Start one Xspress3 acquisition and return a status object that completes
+        when done.
+        """
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
@@ -135,7 +149,10 @@ class Trigger(TriggerBase):
             self._status = None
 
     def arm_plan(self):
-        """Bluesky plan that arms the Xspress3 and waits until the detector is ready."""
+        """
+        Bluesky plan that arms the Xspress3 and waits until the detector is
+        ready.
+        """
 
         async def _wait_for_read():
             future = asyncio.Future()
@@ -165,7 +182,10 @@ class Trigger(TriggerBase):
 
 
 class ROIStatN(Device):
-    """Single ROI statistics device with name, bounds, and integrated-count readbacks."""
+    """
+    Single ROI statistics device with name, bounds, and integrated-count
+    readbacks.
+    """
 
     roi_name = Component(EpicsSignal, "Name", kind="config")
     use = Component(EpicsSignal, "Use", kind="config")
@@ -189,7 +209,10 @@ class ROIStatN(Device):
 
 
 class VortexROIStatPlugin(ROIStatPlugin):
-    """ROIStatPlugin with eight named ROI statistics sub-devices for the Vortex Xspress3."""
+    """
+    ROIStatPlugin with eight named ROI statistics sub-devices for the Vortex
+    Xspress3.
+    """
 
     _default_read_attrs = tuple(f"roi{i}" for i in range(1, MAX_ROIS + 1))
 
@@ -205,7 +228,9 @@ class VortexROIStatPlugin(ROIStatPlugin):
 
 
 class VortexSCA(AttributePlugin):
-    """Xspress3 per-channel SCA providing deadtime and event-count attributes."""
+    """
+    Xspress3 per-channel SCA providing deadtime and event-count attributes.
+    """
 
     _default_read_attrs = (
         "clock_ticks",
@@ -235,7 +260,10 @@ class VortexSCA(AttributePlugin):
 
 
 class VortexHDF1Plugin(PolarHDF5Plugin):
-    """HDF5 plugin for the Xspress3 4-element Vortex with a separate array-counter readback PV."""
+    """
+    HDF5 plugin for the Xspress3 4-element Vortex with a separate array-counter
+    readback PV.
+    """
 
     # The array counter readback pv is different...
     array_counter = Component(EpicsSignal, "ArrayCounter", kind="config")
@@ -248,7 +276,10 @@ class TotalCorrectedSignal(SignalRO):
     """Signal that returns the deadtime corrected total counts"""
 
     def __init__(self, prefix, roi_index, **kwargs):
-        """Initialize TotalCorrectedSignal, storing the ROI index for deadtime-corrected summation."""
+        """
+        Initialize TotalCorrectedSignal, storing the ROI index for deadtime-
+        corrected summation.
+        """
         if not roi_index:
             raise ValueError(
                 "chnum must be the channel number, but f{roi_index} was passed."
@@ -257,7 +288,10 @@ class TotalCorrectedSignal(SignalRO):
         super().__init__(**kwargs)
 
     def get(self, **kwargs):
-        """Return the sum of deadtime-corrected ROI counts across all Xspress3 channels."""
+        """
+        Return the sum of deadtime-corrected ROI counts across all Xspress3
+        channels.
+        """
         value = 0
         for ch_num in range(1, self.root.cam.num_channels.get() + 1):
             channel = getattr(self.root, f"sca{ch_num}")
@@ -283,7 +317,10 @@ def _totals(attr_fix, id_range):
 
 
 class VortexXspress34(Trigger, DetectorBase):
-    """Four-element Vortex detector driven by an Xspress3 controller with HDF5 file saving."""
+    """
+    Four-element Vortex detector driven by an Xspress3 controller with HDF5 file
+    saving.
+    """
 
     _default_configuration_attrs = ("cam", "chan1", "chan2", "chan3", "chan4")
     _default_read_attrs = (
@@ -335,7 +372,10 @@ class VortexXspress34(Trigger, DetectorBase):
         hdf1_file_format="%s/%s_%6.6d.h5",
         **kwargs,
     ):
-        """Initialize VortexXspress34 with default HDF5 save folder and file-name format."""
+        """
+        Initialize VortexXspress34 with default HDF5 save folder and file-name
+        format.
+        """
         self.default_folder = default_folder
         self.hdf1_file_format = hdf1_file_format
         super().__init__(*args, **kwargs)
@@ -375,7 +415,10 @@ class VortexXspress34(Trigger, DetectorBase):
         self.hdf1.autosave.put("off")
 
     def wait_for_detector(self):
-        """Bluesky plan that waits until the detector array counter stops incrementing."""
+        """
+        Bluesky plan that waits until the detector array counter stops
+        incrementing.
+        """
 
         async def _wait_for_read():
             future = asyncio.Future()
@@ -437,12 +480,17 @@ class VortexXspress34(Trigger, DetectorBase):
 
     @property
     def read_rois(self):
-        """Return the list of ROI indices that are currently included in reads."""
+        """
+        Return the list of ROI indices that are currently included in reads.
+        """
         return self._read_rois
 
     @read_rois.setter
     def read_rois(self, rois):
-        """Set which ROI indices are read and update the stats plugin component kinds."""
+        """
+        Set which ROI indices are read and update the stats plugin component
+        kinds.
+        """
         for pixel in range(1, 5):
             pix = getattr(self, f"stats{pixel}")
             for i in range(1, MAX_ROIS + 1):
@@ -451,7 +499,10 @@ class VortexXspress34(Trigger, DetectorBase):
         self._read_rois = list(rois)
 
     def select_roi(self, rois):
-        """Set the hinted ROI totals to those in rois, keeping other read_rois as normal."""
+        """
+        Set the hinted ROI totals to those in rois, keeping other read_rois as
+        normal.
+        """
         for i in range(1, MAX_ROIS + 1):
             if i in rois:
                 getattr(self.total, f"roi{i}").kind = "hinted"
@@ -491,7 +542,10 @@ class VortexXspress34(Trigger, DetectorBase):
 
     @property
     def label_option_map(self):
-        """Return a mapping from human-readable ROI label strings to ROI index integers."""
+        """
+        Return a mapping from human-readable ROI label strings to ROI index
+        integers.
+        """
         return {f"ROI{i} Total": i for i in range(1, MAX_ROIS + 1)}
 
     @property
@@ -508,7 +562,10 @@ class VortexXspress34(Trigger, DetectorBase):
     def setup_images(
         self, base_folder, file_name_base, file_number, flyscan=False
     ):
-        """Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan."""
+        """
+        Configure HDF5 file name, number, path, and flysetup flag for an
+        upcoming scan.
+        """
         self.hdf1.file_name.set(file_name_base).wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.auto_save_on()

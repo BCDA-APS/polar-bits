@@ -20,14 +20,20 @@ class StatsPluginQuadEM(StatsPlugin):
 
     # Remove subscriptions from StatsPlugin
     def __init__(self, *args, **kwargs):
-        """Initialize and immediately stop auto-kind updates, setting kind to config."""
+        """
+        Initialize and immediately stop auto-kind updates, setting kind to
+        config.
+        """
         super().__init__(*args, **kwargs)
         self.stop_auto_kind()
         self.kind = "config"
 
 
 class QuadEMPOLAR(QuadEM):
-    """QuadEM device with POLAR-specific statistics plugins and fast readback signals."""
+    """
+    QuadEM device with POLAR-specific statistics plugins and fast readback
+    signals.
+    """
 
     image = Component(ImagePlugin, "image1:")
     current1 = Component(StatsPluginQuadEM, "Current1:")
@@ -71,7 +77,10 @@ class QuadEMPOLAR(QuadEM):
 
     @property
     def preset_monitor(self):
-        """Return the averaging_time signal as the count-time preset for scan plans."""
+        """
+        Return the averaging_time signal as the count-time preset for scan
+        plans.
+        """
         return self.averaging_time
 
 
@@ -85,7 +94,10 @@ class TetrAMM(QuadEMPOLAR):
 
 
 class QuadEMRO_mixins(Device):
-    """Mixin that replaces the QuadEM trigger/preset with a no-op for read-only use."""
+    """
+    Mixin that replaces the QuadEM trigger/preset with a no-op for read-only
+    use.
+    """
 
     # Disables preset_monitor and trigger
 
@@ -97,7 +109,9 @@ class QuadEMRO_mixins(Device):
         return self.dummy
 
     def trigger(self):
-        """Immediately mark acquisition complete without driving the hardware."""
+        """
+        Immediately mark acquisition complete without driving the hardware.
+        """
         self._status = self._status_type(self)
         self._status.set_finished()
         return self._status
@@ -130,7 +144,10 @@ class SydorEMRO(QuadEMRO_mixins, QuadEMPOLAR):
     image = None
 
     def default_settings(self):
-        """Set calibration and configuration signals to config kind and clear stage_sigs."""
+        """
+        Set calibration and configuration signals to config kind and clear
+        stage_sigs.
+        """
         # Remove all these from read_attrs
         for item in (
             "conf",
@@ -167,10 +184,16 @@ class SydorEMRO(QuadEMRO_mixins, QuadEMPOLAR):
 
 
 class TetrAMMRO(QuadEMRO_mixins, TetrAMM):
-    """Read-only TetrAMM 4-channel electrometer that disables staging and triggering."""
+    """
+    Read-only TetrAMM 4-channel electrometer that disables staging and
+    triggering.
+    """
 
     def default_settings(self):
-        """Set calibration and configuration signals to config kind and clear stage_sigs."""
+        """
+        Set calibration and configuration signals to config kind and clear
+        stage_sigs.
+        """
         # Remove all these from read_attrs
         for item in (
             "conf",

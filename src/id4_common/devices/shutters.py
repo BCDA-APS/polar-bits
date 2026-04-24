@@ -22,9 +22,14 @@ class PolarShutter(ApsPssShutterWithStatus):
                     break
 
     def start_auto_shutter(self):
-        """Subscribe to pss_state so the shutter reopens automatically on beam loss."""
+        """
+        Subscribe to pss_state so the shutter reopens automatically on beam
+        loss.
+        """
         self.pss_state.subscribe(self._auto_shutter_subs)
 
     def stop_auto_shutter(self):
-        """Unsubscribe all pss_state callbacks to disable automatic reopening."""
+        """
+        Unsubscribe all pss_state callbacks to disable automatic reopening.
+        """
         self.pss_state.unsubscribe_all()

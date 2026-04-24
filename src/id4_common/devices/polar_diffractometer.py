@@ -47,7 +47,9 @@ ANALYZER_LIST_PATH = Path(__file__).parent / "analyzerlist.dat"
 
 
 class AnalyzerDevice(PseudoPositioner):
-    """Crystal polarization analyzer with pseudo-energy axis and crystal setup."""
+    """
+    Crystal polarization analyzer with pseudo-energy axis and crystal setup.
+    """
 
     energy = Component(PseudoSingle, limits=(2.6, 34))
     th = Component(EpicsMotor, "pmth", labels=("motor",))
@@ -80,23 +82,35 @@ class AnalyzerDevice(PseudoPositioner):
     # These assume that the analyzer is part of the diffractometer.
     @property
     def beamline_wavelength(self):
-        """Return the current beamline wavelength from the parent diffractometer calc."""
+        """
+        Return the current beamline wavelength from the parent diffractometer
+        calc.
+        """
         return self.parent.calc.wavelength
 
     @property
     def beamline_energy(self):
-        """Return the current beamline energy in keV from the parent diffractometer."""
+        """
+        Return the current beamline energy in keV from the parent
+        diffractometer.
+        """
         return self.parent.energy.get()
 
     def convert_energy_to_theta(self, energy):
-        """Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing."""
+        """
+        Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / 2 / self.d_spacing.get()) * 180.0 / pi
         return theta
 
     def convert_energy_to_tth_trans(self, energy):
-        """Convert photon energy (keV) to the two-theta translation stage position (mm)."""
+        """
+        Convert photon energy (keV) to the two-theta translation stage position
+        (mm).
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         th = self.convert_energy_to_theta(energy)
         tth = 2 * th
@@ -106,7 +120,10 @@ class AnalyzerDevice(PseudoPositioner):
         return tth_trans
 
     def convert_theta_to_energy(self, theta):
-        """Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing."""
+        """
+        Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = 2 * self.d_spacing.get() * sin(theta * pi / 180)
         energy = speed_of_light * Planck * 6.241509e15 * 1e10 / lamb
@@ -129,13 +146,17 @@ class AnalyzerDevice(PseudoPositioner):
         )
 
     def set_energy(self, energy):
-        """Calibrate the Bragg-angle motor to match the given photon energy (keV)."""
+        """
+        Calibrate the Bragg-angle motor to match the given photon energy (keV).
+        """
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
     def calc(self, acal="No"):
-        """Print analyzer Bragg angles and optionally calibrate the theta motor."""
+        """
+        Print analyzer Bragg angles and optionally calibrate the theta motor.
+        """
         d_ana = self.d_spacing.get()
         if d_ana == 1e4:
             self.setup()
@@ -161,7 +182,10 @@ class AnalyzerDevice(PseudoPositioner):
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
     ):
-        """List compatible analyzer crystals and interactively configure d-spacing and crystal."""
+        """
+        List compatible analyzer crystals and interactively configure d-spacing
+        and crystal.
+        """
         if not analyzer_energy:
             energy = self.beamline_energy
             wavelength = self.beamline_wavelength
@@ -329,7 +353,10 @@ class SixCircleDiffractometer(ApsPolar):
     # TODO: This is needed to prevent busy plotting.
     @property
     def hints(self):
-        """Return hinted fields, excluding non-hinted components to prevent busy plotting."""
+        """
+        Return hinted fields, excluding non-hinted components to prevent busy
+        plotting.
+        """
         fields = []
         for _, component in self._get_components_of_kind(Kind.hinted):
             if (~Kind.normal & Kind.hinted) & component.kind:
@@ -338,12 +365,17 @@ class SixCircleDiffractometer(ApsPolar):
         return {"fields": fields}
 
     def default_settings(self):
-        """Update the HKL calc engine energy from the EPICS monochromator readback."""
+        """
+        Update the HKL calc engine energy from the EPICS monochromator readback.
+        """
         self._update_calc_energy()
 
 
 class CradleDiffractometer(SixCircleDiffractometer):
-    """SixCircleDiffractometer with cradle chi/phi motors and sample XYZ positioning."""
+    """
+    SixCircleDiffractometer with cradle chi/phi motors and sample XYZ
+    positioning.
+    """
 
     chi = Component(EpicsMotor, "m37", labels=("motor",))
     phi = Component(EpicsMotor, "m38", labels=("motor",))
@@ -354,7 +386,10 @@ class CradleDiffractometer(SixCircleDiffractometer):
 
 
 class HPDiffractometer(SixCircleDiffractometer):
-    """SixCircleDiffractometer for the HP press setup with base and nano-positioning motors."""
+    """
+    SixCircleDiffractometer for the HP press setup with base and nano-
+    positioning motors.
+    """
 
     chi = Component(EpicsMotor, "m5", labels=("motor",))
     phi = Component(EpicsMotor, "m6", labels=("motor",))

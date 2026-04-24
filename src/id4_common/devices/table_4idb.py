@@ -8,7 +8,9 @@ from ophyd import EpicsMotor
 
 
 class Table4idb(Device):
-    """Optical table in 4IDB with upstream/downstream X and Y positioning motors."""
+    """
+    Optical table in 4IDB with upstream/downstream X and Y positioning motors.
+    """
 
     x_us = Component(EpicsMotor, "m5", labels=("motor",))
     x_ds = Component(EpicsMotor, "m8", labels=("motor",))

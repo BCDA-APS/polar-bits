@@ -110,7 +110,9 @@ def run_workflow(
     # Or you can enter the kwargs that will be just be passed to the workflow --
     **_kwargs,
 ):
-    """Submit a DM workflow plan and optionally share Bluesky run metadata with DM."""
+    """
+    Submit a DM workflow plan and optionally share Bluesky run metadata with DM.
+    """
     # Option to import workflow parameters from file.
     kwargs = {}
     if settings_file_path is not None:

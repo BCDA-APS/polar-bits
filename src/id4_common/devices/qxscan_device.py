@@ -26,7 +26,10 @@ constant = 2 * electron_mass / hbar**2  # A^2/eV
 
 
 class EdgeDevice(Device):
-    """Device storing start, end, step, and time-factor parameters for the edge region."""
+    """
+    Device storing start, end, step, and time-factor parameters for the edge
+    region.
+    """
 
     Estart = Component(Signal, value=-10)
     Eend = Component(Signal, value=10)
@@ -35,7 +38,10 @@ class EdgeDevice(Device):
 
 
 class PreEdgeRegion(Device):
-    """Device holding start energy, step, and time-factor for a single pre-edge region."""
+    """
+    Device holding start energy, step, and time-factor for a single pre-edge
+    region.
+    """
 
     Estart = Component(Signal, value=-50)
     Estep = Component(Signal, value=2)
@@ -54,7 +60,9 @@ class PreEdgeDevice(Device):
 
 
 class PostEdgeRegion(Device):
-    """Device holding k-end, k-step, and time-factor for a single post-edge region."""
+    """
+    Device holding k-end, k-step, and time-factor for a single post-edge region.
+    """
 
     Kend = Component(Signal, value=4)
     Kstep = Component(Signal, value=0.05)
@@ -62,7 +70,9 @@ class PostEdgeRegion(Device):
 
 
 class PostEdgeDevice(Device):
-    """Device grouping up to five post-edge k-space scan regions and their count."""
+    """
+    Device grouping up to five post-edge k-space scan regions and their count.
+    """
 
     num_regions = Component(Signal, value=1)
     region1 = Component(PostEdgeRegion)
@@ -73,7 +83,10 @@ class PostEdgeDevice(Device):
 
 
 class QxscanParams(Device):
-    """Device storing all qxscan energy-region parameters and the resulting energy list."""
+    """
+    Device storing all qxscan energy-region parameters and the resulting energy
+    list.
+    """
 
     pre_edge = Component(PreEdgeDevice)
     edge = Component(EdgeDevice)
@@ -82,7 +95,9 @@ class QxscanParams(Device):
     factor_list = Component(Signal, value=[0])
 
     def __repr__(self):
-        """Return a human-readable summary of the qxscan energy-region parameters."""
+        """
+        Return a human-readable summary of the qxscan energy-region parameters.
+        """
         params = self._make_params_dict()
 
         output = "Qxscan setup parameters\n"
@@ -131,7 +146,10 @@ class QxscanParams(Device):
         return self.__repr__()
 
     def __call__(self):
-        """Interactively prompt the user to define pre-edge, edge, and post-edge regions."""
+        """
+        Interactively prompt the user to define pre-edge, edge, and post-edge
+        regions.
+        """
         print("Defining the energy range and steps for qxscan")
         print("All energies are relative to the absorption edge!")
 
@@ -421,7 +439,10 @@ class QxscanParams(Device):
         self._read_params_dict(input)
 
     def load_from_scan(self, scan, cat=cat):
-        """Restore qxscan parameters from the baseline stream of a previously recorded scan."""
+        """
+        Restore qxscan parameters from the baseline stream of a previously
+        recorded scan.
+        """
         baseline = cat[scan].baseline.read()
 
         def _update_value(var):

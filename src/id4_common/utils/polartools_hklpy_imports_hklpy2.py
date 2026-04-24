@@ -1,4 +1,6 @@
-"""Re-exports of hkl/polartools user-facing symbols for hklpy2-based sessions."""
+"""
+Re-exports of hkl/polartools user-facing symbols for hklpy2-based sessions.
+"""
 
 # from hkl.user import (  # noqa: F401
 #     select_diffractometer,

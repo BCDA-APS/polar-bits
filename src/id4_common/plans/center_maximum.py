@@ -1,4 +1,6 @@
-"""Plans for moving a motor to the center, maximum, or minimum of the last scan."""
+"""
+Plans for moving a motor to the center, maximum, or minimum of the last scan.
+"""
 
 from datetime import datetime
 from datetime import timedelta

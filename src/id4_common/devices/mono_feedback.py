@@ -9,7 +9,10 @@ from ophyd import EpicsSignalRO
 
 
 class FeedbackDirection(Device):
-    """Single-axis PID feedback loop device for monochromator position stabilization."""
+    """
+    Single-axis PID feedback loop device for monochromator position
+    stabilization.
+    """
 
     status = Component(EpicsSignal, ":on", string=True)
 
@@ -35,14 +38,18 @@ class FeedbackDirection(Device):
 
 
 class FeedbackStation(Device):
-    """Pair of horizontal and vertical PID feedback loops for one beamline station."""
+    """
+    Pair of horizontal and vertical PID feedback loops for one beamline station.
+    """
 
     horizontal = Component(FeedbackDirection, "h")
     vertical = Component(FeedbackDirection, "v")
 
 
 class MonoFeedback(Device):
-    """Top-level monochromator feedback device with per-station feedback loops."""
+    """
+    Top-level monochromator feedback device with per-station feedback loops.
+    """
 
     station = Component(EpicsSignal, "MonoFBStation", string=True)
     enable = Component(EpicsSignal, "MonoFBEnable", string=True)

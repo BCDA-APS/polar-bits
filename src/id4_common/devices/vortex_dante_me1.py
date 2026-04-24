@@ -32,7 +32,10 @@ class Trigger(TriggerBase):
     # _status_type = DeviceStatus
 
     def __init__(self, *args, image_name=None, **kwargs):
-        """Initialize Trigger, wiring acquisition and busy signals from the Dante CAM."""
+        """
+        Initialize Trigger, wiring acquisition and busy signals from the Dante
+        CAM.
+        """
         super().__init__(
             *args,
             acquisition_signal_dev="cam.acquire_start",
@@ -61,7 +64,10 @@ class Trigger(TriggerBase):
         )
 
     def setup_manual_trigger(self):
-        """Configure stage_sigs for software-triggered (manual) single-shot acquisition."""
+        """
+        Configure stage_sigs for software-triggered (manual) single-shot
+        acquisition.
+        """
         # Stage signals
         self.cam.stage_sigs["wait_for_plugins"] = "Yes"
 
@@ -74,7 +80,9 @@ class Trigger(TriggerBase):
         raise NotImplementedError("This detector cannot be used in flyscans")
 
     def stage(self):
-        """Subscribe the busy-signal callback and arm the detector before staging."""
+        """
+        Subscribe the busy-signal callback and arm the detector before staging.
+        """
         if self._flysetup:
             self.setup_external_trigger()
 
@@ -87,7 +95,10 @@ class Trigger(TriggerBase):
             self._acquisition_signal.set(1).wait(timeout=10)
 
     def unstage(self):
-        """Stop the Dante, unsubscribe the busy callback, and restore manual-trigger mode."""
+        """
+        Stop the Dante, unsubscribe the busy callback, and restore manual-
+        trigger mode.
+        """
         super().unstage()
         self._acquisition_signal_stop.set(1).wait(timeout=10)
         self._flysetup = False
@@ -96,7 +107,10 @@ class Trigger(TriggerBase):
         self.setup_manual_trigger()
 
     def trigger(self):
-        """Start one Dante acquisition and return a status object that completes when done."""
+        """
+        Start one Dante acquisition and return a status object that completes
+        when done.
+        """
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
@@ -127,12 +141,18 @@ class TotalCorrectedSignal(SignalRO):
     """Signal that returns the deadtime corrected total counts"""
 
     def __init__(self, prefix, roi_index=0, **kwargs):
-        """Initialize TotalCorrectedSignal, storing the ROI index for deadtime-corrected summation."""
+        """
+        Initialize TotalCorrectedSignal, storing the ROI index for deadtime-
+        corrected summation.
+        """
         self.roi_index = roi_index
         super().__init__(**kwargs)
 
     def get(self, **kwargs):
-        """Return the sum of deadtime-corrected ROI counts across all Dante channels."""
+        """
+        Return the sum of deadtime-corrected ROI counts across all Dante
+        channels.
+        """
         value = 0
         for ch_num in range(1, self.root._num_channels + 1):
             roi = getattr(
@@ -172,7 +192,9 @@ def _scas(num_channels):
 
 
 class VortexDante1(Trigger, DetectorBase):
-    """Single-element Vortex detector driven by a Dante MCA with HDF5 file saving."""
+    """
+    Single-element Vortex detector driven by a Dante MCA with HDF5 file saving.
+    """
 
     _default_configuration_attrs = ("cam",)
     _default_read_attrs = ("hdf1", "mcas", "scas", "total")
@@ -202,7 +224,10 @@ class VortexDante1(Trigger, DetectorBase):
         hdf1_file_format="%s/%s_%6.6d.h5",
         **kwargs,
     ):
-        """Initialize VortexDante1 with default HDF5 save folder and file-name format."""
+        """
+        Initialize VortexDante1 with default HDF5 save folder and file-name
+        format.
+        """
         self.default_folder = default_folder
         self.hdf1_file_format = hdf1_file_format
         super().__init__(*args, **kwargs)
@@ -210,7 +235,9 @@ class VortexDante1(Trigger, DetectorBase):
     # Make this compatible with other detectors
     @property
     def preset_monitor(self):
-        """Return the cam real-time preset signal as the scan count-time control."""
+        """
+        Return the cam real-time preset signal as the scan count-time control.
+        """
         return self.cam.real_time_preset
 
     @property
@@ -295,12 +322,16 @@ class VortexDante1(Trigger, DetectorBase):
     #         getattr(self.total, f"roi{i}").kind = kr
     @property
     def read_rois(self):
-        """Return the list of ROI indices that are currently included in reads."""
+        """
+        Return the list of ROI indices that are currently included in reads.
+        """
         return self._read_rois
 
     @read_rois.setter
     def read_rois(self, rois):
-        """Set which ROI indices are read and update component kinds accordingly."""
+        """
+        Set which ROI indices are read and update component kinds accordingly.
+        """
         # Change total kinds
         for i in range(MAX_ROIS):
             if i in rois:
@@ -320,7 +351,10 @@ class VortexDante1(Trigger, DetectorBase):
         self._read_rois = list(rois)
 
     def select_roi(self, rois):
-        """Set the hinted ROI totals to those in rois, keeping other read_rois as normal."""
+        """
+        Set the hinted ROI totals to those in rois, keeping other read_rois as
+        normal.
+        """
         for i in range(MAX_ROIS):
             k = (
                 "hinted"
@@ -357,7 +391,10 @@ class VortexDante1(Trigger, DetectorBase):
 
     @property
     def label_option_map(self):
-        """Return a mapping from human-readable ROI label strings to ROI index integers."""
+        """
+        Return a mapping from human-readable ROI label strings to ROI index
+        integers.
+        """
         return {f"ROI{i} Total": i for i in range(0, 8)}
 
     @property
@@ -374,7 +411,10 @@ class VortexDante1(Trigger, DetectorBase):
     def setup_images(
         self, base_folder, file_name_base, file_number, flyscan=False
     ):
-        """Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan."""
+        """
+        Configure HDF5 file name, number, path, and flysetup flag for an
+        upcoming scan.
+        """
         self.hdf1.file_name.set(file_name_base).wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.auto_save_on()

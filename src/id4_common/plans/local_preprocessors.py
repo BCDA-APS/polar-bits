@@ -25,7 +25,9 @@ logger.info(__file__)
 
 
 def extra_devices_wrapper(plan, extras):
-    """Stage extra devices during a plan without adding them to the plot hints."""
+    """
+    Stage extra devices during a plan without adding them to the plot hints.
+    """
     hinted_stash = []
 
     def _stage():

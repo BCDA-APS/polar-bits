@@ -35,7 +35,9 @@ class TriggerTime(TriggerBase):
     def __init__(
         self, *args, image_name=None, min_period=0.0, delay=0.3, **kwargs
     ):
-        """Initialize TriggerTime with optional image name, min period, and delay."""
+        """
+        Initialize TriggerTime with optional image name, min period, and delay.
+        """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -118,7 +120,9 @@ class TriggerTime(TriggerBase):
             self.cam.stage_sigs["num_exposures"] = 1
 
     def stage(self):
-        """Stage the detector, optionally enabling external trigger for flyscans."""
+        """
+        Stage the detector, optionally enabling external trigger for flyscans.
+        """
         if self._flysetup:
             self.setup_external_trigger()
 
@@ -128,7 +132,10 @@ class TriggerTime(TriggerBase):
         self.cam.acquire.set(1).wait(timeout=10)
 
     def unstage(self):
-        """Unstage the detector, stopping acquisition and waiting for processing to finish."""
+        """
+        Unstage the detector, stopping acquisition and waiting for processing to
+        finish.
+        """
         self.cam.acquire.set(0).wait(timeout=10)
 
         def check_value(*, old_value, value, **kwargs):
@@ -217,7 +224,10 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
         max_num_images=600000,
         **kwargs,
     ):
-        """Initialize Eiger1MDetector with HDF5 file naming and image count settings."""
+        """
+        Initialize Eiger1MDetector with HDF5 file naming and image count
+        settings.
+        """
         self.default_folder = default_folder
         self.hdf1_name_format = hdf1_name_template + "." + hdf1_file_extension
         self.max_num_images = max_num_images
@@ -356,7 +366,9 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
 
     @property
     def label_option_map(self):
-        """Return mapping of stats channel label names to their index numbers."""
+        """
+        Return mapping of stats channel label names to their index numbers.
+        """
         return {f"Stats{i} Total": i for i in range(1, 5 + 1)}
 
     @property

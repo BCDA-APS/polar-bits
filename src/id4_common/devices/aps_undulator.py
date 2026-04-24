@@ -19,7 +19,10 @@ from ophyd.status import StatusBase
 
 
 class PolarUndulatorPositioner(UndulatorPositioner):
-    """UndulatorPositioner that skips waiting if the target is within the energy deadband."""
+    """
+    UndulatorPositioner that skips waiting if the target is within the energy
+    deadband.
+    """
 
     def set(
         self,
@@ -29,7 +32,10 @@ class PolarUndulatorPositioner(UndulatorPositioner):
         moved_cb: Callable = None,
         wait: bool = False,
     ) -> StatusBase:
-        """Move to new_position; return immediately done if already within the energy deadband."""
+        """
+        Move to new_position; return immediately done if already within the
+        energy deadband.
+        """
         # If position is within the deadband --> move, but do not wait
         # for it?
         if (
@@ -47,7 +53,9 @@ class PolarUndulatorPositioner(UndulatorPositioner):
 
 
 class PolarUndulator(STI_Undulator):
-    """STI undulator subclass with energy tracking, offset, and deadband signals."""
+    """
+    STI undulator subclass with energy tracking, offset, and deadband signals.
+    """
 
     # TODO: The energy should really follow the gap 1 um deadband...
 
@@ -60,7 +68,9 @@ class PolarUndulator(STI_Undulator):
 
 
 class PhaseShifterDevice(Device):
-    """Phase shifter device with gap positioner and start/stop control signals."""
+    """
+    Phase shifter device with gap positioner and start/stop control signals.
+    """
 
     gap = Component(UndulatorPositioner, "Gap")
 
@@ -86,7 +96,10 @@ class PhaseShifterDevice(Device):
 
 
 class PolarUndulatorPair(Device):
-    """Composite device grouping upstream and downstream undulators with a phase shifter."""
+    """
+    Composite device grouping upstream and downstream undulators with a phase
+    shifter.
+    """
 
     us = Component(PolarUndulator, "USID:", labels=("track_energy",))
     ds = Component(PolarUndulator, "DSID:", labels=("track_energy",))

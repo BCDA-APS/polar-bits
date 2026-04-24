@@ -31,7 +31,10 @@ class EnergySignal(Signal):
         feedback_tolerance=0.1,
         **kwargs,
     ):
-        """Initialize EnergySignal with mono and feedback device names and tolerance."""
+        """
+        Initialize EnergySignal with mono and feedback device names and
+        tolerance.
+        """
         super().__init__(*args, **kwargs)
         self._status = {}  # Useful for debugging
         self._extra_devices = []
@@ -43,14 +46,20 @@ class EnergySignal(Signal):
 
     @property
     def mono(self):
-        """Return the monochromator device, resolving from registry on first access."""
+        """
+        Return the monochromator device, resolving from registry on first
+        access.
+        """
         if self._mono is None:
             self._mono = oregistry.find(self._mono_name)
         return self._mono
 
     @property
     def trackable_devices(self):
-        """Return all track_energy-labelled devices plus any manually added extra devices."""
+        """
+        Return all track_energy-labelled devices plus any manually added extra
+        devices.
+        """
         devs = oregistry.findall("track_energy") + self.extra_devices
         return sorted(devs, key=lambda x: x.name)
 
@@ -64,7 +73,10 @@ class EnergySignal(Signal):
 
     @extra_devices.setter
     def extra_devices(self, devices):
-        """Add OphydObject devices to the extra trackable devices list, or clear it with []."""
+        """
+        Add OphydObject devices to the extra trackable devices list, or clear it
+        with [].
+        """
         # Ensure that devices is a list
         devices = list(devices) if isinstance(devices, Iterable) else [devices]
 
@@ -84,7 +96,9 @@ class EnergySignal(Signal):
 
     @property
     def tracking(self):
-        """Print a table of all trackable devices and their current tracking state."""
+        """
+        Print a table of all trackable devices and their current tracking state.
+        """
         result = Table()
         result.labels = ("Index", "Device", "Tracking?")
 
@@ -96,7 +110,10 @@ class EnergySignal(Signal):
         print("=== note that the monochromator is always tracked ===")
 
     def tracking_setup(self, devices_names: Iterable = []):
-        """Enable tracking for the named devices, or prompt interactively if names are empty."""
+        """
+        Enable tracking for the named devices, or prompt interactively if names
+        are empty.
+        """
         # Checks needed in case one wants to skip the prompts.
 
         available_devices = {d.name: d for d in self.trackable_devices}
@@ -183,7 +200,10 @@ class EnergySignal(Signal):
 
     @property
     def feedback_device(self):
-        """Return the monochromator feedback device from the registry, or None if absent."""
+        """
+        Return the monochromator feedback device from the registry, or None if
+        absent.
+        """
         return oregistry.find(self._feedback_name, allow_none=True)
 
     def get(self, **kwargs):
@@ -215,7 +235,10 @@ class EnergySignal(Signal):
         settle_time=None,
         moved_cb=None,
     ):
-        """Move mono and all tracking devices to position (keV); disable feedback during the move."""
+        """
+        Move mono and all tracking devices to position (keV); disable feedback
+        during the move.
+        """
         # In case nothing needs to be moved, just create a finished status
         status = Status()
         status.set_finished()

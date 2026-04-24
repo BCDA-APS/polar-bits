@@ -1,4 +1,6 @@
-"""Bluesky RunEngine suspenders that pause scans when beamline shutters are closed."""
+"""
+Bluesky RunEngine suspenders that pause scans when beamline shutters are closed.
+"""
 
 from logging import getLogger
 

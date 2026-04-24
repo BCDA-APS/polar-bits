@@ -9,7 +9,9 @@ from epics import caput
 
 # def attenuator(atten_value_in=None):
 def atten(atten_value_in=None):
-    """Set or display the x-ray attenuation factor using the EPICS filter device."""
+    """
+    Set or display the x-ray attenuation factor using the EPICS filter device.
+    """
     # write attenuation factor to attenuator device
     # Input as attenuation value: power.first_decimal
     # e.g. attenuation value 6.3 corresponds to attenuation factor 3e6

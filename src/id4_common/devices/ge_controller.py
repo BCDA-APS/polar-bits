@@ -21,7 +21,10 @@ class GEController(PVPositionerSoftDoneWithStop):
     )
 
     def __init__(self, *args, timeout=60 * 60 * 10, **kwargs):
-        """Initialize GEController with a default 10-hour timeout and zero settle time."""
+        """
+        Initialize GEController with a default 10-hour timeout and zero settle
+        time.
+        """
         super().__init__(*args, timeout=timeout, **kwargs)
         self._settle_time = 0
 

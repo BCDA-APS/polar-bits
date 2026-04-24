@@ -13,7 +13,10 @@ from ophyd import EpicsSignalRO
 
 
 class AnalogOutput(Output):
-    """LabJack analog output channel with description, value, and drive-limit signals."""
+    """
+    LabJack analog output channel with description, value, and drive-limit
+    signals.
+    """
 
     description = Component(EpicsSignal, ".DESC", kind="config")
     value = Component(EpicsSignal, "", kind="hinted")
@@ -74,7 +77,10 @@ def make_digital_ios(channels_list: list):
 
 
 class CustomLabJackT7(LabJackT7):
-    """LabJack T7 with six analog outputs and digital I/O channels for 4ID beamlines."""
+    """
+    LabJack T7 with six analog outputs and digital I/O channels for 4ID
+    beamlines.
+    """
 
     # In the "default" BCDA setup, four IO channels (all CIO, #16-19) are
     # converted into analog outputs (thus now 6 DACs)
@@ -89,7 +95,10 @@ class CustomLabJackT7(LabJackT7):
     )
 
     def default_settings(self):
-        """Set default visibility: show analog outputs, hide digitizer, digital I/O, and analog inputs."""
+        """
+        Set default visibility: show analog outputs, hide digitizer, digital
+        I/O, and analog inputs.
+        """
         self.analog_outputs.kind = "normal"
         self.waveform_digitizer.kind = "omitted"
         self.digital_ios.kind = "omitted"

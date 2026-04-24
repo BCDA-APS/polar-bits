@@ -8,7 +8,10 @@ from ophyd import EpicsSignal
 
 
 class VentusLaser(Device):
-    """Coherent Ventus CW laser with power/current control and temperature/status readbacks."""
+    """
+    Coherent Ventus CW laser with power/current control and temperature/status
+    readbacks.
+    """
 
     # TODO: Should power and current be PVPositioners?
     power_setpoint = Component(EpicsSignal, "PowerOut", kind="normal")

@@ -28,7 +28,10 @@ class Trigger(TriggerBase):
     _status_type = ADTriggerStatus
 
     def __init__(self, *args, image_name=None, **kwargs):
-        """Initialize Trigger with an optional image name and set up acquisition status."""
+        """
+        Initialize Trigger with an optional image name and set up acquisition
+        status.
+        """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -46,7 +49,10 @@ class Trigger(TriggerBase):
         self.cam.stage_sigs["gain_auto"] = "Off"
 
     def setup_external_trigger(self):
-        """Raise NotImplementedError — external trigger is not supported for Vimba detectors."""
+        """
+        Raise NotImplementedError — external trigger is not supported for Vimba
+        detectors.
+        """
         # Stage signals
         # self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
         # self.cam.stage_sigs["num_images"] = MAX_IMAGES
@@ -56,7 +62,9 @@ class Trigger(TriggerBase):
         )
 
     def stage(self):
-        """Disarm the detector, subscribe to busy signal, and call parent stage."""
+        """
+        Disarm the detector, subscribe to busy signal, and call parent stage.
+        """
         # if self._flysetup:
         #     self.setup_external_trigger()
 
@@ -70,7 +78,10 @@ class Trigger(TriggerBase):
         #     self._acquisition_signal.set(1).wait(timeout=10)
 
     def unstage(self):
-        """Call parent unstage, stop acquisition, clear busy subscription, and restore manual trigger."""
+        """
+        Call parent unstage, stop acquisition, clear busy subscription, and
+        restore manual trigger.
+        """
         super().unstage()
         self.cam.acquire.set(0).wait(timeout=10)
         # self._flysetup = False
@@ -78,7 +89,10 @@ class Trigger(TriggerBase):
         self.setup_manual_trigger()
 
     def trigger(self):
-        """Trigger one acquisition and return a status object that completes when acquire_busy drops."""
+        """
+        Trigger one acquisition and return a status object that completes when
+        acquire_busy drops.
+        """
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
@@ -106,7 +120,10 @@ class Trigger(TriggerBase):
 
 
 class VimbaCam(CamBase):
-    """CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics signals."""
+    """
+    CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics
+    signals.
+    """
 
     _default_configuration_attrs = CamBase._default_configuration_attrs + (
         "serial_number",
@@ -176,7 +193,10 @@ class VimbaCam(CamBase):
 
 
 class VimbaDetector(Trigger, DetectorBase):
-    """Vimba area detector with ROI/stats plugins, HDF5 output, and alignment helpers."""
+    """
+    Vimba area detector with ROI/stats plugins, HDF5 output, and alignment
+    helpers.
+    """
 
     _default_configuration_attrs = ("cam", "roi1", "roi2", "roi3", "roi4")
     _default_read_attrs = (
@@ -210,7 +230,10 @@ class VimbaDetector(Trigger, DetectorBase):
         max_num_images=65535,
         **kwargs,
     ):
-        """Initialize VimbaDetector with HDF5 folder, filename template, and max image count."""
+        """
+        Initialize VimbaDetector with HDF5 folder, filename template, and max
+        image count.
+        """
         self.default_folder = default_folder
         self.hdf1_name_format = hdf1_name_template + "." + hdf1_file_extension
         self.max_num_images = max_num_images
@@ -218,7 +241,10 @@ class VimbaDetector(Trigger, DetectorBase):
         super().__init__(*args, **kwargs)
 
     def wait_for_connection(self, all_signals=False, timeout=2):
-        """Wait for the cam to fully connect before calling the parent wait_for_connection."""
+        """
+        Wait for the cam to fully connect before calling the parent
+        wait_for_connection.
+        """
         self.cam.wait_for_connection(all_signals=True, timeout=timeout)
         super().wait_for_connection(all_signals, timeout)
 
@@ -257,7 +283,10 @@ class VimbaDetector(Trigger, DetectorBase):
         self.hdf1.autosave.put("off")
 
     def default_settings(self):
-        """Configure detector defaults: single-image mode, HDF1 template, and warmup sequence."""
+        """
+        Configure detector defaults: single-image mode, HDF1 template, and
+        warmup sequence.
+        """
         self.cam.num_images.put(1)
         self.cam.image_mode.put("Single")
         self.cam.acquire.put(0)
@@ -331,7 +360,9 @@ class VimbaDetector(Trigger, DetectorBase):
     def setup_images(
         self, base_path, name_template, file_number, flyscan=False
     ):
-        """Configure HDF1 file path, name, and number for an upcoming acquisition."""
+        """
+        Configure HDF1 file path, name, and number for an upcoming acquisition.
+        """
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.hdf1.file_name.set(name_template).wait(timeout=10)
         # Make sure eiger will save image
@@ -355,16 +386,24 @@ class VimbaDetector(Trigger, DetectorBase):
 
     @property
     def label_option_map(self):
-        """Return a mapping from ROI label strings to ROI numbers for plot selection."""
+        """
+        Return a mapping from ROI label strings to ROI numbers for plot
+        selection.
+        """
         return {f"ROI{i} Total": i for i in range(1, 5 + 1)}
 
     @property
     def plot_options(self):
-        """Return a list of all ROI label strings available for plot selection."""
+        """
+        Return a list of all ROI label strings available for plot selection.
+        """
         # Return all named scaler channels
         return list(self.label_option_map.keys())
 
     def select_plot(self, channels):
-        """Set hinted kind for the given channel label list, delegating to plot_select."""
+        """
+        Set hinted kind for the given channel label list, delegating to
+        plot_select.
+        """
         chans = [self.label_option_map[i] for i in channels]
         self.plot_select(chans)

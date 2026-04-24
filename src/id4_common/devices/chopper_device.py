@@ -11,7 +11,10 @@ from ophyd import FormattedComponent
 
 
 class ChopperDevice(Device):
-    """Photon chopper with translation motor, Newport controller, and frequency readback."""
+    """
+    Photon chopper with translation motor, Newport controller, and frequency
+    readback.
+    """
 
     # In/out motor
     translation = FormattedComponent(

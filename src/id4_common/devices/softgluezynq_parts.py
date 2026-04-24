@@ -65,7 +65,9 @@ def _buffer_fields(num=4):
 
 
 class SoftGlueSignal(Device):
-    """SoftGlue I/O signal device with signal and BI (binary-input) components."""
+    """
+    SoftGlue I/O signal device with signal and BI (binary-input) components.
+    """
 
     signal = Component(EpicsSignal, "_Signal", kind="config")
     bi = Component(EpicsSignal, "_BI", kind="config")
@@ -101,7 +103,10 @@ class SGZDownCounter(Device):
 
 
 class SGZGateDly(Device):
-    """SoftGlue gate-and-delay block that produces a programmable-width output pulse."""
+    """
+    SoftGlue gate-and-delay block that produces a programmable-width output
+    pulse.
+    """
 
     input = Component(SoftGlueSignal, "IN", kind="config")
     clock = Component(SoftGlueSignal, "CLK", kind="config")
@@ -111,7 +116,9 @@ class SGZGateDly(Device):
 
 
 class SGZClocks(Device):
-    """SoftGlue clock source block exposing 10/20/50 MHz and a variable-rate clock."""
+    """
+    SoftGlue clock source block exposing 10/20/50 MHz and a variable-rate clock.
+    """
 
     clock_10MHz = Component(SoftGlueSignal, "10MHZ_CLOCK", kind="config")
     clock_20MHz = Component(SoftGlueSignal, "20MHZ_CLOCK", kind="config")
@@ -128,7 +135,9 @@ class SGZGates(Device):
 
 
 class SGZDFF(Device):
-    """SoftGlue D flip-flop block with set, data, clock, clear, and output signals."""
+    """
+    SoftGlue D flip-flop block with set, data, clock, clear, and output signals.
+    """
 
     set_ = Component(SoftGlueSignal, "SET", kind="config")
     d = Component(SoftGlueSignal, "D", kind="config")
@@ -138,7 +147,10 @@ class SGZDFF(Device):
 
 
 class SGZHistScal(Device):
-    """SoftGlue histogram scaler block for time-resolved counting into histogram bins."""
+    """
+    SoftGlue histogram scaler block for time-resolved counting into histogram
+    bins.
+    """
 
     en = Component(SoftGlueSignal, "EN", kind="config")
     sync = Component(SoftGlueSignal, "SYNC", kind="config")
@@ -167,7 +179,10 @@ class SGZhistScalerDma(Device):
 
 
 class SoftGlueScalToStream(Device):
-    """SoftGlue scaler-to-DMA-stream block that serialises counter data for readout."""
+    """
+    SoftGlue scaler-to-DMA-stream block that serialises counter data for
+    readout.
+    """
 
     reset = Component(SoftGlueSignal, "RESET", kind="config")
     chadv = Component(SoftGlueSignal, "CHADV", kind="config")
@@ -181,7 +196,9 @@ class SoftGlueScalToStream(Device):
 
 
 class SampleXY(Device):
-    """SoftGlue sample-position device providing X/Y/pitch readbacks and offsets."""
+    """
+    SoftGlue sample-position device providing X/Y/pitch readbacks and offsets.
+    """
 
     x_offset = Component(EpicsSignal, "SAMPLE_XOFF", kind="config")
     y_offset = Component(EpicsSignal, "SAMPLE_YOFF", kind="config")

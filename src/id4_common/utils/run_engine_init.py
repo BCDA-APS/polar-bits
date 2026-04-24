@@ -41,33 +41,35 @@ def init_RE(
     subscriptions, and various preprocessors based on the provided
     configuration dictionary. It configures the control layer and timeouts,
     attaches supplemental data for baselines and monitors, and optionally
-    adds a progress bar and metadata updates from a catalog or BestEffortCallback.
+    adds a progress bar and metadata updates from a catalog or
+    BestEffortCallback.
 
     Parameters:
-        iconfig (Dict[str, Any]): Configuration dictionary with keys including:
-            - "RUN_ENGINE": A dict containing RunEngine-specific settings.
-            - "DEFAULT_METADATA": (Optional) Default metadata for the RunEngine.
-            - "USE_PROGRESS_BAR": (Optional) Boolean flag to enable the progress bar.
+        iconfig (Dict[str, Any]): Configuration dictionary with keys:
+            - "RUN_ENGINE": A dict with RunEngine-specific settings.
+            - "DEFAULT_METADATA": (Optional) Default metadata.
+            - "USE_PROGRESS_BAR": (Optional) Boolean to enable progress bar.
             - "OPHYD": A dict for control layer settings
             (e.g., "CONTROL_LAYER" and "TIMEOUTS").
-        bec_instance (Optional[Any]): Instance of BestEffortCallback for subscribing
-            to the RunEngine. Defaults to None.
-        cat_instance (Optional[Any]): Instance of a databroker catalog for subscribing
-            to the RunEngine. Defaults to None.
-        **kwargs: Additional keyword arguments passed to the RunEngine constructor.
-            For example, run_returns_result=True.
+        bec_instance (Optional[Any]): Instance of BestEffortCallback
+            for subscribing to the RunEngine. Defaults to None.
+        cat_instance (Optional[Any]): Instance of a databroker catalog
+            for subscribing to the RunEngine. Defaults to None.
+        **kwargs: Additional keyword arguments passed to the RunEngine
+            constructor. For example, run_returns_result=True.
 
     Returns:
-        Tuple[bluesky.RunEngine, bluesky.SupplementalData]: A tuple containing the
-        configured RunEngine instance and its associated SupplementalData.
+        Tuple[bluesky.RunEngine, bluesky.SupplementalData]: A tuple
+        containing the configured RunEngine and its SupplementalData.
 
     Notes:
-        The function attempts to set up persistent metadata storage in the RE.md attr.
-        If an error occurs during the creation of the metadata storage handler,
-        the error is logged and the function proceeds without persistent metadata.
-        Subscriptions are added for the catalog and BestEffortCallback if provided, and
-        additional configurations such as control layer, timeouts, and progress bar
-        integration are applied.
+        The function attempts to set up persistent metadata storage in
+        the RE.md attr. If an error occurs during creation of the
+        metadata storage handler, the error is logged and the function
+        proceeds without persistent metadata. Subscriptions are added
+        for the catalog and BestEffortCallback if provided, and
+        additional configurations such as control layer, timeouts, and
+        progress bar integration are applied.
     """
     re_config = iconfig.get("RUN_ENGINE", {})
 

@@ -1,4 +1,6 @@
-"""Detector and monitor selection class for dual-scaler beamline configurations."""
+"""
+Detector and monitor selection class for dual-scaler beamline configurations.
+"""
 
 from collections.abc import Iterable
 from logging import getLogger

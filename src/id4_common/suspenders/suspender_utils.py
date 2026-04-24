@@ -1,4 +1,6 @@
-"""Utility functions for managing and configuring beamline shutter suspenders."""
+"""
+Utility functions for managing and configuring beamline shutter suspenders.
+"""
 
 from logging import getLogger
 
@@ -64,7 +66,9 @@ def suspender_restart(suspender_label=None):
 
 
 def suspender_change_sleep(suspender_label=None, sleep_time=None):
-    """Change the post-beam-return sleep time for one or more shutter suspenders."""
+    """
+    Change the post-beam-return sleep time for one or more shutter suspenders.
+    """
     if suspender_label is None:
         suspender_label = _query_label()
 

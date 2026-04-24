@@ -106,7 +106,10 @@ class DanteCAM1(ADBase):
 
 
 class DanteCAM4(DanteCAM1):
-    """DanteCAM1 variant for a 4-element Dante detector with SNL connectivity status."""
+    """
+    DanteCAM1 variant for a 4-element Dante detector with SNL connectivity
+    status.
+    """
 
     _default_configuration_attrs = DanteCAM1._default_configuration_attrs + (
         "snl_connected",
@@ -117,7 +120,10 @@ class DanteCAM4(DanteCAM1):
 
 
 class DanteSCA(ADBase):
-    """Per-channel SCA (single-channel analyser) statistics and parameters for a Dante board."""
+    """
+    Per-channel SCA (single-channel analyser) statistics and parameters for a
+    Dante board.
+    """
 
     _default_read_attrs = ("icr", "ocr", "f1_deadtime")
 
@@ -185,7 +191,10 @@ class DanteSCA(ADBase):
 
 
 class DanteHDF1Plugin(PolarHDF5Plugin):
-    """HDF5 plugin for the Dante detector with Dante-specific array counter and warmup."""
+    """
+    HDF5 plugin for the Dante detector with Dante-specific array counter and
+    warmup.
+    """
 
     # The array counter readback pv is different...
     array_counter = ADComponent(EpicsSignal, "ArrayCounter", kind="config")
@@ -194,12 +203,18 @@ class DanteHDF1Plugin(PolarHDF5Plugin):
     )
 
     def __init__(self, *args, **kwargs):
-        """Initialize DanteHDF1Plugin and set the num_images source to cam.mca_mapping_points."""
+        """
+        Initialize DanteHDF1Plugin and set the num_images source to
+        cam.mca_mapping_points.
+        """
         super().__init__(*args, **kwargs)
         self._num_images_device = "cam.mca_mapping_points"
 
     def warmup(self):
-        """Perform a single-point MCA mapping acquisition to warm up the HDF5 plugin."""
+        """
+        Perform a single-point MCA mapping acquisition to warm up the HDF5
+        plugin.
+        """
         sigs = OrderedDict(
             [
                 (self.enable, 1),

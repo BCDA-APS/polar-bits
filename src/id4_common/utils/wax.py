@@ -10,7 +10,9 @@ cat = load_catalog("4id_polar")
 
 
 def wm(*args):
-    """Print a table of current position and travel limits for the given motors."""
+    """
+    Print a table of current position and travel limits for the given motors.
+    """
     result = Table()
     result.labels = ("Motor", "Position", "Limits")
     for arg in args:
@@ -154,7 +156,10 @@ def wa_scan(scan=None, motor=None):
 
 
 def wa_new(motor=None):
-    """Print current position and limits for all motors, optionally filtered by name."""
+    """
+    Print current position and limits for all motors, optionally filtered by
+    name.
+    """
     result = Table()
     result.labels = ("Motor", "Position", "Limits")
     devices = oregistry.findall("motor")

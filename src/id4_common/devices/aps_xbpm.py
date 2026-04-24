@@ -17,7 +17,10 @@ class CMsDevice(Device):
 
 
 class MyXBPM(Device):
-    """X-ray beam position monitor with position, angle, and current-mode readbacks."""
+    """
+    X-ray beam position monitor with position, angle, and current-mode
+    readbacks.
+    """
 
     vertical_position = Component(EpicsSignalRO, ":ID:SrcPt:VPositionM")
     vertical_angle = Component(EpicsSignalRO, ":ID:SrcPt:VAngleM")

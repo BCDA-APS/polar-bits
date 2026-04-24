@@ -17,7 +17,10 @@ from ophyd.status import Status
 
 
 class TableMotors(Device):
-    """Three-axis (X, Y, Z) table motor bundle with sample rotation and tilt for the 911 magnet."""
+    """
+    Three-axis (X, Y, Z) table motor bundle with sample rotation and tilt for
+    the 911 magnet.
+    """
 
     x = Component(EpicsMotor, "m14", labels=("motor",))
     y = Component(EpicsMotor, "m15", labels=("motor",))
@@ -29,7 +32,9 @@ class TableMotors(Device):
 
 
 class RamanMotors(Device):
-    """Raman spectrometer motor bundle with XYZ translation and tilt/rotation axes."""
+    """
+    Raman spectrometer motor bundle with XYZ translation and tilt/rotation axes.
+    """
 
     x = Component(EpicsMotor, "m24", labels=("motor",))
     y = Component(EpicsMotor, "m25", labels=("motor",))
@@ -47,7 +52,10 @@ class MagnetMotors(Device):
 
 
 class FieldPositioner(PVPositioner):
-    """PVPositioner for the 9T superconducting magnet field ramp with heater interlock."""
+    """
+    PVPositioner for the 9T superconducting magnet field ramp with heater
+    interlock.
+    """
 
     setpoint = Component(
         EpicsSignal, "TargetField", write_pv="SetField.VAL", put_complete=True
@@ -81,13 +89,19 @@ class FieldPositioner(PVPositioner):
     )
 
     def __init__(self, *args, **kwargs):
-        """Initialize FieldPositioner, rename readback to parent name, and set 0.05 T tolerance."""
+        """
+        Initialize FieldPositioner, rename readback to parent name, and set 0.05
+        T tolerance.
+        """
         super().__init__(*args, **kwargs)
         self.readback.name = self.name
         self._tolerance = 0.05
 
     def move(self, position, wait=True, timeout=None, moved_cb=None):
-        """Move to position; return immediately done if heater is ON and within tolerance."""
+        """
+        Move to position; return immediately done if heater is ON and within
+        tolerance.
+        """
         if (self.parent.heater.get() in [0, "ON"]) & (
             abs(position - self.readback.get()) < self._tolerance
         ):
@@ -101,7 +115,10 @@ class FieldPositioner(PVPositioner):
 
 
 class PowerSupply(Device):
-    """9T magnet power supply with field ramp control, safety status, and heater monitoring."""
+    """
+    9T magnet power supply with field ramp control, safety status, and heater
+    monitoring.
+    """
 
     field = Component(FieldPositioner, "")
 
@@ -146,7 +163,10 @@ class PowerSupply(Device):
 
 
 class MonChannel(Device):
-    """Single monitoring channel with temperature and Hall-probe resistance/field readbacks."""
+    """
+    Single monitoring channel with temperature and Hall-probe resistance/field
+    readbacks.
+    """
 
     temperature_name = FormattedComponent(
         EpicsSignalRO, "{prefix}TempName{ch}", string=True
@@ -159,7 +179,10 @@ class MonChannel(Device):
     read_scan = Component(EpicsSignal, "Read.SCAN", string=True, kind="omitted")
 
     def __init__(self, *args, ch_num=1, **kwargs):
-        """Initialize MonChannel and store the channel number for FormattedComponent substitution."""
+        """
+        Initialize MonChannel and store the channel number for
+        FormattedComponent substitution.
+        """
         self.ch = ch_num
         super().__init__(*args, **kwargs)
 
@@ -178,7 +201,10 @@ def _make_monitors(num=1):
 
 # TODO: Change these names to something more meaningful.
 class VTIDevice(Device):
-    """Variable Temperature Insert device with four temperature sensors and setpoint positioners."""
+    """
+    Variable Temperature Insert device with four temperature sensors and
+    setpoint positioners.
+    """
 
     sensor_a = Component(
         EpicsSignalRO, "SensorA", kind="hinted", labels=["temperature"]
@@ -233,7 +259,9 @@ class VTIDevice(Device):
 
 
 class NVDevice(Device):
-    """Needle valve controller device with temperature and pressure positioners."""
+    """
+    Needle valve controller device with temperature and pressure positioners.
+    """
 
     control_mode = Component(
         EpicsSignal, "SetControlMode", string=True, kind="config"
@@ -264,7 +292,10 @@ class NVDevice(Device):
 
 
 class Magnet911(Device):
-    """Complete 9T superconducting magnet system with table motors, field control, and temperature."""
+    """
+    Complete 9T superconducting magnet system with table motors, field control,
+    and temperature.
+    """
 
     connection = Component(EpicsSignalRO, "911TMagnet:asyn.CNCT", kind="config")
 

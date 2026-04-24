@@ -38,7 +38,9 @@ ANALYZER_LIST_PATH = Path(__file__).parent / "analyzerlist.dat"
 
 
 class AnalyzerDevice(PseudoPositioner):
-    """Crystal polarization analyzer with pseudo-energy axis and crystal setup."""
+    """
+    Crystal polarization analyzer with pseudo-energy axis and crystal setup.
+    """
 
     energy = Component(PseudoSingle, limits=(2.6, 34))
     th = Component(EpicsMotor, "pmth", labels=("motor",))
@@ -71,23 +73,35 @@ class AnalyzerDevice(PseudoPositioner):
     # These assume that the analyzer is part of the diffractometer.
     @property
     def beamline_wavelength(self):
-        """Return the current beamline wavelength from the parent diffractometer beam object."""
+        """
+        Return the current beamline wavelength from the parent diffractometer
+        beam object.
+        """
         return self.parent.beam.wavelength.get()
 
     @property
     def beamline_energy(self):
-        """Return the current beamline energy in keV from the parent diffractometer beam object."""
+        """
+        Return the current beamline energy in keV from the parent diffractometer
+        beam object.
+        """
         return self.parent.beam.energy.get()
 
     def convert_energy_to_theta(self, energy):
-        """Convert photon energy (keV) to Bragg angle (degrees) using the crystal d-spacing."""
+        """
+        Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / 2 / self.d_spacing.get()) * 180.0 / pi
         return theta
 
     def convert_energy_to_tth_trans(self, energy):
-        """Convert photon energy (keV) to the two-theta translation stage position (mm)."""
+        """
+        Convert photon energy (keV) to the two-theta translation stage position
+        (mm).
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         th = self.convert_energy_to_theta(energy)
         tth = 2 * th
@@ -97,7 +111,10 @@ class AnalyzerDevice(PseudoPositioner):
         return tth_trans
 
     def convert_theta_to_energy(self, theta):
-        """Convert Bragg angle (degrees) to photon energy (keV) using the crystal d-spacing."""
+        """
+        Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = 2 * self.d_spacing.get() * sin(theta * pi / 180)
         energy = speed_of_light * Planck * 6.241509e15 * 1e10 / lamb
@@ -120,13 +137,18 @@ class AnalyzerDevice(PseudoPositioner):
         )
 
     def set_energy(self, energy):
-        """Calibrate the Bragg-angle motor to match the given photon energy (keV)."""
+        """
+        Calibrate the Bragg-angle motor to match the given photon energy (keV).
+        """
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
     def calc(self):
-        """Print analyzer Bragg angles for the current crystal at the current beamline energy."""
+        """
+        Print analyzer Bragg angles for the current crystal at the current
+        beamline energy.
+        """
         d_ana = self.d_spacing.get()
         if d_ana == 1e4:
             self.setup()
@@ -142,7 +164,10 @@ class AnalyzerDevice(PseudoPositioner):
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
     ):
-        """List compatible analyzer crystals and interactively configure d-spacing and crystal."""
+        """
+        List compatible analyzer crystals and interactively configure d-spacing
+        and crystal.
+        """
         if not analyzer_energy:
             energy = self.beamline_energy
             wavelength = self.beamline_wavelength
@@ -252,7 +277,10 @@ class AnalyzerDevice(PseudoPositioner):
 
 
 class DiffractometerMixin(Device):
-    """Mixin adding table, area-detector, filter, slit, and analyzer components to a diffractometer."""
+    """
+    Mixin adding table, area-detector, filter, slit, and analyzer components to
+    a diffractometer.
+    """
 
     # Table vertical/horizontal
     tablex = Component(EpicsMotor, "m3", labels=("motor",))
@@ -292,7 +320,10 @@ class DiffractometerMixin(Device):
     #     return {"fields": fields}
 
     def default_settings(self):
-        """Apply default settings for the diffractometer mixin (no-op; subclasses override)."""
+        """
+        Apply default settings for the diffractometer mixin (no-op; subclasses
+        override).
+        """
         pass
         # self._update_calc_energy()
 
@@ -341,7 +372,9 @@ HPDiffractometerBase = diffractometer_class_factory(
 
 
 class HPDiffractometer(CradleDiffractometerBase, DiffractometerMixin):
-    """hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors."""
+    """
+    hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
+    """
 
     basex = Component(EpicsMotor, "m7", labels=("motor",))
     basey = Component(EpicsMotor, "SMBaseY", labels=("motor",))

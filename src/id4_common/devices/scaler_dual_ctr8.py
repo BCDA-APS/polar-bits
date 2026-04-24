@@ -25,10 +25,16 @@ PREFIX2 = "4idCTR8_1:scaler2"
 
 
 class LocalScalerChannel(ScalerChannel):
-    """ScalerChannel subclass that tracks which physical scaler board owns this channel."""
+    """
+    ScalerChannel subclass that tracks which physical scaler board owns this
+    channel.
+    """
 
     def __init__(self, *args, ch_num=0, **kwargs):
-        """Initialize and record the scaler board number derived from the channel number."""
+        """
+        Initialize and record the scaler board number derived from the channel
+        number.
+        """
         super().__init__(*args, **kwargs)
 
         # This stores info on which scaler this belongs to
@@ -36,7 +42,9 @@ class LocalScalerChannel(ScalerChannel):
 
 
 def make_channels():
-    """Build an OrderedDict of 15 combined channels across two CTR8 scaler boards."""
+    """
+    Build an OrderedDict of 15 combined channels across two CTR8 scaler boards.
+    """
     defn = OrderedDict()
 
     # First scaler
@@ -60,10 +68,16 @@ def make_channels():
 
 
 class DualCTR8Scaler(Device):
-    """Combined scaler device aggregating two CTR8 boards into a single 15-channel interface."""
+    """
+    Combined scaler device aggregating two CTR8 boards into a single 15-channel
+    interface.
+    """
 
     def __init__(self, prefix1, prefix2, **kwargs):
-        """Initialize DualCTR8Scaler with the PV prefixes for each of the two CTR8 boards."""
+        """
+        Initialize DualCTR8Scaler with the PV prefixes for each of the two CTR8
+        boards.
+        """
         self.prefix1 = prefix1
         self.prefix2 = prefix2
         super().__init__("", **kwargs)
@@ -81,7 +95,9 @@ class DualCTR8Scaler(Device):
     preset_monitor = Component(PresetMonitorSignal, kind=Kind.config)
 
     def match_names(self):
-        """Sync each channel's Python name to the EPICS channel-name PV value."""
+        """
+        Sync each channel's Python name to the EPICS channel-name PV value.
+        """
         for s in self.channels.component_names:
             getattr(self.channels, s).match_name()
 
@@ -131,14 +147,19 @@ class DualCTR8Scaler(Device):
         return self.scaler1
 
     def trigger(self):
-        """Trigger acquisition on scaler1; the second board follows via hardware connection."""
+        """
+        Trigger acquisition on scaler1; the second board follows via hardware
+        connection.
+        """
         # Only click trigger in the scaler of the monitor, the other
         # will follow because they are hardwired together.
         return self.trigger_scaler.trigger()
 
     @property
     def channels_name_map(self):
-        """Return a dict mapping EPICS channel names to component attribute names."""
+        """
+        Return a dict mapping EPICS channel names to component attribute names.
+        """
         name_map = {}
         for channel in self.channels.component_names:
             # as defined in self.match_names()
@@ -148,7 +169,10 @@ class DualCTR8Scaler(Device):
         return name_map
 
     def select_plot_channels(self, chan_names=None):
-        """Set the Kind of each channel to hinted (in chan_names) or normal (others)."""
+        """
+        Set the Kind of each channel to hinted (in chan_names) or normal
+        (others).
+        """
         self.match_names()
         name_map = self.channels_name_map
 
@@ -248,16 +272,23 @@ class DualCTR8Scaler(Device):
 
     @property
     def plot_options(self):
-        """Return a list of all named scaler channel names available for plotting."""
+        """
+        Return a list of all named scaler channel names available for plotting.
+        """
         # Return all named scaler channels
         return list(self.channels_name_map.keys())
 
     def select_plot(self, channels):
-        """Set hinted kind for the given channel list, delegating to select_plot_channels."""
+        """
+        Set hinted kind for the given channel list, delegating to
+        select_plot_channels.
+        """
         self.select_plot_channels(chan_names=channels)
 
     def default_settings(self):
-        """Initialize monitor, read channels, plot channels, and scaler delays."""
+        """
+        Initialize monitor, read channels, plot channels, and scaler delays.
+        """
         self.monitor = "chan01"
         self.select_read_channels()
         self.select_plot_channels()

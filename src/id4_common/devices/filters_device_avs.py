@@ -13,7 +13,10 @@ NUM_FILTERS = 12
 
 
 class FilterSlot(Device):
-    """Single AVS filter slot with insertion control, lock, material, and PV routing."""
+    """
+    Single AVS filter slot with insertion control, lock, material, and PV
+    routing.
+    """
 
     setpoint = Component(EpicsSignal, "", string=True)
     readback = Component(EpicsSignalRO, "_RBV", string=True)
@@ -31,7 +34,10 @@ class FilterSlot(Device):
 
 
 def make_filter_slots(num: int):
-    """Return an OrderedDict of FilterSlot component definitions for a DynamicDeviceComponent."""
+    """
+    Return an OrderedDict of FilterSlot component definitions for a
+    DynamicDeviceComponent.
+    """
     defn = {}
     for n in range(1, num + 1):
         defn[f"f{n}"] = (FilterSlot, f"filter{n:02d}", dict(kind="config"))
@@ -39,7 +45,9 @@ def make_filter_slots(num: int):
 
 
 class APSFilter(Device):
-    """AVS-style APS filter bank with attenuation control and per-slot management."""
+    """
+    AVS-style APS filter bank with attenuation control and per-slot management.
+    """
 
     # Status and information
 

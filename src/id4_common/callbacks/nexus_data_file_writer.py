@@ -35,7 +35,9 @@ class MyNXWriter(NXWriterAPS):
     external_files = {}
 
     def write_root(self, filename):
-        """Write the root group and set POLAR-specific NeXus version attributes."""
+        """
+        Write the root group and set POLAR-specific NeXus version attributes.
+        """
         super().write_root(filename)
         self.root.attrs["NeXus_version"] = NEXUS_RELEASE
         self.root.attrs["layout_version"] = LAYOUT_VERSION

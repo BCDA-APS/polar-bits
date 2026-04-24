@@ -25,7 +25,9 @@ LENS_SETTINGS = "/home/beams/POLAR/polar_instrument/src/instrument/utils/transfo
 
 
 def read_delta(energy, path=BE_REFR_INDEX_FILE):
-    """Return the refractive index delta for beryllium at the given energy (eV)."""
+    """
+    Return the refractive index delta for beryllium at the given energy (eV).
+    """
     if energy < 2700 or energy > 27000:
         raise ValueError("Energy {} out of range [2700, 27000].".format(energy))
 

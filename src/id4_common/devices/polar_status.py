@@ -34,7 +34,10 @@ class HutchStatus(Device):
     )
 
     def __init__(self, prefix, hutch=None, **kwargs):
-        """Initialize HutchStatus with the single-letter hutch identifier (e.g. 'B')."""
+        """
+        Initialize HutchStatus with the single-letter hutch identifier (e.g.
+        'B').
+        """
         self._hutch = hutch
         super().__init__(prefix, **kwargs)
 
@@ -48,7 +51,9 @@ class AStatus(HutchStatus):
 
 
 class Status4ID(Device):
-    """Aggregate status device for all hutches and the front-end at APS sector 4."""
+    """
+    Aggregate status device for all hutches and the front-end at APS sector 4.
+    """
 
     online = Component(EpicsSignalRO, "FES:GlobalOnline:CM", string=True)
     acis = Component(EpicsSignalRO, "FES:ACISPermit:CM", string=True)

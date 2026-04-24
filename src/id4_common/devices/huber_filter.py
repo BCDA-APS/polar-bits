@@ -9,7 +9,10 @@ from ophyd import FormattedComponent
 
 
 class SlotDevice(Device):
-    """Single Huber filter slot with label, thickness, and insertion status signals."""
+    """
+    Single Huber filter slot with label, thickness, and insertion status
+    signals.
+    """
 
     label = FormattedComponent(
         EpicsSignal,
@@ -30,7 +33,10 @@ class SlotDevice(Device):
     )
 
     def __init__(self, *args, slot=1, **kwargs):
-        """Initialize the slot device and record the slot index for FormattedComponent substitution."""
+        """
+        Initialize the slot device and record the slot index for
+        FormattedComponent substitution.
+        """
         self.i = slot
         super().__init__(*args, **kwargs)
 

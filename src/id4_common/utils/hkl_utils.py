@@ -2050,7 +2050,9 @@ def setaz(*args):
 
 
 def freeze(*args):
-    """Freeze the psi angle for psi-constant scans on the current diffractometer."""
+    """
+    Freeze the psi angle for psi-constant scans on the current diffractometer.
+    """
     _geom_ = current_diffractometer()
     _check_geom_selected()
     if (
@@ -2319,7 +2321,9 @@ class whClass:
     """
 
     def __repr__(self):
-        """Print the current diffractometer positions and return an empty string."""
+        """
+        Print the current diffractometer positions and return an empty string.
+        """
         print("")
         _wh()
         return ""
@@ -2363,7 +2367,9 @@ class Sync_UB_Matrix:
         self.source.UB.clear_sub(self.sync_callback)
 
     def sync_callback(self, value=None, **kwargs):
-        """Copy the UB matrix from source to target when a change is received."""
+        """
+        Copy the UB matrix from source to target when a change is received.
+        """
         if value is None:
             raise RuntimeError(f"sync_callback: {value=!r}  {kwargs=!r}")
         ub_source = value
@@ -2383,7 +2389,10 @@ class Sync_UB_Matrix:
 def restore_huber_from_scan(
     scan_id, diffractometer=None, sample_name=None, force=False
 ):
-    """Restore diffractometer orientation (sample, constraints, reflections) from a saved scan."""
+    """
+    Restore diffractometer orientation (sample, constraints, reflections) from a
+    saved scan.
+    """
     info = run_orientation_info(cat[scan_id])
 
     if diffractometer is None:

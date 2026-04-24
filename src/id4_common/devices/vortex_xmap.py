@@ -18,14 +18,20 @@ MAX_ROIS = 32
 
 
 class MyDXP(SaturnDXP):
-    """SaturnDXP subclass that removes unused live_time_output and trigger_output components."""
+    """
+    SaturnDXP subclass that removes unused live_time_output and trigger_output
+    components.
+    """
 
     live_time_output = None
     trigger_output = None
 
 
 class MyMCA(EpicsMCARecord):
-    """EpicsMCARecord subclass that adds a check_acquiring signal for polling acquisition state."""
+    """
+    EpicsMCARecord subclass that adds a check_acquiring signal for polling
+    acquisition state.
+    """
 
     check_acquiring = Component(
         EpicsSignal, ".ACQG", kind="omitted", string=False
@@ -47,7 +53,9 @@ class SingleTrigger(Device):
     _status_type = DeviceStatus
 
     def __init__(self, *args, **kwargs):
-        """Initialize SingleTrigger and wire the erase_start and status signals."""
+        """
+        Initialize SingleTrigger and wire the erase_start and status signals.
+        """
         super().__init__(*args, **kwargs)
         self._acquisition_signal = self.erase_start
         self._status_signal = self.status
@@ -58,7 +66,9 @@ class SingleTrigger(Device):
         super().stage()
 
     def unstage(self):
-        """Unsubscribe the status-signal callback and delegate to parent unstage."""
+        """
+        Unsubscribe the status-signal callback and delegate to parent unstage.
+        """
         super().unstage()
         self._status_signal.clear_sub(self._acquire_changed)
 
@@ -88,12 +98,18 @@ class TotalCorrectedSignal(SignalRO):
     """Signal that returns the deadtime corrected total counts"""
 
     def __init__(self, prefix, roi_index=0, **kwargs):
-        """Initialize TotalCorrectedSignal, storing the ROI index for deadtime-corrected summation."""
+        """
+        Initialize TotalCorrectedSignal, storing the ROI index for deadtime-
+        corrected summation.
+        """
         self.roi_index = roi_index
         super().__init__(**kwargs)
 
     def get(self, **kwargs):
-        """Return the sum of deadtime-corrected ROI counts across all XMAP channels."""
+        """
+        Return the sum of deadtime-corrected ROI counts across all XMAP
+        channels.
+        """
         value = 0
         for ch_num in range(1, 4 + 1):
             roi = getattr(self.root, f"mca{ch_num}.rois.roi{self.roi_index}")
@@ -166,7 +182,10 @@ class VortexXMAP(SingleTrigger):
         return self.real_preset
 
     def default_kinds(self):
-        """Set default read/configuration attribute lists for MCA channels (placeholder)."""
+        """
+        Set default read/configuration attribute lists for MCA channels
+        (placeholder).
+        """
         # TODO: This is setting A LOT of stuff as "configuration_attrs", should
         # be revised at some point.
 
@@ -188,14 +207,18 @@ class VortexXMAP(SingleTrigger):
         ]
 
     def default_settings(self):
-        """Set default stage signals for erase-on-start and real-time preset mode."""
+        """
+        Set default stage signals for erase-on-start and real-time preset mode.
+        """
         self.stage_sigs["stop_"] = 1
         self.stage_sigs["erase"] = 1
         self.stage_sigs["preset_mode"] = "Real time"
 
     @property
     def read_rois(self):
-        """Return the list of ROI indices that are currently included in reads."""
+        """
+        Return the list of ROI indices that are currently included in reads.
+        """
         return self._read_rois
 
     @read_rois.setter
@@ -204,7 +227,10 @@ class VortexXMAP(SingleTrigger):
         self._read_rois = list(rois)
 
     def select_roi(self, rois):
-        """Set the hinted ROI totals to those in rois, keeping other read_rois as normal."""
+        """
+        Set the hinted ROI totals to those in rois, keeping other read_rois as
+        normal.
+        """
         for i in range(MAX_ROIS):
             k = (
                 "hinted"
@@ -241,7 +267,10 @@ class VortexXMAP(SingleTrigger):
 
     @property
     def label_option_map(self):
-        """Return a mapping from human-readable ROI label strings to ROI index integers."""
+        """
+        Return a mapping from human-readable ROI label strings to ROI index
+        integers.
+        """
         return {f"ROI{i} Total": i for i in range(0, 8)}
 
     @property

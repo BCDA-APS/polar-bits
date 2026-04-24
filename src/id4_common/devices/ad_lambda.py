@@ -43,7 +43,9 @@ class MySingleTrigger(TriggerBase):
     _status_type = ADTriggerStatus
 
     def __init__(self, *args, image_name=None, delay_time=0.1, **kwargs):
-        """Initialize MySingleTrigger with optional image name and settling delay."""
+        """
+        Initialize MySingleTrigger with optional image name and settling delay.
+        """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -106,7 +108,9 @@ class Lambda250kCam(CamBase):
 
 
 class MyHDF5Plugin(FileStoreHDF5SingleIterativeWrite, HDF5Plugin_V34):
-    """HDF5 plugin for the Lambda 250k detector with POLAR-specific filestore spec."""
+    """
+    HDF5 plugin for the Lambda 250k detector with POLAR-specific filestore spec.
+    """
 
     def __init__(self, *args, **kwargs):
         """Initialize MyHDF5Plugin and set the POLAR filestore specification."""
@@ -115,7 +119,9 @@ class MyHDF5Plugin(FileStoreHDF5SingleIterativeWrite, HDF5Plugin_V34):
 
 
 class Lambda250kDetector(MySingleTrigger, DetectorBase):
-    """Lambda 250k area detector with HDF5 file writing and statistics plugins."""
+    """
+    Lambda 250k area detector with HDF5 file writing and statistics plugins.
+    """
 
     _default_configuration_attrs = ("roi1", "roi2", "roi3", "roi4", "codec")
     _default_read_attrs = (
@@ -154,7 +160,9 @@ class Lambda250kDetector(MySingleTrigger, DetectorBase):
         return self.cam.acquire_time
 
     def default_kinds(self):
-        """Configure default kind settings for all detector plugins and components."""
+        """
+        Configure default kind settings for all detector plugins and components.
+        """
 
         # TODO: This is setting A LOT of stuff as "configuration_attrs", should
         # be revised at some point.

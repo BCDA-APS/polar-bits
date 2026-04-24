@@ -10,7 +10,10 @@ from ophyd import EpicsSignalRO
 
 
 class MR3(Device):
-    """Toroidal mirror MR3 with combined and individual translation/pitch/yaw motors and bender."""
+    """
+    Toroidal mirror MR3 with combined and individual translation/pitch/yaw
+    motors and bender.
+    """
 
     # Combined motions motors
     y = Component(EpicsMotor, "m11", labels=("motor",))
@@ -45,7 +48,10 @@ class MR3(Device):
 
 
 class MR4(Device):
-    """Toroidal mirror MR4 with combined and individual translation/pitch/yaw motors."""
+    """
+    Toroidal mirror MR4 with combined and individual translation/pitch/yaw
+    motors.
+    """
 
     # Combined motions motors
     y = Component(EpicsMotor, "m15", labels=("motor",))

@@ -7,7 +7,9 @@ from imageio.v3 import imread
 
 
 class SPEHandler(HandlerBase):
-    """Area detector handler for SPE files produced by the LightField detector."""
+    """
+    Area detector handler for SPE files produced by the LightField detector.
+    """
 
     specs = {"AD_SPE_APSPolar"} | HandlerBase.specs
 

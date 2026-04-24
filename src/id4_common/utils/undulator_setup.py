@@ -9,8 +9,10 @@ def undulator_setup(
     """
     Select undulators used and turn energy tracking on/off
 
-    - Undulator offset denotes difference of undulator energy to monochromator energy
-      - [c]alculate: calculates offset from monochromator and undulator current energies
+    - Undulator offset denotes difference of undulator energy to
+      monochromator energy
+      - [c]alculate: calculates offset from monochromator and
+        undulator current energies
 
 
     """

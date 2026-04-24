@@ -8,10 +8,14 @@ from ophyd import MotorBundle
 
 
 class MyEpicsMotor(EpicsMotor):
-    """EpicsMotor subclass that removes velocity from stage signals on unstage."""
+    """
+    EpicsMotor subclass that removes velocity from stage signals on unstage.
+    """
 
     def unstage(self):
-        """Remove velocity from stage_sigs before delegating to parent unstage."""
+        """
+        Remove velocity from stage_sigs before delegating to parent unstage.
+        """
         try:
             self.stage_sigs.pop("velocity")
         except KeyError:
