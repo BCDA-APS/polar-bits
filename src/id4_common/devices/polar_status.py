@@ -28,7 +28,9 @@ class HutchStatus(Device):
     )
 
     shutter = FormattedComponent(
-        EpicsSignalRO, "{self.parent.prefix}S{_hutch}S:BLEPS_Status:CM", string=True
+        EpicsSignalRO,
+        "{self.parent.prefix}S{_hutch}S:BLEPS_Status:CM",
+        string=True,
     )
 
     def __init__(self, prefix, hutch=None, **kwargs):

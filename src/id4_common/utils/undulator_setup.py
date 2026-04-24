@@ -3,7 +3,9 @@
 from apsbits.core.instrument_init import oregistry
 
 
-def undulator_setup(ds="N", ds_off=999, ds_harm=0, us="N", us_off=999, us_harm=0):
+def undulator_setup(
+    ds="N", ds_off=999, ds_harm=0, us="N", us_off=999, us_harm=0
+):
     """
     Select undulators used and turn energy tracking on/off
 
@@ -66,7 +68,9 @@ def undulator_setup(ds="N", ds_off=999, ds_harm=0, us="N", us_off=999, us_harm=0
         ds_off = (
             ds_off
             if ds_off_inq
-            else input(f"   DS undulator offset (value/[c]alculate) [{ds_off:.3f}]: ")
+            else input(
+                f"   DS undulator offset (value/[c]alculate) [{ds_off:.3f}]: "
+            )
             or ds_off
         )
         if ds_off == "c":
@@ -108,7 +112,9 @@ def undulator_setup(ds="N", ds_off=999, ds_harm=0, us="N", us_off=999, us_harm=0
         us_off = (
             us_off
             if us_off_inq
-            else input(f"   US undulator offset (value/[c]alculate) [{us_off:.3f}]: ")
+            else input(
+                f"   US undulator offset (value/[c]alculate) [{us_off:.3f}]: "
+            )
             or us_off
         )
         if us_off == "c":

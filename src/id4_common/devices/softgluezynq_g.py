@@ -52,7 +52,9 @@ class SoftGlueZynqDevice(Device):
     gate_trigger = Component(SGZGateDly, "SG:GateDly-1_", kind="config")
 
     # Send data to DMA
-    scaltostream = Component(SoftGlueScalToStream, "SG:scalToStream-1_", kind="config")
+    scaltostream = Component(
+        SoftGlueScalToStream, "SG:scalToStream-1_", kind="config"
+    )
 
     # Clocks
     clocks = Component(SGZClocks, "SG:", kind="config")
@@ -61,7 +63,9 @@ class SoftGlueZynqDevice(Device):
     # Sample position
     sample_pos = Component(SampleXY, "SG:")
 
-    def __init__(self, *args, reset_sleep_time=0.2, reference_clock=1e7, **kwargs):
+    def __init__(
+        self, *args, reset_sleep_time=0.2, reference_clock=1e7, **kwargs
+    ):
         """Initialize SoftGlueZynqDevice with reset sleep duration and reference clock rate."""
         super().__init__(*args, **kwargs)
         self._reset_sleep_time = reset_sleep_time
@@ -85,7 +89,9 @@ class SoftGlueZynqDevice(Device):
 
     def reset_plan(self):
         """Bluesky plan stub to pulse the counter-reset and DMA-reset buffers."""
-        yield from mv(self.buffers.in3.signal, "1!", self.buffers.in4.signal, "1!")
+        yield from mv(
+            self.buffers.in3.signal, "1!", self.buffers.in4.signal, "1!"
+        )
 
     def clear_enable_dma(self):
         """Bluesky plan stub to clear the DMA buffer and then enable DMA acquisition."""
@@ -97,7 +103,9 @@ class SoftGlueZynqDevice(Device):
         yield from mv(self.dma.clear_button, 1, self.dma.clear_buffer, 1)
         yield from mv(self.dma.enable, 0)
 
-    def setup_trigger_plan(self, period_time, pulse_width_time, pulse_delay_time=0):
+    def setup_trigger_plan(
+        self, period_time, pulse_width_time, pulse_delay_time=0
+    ):
         """Bluesky plan stub to configure the trigger period, pulse width, and delay in clock ticks."""
         yield from mv(
             self.div_by_n_trigger.n,

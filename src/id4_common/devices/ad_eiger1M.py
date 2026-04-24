@@ -32,7 +32,9 @@ class TriggerTime(TriggerBase):
 
     # TODO: Tests done on Sept 19, 2025: min_period = 0, delay = 0.3 seems safe.
     # delay = 0.25 may be ok, 0.2 is certainly bad.
-    def __init__(self, *args, image_name=None, min_period=0.0, delay=0.3, **kwargs):
+    def __init__(
+        self, *args, image_name=None, min_period=0.0, delay=0.3, **kwargs
+    ):
         """Initialize TriggerTime with optional image name, min period, and delay."""
         super().__init__(*args, **kwargs)
         if image_name is None:
@@ -309,7 +311,9 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
         """Set only Stats5 total to be plotted."""
         self.plot_select([5])
 
-    def setup_images(self, base_path, name_template, file_number, flyscan=False):
+    def setup_images(
+        self, base_path, name_template, file_number, flyscan=False
+    ):
         """Configure HDF5 file path, name, and number for the upcoming scan."""
 
         self.hdf1.file_number.set(file_number).wait(timeout=10)
@@ -339,7 +343,9 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
         """
 
         for i in range(1, 5 + 1):
-            getattr(self, f"stats{i}").total.kind = "hinted" if i in stats else "normal"
+            getattr(self, f"stats{i}").total.kind = (
+                "hinted" if i in stats else "normal"
+            )
 
     @property
     def save_image_flag(self):

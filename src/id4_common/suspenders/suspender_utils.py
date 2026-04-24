@@ -11,7 +11,9 @@ logger = getLogger(__name__)
 def _query_label():
     while True:
         options = ["all"] + list(shutter_suspenders.keys())
-        suspender_label = input(f"Which suspender? options: {options} - ").split()
+        suspender_label = input(
+            f"Which suspender? options: {options} - "
+        ).split()
         check = [label not in options for label in suspender_label]
         if any(check):
             logger.info("One of the options {labels} is invalid.")

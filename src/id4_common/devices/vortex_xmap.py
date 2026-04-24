@@ -27,7 +27,9 @@ class MyDXP(SaturnDXP):
 class MyMCA(EpicsMCARecord):
     """EpicsMCARecord subclass that adds a check_acquiring signal for polling acquisition state."""
 
-    check_acquiring = Component(EpicsSignal, ".ACQG", kind="omitted", string=False)
+    check_acquiring = Component(
+        EpicsSignal, ".ACQG", kind="omitted", string=False
+    )
 
 
 class SingleTrigger(Device):
@@ -97,7 +99,9 @@ class TotalCorrectedSignal(SignalRO):
             roi = getattr(self.root, f"mca{ch_num}.rois.roi{self.roi_index}")
             dxp = getattr(self.root, f"dxp{ch_num}")
             _ocr = dxp.output_count_rate.get(**kwargs)
-            correction = 1.0 if _ocr == 0 else dxp.input_count_rate.get(**kwargs) / _ocr
+            correction = (
+                1.0 if _ocr == 0 else dxp.input_count_rate.get(**kwargs) / _ocr
+            )
             value += roi.count.get(**kwargs) * correction
         return value
 

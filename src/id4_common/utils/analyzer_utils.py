@@ -18,11 +18,17 @@ def calcdhkl(h, k, l, alpha, beta, gamma, symmetry, a, b, c):
         d = (
             a
             * a
-            * (1.0 - 3.0 * pow(math.cos(alpha), 2.0) + 2.0 * pow(math.cos(alpha), 3.0))
+            * (
+                1.0
+                - 3.0 * pow(math.cos(alpha), 2.0)
+                + 2.0 * pow(math.cos(alpha), 3.0)
+            )
         )
         dhkl2inv = n / d
     elif symmetry == "hex":
-        dhkl2inv = (4.0 / 3.0) * (h * h + h * k + k * k) / (a * a) + (l * l) / (c * c)
+        dhkl2inv = (4.0 / 3.0) * (h * h + h * k + k * k) / (a * a) + (l * l) / (
+            c * c
+        )
     elif symmetry == "monoclinic":
         dhkl2inv = (
             (h * h) / (a * a)

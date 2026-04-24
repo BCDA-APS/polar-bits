@@ -37,18 +37,23 @@ def transfocator_calc(
     if not distance:
         distance = 1800
         distance = float(
-            input("Distance to sample in mm [{}]: ".format(distance)) or distance
+            input("Distance to sample in mm [{}]: ".format(distance))
+            or distance
         )
         distance = distance * 1e3
     elif distance > 200 and distance < 10000:
         distance = distance * 1e3
     else:
-        raise ValueError("Distance {} out of range [200, 10000].".format(energy))
+        raise ValueError(
+            "Distance {} out of range [200, 10000].".format(energy)
+        )
 
     if not energy:
         energy = _geom_.energy.get() * 1e3
     elif energy < 2600 or energy > 27000:
-        raise ValueError("Photon energy {} out of range [2600, 27000].".format(energy))
+        raise ValueError(
+            "Photon energy {} out of range [2600, 27000].".format(energy)
+        )
     else:
         pass
 
@@ -97,14 +102,18 @@ def transfocator_calc(
                 lenses_used[-1] = 0
 
     focus_new = 1 / (2 * delta * iR)
-    distance_new = focus_new * source_crl_distance / (source_crl_distance - focus_new)
+    distance_new = (
+        focus_new * source_crl_distance / (source_crl_distance - focus_new)
+    )
 
     if verbose:
         print("-" * 65)
         print("Inserted lens packages = {}".format(lenses_used))
         print("Effective radius = {:3.1f} \u03bcm".format(1 / iR))
         print(
-            "Position correction = {:6.1f} mm".format((distance - distance_new) / 1e3)
+            "Position correction = {:6.1f} mm".format(
+                (distance - distance_new) / 1e3
+            )
         )
         print("-" * 65)
         print(
@@ -139,18 +148,23 @@ def transfocator_calc_old(
     if not distance:
         distance = 1800
         distance = float(
-            input("Distance to sample in mm [{}]: ".format(distance)) or distance
+            input("Distance to sample in mm [{}]: ".format(distance))
+            or distance
         )
         distance = distance * 1e3
     elif distance > 200 and distance < 10000:
         distance = distance * 1e3
     else:
-        raise ValueError("Distance {} out of range [200, 10000].".format(energy))
+        raise ValueError(
+            "Distance {} out of range [200, 10000].".format(energy)
+        )
 
     if not energy:
         energy = _geom_.energy.get() * 1e3
     elif energy < 2600 or energy > 27000:
-        raise ValueError("Photon energy {} out of range [2600, 27000].".format(energy))
+        raise ValueError(
+            "Photon energy {} out of range [2600, 27000].".format(energy)
+        )
     else:
         pass
 
@@ -198,8 +212,14 @@ def transfocator_calc_old(
     print("Inserted lens packages = {}".format(lenses_used))
     print("Effective radius = {:3.1f} \u03bcm".format(1 / iR))
     focus_new = 1 / (2 * delta * iR)
-    distance_new = focus_new * source_crl_distance / (source_crl_distance - focus_new)
-    print("Position correction = {:6.1f} mm".format((distance - distance_new) / 1e3))
+    distance_new = (
+        focus_new * source_crl_distance / (source_crl_distance - focus_new)
+    )
+    print(
+        "Position correction = {:6.1f} mm".format(
+            (distance - distance_new) / 1e3
+        )
+    )
     print("-" * 65)
     print(
         "Distance CRLs to sample = {:6.1f} mm at photon energy of {} eV".format(

@@ -37,7 +37,9 @@ class FormattedDynamicSubDevice:
     def _build_subdevice_class(self, instance):
         components_dict = {}
 
-        for comp_name, (cls, fmt_str, kwargs) in self.factory_func(instance).items():
+        for comp_name, (cls, fmt_str, kwargs) in self.factory_func(
+            instance
+        ).items():
             formatted = fmt_str.format(**instance.__dict__)
 
             # Ensure default name
@@ -47,7 +49,9 @@ class FormattedDynamicSubDevice:
             # Wrap in Component
             components_dict[comp_name] = Component(cls, formatted, **kwargs)
 
-        return type(f"_{self._name.capitalize()}SubDevice", (Device,), components_dict)
+        return type(
+            f"_{self._name.capitalize()}SubDevice", (Device,), components_dict
+        )
 
 
 class InstanceFormattedComponent:
@@ -90,4 +94,6 @@ class InstanceFormattedComponent:
                 kwargs["name"] = f"{instance.name}_{self._name}_{comp_name}"
             components_dict[comp_name] = Component(cls, prefix, **kwargs)
 
-        return type(f"_{self._name.capitalize()}SubDevice", (Device,), components_dict)
+        return type(
+            f"_{self._name.capitalize()}SubDevice", (Device,), components_dict
+        )

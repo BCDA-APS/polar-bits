@@ -43,7 +43,9 @@ class SGZVortex(Device):
     up_counter_status = Component(SGZUpCounter, "SG:UpCntr-2_", kind="config")
 
     # Pulses control
-    down_counter_pulse = Component(SGZDownCounter, "SG:DnCntr-1_", kind="config")
+    down_counter_pulse = Component(
+        SGZDownCounter, "SG:DnCntr-1_", kind="config"
+    )
 
     # Setup the frequency of the count and trigger based on 10 MHz clock.
     div_by_n = Component(SGZDevideByN, "SG:DivByN-2_", kind="config")
@@ -74,7 +76,9 @@ class SGZVortex(Device):
     # Dummy for now
     preset_monitor = Component(Signal, value=0, kind="omitted")
 
-    def __init__(self, *args, reset_sleep_time=0.1, reference_clock=1e7, **kwargs):
+    def __init__(
+        self, *args, reset_sleep_time=0.1, reference_clock=1e7, **kwargs
+    ):
         """Initialize SGZVortex with reset sleep duration and reference clock rate."""
         super().__init__(*args, **kwargs)
         self._reset_sleep_time = reset_sleep_time
@@ -106,7 +110,9 @@ class SGZVortex(Device):
 
     def reset(self):
         """Bluesky plan stub to pulse the reset buffer and clear the histogram scaler."""
-        yield from mv(self.buffers.in2.signal, "1!", self.histscal.clear.signal, "1!")
+        yield from mv(
+            self.buffers.in2.signal, "1!", self.histscal.clear.signal, "1!"
+        )
         yield from sleep(self._reset_sleep_time)
 
     # TODO: Add a function that setups the times?

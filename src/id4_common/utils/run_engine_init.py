@@ -86,7 +86,9 @@ def init_RE(
     MD_PATH = get_md_path(iconfig)
     # Save/restore RE.md dictionary in the specified order.
     if MD_PATH is not None:
-        handler_name = "StoredDict" if Path(MD_PATH).is_file() else "PersistentDict"
+        handler_name = (
+            "StoredDict" if Path(MD_PATH).is_file() else "PersistentDict"
+        )
         logger.debug(
             "Selected %r to store 'RE.md' dictionary in %s.",
             handler_name,
@@ -105,7 +107,9 @@ def init_RE(
             )
 
     if cat_instance is not None:
-        RE.md.update(re_metadata(iconfig, cat_instance))  # programmatic metadata
+        RE.md.update(
+            re_metadata(iconfig, cat_instance)
+        )  # programmatic metadata
         RE.md.update(re_config.get("DEFAULT_METADATA", {}))
         RE.subscribe(cat_instance.v1.insert)
     if bec_instance is not None:

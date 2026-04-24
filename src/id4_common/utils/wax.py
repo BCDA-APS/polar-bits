@@ -81,7 +81,9 @@ def wax(scan=None, motor=None, device="motor", display_missed=False):
                     llm = arg.low_limit_travel.get()
                     hlm = arg.high_limit_travel.get()
                     name = arg.name
-                    result.rows.append((name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]"))
+                    result.rows.append(
+                        (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
+                    )
                     # print(arg)
                 except Exception:
                     missed.append(arg.name)
@@ -104,7 +106,9 @@ def wax(scan=None, motor=None, device="motor", display_missed=False):
                             (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
                         )
                 else:
-                    result.rows.append((name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]"))
+                    result.rows.append(
+                        (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
+                    )
 
             except Exception:
                 missed.append(arg.name)
@@ -163,9 +167,13 @@ def wa_new(motor=None):
             name = arg.name
             if motor:
                 if motor in name:
-                    result.rows.append((name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]"))
+                    result.rows.append(
+                        (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
+                    )
             else:
-                result.rows.append((name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]"))
+                result.rows.append(
+                    (name, f"{pos:.5f}", f"[{llm:.5f},{hlm:.5f}]")
+                )
 
         except Exception:
             missed.append(arg.name)

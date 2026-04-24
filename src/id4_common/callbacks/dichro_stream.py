@@ -105,12 +105,18 @@ class DichroStream(LiveDispatcher):
                     elif "detector" in key:
                         _det = array([evt["data"][value] for evt in cache])
 
-                _xas = log(_mon / _det) if self.settings.transmission else _det / _mon
+                _xas = (
+                    log(_mon / _det)
+                    if self.settings.transmission
+                    else _det / _mon
+                )
 
                 processed_evt["xas"] = mean(_xas)
 
                 # This assumes that there is two polarization states
-                processed_evt["xmcd"] = mean(_xas * array(self.settings.pattern)) * 2
+                processed_evt["xmcd"] = (
+                    mean(_xas * array(self.settings.pattern)) * 2
+                )
             else:
                 logger.warning(
                     "The input data keys do not match entries in the database. "

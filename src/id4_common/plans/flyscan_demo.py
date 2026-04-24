@@ -357,7 +357,10 @@ def flyscan_cycler(
     # Sample metadata will be used to sort data
     if "sample" not in RE.md.keys():
         RE.md["sample"] = "sample01"
-        warn(f"'sample' metadata not found! Using {RE.md['sample']}", stacklevel=2)
+        warn(
+            f"'sample' metadata not found! Using {RE.md['sample']}",
+            stacklevel=2,
+        )
 
     #####################
     # Setup files names #
@@ -388,8 +391,8 @@ def flyscan_cycler(
     for det in detectors:
         _setup_images = getattr(det, "setup_images", None)
         if _setup_images:
-            _dets_file_paths[det.name], _rel_dets_paths[det.name] = _setup_images(
-                file_name_base, _scan_id, flyscan=True
+            _dets_file_paths[det.name], _rel_dets_paths[det.name] = (
+                _setup_images(file_name_base, _scan_id, flyscan=True)
             )
 
     # Check if any of these files exists
@@ -482,7 +485,9 @@ def flyscan_cycler(
     yield from sgz.clear_enable_dma()
 
     # Setup the eiger frequency
-    yield from sgz.setup_trigger_plan(detector_trigger_period, detector_collection_time)
+    yield from sgz.setup_trigger_plan(
+        detector_trigger_period, detector_collection_time
+    )
 
     logger.info("Moving motors to the start position.")
 
@@ -550,7 +555,9 @@ def flyscan_cycler(
             destDirectory=f"{RE.md['sample']}",
             reprocessFiles=False,
         )
-        logger.info(f"DM upload of vortex files started, id = {upload_info['id']}.")
+        logger.info(
+            f"DM upload of vortex files started, id = {upload_info['id']}."
+        )
 
     #############################
     # START THE APS DM WORKFLOW #

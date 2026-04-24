@@ -56,8 +56,12 @@ class PRSetup:
             _setup["oscillate"] = "yes"
             _setup["method"] = "pzt"
         else:
-            _setup["oscillate"] = "yes" if self.positioner.name == pr.name else "no"
-            _setup["method"] = "pzt" if "pzt" in self.positioner.name else "motor"
+            _setup["oscillate"] = (
+                "yes" if self.positioner.name == pr.name else "no"
+            )
+            _setup["method"] = (
+                "pzt" if "pzt" in self.positioner.name else "motor"
+            )
 
         _setup["offset"] = pr.pzt.offset_degrees.get()
         _setup["center"] = pr.pzt.center.get()
@@ -75,9 +79,12 @@ class PRSetup:
 
         # Transmission check
         while True:
-            _default = "yes" if plot_dichro_settings.settings.transmission else "no"
+            _default = (
+                "yes" if plot_dichro_settings.settings.transmission else "no"
+            )
             trans = (
-                input(f"Are you measuring in transmission? ({_default}): ") or _default
+                input(f"Are you measuring in transmission? ({_default}): ")
+                or _default
             )
             if trans.lower() == "yes":
                 plot_dichro_settings.settings.transmission = True
@@ -126,7 +133,9 @@ class PRSetup:
                         else:
                             while True:
                                 method = (
-                                    input(f"\tUse motor or PZT? ({setup['method']}): ")
+                                    input(
+                                        f"\tUse motor or PZT? ({setup['method']}): "
+                                    )
                                     or setup["method"]
                                 )
                                 if method.lower() == "motor":
@@ -136,7 +145,9 @@ class PRSetup:
                                     _positioner = pr.pzt.localdc
                                     break
                                 else:
-                                    print("Only motor or pzt are acceptable answers.")
+                                    print(
+                                        "Only motor or pzt are acceptable answers."
+                                    )
                         # Get offset
                         while True:
                             try:
@@ -146,7 +157,9 @@ class PRSetup:
                                     )
                                     or setup["offset"]
                                 )
-                                _positioner.parent.offset_degrees.put(float(offset))
+                                _positioner.parent.offset_degrees.put(
+                                    float(offset)
+                                )
                                 break
                             except ValueError:
                                 print("Must be a number.")
@@ -180,7 +193,9 @@ class PRSetup:
 
             else:
                 if _positioner and track == "yes":
-                    print(f"\tYou already selected {_positioner.name} to oscillate.")
+                    print(
+                        f"\tYou already selected {_positioner.name} to oscillate."
+                    )
 
         self.positioner = _positioner
 

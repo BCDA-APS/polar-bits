@@ -145,7 +145,9 @@ class LocalPreAmp(SRS570_PreAmplifier):
             best=None,
         ):
             if best is None:
-                best = dict(vals=None, units=None, count=1e10, done=False, fine=500)
+                best = dict(
+                    vals=None, units=None, count=1e10, done=False, fine=500
+                )
             fine = yield from rd(self.offset_fine)
             for i in rng:
                 yield from mv(
@@ -162,7 +164,9 @@ class LocalPreAmp(SRS570_PreAmplifier):
 
                 # print(value, best)
                 # If value is better than previous one, then update.
-                if (abs(value - 200) < abs(best["count"] - 200)) & (value * time > 2):
+                if (abs(value - 200) < abs(best["count"] - 200)) & (
+                    value * time > 2
+                ):
                     best["vals"] = gain_pv_conversion.iloc[i]["vals"]
                     best["units"] = gain_pv_conversion.iloc[i]["units"]
                     best["count"] = value

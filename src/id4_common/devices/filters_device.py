@@ -35,7 +35,9 @@ class APSFilter(Device):
 
     # Status and information
 
-    energy_select = Component(EpicsSignal, "EnergySelect", string=True, kind="config")
+    energy_select = Component(
+        EpicsSignal, "EnergySelect", string=True, kind="config"
+    )
     mono_energy = Component(EpicsSignalRO, "EnergyBeamline", kind="config")
     local_energy = Component(EpicsSignal, "EnergyLocal", kind="config")
 
@@ -45,10 +47,14 @@ class APSFilter(Device):
     transmission_setpoint = Component(
         EpicsSignal, "TransmissionSetpoint", kind="config"
     )
-    transmission_factor = Component(EpicsSignal, "TransmissionFactor", kind="config")
+    transmission_factor = Component(
+        EpicsSignal, "TransmissionFactor", kind="config"
+    )
 
     mask_readback = Component(EpicsSignalRO, "FilterMask", kind="config")
-    mask_setpoint = Component(EpicsSignalRO, "FilterMaskSetpoint", kind="config")
+    mask_setpoint = Component(
+        EpicsSignalRO, "FilterMaskSetpoint", kind="config"
+    )
 
     message = Component(EpicsSignalRO, "Message", kind="config")
 

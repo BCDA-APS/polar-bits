@@ -20,8 +20,9 @@ from apsbits.utils.config_loaders import load_config_yaml
 from apsbits.utils.config_loaders import update_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
-from id4_common.utils.aps_functions import aps_dm_setup
 from IPython import get_ipython
+
+from id4_common.utils.aps_functions import aps_dm_setup
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -69,15 +70,23 @@ from id4_common.utils.run_engine import sd  # noqa: F401, E402
 if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
     # from .callbacks.nexus_data_file_writer import nxwriter_init
     # nxwriter = nxwriter_init(RE)
-    from id4_common.callbacks.nexus_data_file_writer import nxwriter  # noqa: F401
+    from id4_common.callbacks.nexus_data_file_writer import (
+        nxwriter,  # noqa: F401
+    )
 
 if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
     from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
         init_specwriter_with_RE,
     )
-    from id4_common.callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
-    from id4_common.callbacks.spec_data_file_writer import spec_comment  # noqa: F401
-    from id4_common.callbacks.spec_data_file_writer import specwriter  # noqa: F401
+    from id4_common.callbacks.spec_data_file_writer import (
+        newSpecFile,  # noqa: F401
+    )
+    from id4_common.callbacks.spec_data_file_writer import (
+        spec_comment,  # noqa: F401
+    )
+    from id4_common.callbacks.spec_data_file_writer import (
+        specwriter,  # noqa: F401
+    )
 
     init_specwriter_with_RE(RE)
     # Remove specwritter preprocessor --> the extra stream tried to trigger
@@ -86,7 +95,9 @@ if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
 
 from id4_common.callbacks.dichro_stream import dichro  # noqa: F401, E402
 from id4_common.callbacks.dichro_stream import dichro_bec  # noqa: F401, E402
-from id4_common.callbacks.dichro_stream import plot_dichro_settings  # noqa: F401, E402
+from id4_common.callbacks.dichro_stream import (  # noqa: E402
+    plot_dichro_settings,  # noqa: F401
+)
 
 # These imports must come after the above setup.
 if running_in_queueserver():
@@ -101,14 +112,19 @@ else:
     # from apstools.utils import *  # noqa: F401, F403
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
+
     from id4_common.suspenders.shutters_suspenders import (  # noqa: F401
         shutter_suspenders,
     )
     from id4_common.suspenders.suspender_utils import (  # noqa: F401
         suspender_change_sleep,
     )
-    from id4_common.suspenders.suspender_utils import suspender_restart  # noqa: F401
-    from id4_common.suspenders.suspender_utils import suspender_stop  # noqa: F401
+    from id4_common.suspenders.suspender_utils import (
+        suspender_restart,  # noqa: F401
+    )
+    from id4_common.suspenders.suspender_utils import (
+        suspender_stop,  # noqa: F401
+    )
     from id4_common.utils.attenuator_utils import atten  # noqa: F401
     from id4_common.utils.counters_class import counters  # noqa: F401
     from id4_common.utils.dm_utils import *  # noqa: F401, F403
@@ -126,7 +142,9 @@ else:
 
     from id4_common.plans import *  # noqa: F401, F403
     from id4_common.utils.device_loader import connect_device  # noqa: F401
-    from id4_common.utils.device_loader import find_loadable_devices  # noqa: F401
+    from id4_common.utils.device_loader import (
+        find_loadable_devices,  # noqa: F401
+    )
     from id4_common.utils.device_loader import load_device  # noqa: F401
     from id4_common.utils.device_loader import load_yaml_devices  # noqa: F401
     from id4_common.utils.device_loader import reload_all_devices  # noqa: F401

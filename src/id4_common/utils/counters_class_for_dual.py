@@ -48,7 +48,9 @@ class CountersClass:
         # self._available_scalers = [scaler_sim, scaler_ctr8]
 
     def __repr__(self):
-        read_names = [item.name for item in (self.detectors + self.extra_devices)]
+        read_names = [
+            item.name for item in (self.detectors + self.extra_devices)
+        ]
 
         plot_names = []
         for item in self.detectors:
@@ -190,7 +192,9 @@ class CountersClass:
         return DataFrame(table)
 
     def select_plot_channels(self, selection):
-        groups = self.detectors_plot_options.iloc[list(selection)].groupby("detectors")
+        groups = self.detectors_plot_options.iloc[list(selection)].groupby(
+            "detectors"
+        )
 
         dets = []
         for name, group in groups:
@@ -252,7 +256,10 @@ class CountersClass:
 
                 # Check that the numbers are valid.
                 if not all(
-                    [i in self.detectors_plot_options.index.values for i in dets]
+                    [
+                        i in self.detectors_plot_options.index.values
+                        for i in dets
+                    ]
                 ):
                     print("The index values must be in the table.")
                     continue
@@ -275,7 +282,8 @@ class CountersClass:
             ].index[0]
             while True:
                 mon = (
-                    input(f"Enter index number of monitor detector [{_mon}]: ") or _mon
+                    input(f"Enter index number of monitor detector [{_mon}]: ")
+                    or _mon
                 )
 
                 try:

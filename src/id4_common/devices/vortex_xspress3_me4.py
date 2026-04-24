@@ -78,7 +78,9 @@ class Trigger(TriggerBase):
         if sgz is None:
             logger.warning("Did not find the softglue detector (sgz_vortex).")
         else:
-            self.cam.stage_sigs["num_images"] = sgz.down_counter_pulse.preset.get()
+            self.cam.stage_sigs["num_images"] = (
+                sgz.down_counter_pulse.preset.get()
+            )
 
     def stage(self):
         """Erase the detector, configure the trigger mode, and arm the Xspress3 before staging."""
@@ -237,7 +239,9 @@ class VortexHDF1Plugin(PolarHDF5Plugin):
 
     # The array counter readback pv is different...
     array_counter = Component(EpicsSignal, "ArrayCounter", kind="config")
-    array_counter_readback = Component(EpicsSignalRO, "ArrayCounter_RBV", kind="config")
+    array_counter_readback = Component(
+        EpicsSignalRO, "ArrayCounter_RBV", kind="config"
+    )
 
 
 class TotalCorrectedSignal(SignalRO):
@@ -257,8 +261,12 @@ class TotalCorrectedSignal(SignalRO):
         value = 0
         for ch_num in range(1, self.root.cam.num_channels.get() + 1):
             channel = getattr(self.root, f"sca{ch_num}")
-            roi = getattr(self.root, "stats{:d}.roi{:d}".format(ch_num, self.roi_index))
-            value += channel.dt_factor.get(**kwargs) * roi.total_value.get(**kwargs)
+            roi = getattr(
+                self.root, "stats{:d}.roi{:d}".format(ch_num, self.roi_index)
+            )
+            value += channel.dt_factor.get(**kwargs) * roi.total_value.get(
+                **kwargs
+            )
             # value += roi.total_value.get(**kwargs)
         return value
 
@@ -321,7 +329,9 @@ class VortexXspress34(Trigger, DetectorBase):
     def __init__(
         self,
         *args,
-        default_folder=Path("/net/s4data/export/sector4/4idd/bluesky_images/vortex"),
+        default_folder=Path(
+            "/net/s4data/export/sector4/4idd/bluesky_images/vortex"
+        ),
         hdf1_file_format="%s/%s_%6.6d.h5",
         **kwargs,
     ):
@@ -385,9 +395,9 @@ class VortexXspress34(Trigger, DetectorBase):
                 while old != new:
                     await asyncio.sleep(sleep_time)
                     old = new
-                    new = self.cam.array_counter.read()["vortex_cam_array_counter"][
-                        "timestamp"
-                    ]
+                    new = self.cam.array_counter.read()[
+                        "vortex_cam_array_counter"
+                    ]["timestamp"]
 
                 future.set_result("Detector done!")
 
@@ -495,7 +505,9 @@ class VortexXspress34(Trigger, DetectorBase):
         chans = [self.label_option_map[i] for i in channels]
         self.select_roi(chans)
 
-    def setup_images(self, base_folder, file_name_base, file_number, flyscan=False):
+    def setup_images(
+        self, base_folder, file_name_base, file_number, flyscan=False
+    ):
         """Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan."""
         self.hdf1.file_name.set(file_name_base).wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)
@@ -505,7 +517,9 @@ class VortexXspress34(Trigger, DetectorBase):
         base_folder = str(base_folder) + f"/{self.name}/"
         self.hdf1.file_path.set(base_folder).wait(timeout=10)
 
-        _, full_path, relative_path = self.hdf1.make_write_read_paths(base_folder)
+        _, full_path, relative_path = self.hdf1.make_write_read_paths(
+            base_folder
+        )
 
         return Path(full_path), Path(relative_path)
 

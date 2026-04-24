@@ -76,7 +76,9 @@ class EnergySignal(Signal):
         # Check that all items are OphydObject instances
         for device in devices:
             if not isinstance(device, OphydObject):
-                raise ValueError(f"Device {device} is not an instance of OphydObject")
+                raise ValueError(
+                    f"Device {device} is not an instance of OphydObject"
+                )
 
         self._extra_devices.extend(devices)
 
@@ -100,7 +102,9 @@ class EnergySignal(Signal):
         available_devices = {d.name: d for d in self.trackable_devices}
 
         # Check that devices_names is a valid iterable.
-        if isinstance(devices_names, str) or not isinstance(devices_names, Iterable):
+        if isinstance(devices_names, str) or not isinstance(
+            devices_names, Iterable
+        ):
             raise ValueError(
                 "devices_names must be an iterable with names of devices to be "
                 "tracked. Available names are: "
@@ -152,7 +156,9 @@ class EnergySignal(Signal):
                 )
                 continue
 
-            if not all(0 < i <= len(self.trackable_devices) for i in new_selection):
+            if not all(
+                0 < i <= len(self.trackable_devices) for i in new_selection
+            ):
                 logger.info("Invalid selection. Please choose valid indices.")
                 continue
 

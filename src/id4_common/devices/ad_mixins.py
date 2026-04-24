@@ -31,7 +31,9 @@ from ophyd.areadetector.plugins import ROIStatNPlugin_V25
 from ophyd.areadetector.plugins import ROIStatPlugin_V34
 from ophyd.areadetector.plugins import StatsPlugin_V34
 from ophyd.areadetector.plugins import TransformPlugin_V34
-from ophyd.areadetector.trigger_mixins import ADTriggerStatus as ophyd_ADTriggerStatus
+from ophyd.areadetector.trigger_mixins import (
+    ADTriggerStatus as ophyd_ADTriggerStatus,
+)
 from ophyd.status import UnknownStatusFailure
 
 logger = getLogger(__name__)
@@ -65,56 +67,62 @@ class ProcessPlugin(PluginMixin, ProcessPlugin_V34):
 class ROIPlugin(PluginMixin, ROIPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
-    _default_configuration_attrs = ROIPlugin_V34._default_configuration_attrs + (
-        "driver_version",
-        "data_type",
-        "color_mode",
-        "enable",
-        "enable_scale",
-        "scale",
-        "collapse_dims",
-        "dimensions",
-        "data_type_out",
-        "name_",
-        "roi_enable",
-        "bin_",
-        "min_xyz",
-        "size",
-        "reverse",
+    _default_configuration_attrs = (
+        ROIPlugin_V34._default_configuration_attrs
+        + (
+            "driver_version",
+            "data_type",
+            "color_mode",
+            "enable",
+            "enable_scale",
+            "scale",
+            "collapse_dims",
+            "dimensions",
+            "data_type_out",
+            "name_",
+            "roi_enable",
+            "bin_",
+            "min_xyz",
+            "size",
+            "reverse",
+        )
     )
 
 
 class StatsPlugin(PluginMixin, StatsPlugin_V34):
     """Remove property attribute found in AD IOCs now."""
 
-    _default_configuration_attrs = StatsPlugin_V34._default_configuration_attrs + (
-        "array_size",
-        "blocking_callbacks",
-        "color_mode",
-        "data_type",
-        "dimensions",
-        "enable",
-        "driver_version",
-        "compute_statistics",
-        "bgd_width",
-        "compute_centroid",
-        "centroid_threshold",
-        "compute_profiles",
-        "profile_average",
-        "profile_centroid",
-        "profile_cursor",
-        "profile_size",
-        "profile_threshold",
-        "cursor",
-        "compute_histogram",
-        "hist_entropy",
-        "hist_max",
-        "hist_min",
-        "hist_size",
-        "histogram",
-        "hist_above",
-        "hist_below",
-        "histogram_x",
+    _default_configuration_attrs = (
+        StatsPlugin_V34._default_configuration_attrs
+        + (
+            "array_size",
+            "blocking_callbacks",
+            "color_mode",
+            "data_type",
+            "dimensions",
+            "enable",
+            "driver_version",
+            "compute_statistics",
+            "bgd_width",
+            "compute_centroid",
+            "centroid_threshold",
+            "compute_profiles",
+            "profile_average",
+            "profile_centroid",
+            "profile_cursor",
+            "profile_size",
+            "profile_threshold",
+            "cursor",
+            "compute_histogram",
+            "hist_entropy",
+            "hist_max",
+            "hist_min",
+            "hist_size",
+            "histogram",
+            "hist_above",
+            "hist_below",
+            "histogram_x",
+        )
     )
 
     _default_read_attrs = StatsPlugin_V34._default_read_attrs + (
@@ -265,7 +273,9 @@ class VortexDetectorCam(CamMixin_V34, Xspress3DetectorCam):
     """Vortex fluorescence detector camera with simplified trigger and erase controls."""
 
     trigger_mode = Component(EpicsSignalWithRBV, "TriggerMode", kind="config")
-    erase_on_start = Component(EpicsSignal, "EraseOnStart", string=True, kind="config")
+    erase_on_start = Component(
+        EpicsSignal, "EraseOnStart", string=True, kind="config"
+    )
 
     # Removed
     offset = None
@@ -357,7 +367,9 @@ class FileStorePluginBaseEpicsName(FileStoreBase):
                 )
 
             if not self.file_path_exists.get():
-                raise IOError(f"Path {self.file_path.get()} does not exist on IOC.")
+                raise IOError(
+                    f"Path {self.file_path.get()} does not exist on IOC."
+                )
 
             self.file_path.set(path).wait(timeout=10)
 
@@ -472,7 +484,9 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
     def __init__(self, *args, write_path_template="", **kwargs):
         """Initialize PolarHDF5Plugin with warmup signals list."""
         # self.filestore_spec = "AD_EIGER_APSPolar"
-        super().__init__(*args, write_path_template=write_path_template, **kwargs)
+        super().__init__(
+            *args, write_path_template=write_path_template, **kwargs
+        )
         # self.enable.subscribe(self._setup_kind, run=False)
         self._warmup_signals = []
 
@@ -517,7 +531,9 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
     def warmup(self):
         """Run the warmup sequence to prime the HDF5 plugin for fast acquisition."""
         if len(self.warmup_signals) == 0:
-            logger.warning(f"The there are no warmup signals for {self.parent.name}")
+            logger.warning(
+                f"The there are no warmup signals for {self.parent.name}"
+            )
 
         original_vals = {sig: sig.get() for sig in self.warmup_signals}
 

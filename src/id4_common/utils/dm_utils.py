@@ -59,7 +59,9 @@ def dm_workflow():
 
 
 def dm_get_experiment_data_path(dm_experiment_name: str):
-    return Path(dm_api_ds().getExperimentByName(dm_experiment_name)["dataDirectory"])
+    return Path(
+        dm_api_ds().getExperimentByName(dm_experiment_name)["dataDirectory"]
+    )
 
 
 def get_processing_job_status(id=None, owner="user4idd"):

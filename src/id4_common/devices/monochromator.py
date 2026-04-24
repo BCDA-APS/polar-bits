@@ -32,7 +32,9 @@ class MonoDevice(PseudoPositioner):
     _real = ["th", "y2"]
 
     # Other motors
-    crystal_select = Component(EpicsMotor, "m2", labels=("motor",), kind="config")
+    crystal_select = Component(
+        EpicsMotor, "m2", labels=("motor",), kind="config"
+    )
     thf2 = Component(EpicsMotor, "m4", labels=("motor",))
     chi2 = Component(EpicsMotor, "m5", labels=("motor",))
 
@@ -47,7 +49,9 @@ class MonoDevice(PseudoPositioner):
     crystal_l = Component(EpicsSignal, "BraggLAO.VAL", kind="config")
     crystal_a = Component(EpicsSignal, "BraggAAO.VAL", kind="config")
     crystal_2d = Component(EpicsSignal, "Bragg2dSpacingAO", kind="config")
-    crystal_type = Component(EpicsSignal, "BraggTypeMO", string=True, kind="config")
+    crystal_type = Component(
+        EpicsSignal, "BraggTypeMO", string=True, kind="config"
+    )
 
     def __init__(
         self,
@@ -94,7 +98,9 @@ class MonoDevice(PseudoPositioner):
     def inverse(self, real_pos):
         """Run an inverse (real -> pseudo) calculation"""
         # Changing y does not change the energy.
-        return self.PseudoPosition(energy=self.convert_theta_to_energy(real_pos.th))
+        return self.PseudoPosition(
+            energy=self.convert_theta_to_energy(real_pos.th)
+        )
 
     def set_energy(self, energy):
         """Update the theta readback offset so that the current theta corresponds to energy (keV)."""

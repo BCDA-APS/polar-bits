@@ -116,7 +116,9 @@ def _rebuild_scan_command(doc):
         elif isinstance(struct, dict):
             return (
                 "{"
-                + ", ".join([f"{k}={struct_to_str(v)}" for k, v in struct.items()])
+                + ", ".join(
+                    [f"{k}={struct_to_str(v)}" for k, v in struct.items()]
+                )
                 + "}"
             )
         elif isinstance(struct, np.ndarray):
@@ -212,7 +214,9 @@ class SpecWriterCallback(object):
        ~stop
     """
 
-    def __init__(self, filename=None, auto_write=True, RE=None, reset_scan_id=False):
+    def __init__(
+        self, filename=None, auto_write=True, RE=None, reset_scan_id=False
+    ):
         """Initialize the SPEC data file writer callback."""
         self.clear()
         self.buffered_comments = self._empty_comments_dict()
@@ -555,7 +559,9 @@ class SpecWriterCallback(object):
         lines.append(f"#F {self.spec_filename}")
         lines.append(f"#E {self.spec_epoch}")
         lines.append(f"#D {datetime.datetime.strftime(dt, SPEC_TIME_FORMAT)}")
-        lines.append(f"#C Bluesky  user = {self.spec_user}  host = {self.spec_host}")
+        lines.append(
+            f"#C Bluesky  user = {self.spec_user}  host = {self.spec_host}"
+        )
         self._header_motor_keys = sorted(self.positioners.keys())
         if len(self._header_motor_keys) == 0:
             lines.append("#O0 ")  # names
@@ -567,7 +573,8 @@ class SpecWriterCallback(object):
                 r = 0
                 while len(values) > 0:
                     lines.append(
-                        f"{pre}{r} " + delimiter.join([str(v) for v in values[:8]])
+                        f"{pre}{r} "
+                        + delimiter.join([str(v) for v in values[:8]])
                     )
                     values = values[8:]
                     r += 1
@@ -594,7 +601,9 @@ class SpecWriterCallback(object):
                 buf = f.read()
                 if buf.find(self.uid) >= 0:
                     # raise exception if uid is already in the file!
-                    msg = f"{self.spec_filename} already contains uid={self.uid}"
+                    msg = (
+                        f"{self.spec_filename} already contains uid={self.uid}"
+                    )
                     raise ValueError(msg)
         logger = logging.getLogger(__name__)
         lines = self.prepare_scan_contents()
@@ -783,7 +792,9 @@ class SpecWriterCallback2(FileWriterCallbackBase):
             def parse(master):
                 primary, secondary = [], []
                 for k_obj in master:
-                    fields = doc["hints"].get(k_obj, {"fields": [k_obj]})["fields"]
+                    fields = doc["hints"].get(k_obj, {"fields": [k_obj]})[
+                        "fields"
+                    ]
                     for k in doc["object_keys"].get(k_obj, []):
                         if len(fields) > 0:
                             if k in fields:
@@ -798,7 +809,9 @@ class SpecWriterCallback2(FileWriterCallbackBase):
             labels += others + "Epoch Epoch_float".split()
 
             dets, others = parse(self.detectors)
-            dets = others + list(reversed(dets))  # move first detector to last column
+            dets = others + list(
+                reversed(dets)
+            )  # move first detector to last column
 
             _knowns = labels + dets
             others = [k for k in doc["data_keys"] if k not in _knowns]
@@ -843,7 +856,9 @@ class SpecWriterCallback2(FileWriterCallbackBase):
             labels += others + "Epoch Epoch_float".split()
 
             dets, others = parse(self.detectors)
-            dets = others + list(reversed(dets))  # move first detector to last column
+            dets = others + list(
+                reversed(dets)
+            )  # move first detector to last column
 
             _knowns = labels + dets
             others = []
@@ -866,7 +881,9 @@ class SpecWriterCallback2(FileWriterCallbackBase):
         self.motors = {}  # names in #O, values in #P
         self._streams = {}  # descriptor documents, keyed by uid
 
-        self.T_or_M = None  # TODO: How to learn if "T" or "M" from the document stream?
+        self.T_or_M = (
+            None  # TODO: How to learn if "T" or "M" from the document stream?
+        )
         self.T_or_M_value = 1
 
         self.scan_command = _rebuild_scan_command(doc)
@@ -999,7 +1016,9 @@ class SpecWriterCallback2(FileWriterCallbackBase):
         lines.append(f"#F {self.file_name}")
         lines.append(f"#E {self.file_epoch}")
         lines.append(f"#D {datetime.datetime.strftime(dt, SPEC_TIME_FORMAT)}")
-        lines.append(f"#C Bluesky  user = {self.spec_user}  host = {self.spec_host}")
+        lines.append(
+            f"#C Bluesky  user = {self.spec_user}  host = {self.spec_host}"
+        )
 
         self._file_header_motor_keys = sorted(self.motors.keys())
         if len(self._file_header_motor_keys) == 0:
@@ -1012,7 +1031,8 @@ class SpecWriterCallback2(FileWriterCallbackBase):
                 r = 0
                 while len(values) > 0:
                     lines.append(
-                        f"{pre}{r} " + delimiter.join([str(v) for v in values[:8]])
+                        f"{pre}{r} "
+                        + delimiter.join([str(v) for v in values[:8]])
                     )
                     values = values[8:]
                     r += 1
@@ -1087,7 +1107,9 @@ class SpecWriterCallback2(FileWriterCallbackBase):
             values = list(self.motors.values())
             r = 0
             while len(values) > 0:
-                lines.append(f"#P{r} " + " ".join([render(v) for v in values[:8]]))
+                lines.append(
+                    f"#P{r} " + " ".join([render(v) for v in values[:8]])
+                )
                 values = values[8:]
                 r += 1
 

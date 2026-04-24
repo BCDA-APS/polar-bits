@@ -80,14 +80,18 @@ def _move_to_pos(parameter, positioner=None, detector=None):
 
     if time.seconds > 300:
         answer = (
-            input(f"Move {positioner.name} from {current_pos} to {new_pos}? (Y/[N]) ")
+            input(
+                f"Move {positioner.name} from {current_pos} to {new_pos}? (Y/[N]) "
+            )
             or "N"
         )
         if answer not in ["Y", "y", "yes"]:
             logger.info("No motion will be done.")
             yield from null()
 
-    logger.info("Moving {} from {} to {}".format(positioner.name, current_pos, new_pos))
+    logger.info(
+        "Moving {} from {} to {}".format(positioner.name, current_pos, new_pos)
+    )
 
     yield from mv(positioner, new_pos)
 

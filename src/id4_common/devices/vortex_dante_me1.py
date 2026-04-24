@@ -135,7 +135,9 @@ class TotalCorrectedSignal(SignalRO):
         """Return the sum of deadtime-corrected ROI counts across all Dante channels."""
         value = 0
         for ch_num in range(1, self.root._num_channels + 1):
-            roi = getattr(self.root.mcas, f"mca{ch_num}.rois.roi{self.roi_index}")
+            roi = getattr(
+                self.root.mcas, f"mca{ch_num}.rois.roi{self.roi_index}"
+            )
             sca = getattr(self.root.scas, f"sca{ch_num}")
             _ocr = sca.ocr.get(**kwargs)
             correction = 1.0 if _ocr == 0 else sca.icr.get(**kwargs) / _ocr
@@ -194,7 +196,9 @@ class VortexDante1(Trigger, DetectorBase):
     def __init__(
         self,
         *args,
-        default_folder=Path("/net/s4data/export/sector4/4idd/bluesky_images/vortex"),
+        default_folder=Path(
+            "/net/s4data/export/sector4/4idd/bluesky_images/vortex"
+        ),
         hdf1_file_format="%s/%s_%6.6d.h5",
         **kwargs,
     ):
@@ -367,7 +371,9 @@ class VortexDante1(Trigger, DetectorBase):
         chans = [self.label_option_map[i] for i in channels]
         self.select_roi(chans)
 
-    def setup_images(self, base_folder, file_name_base, file_number, flyscan=False):
+    def setup_images(
+        self, base_folder, file_name_base, file_number, flyscan=False
+    ):
         """Configure HDF5 file name, number, path, and flysetup flag for an upcoming scan."""
         self.hdf1.file_name.set(file_name_base).wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)
@@ -380,7 +386,9 @@ class VortexDante1(Trigger, DetectorBase):
         base_folder2 = self._local_folder
         self.hdf1.file_path.set(base_folder2).wait(timeout=10)
 
-        _, full_path, relative_path = self.hdf1.make_write_read_paths(base_folder)
+        _, full_path, relative_path = self.hdf1.make_write_read_paths(
+            base_folder
+        )
 
         return Path(full_path), Path(relative_path)
 

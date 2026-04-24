@@ -14,7 +14,9 @@ class ChopperDevice(Device):
     """Photon chopper with translation motor, Newport controller, and frequency readback."""
 
     # In/out motor
-    translation = FormattedComponent(EpicsMotor, "4idbSoft:m14", labels=("motor",))
+    translation = FormattedComponent(
+        EpicsMotor, "4idbSoft:m14", labels=("motor",)
+    )
 
     # Newport controller
     status = Component(EpicsSignalRO, "Connected", kind="config")

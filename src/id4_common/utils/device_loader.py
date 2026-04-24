@@ -178,7 +178,9 @@ def connect_device(device, baseline=None, raise_error=True):
                 return
 
         baseline = (
-            True if "baseline" in AVAILABLE_DEVICES[device.name]["labels"] else False
+            True
+            if "baseline" in AVAILABLE_DEVICES[device.name]["labels"]
+            else False
         )
 
     try:
@@ -224,7 +226,9 @@ def connect_device(device, baseline=None, raise_error=True):
                     AD_prime_plugin2(hdf1)
 
     except TimeoutError:
-        message = f"Device {device.name} is disconnected, removing it from baseline."
+        message = (
+            f"Device {device.name} is disconnected, removing it from baseline."
+        )
 
         if device in sd.baseline:
             sd.baseline.remove(device)
@@ -267,7 +271,9 @@ def load_device(name, file=None):
         return
 
     # Load devices from specified file or default file
-    _devices = AVAILABLE_DEVICES.copy() if file is None else load_yaml_devices(file)
+    _devices = (
+        AVAILABLE_DEVICES.copy() if file is None else load_yaml_devices(file)
+    )
 
     # Check if device is available in the loaded configurations
     if name not in _devices:

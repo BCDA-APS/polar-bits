@@ -139,9 +139,15 @@ class VimbaCam(CamBase):
     connected_signal = ADComponent(EpicsSignalRO, "AsynIO.CNCT")
 
     # Trigger
-    trigger_source = ADComponent(EpicsSignalWithRBV, "TriggerSource", string=True)
-    trigger_overlap = ADComponent(EpicsSignalWithRBV, "TriggerOverlap", string=True)
-    trigger_exposure_mode = ADComponent(EpicsSignalWithRBV, "ExposureMode", string=True)
+    trigger_source = ADComponent(
+        EpicsSignalWithRBV, "TriggerSource", string=True
+    )
+    trigger_overlap = ADComponent(
+        EpicsSignalWithRBV, "TriggerOverlap", string=True
+    )
+    trigger_exposure_mode = ADComponent(
+        EpicsSignalWithRBV, "ExposureMode", string=True
+    )
     trigger_button = ADComponent(EpicsSignal, "TriggerSoftware", kind="omitted")
 
     # Exposure
@@ -294,7 +300,9 @@ class VimbaDetector(Trigger, DetectorBase):
         """
 
         for i in range(1, 5 + 1):
-            getattr(self, f"stats{i}").total.kind = "hinted" if i in rois else "normal"
+            getattr(self, f"stats{i}").total.kind = (
+                "hinted" if i in rois else "normal"
+            )
 
     def plot_allrois(self):
         """Set all five stats ROIs to hinted kind for plotting."""
@@ -320,7 +328,9 @@ class VimbaDetector(Trigger, DetectorBase):
         """Set only ROI5 (full detector) stats to hinted kind for plotting."""
         self.plot_select([5])
 
-    def setup_images(self, base_path, name_template, file_number, flyscan=False):
+    def setup_images(
+        self, base_path, name_template, file_number, flyscan=False
+    ):
         """Configure HDF1 file path, name, and number for an upcoming acquisition."""
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.hdf1.file_name.set(name_template).wait(timeout=10)

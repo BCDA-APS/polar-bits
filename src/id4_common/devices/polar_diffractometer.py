@@ -63,7 +63,9 @@ class AnalyzerDevice(PseudoPositioner):
 
     d_spacing = Component(Signal, value=1e4, kind="config")
     crystal = Component(Signal, value="None", kind="config")
-    tth_detector_distance = Component(EpicsSignal, "TWTH:Drive.C", kind="config")
+    tth_detector_distance = Component(
+        EpicsSignal, "TWTH:Drive.C", kind="config"
+    )
     tracking = Component(Signal, value=False, kind="config")
 
     def move_single(self, pseudo, position, **kwargs):
@@ -98,7 +100,9 @@ class AnalyzerDevice(PseudoPositioner):
         # lambda in angstroms, theta in degrees, energy in keV
         th = self.convert_energy_to_theta(energy)
         tth = 2 * th
-        tth_trans = self.tth_detector_distance.get() * tan((tth - 45 - th) * pi / 180.0)
+        tth_trans = self.tth_detector_distance.get() * tan(
+            (tth - 45 - th) * pi / 180.0
+        )
         return tth_trans
 
     def convert_theta_to_energy(self, theta):
@@ -120,7 +124,9 @@ class AnalyzerDevice(PseudoPositioner):
     def inverse(self, real_pos):
         """Run an inverse (real -> pseudo) calculation"""
         # Changing y does not change the energy.
-        return self.PseudoPosition(energy=self.convert_theta_to_energy(real_pos.th))
+        return self.PseudoPosition(
+            energy=self.convert_theta_to_energy(real_pos.th)
+        )
 
     def set_energy(self, energy):
         """Calibrate the Bragg-angle motor to match the given photon energy (keV)."""
@@ -152,7 +158,9 @@ class AnalyzerDevice(PseudoPositioner):
             print("Releasing calibration for ath!")
             self.th.user_offset.put(0)
 
-    def setup(self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH):
+    def setup(
+        self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
+    ):
         """List compatible analyzer crystals and interactively configure d-spacing and crystal."""
         if not analyzer_energy:
             energy = self.beamline_energy
@@ -195,12 +203,16 @@ class AnalyzerDevice(PseudoPositioner):
                 )
                 spacegroupnumber = int(spacegroupnumber)
 
-                for i in range(1, 100):  # Arbitrary limit to prevent infinite loop
+                for i in range(
+                    1, 100
+                ):  # Arbitrary limit to prevent infinite loop
                     hhh, kkk, lll = hh * i, kk * i, ll * i
                     dhkl = calcdhkl(
                         hhh, kkk, lll, alpha, beta, gamma, symmetry, a, b, c
                     )
-                    if check_structure_factor(hhh, kkk, lll, spacegroupnumber, special):
+                    if check_structure_factor(
+                        hhh, kkk, lll, spacegroupnumber, special
+                    ):
                         ana_emax = WAVELENGTH_CONSTANT / (
                             2 * dhkl * math.sin(ptthmin / 2)
                         )
@@ -241,7 +253,8 @@ class AnalyzerDevice(PseudoPositioner):
             )
         else:
             anum = (
-                input(f"Choice of polarization analyzer [{d_best[0]}]: ") or d_best[0]
+                input(f"Choice of polarization analyzer [{d_best[0]}]: ")
+                or d_best[0]
             )
             anum = int(anum) if isinstance(anum, str) else anum
             if anum in d_dict:
@@ -307,7 +320,9 @@ class SixCircleDiffractometer(ApsPolar):
     ana = Component(AnalyzerDevice, "", labels=("track_energy",))
 
     # Energy
-    energy = FormattedComponent(EpicsSignalRO, "4idVDCM:BraggERdbkAO", kind="config")
+    energy = FormattedComponent(
+        EpicsSignalRO, "4idVDCM:BraggERdbkAO", kind="config"
+    )
     energy_update_calc_flag = Component(Signal, value=1, kind="config")
     energy_offset = Component(Signal, value=0, kind="config")
 
@@ -356,9 +371,15 @@ class HPDiffractometer(SixCircleDiffractometer):
     y = Component(EpicsMotor, "m14", labels=("motor",))
     z = Component(EpicsMotor, "m13", labels=("motor",))
 
-    nanox = FormattedComponent(EpicsMotor, "4idgSoftX:jena:m1", labels=("motor",))
-    nanoy = FormattedComponent(EpicsMotor, "4idgSoftX:jena:m2", labels=("motor",))
-    nanoz = FormattedComponent(EpicsMotor, "4idgSoftX:jena:m3", labels=("motor",))
+    nanox = FormattedComponent(
+        EpicsMotor, "4idgSoftX:jena:m1", labels=("motor",)
+    )
+    nanoy = FormattedComponent(
+        EpicsMotor, "4idgSoftX:jena:m2", labels=("motor",)
+    )
+    nanoz = FormattedComponent(
+        EpicsMotor, "4idgSoftX:jena:m3", labels=("motor",)
+    )
 
 
 class PolarPSI(ApsPolar):

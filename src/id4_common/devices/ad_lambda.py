@@ -13,7 +13,9 @@ from ophyd.areadetector import CamBase
 from ophyd.areadetector import DetectorBase
 from ophyd.areadetector import EpicsSignalWithRBV
 from ophyd.areadetector import TriggerBase
-from ophyd.areadetector.filestore_mixins import FileStoreHDF5SingleIterativeWrite
+from ophyd.areadetector.filestore_mixins import (
+    FileStoreHDF5SingleIterativeWrite,
+)
 from ophyd.areadetector.plugins import CodecPlugin_V34
 from ophyd.areadetector.plugins import HDF5Plugin_V34
 from ophyd.areadetector.plugins import ProcessPlugin_V34
@@ -204,7 +206,9 @@ class Lambda250kDetector(MySingleTrigger, DetectorBase):
 
         for name in self.component_names:
             comp = getattr(self, name)
-            if isinstance(comp, (ROIPlugin_V34, StatsPlugin_V34, ProcessPlugin_V34)):
+            if isinstance(
+                comp, (ROIPlugin_V34, StatsPlugin_V34, ProcessPlugin_V34)
+            ):
                 comp.configuration_attrs += [
                     item
                     for item in comp.component_names

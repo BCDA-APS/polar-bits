@@ -150,7 +150,9 @@ class LightFieldFilePlugin(Device, FileStoreBase):
             )
             read_path = Path(self.parent.bluesky_files_root) / _rel_path
 
-        fname_template = self.parent.cam.file_template.get(as_string=True) + ".spe"
+        fname_template = (
+            self.parent.cam.file_template.get(as_string=True) + ".spe"
+        )
 
         fname_base = self.parent.cam.file_name_base.get()
         fname_number = self.parent.cam.file_number.get()
@@ -178,7 +180,9 @@ class LightFieldFilePlugin(Device, FileStoreBase):
 
         ipf = int(self.parent.cam.num_images.get())
 
-        fname_template = self.parent.cam.file_template.get(as_string=True) + ".spe"
+        fname_template = (
+            self.parent.cam.file_template.get(as_string=True) + ".spe"
+        )
 
         res_kwargs = {
             "template": join("%s", fname_template),
@@ -189,7 +193,9 @@ class LightFieldFilePlugin(Device, FileStoreBase):
 
     def generate_datum(self, key, timestamp, datum_kwargs):
         """Using the num_images_counter to pick image from scan."""
-        datum_kwargs.update({"point_number": int(self.parent.cam.file_number.get())})
+        datum_kwargs.update(
+            {"point_number": int(self.parent.cam.file_number.get())}
+        )
         return super().generate_datum(key + "_spe", timestamp, datum_kwargs)
 
 
@@ -197,8 +203,12 @@ class MyLightFieldCam(LightFieldDetectorCam):
     """LightField camera with additional file naming and grating wavelength PVs."""
 
     file_name_base = ADComponent(EpicsSignal, "FileName", string=True)
-    file_path = ADComponent(EpicsSignalWithRBV, "FilePath", string=True, kind="normal")
-    file_name = ADComponent(EpicsSignalRO, "LFFileName_RBV", string=True, kind="normal")
+    file_path = ADComponent(
+        EpicsSignalWithRBV, "FilePath", string=True, kind="normal"
+    )
+    file_name = ADComponent(
+        EpicsSignalRO, "LFFileName_RBV", string=True, kind="normal"
+    )
     file_number = ADComponent(EpicsSignalWithRBV, "FileNumber")
     file_template = ADComponent(EpicsSignalWithRBV, "FileTemplate")
     num_images_counter = ADComponent(EpicsSignalRO, "NumImagesCounter_RBV")
@@ -206,11 +216,15 @@ class MyLightFieldCam(LightFieldDetectorCam):
     # the grating reached the target.
     grating_wavelength = ADComponent(EpicsSignal, "LFGratingWL")
     pool_max_buffers = None
-    background_file = ADComponent(EpicsSignalWithRBV, "LFBackgroundFile", string=True)
+    background_file = ADComponent(
+        EpicsSignalWithRBV, "LFBackgroundFile", string=True
+    )
     background_full_file = ADComponent(
         EpicsSignalRO, "LFBackgroundFullFile_RBV", string=True
     )
-    background_path = ADComponent(EpicsSignalWithRBV, "LFBackgroundPath", string=True)
+    background_path = ADComponent(
+        EpicsSignalWithRBV, "LFBackgroundPath", string=True
+    )
 
 
 class LightFieldDetector(MySingleTrigger, DetectorBase):
@@ -295,7 +309,9 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
             (self.hdf1.parent.cam.acquire, 1),  # set by number
         ]
 
-    def setup_images(self, base_path, name_template, file_number, flyscan=False):
+    def setup_images(
+        self, base_path, name_template, file_number, flyscan=False
+    ):
         """Configure HDF5 and SPE file paths and names for the upcoming scan."""
         # SPE has to be one file per point, so I'll put it in a new folder!
         # In the new folder, the file number will follow the point number.
@@ -316,7 +332,9 @@ class LightFieldDetector(MySingleTrigger, DetectorBase):
         # HDF1 is one file per scan
         read_path = base_path / self.name
         _rel = read_path.relative_to(self.bluesky_files_root)
-        write_path = Path(str(self.windows_files_root / _rel).replace("/", "\\"))
+        write_path = Path(
+            str(self.windows_files_root / _rel).replace("/", "\\")
+        )
 
         self.hdf1.file_path.set(str(write_path) + "\\").wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)

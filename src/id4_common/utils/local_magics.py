@@ -230,5 +230,7 @@ def _print_positioners(positioners, sort=True, precision=6, prefix=""):
             value = v.__class__.__name__  # e.g. 'DisconnectedError'
             low_limit = high_limit = offset = ""
 
-        lines.append(LINE_FMT.format(p.name, value, low_limit, high_limit, offset))
+        lines.append(
+            LINE_FMT.format(p.name, value, low_limit, high_limit, offset)
+        )
     print("\n".join(lines))

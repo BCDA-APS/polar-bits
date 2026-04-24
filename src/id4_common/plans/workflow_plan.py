@@ -116,7 +116,9 @@ def run_workflow(
     if settings_file_path is not None:
         path = Path(settings_file_path)
         if not path.exists():
-            raise FileExistsError(f"Configuration file '{path}' does not exist.")
+            raise FileExistsError(
+                f"Configuration file '{path}' does not exist."
+            )
         kwargs = yload(open(path, "r").read(), yloader)
 
     # kwargs given in function call will have priority.
@@ -128,7 +130,9 @@ def run_workflow(
     # Check if kwargs have all argumnents needed.
     workflow = kwargs.get("workflow", None)
     if workflow is None:
-        raise ValueError("The 'workflow'  argument is required, but was not found.")
+        raise ValueError(
+            "The 'workflow'  argument is required, but was not found."
+        )
     if workflow not in EXPECTED_KWARGS.keys():
         raise ValueError(
             f"The 'workflow' argument must be one of {EXPECTED_KWARGS.keys()}, "

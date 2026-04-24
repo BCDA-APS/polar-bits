@@ -43,7 +43,9 @@ class APSFilter(Device):
 
     # Status and information
 
-    energy_select = Component(EpicsSignal, "EnergySelect", string=True, kind="config")
+    energy_select = Component(
+        EpicsSignal, "EnergySelect", string=True, kind="config"
+    )
     mono_energy = Component(EpicsSignalRO, "EnergyBeamline", kind="config")
     local_energy = Component(EpicsSignal, "EnergyLocal", kind="config")
 
@@ -52,7 +54,9 @@ class APSFilter(Device):
     status = Component(EpicsSignalRO, "filterBusy", string=True)
 
     attenuation_setpoint = Component(EpicsSignal, "attenuation")
-    attenuation_readback = Component(EpicsSignalRO, "attenuation_actual", kind="config")
+    attenuation_readback = Component(
+        EpicsSignalRO, "attenuation_actual", kind="config"
+    )
 
     sorted_index = Component(EpicsSignalWithRBV, "sortedIndex")
 
@@ -60,6 +64,8 @@ class APSFilter(Device):
     attenuation_3e_harmonic = Component(EpicsSignalRO, "attenuation_3E_actual")
 
     # Configuration
-    inter_filter_delay = Component(EpicsSignal, "interFilterDelay", kind="config")
+    inter_filter_delay = Component(
+        EpicsSignal, "interFilterDelay", kind="config"
+    )
 
     filters = DynamicDeviceComponent(make_filter_slots(NUM_FILTERS))

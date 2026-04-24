@@ -6,7 +6,9 @@ from hkl.user import show_selected_diffractometer  # noqa: F401
 from hkl.util import list_orientation_runs  # noqa: F401
 from hkl.util import restore_constraints  # noqa: F401
 from hkl.util import restore_energy  # noqa: F401
-from hkl.util import restore_orientation as hkl_restore_orientation  # noqa: F401
+from hkl.util import (
+    restore_orientation as hkl_restore_orientation,  # noqa: F401
+)
 from hkl.util import restore_reflections  # noqa: F401
 from hkl.util import restore_sample  # noqa: F401
 from hkl.util import restore_UB  # noqa: F401

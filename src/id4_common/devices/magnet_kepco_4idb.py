@@ -51,7 +51,9 @@ class KepcoController(Device):
     id = Component(EpicsSignalRO, "IDN", kind="config")
     id_read = Component(EpicsSignal, "IDN.PROC", kind="omitted")
 
-    scan_rate = Component(EpicsSignal, "seq_rd.SCAN", kind="omitted", string=True)
+    scan_rate = Component(
+        EpicsSignal, "seq_rd.SCAN", kind="omitted", string=True
+    )
 
     @mode.sub_value
     def mode_change(self, value=None, **kwargs):

@@ -54,7 +54,9 @@ class KepcoDevice(Device):
         tolerance=0.1,
     )
 
-    mode = Component(EpicsSignal, "funcmode", write_pv="setfuncmode", kind="config")
+    mode = Component(
+        EpicsSignal, "funcmode", write_pv="setfuncmode", kind="config"
+    )
     _auto_mode_subs = []
 
     enable = Component(EpicsSignal, "outp", write_pv="setoutp", kind="config")
@@ -81,8 +83,12 @@ class KepcoDevice(Device):
         EpicsSignal, "currlimneg", write_pv="setcurrlimneg", kind="config"
     )
 
-    voltage_limit_positive = Component(EpicsSignalRO, "voltlimpos", kind="omitted")
-    voltage_limit_negative = Component(EpicsSignalRO, "voltlimneg", kind="omitted")
+    voltage_limit_positive = Component(
+        EpicsSignalRO, "voltlimpos", kind="omitted"
+    )
+    voltage_limit_negative = Component(
+        EpicsSignalRO, "voltlimneg", kind="omitted"
+    )
 
     # Temperatures
     t1 = Component(EpicsSignalRO, "T1", kind="config")
@@ -104,7 +110,9 @@ class KepcoDevice(Device):
 
     def start_auto_mode(self):
         """Subscribe to mode changes so voltage mode is automatically corrected to current mode."""
-        self._auto_mode_subs.append(self.mode.subscribe(self._auto_mode, run=True))
+        self._auto_mode_subs.append(
+            self.mode.subscribe(self._auto_mode, run=True)
+        )
 
     def stop_auto_mode(self):
         """Unsubscribe all auto-mode callbacks so voltage mode is no longer enforced."""

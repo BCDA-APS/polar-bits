@@ -92,9 +92,13 @@ class QxscanParams(Device):
         for i in range(1, params["pre_edge"]["num_regions"] + 1):
             output += f"  Region {i}:\n"
             key = f"region{i}"
-            output += f"    energy start = {params['pre_edge'][key]['Estart']}\n"
+            output += (
+                f"    energy start = {params['pre_edge'][key]['Estart']}\n"
+            )
             output += f"    energy step = {params['pre_edge'][key]['Estep']}\n"
-            output += f"    time factor = {params['pre_edge'][key]['TimeFactor']}\n\n"
+            output += (
+                f"    time factor = {params['pre_edge'][key]['TimeFactor']}\n\n"
+            )
 
         output += "-- Edge --\n"
         output += f"    energy start = {params['edge']['Estart']} eV\n"
@@ -105,7 +109,9 @@ class QxscanParams(Device):
         output += f"    time factor = {params['edge']['TimeFactor']}\n\n"
 
         output += "-- Post-edge --\n"
-        output += f"  Number of regions = {params['post_edge']['num_regions']}\n"
+        output += (
+            f"  Number of regions = {params['post_edge']['num_regions']}\n"
+        )
         for i in range(1, params["post_edge"]["num_regions"] + 1):
             output += f"  Region {i}:\n"
             key = f"region{i}"
@@ -143,7 +149,9 @@ class QxscanParams(Device):
                 self.pre_edge.num_regions.put(int(value))
                 break
             else:
-                print("WARNING: number of pre-edge regions need to be >=1 and<= 5!")
+                print(
+                    "WARNING: number of pre-edge regions need to be >=1 and<= 5!"
+                )
 
         for i in range(self.pre_edge.num_regions.get()):
             print("\n Defining pre-edge #{}".format(i + 1))
@@ -234,13 +242,17 @@ class QxscanParams(Device):
             step = region.Estep.get()
 
             if i != self.pre_edge.num_regions.get() - 1:
-                end = getattr(self.pre_edge, "region{}".format(i + 2)).Estart.get()
+                end = getattr(
+                    self.pre_edge, "region{}".format(i + 2)
+                ).Estart.get()
             else:
                 end = self.edge.Estart.get()
 
             energies = arange(start, end, step) / 1000.0
 
-            factorlist += [region.TimeFactor.get() for j in range(energies.size)]
+            factorlist += [
+                region.TimeFactor.get() for j in range(energies.size)
+            ]
             elist += list(energies)
 
         # Edge region
@@ -266,7 +278,9 @@ class QxscanParams(Device):
 
             energies = arange(start, end, step) ** 2 / constant / 1000.0
 
-            factorlist += [region.TimeFactor.get() for j in range(energies.size)]
+            factorlist += [
+                region.TimeFactor.get() for j in range(energies.size)
+            ]
             elist += list(energies)
 
         elist += [end**2 / constant / 1000.0]
@@ -424,5 +438,7 @@ class QxscanParams(Device):
             _update_value(item + ".num_regions")
             num_regions = getattr(self, item).num_regions.get()
             for i in range(1, num_regions + 1):
-                for component in getattr(self, item + f".region{i}").component_names:
+                for component in getattr(
+                    self, item + f".region{i}"
+                ).component_names:
                     _update_value(item + f".region{i}.{component}")

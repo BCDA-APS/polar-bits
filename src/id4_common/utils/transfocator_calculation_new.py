@@ -21,9 +21,7 @@ BE_REFR_INDEX_FILE = (
     "/home/beams/POLAR/polar_instrument/src/instrument/utils/Be_refr_index.dat"
 )
 
-LENS_SETTINGS = (
-    "/home/beams/POLAR/polar_instrument/src/instrument/utils/transfocator_settings.csv"
-)
+LENS_SETTINGS = "/home/beams/POLAR/polar_instrument/src/instrument/utils/transfocator_settings.csv"
 
 
 def read_delta(energy, path=BE_REFR_INDEX_FILE):
@@ -146,13 +144,17 @@ def transfocator_calculation(
 
     # _geom_ = current_diffractometer()
     if optimize_position is None:
-        optimize_position = float(input("Target CRL Z position in mm [0]: ") or 0)
+        optimize_position = float(
+            input("Target CRL Z position in mm [0]: ") or 0
+        )
 
     if (optimize_position < -150) or (optimize_position > 150):
         raise ValueError("CRL Z {} out of range [-150, 150].".format(energy))
 
     if energy < 2.6 or energy > 27:
-        raise ValueError("Photon energy {} out of range [2.6, 27].".format(energy))
+        raise ValueError(
+            "Photon energy {} out of range [2.6, 27].".format(energy)
+        )
 
     if distance_only and not selected_lenses:
         _inp = input(
@@ -175,7 +177,9 @@ def transfocator_calculation(
 
     # Effective focal point for the desired distance
 
-    optimize_distance = (optimize_position + reference_distance) * 1e3  # microns
+    optimize_distance = (
+        optimize_position + reference_distance
+    ) * 1e3  # microns
 
     source_crl_distance = source_sample_distance - optimize_distance
     f_eff = (
@@ -191,7 +195,9 @@ def transfocator_calculation(
     )
 
     if not distance_only:
-        best_combination, best_focal_length = _find_optimal_combination(lenses, f_eff)
+        best_combination, best_focal_length = _find_optimal_combination(
+            lenses, f_eff
+        )
     else:
         best_combination = selected_lenses
         best_focal_length = _find_optimal_focus(lenses.loc[selected_lenses])
@@ -222,7 +228,9 @@ def transfocator_calculation(
         else:
             print("Optimal lens packages = {}".format(best_combination))
 
-        print("Effective radius = {:3.1f} \u03bcm".format(best_effective_radius))
+        print(
+            "Effective radius = {:3.1f} \u03bcm".format(best_effective_radius)
+        )
         print("CRL Z position = {:6.1f} mm".format(crlz_position))
         print("-" * 65)
         print(

@@ -93,7 +93,9 @@ class MyNXWriter(NXWriterAPS):
                     # )
                     pass
                 else:
-                    self.write_stream_internal(parent, d, subgroup, stream_name, k, v)
+                    self.write_stream_internal(
+                        parent, d, subgroup, stream_name, k, v
+                    )
 
                 t = array(v["time"])
                 ds = subgroup.create_dataset("EPOCH", data=t)

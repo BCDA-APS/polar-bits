@@ -95,7 +95,9 @@ class FieldPositioner(PVPositioner):
             status.set_finished()
             return status
         else:
-            return super().move(position, wait=wait, timeout=timeout, moved_cb=moved_cb)
+            return super().move(
+                position, wait=wait, timeout=timeout, moved_cb=moved_cb
+            )
 
 
 class PowerSupply(Device):
@@ -130,7 +132,9 @@ class PowerSupply(Device):
     )
     set_ignore_table = Component(EpicsSignal, "SetIgnoreTable", kind="config")
 
-    set_persistent = Component(EpicsSignal, "SetPersistent.PROC", kind="omitted")
+    set_persistent = Component(
+        EpicsSignal, "SetPersistent.PROC", kind="omitted"
+    )
     set_pm_zero = Component(EpicsSignal, "SetPMZero.PROC", kind="omitted")
 
     ramp_pause = Component(EpicsSignal, "SetPause", kind="config")
@@ -231,7 +235,9 @@ class VTIDevice(Device):
 class NVDevice(Device):
     """Needle valve controller device with temperature and pressure positioners."""
 
-    control_mode = Component(EpicsSignal, "SetControlMode", string=True, kind="config")
+    control_mode = Component(
+        EpicsSignal, "SetControlMode", string=True, kind="config"
+    )
 
     pressure_control_switch = Component(
         EpicsSignal, "SetPressureControl", string=True, kind="config"

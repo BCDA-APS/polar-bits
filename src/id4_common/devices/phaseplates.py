@@ -106,14 +106,20 @@ class PRDeviceBase(PseudoPositioner):
     """Base class for phase retarder devices mapping energy to Bragg angle."""
 
     energy = Component(PseudoSingle, limits=(2.7, 20))
-    th = FormattedComponent(EpicsMotor, "{prefix}:{_motorsDict[th]}", labels=("motor",))
+    th = FormattedComponent(
+        EpicsMotor, "{prefix}:{_motorsDict[th]}", labels=("motor",)
+    )
 
     # Explicitly selects the real motor
     _real = ["th"]
 
-    x = FormattedComponent(EpicsMotor, "{prefix}:{_motorsDict[x]}", labels=("motor",))
+    x = FormattedComponent(
+        EpicsMotor, "{prefix}:{_motorsDict[x]}", labels=("motor",)
+    )
 
-    y = FormattedComponent(EpicsMotor, "{prefix}:{_motorsDict[y]}", labels=("motor",))
+    y = FormattedComponent(
+        EpicsMotor, "{prefix}:{_motorsDict[y]}", labels=("motor",)
+    )
 
     d_spacing = Component(Signal, value=0, kind="config")
 
@@ -157,12 +163,16 @@ class PRDeviceBase(PseudoPositioner):
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """Run a forward (pseudo -> real) calculation"""
-        return self.RealPosition(th=self.convert_energy_to_theta(pseudo_pos.energy))
+        return self.RealPosition(
+            th=self.convert_energy_to_theta(pseudo_pos.energy)
+        )
 
     @real_position_argument
     def inverse(self, real_pos):
         """Run an inverse (real -> pseudo) calculation"""
-        return self.PseudoPosition(energy=self.convert_theta_to_energy(real_pos.th))
+        return self.PseudoPosition(
+            energy=self.convert_theta_to_energy(real_pos.th)
+        )
 
     def set_energy(self, energy):
         """Calibrate the Bragg-angle motor to match the given photon energy (keV)."""

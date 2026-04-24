@@ -68,14 +68,18 @@ def setaz(*args):
             k2 = int((input("K = ({})? ".format(_k2))) or _k2)
             l2 = int((input("L = ({})? ".format(_l2))) or _l2)
         else:
-            raise ValueError("either no arguments or h, k, l need to be provided.")
+            raise ValueError(
+                "either no arguments or h, k, l need to be provided."
+            )
         _geom_.calc._engine.engine.parameters_values_set(
             [h2, k2, l2], Hkl.UnitEnum.USER
         )
         print("Azimuth = {} {} {} with Psi fixed at {}".format(h2, k2, l2, psi))
     else:
         raise ValueError(
-            "Function not available in mode '{}'".format(_geom_.calc.engine.mode)
+            "Function not available in mode '{}'".format(
+                _geom_.calc.engine.mode
+            )
         )
 
 
@@ -103,17 +107,23 @@ def freeze(*args):
                 _k2,
                 _l2,
                 value,
-            ) = _geom_.calc._engine.engine.parameters_values_get(Hkl.UnitEnum.USER)
+            ) = _geom_.calc._engine.engine.parameters_values_get(
+                Hkl.UnitEnum.USER
+            )
         else:
             raise ValueError("Mode '{}' not supported.".format(mode))
 
         if len(args) == 0:
             value = _geom_.get_axis_constraints(axis).value
-            value = int((input("Freeze {} to ({})? ".format(axis, value))) or value)
+            value = int(
+                (input("Freeze {} to ({})? ".format(axis, value))) or value
+            )
         elif len(args) == 1:
             value = args[0]
         else:
-            raise ValueError("either no argument or angle value needs to be provided.")
+            raise ValueError(
+                "either no argument or angle value needs to be provided."
+            )
         if axis == "psi":
             _geom_.calc._engine.engine.parameters_values_set(
                 [_h2, _k2, _l2, value], Hkl.UnitEnum.USER
@@ -188,7 +198,9 @@ def set_counting_time(time=None, monitor=False):
                 counters.monitor_counts = time
                 counters._mon = scaler.monitor = monitor
                 print(
-                    "Counting against monitor '{}' for {} counts".format(monitor, time)
+                    "Counting against monitor '{}' for {} counts".format(
+                        monitor, time
+                    )
                 )
             elif monitor == "Time" and time < 200:
                 counters._mon = scaler.monitor = "Time"
@@ -201,7 +213,9 @@ def set_counting_time(time=None, monitor=False):
             if monitor != "Time" and time > 199:
                 counters.monitor_counts = time
                 print(
-                    "Counting against monitor '{}' for {} counts".format(monitor, time)
+                    "Counting against monitor '{}' for {} counts".format(
+                        monitor, time
+                    )
                 )
             elif monitor != "Time" and time < 200:
                 counters._mon = scaler.monitor = "Time"

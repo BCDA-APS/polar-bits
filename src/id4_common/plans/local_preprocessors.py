@@ -92,7 +92,9 @@ def configure_counts_wrapper(plan, detectors, count_time):
         elif count_time > 0:
             args = ()
             for det in detectors:
-                original_times[det.preset_monitor] = yield from rd(det.preset_monitor)
+                original_times[det.preset_monitor] = yield from rd(
+                    det.preset_monitor
+                )
                 args += (det.preset_monitor, count_time)
             yield from mv(*args)
 
@@ -247,7 +249,8 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             if "pzt" in pr_setup.positioner.name:
                 yield from mv(
                     pr_setup.positioner,
-                    pr_setup.positioner.parent.center.get() + pr_setup.offset.get(),
+                    pr_setup.positioner.parent.center.get()
+                    + pr_setup.offset.get(),
                 )
 
             yield from unsubscribe(_dichro_token[0])
@@ -347,7 +350,9 @@ def stage_4idg_softglue_wrapper(plan, use_sg):
 
         # Start pos stream
 
-        yield from mv(pos_stream.cam.array_counter, 0, pos_stream.hdf1.capture, 1)
+        yield from mv(
+            pos_stream.cam.array_counter, 0, pos_stream.hdf1.capture, 1
+        )
         yield from mv(pos_stream.cam.acquire, 1)
 
     def _unstage():

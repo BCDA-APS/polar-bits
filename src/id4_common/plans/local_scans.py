@@ -423,7 +423,9 @@ def count(
     flag.fixq = fixq
 
     if per_shot is not None and (fixq or dichro):
-        logger.warning("there is a custom per_shot, but fixQ or dichro was selected.")
+        logger.warning(
+            "there is a custom per_shot, but fixQ or dichro was selected."
+        )
     elif per_shot is None:
         per_shot = one_local_shot if (fixq or dichro or vortex_sgz) else None
 
@@ -431,7 +433,9 @@ def count(
         detectors if not g_sgz else detectors + [pos_stream]
     )
 
-    setup_nxwritter(experiment.experiment_path, _master_fullpath, _rel_dets_paths)
+    setup_nxwritter(
+        experiment.experiment_path, _master_fullpath, _rel_dets_paths
+    )
 
     extras = yield from _collect_extras(("",))
 
@@ -578,7 +582,9 @@ def ascan(
         detectors if not g_sgz else detectors + [pos_stream]
     )
 
-    setup_nxwritter(experiment.experiment_path, _master_fullpath, _rel_dets_paths)
+    setup_nxwritter(
+        experiment.experiment_path, _master_fullpath, _rel_dets_paths
+    )
 
     extras = yield from _collect_extras(args)
 
@@ -907,7 +913,9 @@ def grid_scan(
         detectors if not g_sgz else detectors + [pos_stream]
     )
 
-    setup_nxwritter(experiment.experiment_path, _master_fullpath, _rel_dets_paths)
+    setup_nxwritter(
+        experiment.experiment_path, _master_fullpath, _rel_dets_paths
+    )
 
     extras = yield from _collect_extras(args)
 
@@ -1162,7 +1170,9 @@ def qxscan(
         detectors if not g_sgz else detectors + [pos_stream]
     )
 
-    setup_nxwritter(experiment.experiment_path, _master_fullpath, _rel_dets_paths)
+    setup_nxwritter(
+        experiment.experiment_path, _master_fullpath, _rel_dets_paths
+    )
 
     _md = dict(
         hints={"monitor": counters.monitor, "detectors": []},
@@ -1197,7 +1207,9 @@ def qxscan(
     @extra_devices_decorator(extras)
     @subs_decorator(nxwriter.receiver)
     def _inner_qxscan():
-        yield from list_scan(detectors + extras, *args, per_step=per_step, md=_md)
+        yield from list_scan(
+            detectors + extras, *args, per_step=per_step, md=_md
+        )
 
         # put original times back.
         for det, preset in _ct.items():

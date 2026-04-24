@@ -50,7 +50,9 @@ class CountersClass:
         self._order = order
 
     def __repr__(self):
-        read_names = [item.name for item in (self.detectors + self.extra_devices)]
+        read_names = [
+            item.name for item in (self.detectors + self.extra_devices)
+        ]
 
         return (
             "Counters settings\n"
@@ -326,7 +328,10 @@ class CountersClass:
 
                 # Check that the numbers are valid.
                 if not all(
-                    [i in self.detectors_plot_options.index.values for i in dets]
+                    [
+                        i in self.detectors_plot_options.index.values
+                        for i in dets
+                    ]
                 ):
                     print("The index values must be in the table.")
                     continue
@@ -342,7 +347,8 @@ class CountersClass:
             ].index[0]
             while True:
                 mon = (
-                    input(f"Enter index number of monitor detector. [{_mon}]: ") or _mon
+                    input(f"Enter index number of monitor detector. [{_mon}]: ")
+                    or _mon
                 )
 
                 try:

@@ -90,7 +90,9 @@ class PyCRL(Device):
 
     # Slits
     slit_hor_size = Component(PyCRLSignal, "1:slitSize_H_RBV", kind="config")
-    slit_hor_pv = Component(EpicsSignal, "1:slitSize_H.DOL", string=True, kind="config")
+    slit_hor_pv = Component(
+        EpicsSignal, "1:slitSize_H.DOL", string=True, kind="config"
+    )
     slit_vert_size = Component(PyCRLSignal, "1:slitSize_V_RBV", kind="config")
     slit_vert_pv = Component(
         EpicsSignal, "1:slitSize_V.DOL", string=True, kind="config"
@@ -101,17 +103,25 @@ class PyCRL(Device):
     focal_size_readback = Component(EpicsSignalRO, "fSize_actual")
     focal_power_index = Component(EpicsSignalWithRBV, "1:sortedIndex")
     focal_sizes = Component(EpicsSignal, "fSizes", kind="omitted")
-    minimize_button = Component(EpicsSignal, "minimizeFsize.PROC", kind="omitted")
+    minimize_button = Component(
+        EpicsSignal, "minimizeFsize.PROC", kind="omitted"
+    )
     system_done = Component(EpicsSignalRO, "sysBusy", kind="omitted")
 
     # Parameters readbacks
     dq = Component(PyCRLSignal, "dq", kind="config")
     q = Component(PyCRLSignal, "q", kind="config")
     z_offset = Component(PyCRLSignal, "1:oePositionOffset_RBV", kind="config")
-    z_offset_pv = Component(EpicsSignal, "1:oePositionOffset.DOL", kind="config")
+    z_offset_pv = Component(
+        EpicsSignal, "1:oePositionOffset.DOL", kind="config"
+    )
     z_from_source = Component(PyCRLSignal, "1:oePosition_RBV", kind="config")
-    sample_offset = Component(PyCRLSignal, "samplePositionOffset_RBV", kind="config")
-    sample_offset_pv = Component(EpicsSignal, "samplePositionOffset.DOL", kind="config")
+    sample_offset = Component(
+        PyCRLSignal, "samplePositionOffset_RBV", kind="config"
+    )
+    sample_offset_pv = Component(
+        EpicsSignal, "samplePositionOffset.DOL", kind="config"
+    )
     sample = Component(PyCRLSignal, "samplePosition_RBV", kind="config")
 
     # Lenses indices
@@ -121,10 +131,14 @@ class PyCRL(Device):
 
     # Other options
     preview_index = Component(EpicsSignal, "previewIndex", kind="config")
-    focal_size_preview = Component(EpicsSignalRO, "fSize_preview", kind="config")
+    focal_size_preview = Component(
+        EpicsSignalRO, "fSize_preview", kind="config"
+    )
     inter_lens_delay = Component(EpicsSignal, "1:interLensDelay", kind="config")
     verbose_console = Component(EpicsSignal, "verbosity", kind="config")
-    thickness_error_flag = Component(EpicsSignal, "thickerr_flag", kind="config")
+    thickness_error_flag = Component(
+        EpicsSignal, "thickerr_flag", kind="config"
+    )
     beam_mode = Component(EpicsSignalWithRBV, "beamMode", kind="config")
 
     # Lenses
@@ -213,10 +227,18 @@ class ZMotor(EpicsMotor):
                     "Cannot track the Y motion."
                 )
 
-            xpos = self.parent._x_interpolation(new_position) + self.parent.deltax.get()
-            ypos = self.parent._y_interpolation(new_position) + self.parent.deltay.get()
+            xpos = (
+                self.parent._x_interpolation(new_position)
+                + self.parent.deltax.get()
+            )
+            ypos = (
+                self.parent._y_interpolation(new_position)
+                + self.parent.deltay.get()
+            )
 
-            xystatus = AndStatus(self.parent.x.set(xpos), self.parent.y.set(ypos))
+            xystatus = AndStatus(
+                self.parent.x.set(xpos), self.parent.y.set(ypos)
+            )
 
             return AndStatus(zstatus, xystatus)
         else:
@@ -247,11 +269,19 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
         tracking = Component(TrackingSignal, value=False, kind="config")
 
         # Motors
-        x = FormattedComponent(EpicsMotor, "{_motors_IOC}m58", labels=("motor",))
-        y = FormattedComponent(EpicsMotor, "{_motors_IOC}m57", labels=("motor",))
+        x = FormattedComponent(
+            EpicsMotor, "{_motors_IOC}m58", labels=("motor",)
+        )
+        y = FormattedComponent(
+            EpicsMotor, "{_motors_IOC}m57", labels=("motor",)
+        )
         z = FormattedComponent(ZMotor, "{_motors_IOC}m61", labels=("motor",))
-        pitch = FormattedComponent(EpicsMotor, "{_motors_IOC}m60", labels=("motor",))
-        yaw = FormattedComponent(EpicsMotor, "{_motors_IOC}m59", labels=("motor",))
+        pitch = FormattedComponent(
+            EpicsMotor, "{_motors_IOC}m60", labels=("motor",)
+        )
+        yaw = FormattedComponent(
+            EpicsMotor, "{_motors_IOC}m59", labels=("motor",)
+        )
 
         lens_motors = DynamicDeviceComponent(
             _make_lenses_motors(lens_list),
@@ -279,8 +309,12 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
             self._default_distance = default_distance  # mm
             self._x_interpolation = None
             self._y_interpolation = None
-            self.reference_data_x.subscribe(self._update_interpolation_x, run=False)
-            self.reference_data_y.subscribe(self._update_interpolation_y, run=False)
+            self.reference_data_x.subscribe(
+                self._update_interpolation_x, run=False
+            )
+            self.reference_data_y.subscribe(
+                self._update_interpolation_y, run=False
+            )
 
         def load_reference_data(self, fname, axis):
             """Load reference tracking data from file."""

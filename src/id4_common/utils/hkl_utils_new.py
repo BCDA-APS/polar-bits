@@ -133,7 +133,9 @@ class Geometries:
         self._huber_hp_psi = value
 
 
-geometries = Geometries("huber_euler", "huber_hp", "huber_euler_psi", "huber_hp_psi")
+geometries = Geometries(
+    "huber_euler", "huber_hp", "huber_euler_psi", "huber_hp_psi"
+)
 # geometries.psic = oregistry.find("psic")
 # geometries.sim = oregistry.find("psic_sim")
 # geometries.q2 = oregistry.find("psic_q")
@@ -204,7 +206,9 @@ def _sampleList():
         print("Lattice:", end=" ")
         #        print(*samples[x].lattice._fields, sep=", ", end=" = ")
         print(samples[x].lattice)
-        print("======================================================================")
+        print(
+            "======================================================================"
+        )
     print("\nCurrent sample: " + _geom_.sample.name)
 
 
@@ -235,9 +239,12 @@ def list_reflections(all_samples=False):
         header = (
             f"\n{'#':>{refl_width}}"
             + "".join(
-                f"{m:>{pseudo_width}}" for m in _geom_.pseudo_positioners._fields
+                f"{m:>{pseudo_width}}"
+                for m in _geom_.pseudo_positioners._fields
             ).upper()
-            + "".join(f"{k:>{real_width}}" for k in _geom_.real_positioners._fields)
+            + "".join(
+                f"{k:>{real_width}}" for k in _geom_.real_positioners._fields
+            )
             + "   orienting"
         )
         print(header)
@@ -328,7 +335,9 @@ def or_swap():
     sample.reflections.swap()
     list_reflections()
     print("Computing UB!")
-    sample.core.calc_UB(sample.reflections.order[0], sample.reflections.order[1])
+    sample.core.calc_UB(
+        sample.reflections.order[0], sample.reflections.order[1]
+    )
     _geom_.forward(1, 0, 0)
 
 
@@ -638,7 +647,9 @@ def set_orienting():
 
     # Recompute UB matrix
     print("Computing UB!")
-    sample.core.calc_UB(sample.reflections.order[0], sample.reflections.order[1])
+    sample.core.calc_UB(
+        sample.reflections.order[0], sample.reflections.order[1]
+    )
     _geom_.forward(1, 0, 0)
 
 
@@ -702,7 +713,9 @@ def del_reflection():
         print("Invalid index. Aborting delete.")
         return
     if keys[idx] in orienting_refl[:2]:
-        print("Cannot delete orienting reflections (first/second). Aborting delete.")
+        print(
+            "Cannot delete orienting reflections (first/second). Aborting delete."
+        )
         return
 
     # Delete reflection
@@ -781,7 +794,9 @@ def setmode(mode=None):
         _geom_.core.mode = _geom_.core.modes[int(mode) - 1]
         print("\nSet mode to {}".format(mode))
     else:
-        mode = input("\nMode ({})? ".format(current_index + 1)) or (current_index + 1)
+        mode = input("\nMode ({})? ".format(current_index + 1)) or (
+            current_index + 1
+        )
         _geom_.core.mode = _geom_.core.modes[int(mode) - 1]
 
 
@@ -860,7 +875,11 @@ def _wh():
         * 180
         / np.pi
     )
-    print("\n   Q = {:5f}  tth = {:5f}".format(_geom_for_q_.inverse(0).q, tth_from_q))
+    print(
+        "\n   Q = {:5f}  tth = {:5f}".format(
+            _geom_for_q_.inverse(0).q, tth_from_q
+        )
+    )
 
 
 def _ensure_idle():
@@ -1026,7 +1045,9 @@ def setlat(*args):
     # Recompute UB if orienting reflections exist
     if len(sample.reflections.order) > 1:
         print("Computing UB...")
-        sample.core.calc_UB(sample.reflections.order[0], sample.reflections.order[1])
+        sample.core.calc_UB(
+            sample.reflections.order[0], sample.reflections.order[1]
+        )
         _geom_.forward(1, 0, 0)
 
     # Final confirmation
@@ -1122,8 +1143,12 @@ def freeze_psi(*args):
         elif len(args) == 1:
             psi = args[0]
         else:
-            raise ValueError("either no argument or azimuth needs to be provided.")
+            raise ValueError(
+                "either no argument or azimuth needs to be provided."
+            )
         _geom_.core.extras = {"psi": psi}
         print("Psi = {}".format(psi))
     else:
-        raise ValueError("Function not available in mode '{}'".format(_geom_.core.mode))
+        raise ValueError(
+            "Function not available in mode '{}'".format(_geom_.core.mode)
+        )

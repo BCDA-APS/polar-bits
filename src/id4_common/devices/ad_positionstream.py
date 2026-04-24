@@ -31,7 +31,9 @@ class PositionStreamCam(ADBase):
 
     # Shared among all cams and plugins
     port_name = ADComponent(EpicsSignalRO, "PortName_RBV", string=True)
-    adcore_version = ADComponent(EpicsSignalRO, "ADCoreVersion_RBV", string=True)
+    adcore_version = ADComponent(
+        EpicsSignalRO, "ADCoreVersion_RBV", string=True
+    )
 
     acquire = ADComponent(EpicsSignalWithRBV, "Acquire")
     acquire_busy = ADComponent(EpicsSignalRO, "AcquireBusy")
@@ -42,7 +44,9 @@ class PositionStreamCam(ADBase):
     array_callbacks = ADComponent(EpicsSignalWithRBV, "ArrayCallbacks")
     wait_for_plugins = ADComponent(EpicsSignal, "WaitForPlugins")
 
-    nd_attributes_file = ADComponent(EpicsSignal, "NDAttributesFile", string=True)
+    nd_attributes_file = ADComponent(
+        EpicsSignal, "NDAttributesFile", string=True
+    )
 
 
 class MySingleTrigger(BlueskyInterface):
@@ -138,7 +142,9 @@ class PositionStreamDevice(MySingleTrigger, DetectorBase):
             (self.hdf1.parent.cam.acquire, 0),  # set by number
         ]
 
-    def setup_images(self, base_path, name_template, file_number, flyscan=False):
+    def setup_images(
+        self, base_path, name_template, file_number, flyscan=False
+    ):
         """Configure HDF1 file path, name, and number for an upcoming acquisition."""
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.hdf1.file_name.set(name_template).wait(timeout=10)

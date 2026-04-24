@@ -34,7 +34,8 @@ class PolarUndulatorPositioner(UndulatorPositioner):
         # for it?
         if (
             abs(new_position - self.readback.get())
-            < self.parent.energy_deadband.get() * self.parent.harmonic_value.get()
+            < self.parent.energy_deadband.get()
+            * self.parent.harmonic_value.get()
         ):
             _status = Status()
             _status.set_finished()
@@ -71,8 +72,12 @@ class PhaseShifterDevice(Device):
     device_limit = Component(EpicsSignal, "DeviceLimitM.VAL")
     device = Component(EpicsSignalRO, "DeviceM", kind="config")
     location = Component(EpicsSignalRO, "LocationM", kind="config")
-    message1 = Component(EpicsSignalRO, "Message1M.VAL", kind="config", string=True)
-    message2 = Component(EpicsSignalRO, "Message2M.VAL", kind="config", string=True)
+    message1 = Component(
+        EpicsSignalRO, "Message1M.VAL", kind="config", string=True
+    )
+    message2 = Component(
+        EpicsSignalRO, "Message2M.VAL", kind="config", string=True
+    )
 
     def __init__(self, *args, **kwargs):
         """Initialize PhaseShifterDevice and set the gap done-value to 0."""
