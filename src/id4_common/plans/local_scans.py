@@ -55,7 +55,8 @@ from ..callbacks.dichro_stream import dichro as dichro_device
 from ..utils.experiment_utils import experiment
 from ..utils.run_engine import RE
 from ..utils.counters_class import counters
-from ..utils.hkl_utils import current_diffractometer
+#from ..utils.hkl_utils import current_diffractometer
+from hklpy2.user import get_diffractometer
 
 try:
     # change to import this only if needed?
@@ -122,10 +123,10 @@ def _collect_extras(args):
                 if pr_track:
                     extras.append(pr.th)
 
-    diff = current_diffractometer()
+    diff = get_diffractometer()
     huber_flag = False if diff is None or diff.name not in str(args) else True
     if huber_flag:
-        extras.append(current_diffractometer())
+        extras.append(get_diffractometer())
 
     return extras
 
@@ -172,7 +173,7 @@ def one_local_step(detectors, step, pos_cache, take_reading=trigger_and_read):
     yield from move_per_step(step, pos_cache)
 
     if flag.fixq:
-        huber = current_diffractometer()
+        huber = get_diffractometer()
         devices_to_read += [huber]
         args = (
             huber.h,
@@ -582,7 +583,7 @@ def ascan(
     if per_step is None:
         per_step = one_local_step if (fixq or dichro or vortex_sgz) else None
     if fixq:
-        huber = current_diffractometer()
+        huber = get_diffractometer()
         flag.hkl_pos = {
             huber.h: huber.h.get().setpoint,
             huber.k: huber.k.get().setpoint,
@@ -784,7 +785,7 @@ def th2th(
 	:func:`ascan`
 	"""
 
-	diffract = current_diffractometer()
+	diffract = get_diffractometer()
 	if diffract is None:
 		raise ValueError(
 			"There is no diffractometer setup. Please use "
@@ -914,7 +915,7 @@ def grid_scan(
         per_step = one_local_step if (fixq or dichro or vortex_sgz) else None
 
     if fixq:
-        huber = current_diffractometer()
+        huber = get_diffractometer()
         flag.hkl_pos = {
             huber.h: huber.h.get().setpoint,
             huber.k: huber.k.get().setpoint,
@@ -1147,7 +1148,7 @@ def qxscan(
         per_step = one_local_step if (fixq or dichro or vortex_sgz) else None
 
     if fixq:
-        huber = current_diffractometer()
+        huber = get_diffractometer()
         flag.hkl_pos = {
             huber.h: huber.h.get().setpoint,
             huber.k: huber.k.get().setpoint,

@@ -38,45 +38,45 @@ apstools.devices.LakeShore336Device:
   labels: ["4idg", "temperature", "baseline"]
 
 # TODO: Will leave this here for now just to be sure the hklpy2 is working.
-id4_common.devices.polar_diffractometer.CradleDiffractometer:
+# id4_common.devices.polar_diffractometer.CradleDiffractometer:
+# - name: huber_euler
+#   prefix: "4idgSoft:"
+#   labels: ["4idg", "diffractometer", "baseline"]
+
+# id4_common.devices.polar_diffractometer.HPDiffractometer:
+# - name: huber_hp
+#   prefix: "4idgSoft:"
+#   labels: ["4idg", "diffractometer", "baseline"]
+
+# id4_common.devices.polar_diffractometer.CradlePSI:
+# - name: huber_euler_psi
+#   prefix: "4idgSoft:"
+#   engine: psi
+#   labels: ["4idg", "diffractometer", "baseline"]
+
+# id4_common.devices.polar_diffractometer.HPPSI:
+# - name: huber_hp_psi
+#   prefix: "4idgSoft:"
+#   engine: psi
+#   labels: ["4idg", "diffractometer", "baseline"]
+
+id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer:
 - name: huber_euler
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer.HPDiffractometer:
+id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer:
 - name: huber_hp
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer.CradlePSI:
-- name: huber_euler_psi
-  prefix: "4idgSoft:"
-  engine: psi
-  labels: ["4idg", "diffractometer", "baseline"]
-
-id4_common.devices.polar_diffractometer.HPPSI:
-- name: huber_hp_psi
-  prefix: "4idgSoft:"
-  engine: psi
-  labels: ["4idg", "diffractometer", "baseline"]
-
-id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer:
-- name: huber_euler_2
-  prefix: "4idgSoft:"
-  labels: ["4idg", "diffractometer", "baseline"]
-
-id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer:
-- name: huber_hp_2
-  prefix: "4idgSoft:"
-  labels: ["4idg", "diffractometer", "baseline"]
-
 id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerPSI:
-- name: huber_euler_psi_2
+- name: huber_euler_psi
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
 id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometerPSI:
-- name: huber_hp_psi_2
+- name: huber_hp_psi
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 

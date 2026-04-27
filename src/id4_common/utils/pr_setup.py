@@ -53,11 +53,11 @@ class PRSetup:
         _setup = {}
 
         if self.positioner is None:
-            _setup["oscillate"] = "yes"
+            _setup["oscillate"] = "no"
             _setup["method"] = "pzt"
         else:
             _setup["oscillate"] = (
-                "yes" if self.positioner.name == pr.name else "no"
+                "yes" if self.positioner.name.startswith(pr.name + "_") else "no"
             )
             _setup["method"] = (
                 "pzt" if "pzt" in self.positioner.name else "motor"

@@ -12,6 +12,28 @@ from ophyd import (
     EpicsMotor,
     EpicsSignal,
 )
+from ophyd.signal import Signal
+
+
+class UBMatrixSignal(Signal):
+    """
+    In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
+
+    Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
+    other components can subscribe to UB matrix changes via .subscribe().
+    """
+
+    def __init__(self, pv_name, *, parent=None, name=None, **kwargs):
+        # pv_name (prefix + suffix) is passed by Component but not needed
+        super().__init__(name=name, parent=parent, **kwargs)
+
+    def get(self, **kwargs):
+        self._readback = self.parent.sample.UB
+        return self._readback
+
+    def put(self, value, *, timestamp=None, force=False, **kwargs):
+        self.parent.sample.UB = value
+        super().put(value, timestamp=timestamp, force=force, **kwargs)
 from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 from scipy.constants import speed_of_light, Planck
 from numpy import arcsin, pi, sin, tan
@@ -109,21 +131,33 @@ class AnalyzerDevice(PseudoPositioner):
     def set_energy(self, energy):
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
-        self.th.set_current_position(theta)
+        self.th_motor.set_current_position(theta)
 
-    def calc(self):
+    def calc(self, acal='No'):
         d_ana = self.d_spacing.get()
         if d_ana == 1e4:
             self.setup()
             d_ana = self.d_spacing.get()
         wavelength = self.beamline_wavelength
+        energy = self.beamline_energy
         cryst = self.crystal.get()
         th_angle = math.degrees(math.asin(wavelength / (2 * d_ana)))
         tth_angle = 2 * th_angle
         print(
-            f"[ath, atth] = [{th_angle:6.2f}, {tth_angle:6.2f}] for {cryst} "
-            "analyzer"
+            f"[ath, atth] = [{th_angle:.2f}, {tth_angle:.2f}] for {cryst} "
+            f"analyzer at {energy:.2f} keV"
         )
+        if acal =='No':
+            acal = (
+                input(f"Calibrate ath position (y/n/r)? [{acal}]: ")
+                or acal
+            )            
+        if acal in ['Yes','yes','Y','y']:
+            print(f'Calibrating ath to {th_angle:.2f}')
+            self.set_energy(energy)
+        elif acal == 'r':
+            print('Releasing calibration for ath!')
+            self.th_motor.user_offset.put(45)
 
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
@@ -237,6 +271,9 @@ class AnalyzerDevice(PseudoPositioner):
 
 
 class DiffractometerMixin(Device):
+    # Subscribable signal wrapping sample.UB for UB-matrix sync
+    _ub_sync = Component(UBMatrixSignal, "", kind="omitted")
+
     # Table vertical/horizontal
     tablex = Component(EpicsMotor, "m3", labels=("motor",))
     tabley = Component(EpicsMotor, "m1", labels=("motor",))
@@ -304,6 +341,7 @@ CradleDiffractometerBase = diffractometer_class_factory(
         chi="m37",
         phi="m38"
     ),
+    _real = "tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy()
 )
 
@@ -326,11 +364,14 @@ HPDiffractometerBase = diffractometer_class_factory(
         chi="m5",
         phi="m6"
     ),
+    _real = "tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy()
 )
 
 
-class HPDiffractometer(CradleDiffractometerBase, DiffractometerMixin):
+class HPDiffractometer(HPDiffractometerBase, DiffractometerMixin):
+    chi = Component(EpicsMotor, "m5", labels=("motor",))
+    phi = Component(EpicsMotor, "m6", labels=("motor",))
 
     basex = Component(EpicsMotor, "m7", labels=("motor",))
     basey = Component(EpicsMotor, "SMBaseY", labels=("motor",))
@@ -368,6 +409,7 @@ CradleDiffractometerPSI = diffractometer_class_factory(
         chi="m37",
         phi="m38"
     ),
+    _real = "tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy()
 )
 
@@ -385,5 +427,6 @@ HPDiffractometerPSI = diffractometer_class_factory(
         chi="m5",
         phi="m6"
     ),
+    _real = "tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy()
 )

@@ -120,7 +120,12 @@ else:
     from id4_common.utils.attenuator_utils import atten  # noqa: F401
     from id4_common.utils.dm_utils import *  # noqa: F401, F403
     from id4_common.utils.experiment_utils import *  # noqa: F401, F403
-    from id4_common.utils.hkl_utils import *  # noqa: F401, F403
+    from id4_common.utils.logbook_mcr import *  # noqa: F401, F403
+    from id4_common.utils.utilities import *  # noqa: F401, F403
+    from id4_common.utils.hkl_utils_hklpy2 import *  # noqa: F401, F403
+    from id4_common.utils.hkl_utils_hklpy2 import geometries
+    from hklpy2.user import set_diffractometer
+
 
     # TODO: DM, hklpy, experiment_utils seems to be changing the
     # logging level. I don't know why.
@@ -147,11 +152,11 @@ stations = ["source", "4ida", "4idb", "4idg"]
 for device in oregistry.findall(stations):
     connect_device(device, raise_error=False)
 
-counters.plotselect(11, 0)
+counters.plotselect(14, 5)
 
 # Diffractometer
-select_diffractometer(get_huber_euler())  # noqa: F405
-select_engine_for_psi(get_huber_euler_psi())  # noqa: F40
+set_diffractometer(geometries.huber_euler)  # noqa: F405
+
 
 for sus in shutter_suspenders.values():
     RE.install_suspender(sus)

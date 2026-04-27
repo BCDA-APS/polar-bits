@@ -12,6 +12,7 @@ from .local_scans import (  # noqa: F401
     qxscan,  # noqa: F401
     count,  # noqa: F401
     abs_set,  # noqa: F401
+    th2th,  # noqa: F401
 )
 
 from .center_maximum import maxi, cen  # noqa: F401
