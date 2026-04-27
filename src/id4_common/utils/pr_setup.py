@@ -22,6 +22,14 @@ class PRSetup:
         self._dichro_steps = value
         plot_dichro_settings.settings.pattern = value
 
+    @property
+    def available_prs(self):
+        prs = oregistry.findall("phase retarder", alow_none=True)
+        if prs is None:
+            raise ValueError("No phase retarder was found!")
+        prs.sort(key=lambda x: x.name)
+        return prs
+
     def __init__(self):
         self._current_setup = {}
 
@@ -101,7 +109,7 @@ class PRSetup:
                 print("Invalid answer, it must be yes or no.")
 
         # Cycle through the PRs
-        for pr in oregistry.findall("phase retarder"):
+        for pr in self.available_prs:
             print(" ++ {} ++ ".format(pr.name.upper()))
 
             # Track the energy?
