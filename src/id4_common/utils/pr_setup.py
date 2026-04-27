@@ -24,7 +24,7 @@ class PRSetup:
 
     @property
     def available_prs(self):
-        prs = oregistry.findall("phase retarder", alow_none=True)
+        prs = oregistry.findall("phase retarder", allow_none=True)
         if prs is None:
             raise ValueError("No phase retarder was found!")
         prs.sort(key=lambda x: x.name)
