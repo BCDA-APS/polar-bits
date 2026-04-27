@@ -42,5 +42,5 @@ counters.plotselect(11, 0)  # noqa: F405
 select_diffractometer(get_huber_euler())  # noqa: F405
 select_engine_for_psi(get_huber_euler_psi())  # noqa: F405
 
-for sus in shutter_suspenders.values():  # noqa: F405
-    RE.install_suspender(sus)  # noqa: F405
+# Use only the A shutter suspender, but the B shutter is still there.
+RE.install_suspender(shutter_suspenders["a_shutter"])  # noqa: F405
