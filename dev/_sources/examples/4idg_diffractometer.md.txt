@@ -1,13 +1,89 @@
 !# 4IDG: Diffractometer Usage
 
-4IDG is the diffraction hutch. The primary instrument is the Huber Euler
-6-circle diffractometer (`huber_euler`), controlled through
+4IDG is the diffraction hutch. The 6-circle diffractometer is controlled through
 [hklpy2](https://blueskyproject.io/hklpy2/) for reciprocal-space navigation.
-An HP (high-pressure) diffractometer (`huber_hp`) is also available.
+Two configurations are available depending on which insert is mounted:
+
+- `huber_euler` — Huber Eulerian cradle
+- `huber_hp` — high-precision goniometer
 
 The HKL utility functions are provided by `hkl_utils_hklpy2.py` and cover
 sample management, orientation, forward/inverse calculations, mode selection,
 constraint management, and configuration save/restore.
+
+---
+
+## Command Reference
+
+### Diffractometer and status
+
+| Command | Description |
+|---------|-------------|
+| `change_diffractometer(name)` | Select active diffractometer; injects motor aliases |
+| `set_detector()` | Select Eiger or point detector/analyzer arm |
+
+### Moving
+
+| Command | Description |
+|---------|-------------|
+| `wh` | Current H K L, motor positions, energy, PSI (no parentheses) |
+| `ca(h, k, l)` | Calculate motor angles for HKL without moving |
+| `ubr(h, k, l)` | Move to HKL (runs own RunEngine) |
+| `RE(br(h, k, l))` | Move to HKL as a Bluesky plan |
+| `uan(gamma, mu)` | Move gamma and mu together |
+
+### Sample management
+
+| Command | Description |
+|---------|-------------|
+| `newsample()` | Add sample interactively; seeds default UB and azimuthal reference |
+| `sampleList()` | List all samples; mark current one |
+| `sampleChange(name)` | Switch active sample |
+| `sampleRemove(name)` | Remove a sample |
+| `setlat(a,b,c,α,β,γ)` | Set lattice constants (no args = interactive) |
+| `update_lattice(par)` | Refine one lattice constant from current HKL position |
+
+### Orientation / UB matrix
+
+| Command | Description |
+|---------|-------------|
+| `or0(h, k, l)` | Set primary reflection at current motor positions |
+| `or1(h, k, l)` | Set secondary reflection at current motor positions |
+| `setor0()` | Set primary reflection — prompts for motor positions and HKL |
+| `setor1()` | Set secondary reflection — prompts for motor positions and HKL |
+| `list_reflections()` | List all reflections for current sample |
+| `list_orienting()` | List only the two orienting reflections |
+| `set_orienting()` | Interactively pick which reflections are orienting |
+| `or_swap()` | Swap first and second orienting reflections |
+| `del_reflection()` | Delete a non-orienting reflection |
+| `compute_UB()` | Force UB recomputation (normally automatic) |
+
+### Modes, azimuth and constraints
+
+| Command | Description |
+|---------|-------------|
+| `setmode(n)` | Set diffractometer mode by number (no args = interactive list) |
+| `setaz(h, k, l)` | Set azimuthal reference vector |
+| `freeze(val)` | Freeze constant axis for current mode (no args = use current position) |
+| `freeze_general()` | Interactively freeze all constant axes |
+| `show_constraints()` | Show angle limits for each axis |
+| `set_constraints(…)` | Set angle limits (no args = interactive per axis) |
+| `reset_constraints()` | Reset all limits to defaults |
+
+### Analyzer
+
+| Command | Description |
+|---------|-------------|
+| `analyzer_configuration(energy)` | Select crystal and set d-spacing |
+| `analyzer_set()` | Move analyzer to Bragg angles for current energy |
+
+### Configuration save/restore
+
+| Command | Description |
+|---------|-------------|
+| `write_config(name)` | Save sample, UB, reflections, constraints to YAML |
+| `read_config()` | Load configuration from YAML (overwrite or append) |
+| `restore_huber_from_scan(id)` | Restore orientation from a previous scan |
 
 ---
 
@@ -32,8 +108,8 @@ appropriate axis constraints, and injects motor aliases into the session
 namespace:
 
 ```python
-change_diffractometer("huber_euler")   # Cradle Euler (most common)
-change_diffractometer("huber_hp")      # High-pressure cell
+change_diffractometer("huber_euler")   # Eulerian cradle
+change_diffractometer("huber_hp")      # High-precision goniometer
 change_diffractometer()                # interactive prompt
 ```
 
@@ -43,7 +119,7 @@ After `change_diffractometer("huber_euler")`:
 
 | Alias | Motor |
 |-------|-------|
-| `mu`, `gamma`, `delta`, `chi`, `phi`, `tau` | Diffractometer circles |
+| `mu`, `gamma`, `delta`, `chi`, `phi`, `tau` | Diffractometer circles (angular space) |
 | `cryox`, `cryoy`, `cryoz` | Sample stage |
 | `ath`, `atth`, `eta`, `achi` | Analyzer arm |
 
@@ -51,11 +127,20 @@ After `change_diffractometer("huber_hp")`:
 
 | Alias | Motor |
 |-------|-------|
-| `mu`, `gamma`, `delta`, `chi`, `phi`, `tau` | Diffractometer circles |
+| `mu`, `gamma`, `delta`, `chi`, `phi`, `tau` | Diffractometer circles (angular space) |
 | `x`, `y`, `z` | Sample stage |
 | `nanox`, `nanoy`, `nanoz` | Nano-focusing stage |
 | `basex`, `basey`, `basez` | Base stage |
 | `ath`, `atth`, `eta`, `achi` | Analyzer arm |
+
+The reciprocal-space pseudo-axes `h`, `k`, `l` are **not** injected automatically.
+Assign them once per session (see [Per-Session Startup](#per-session-startup)):
+
+```python
+h = huber_euler.h
+k = huber_euler.k
+l = huber_euler.l
+```
 
 ---
 
@@ -68,6 +153,17 @@ load experiment-specific settings:
 %run startup_4idg.py
 ```
 
+This file should also alias the reciprocal-space pseudo-axes so they can be
+used directly in scans:
+
+```python
+change_diffractometer("huber_euler")
+
+h = huber_euler.h
+k = huber_euler.k
+l = huber_euler.l
+```
+
 ---
 
 ## Sample Management
@@ -75,7 +171,12 @@ load experiment-specific settings:
 ### Add a new sample
 
 `newsample()` prompts interactively for the sample name and lattice constants.
-It also adds two default reflections and computes an initial UB matrix:
+It also seeds two default reflections — `(0 0 2)` and `(2 0 0)` — computes an
+initial UB matrix from them, and sets `(1 0 0)` as the azimuthal reference
+vector. These defaults get the diffractometer into a working state immediately;
+replace them with measured reflections using `or0()`/`or1()` or
+`setor0()`/`setor1()`, and update the azimuthal reference with `setaz()` as
+needed.
 
 ```python
 newsample()
@@ -144,13 +245,19 @@ prompt for both motor positions and H K L:
 
 ```python
 setor0()    # enter angles + H K L for primary reflection
-setor1()    # enter angles + H K L for secondary reflection; triggers UB calculation
+setor1()    # enter angles + H K L for secondary reflection
 ```
+
+The UB matrix is recalculated automatically whenever the orienting reflections
+or lattice parameters are updated — including after `or0()`, `or1()`,
+`setor0()`, `setor1()`, `or_swap()`, `set_orienting()`, `setlat()`, and
+`update_lattice()`. There is no need to call `compute_UB()` manually in normal
+use.
 
 ### Recompute the UB matrix
 
 ```python
-compute_UB()    # recompute from the current orienting reflections
+compute_UB()    # force recomputation — only needed in exceptional cases
 ```
 
 ### Inspect and manage reflections
@@ -271,10 +378,14 @@ print(sol.h, sol.k, sol.l)
 
 ---
 
-## Scanning in Reciprocal Space
+## Scans
 
 All plans use `counters.detectors` and `counters.monitor` by default
-(see [General Examples](general.md) for detector selection):
+(see [General Examples](general.md) for detector selection).
+
+### Scans in angular space
+
+Scan individual diffractometer circles directly:
 
 ```python
 # Rock phi around current position (relative scan, 50 pts, 1.0 s dwell)
@@ -290,19 +401,52 @@ RE(lup(chi, -5, 5, 50, 0.5))
 RE(ascan(delta, 28, 32, 40, 0.5))
 ```
 
-For the HP diffractometer sample stage:
+#### th-2th scan
+
+Coupled scan where gamma (detector) moves at twice the rate of mu (sample).
+Use `rel_scan` from Bluesky to drive both motors simultaneously:
 
 ```python
-RE(lup(x, -0.5, 0.5, 50, 0.1))      # sample X scan
-RE(lup(y, -0.5, 0.5, 50, 0.1))      # sample Y scan
-RE(lup(nanox, -0.05, 0.05, 50, 0.1))  # nanofocusing X
+from bluesky.plans import rel_scan
+
+# ±0.5° in mu, ±1° in gamma, 51 points
+RE(rel_scan(counters.detectors, mu, -0.5, 0.5, gamma, -1.0, 1.0, 51))
+
+# Absolute th-2th scan
+from bluesky.plans import scan
+RE(scan(counters.detectors, mu, 19.5, 20.5, gamma, 39.0, 41.0, 51))
+```
+
+### Scans in reciprocal space
+
+With `h`, `k`, `l` aliased (see [Per-Session Startup](#per-session-startup)),
+scan directly along a reciprocal-space direction. The diffractometer moves all
+required angular axes simultaneously to follow the path:
+
+```python
+# L-scan through (0 0 2)
+RE(lup(l, 1.8, 2.2, 40, 0.5))
+
+# H-scan through (2 0 0)
+RE(lup(h, 1.8, 2.2, 40, 0.5))
+
+# Absolute scan along K
+RE(ascan(k, -0.1, 0.1, 40, 0.5))
 ```
 
 Center on a peak after a scan:
 
 ```python
-RE(lup(phi, -1, 1, 50, 0.5))
-RE(cen(phi))     # moves phi to the center-of-mass of the last scan
+RE(lup(l, 1.8, 2.2, 40, 0.5))
+RE(cen(l))     # moves to the center-of-mass of the last scan
+```
+
+For the HP diffractometer sample stage:
+
+```python
+RE(lup(x, -0.5, 0.5, 50, 0.1))        # sample X scan
+RE(lup(y, -0.5, 0.5, 50, 0.1))        # sample Y scan
+RE(lup(nanox, -0.05, 0.05, 50, 0.1))  # nanofocusing X
 ```
 
 ---
