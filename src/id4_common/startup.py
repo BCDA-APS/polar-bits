@@ -12,15 +12,8 @@ Includes:
 import logging
 from pathlib import Path
 
-from apsbits.core.instrument_init import init_instrument
-from apsbits.core.instrument_init import make_devices
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
-from apsbits.utils.helper_functions import register_bluesky_magics
-from apsbits.utils.helper_functions import running_in_queueserver
-from IPython import get_ipython
-
-from id4_common.utils.aps_functions import aps_dm_setup
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -32,98 +25,11 @@ instrument_path = Path(__file__).parent
 iconfig_path = instrument_path / "configs" / "iconfig.yml"
 load_config(iconfig_path)
 
-# Get the configuration
-iconfig = get_config()
+iconfig = get_config()  # noqa: F841
 
 logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 
-instrument, oregistry = init_instrument("guarneri")
-oregistry.clear()
-
-# Configure the session with callbacks, devices, and plans.
-aps_dm_setup(iconfig.get("DM_SETUP_FILE"))
-
-# Command-line tools, such as %wa, %ct, ...
-register_bluesky_magics()
-
-from .utils.local_magics import LocalMagics  # noqa: E402
-
-get_ipython().register_magics(LocalMagics)
-
-# Initialize core bluesky components
-from .utils.run_engine import RE  # noqa: F401, E402
-from .utils.run_engine import bec  # noqa: F401, E402
-from .utils.run_engine import cat  # noqa: F401, E402
-from .utils.run_engine import cat_legacy  # noqa: F401, E402
-from .utils.run_engine import peaks  # noqa: F401, E402
-from .utils.run_engine import sd  # noqa: F401, E402
-
-# Import optional components based on configuration
-if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
-    # from .callbacks.nexus_data_file_writer import nxwriter_init
-    # nxwriter = nxwriter_init(RE)
-    from .callbacks.nexus_data_file_writer import nxwriter  # noqa: F401
-
-if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
-    from .callbacks.spec_data_file_writer import init_specwriter_with_RE
-    from .callbacks.spec_data_file_writer import newSpecFile  # noqa: F401
-    from .callbacks.spec_data_file_writer import spec_comment  # noqa: F401
-    from .callbacks.spec_data_file_writer import specwriter  # noqa: F401
-
-    init_specwriter_with_RE(RE)
-    # Remove specwritter preprocessor --> the extra stream tried to trigger
-    # devices that are disconnected.
-    _ = RE.preprocessors.pop()
-
-from .callbacks.dichro_stream import dichro  # noqa: F401, E402
-from .callbacks.dichro_stream import dichro_bec  # noqa: F401, E402
-from .callbacks.dichro_stream import plot_dichro_settings  # noqa: F401, E402
-
-# These imports must come after the above setup.
-if running_in_queueserver():
-    # To make all the standard plans available in QS, import by '*', otherwise
-    # import plan by plan.
-    from apstools.plans import lineup2  # noqa: F401
-    from bluesky.plans import *  # noqa: F403, F401
-else:
-    # Import bluesky plans and stubs with prefixes set by common conventions.
-    # The apstools plans and utils are imported by '*'.
-    # from apstools.plans import *  # noqa: F401, F403
-    # from apstools.utils import *  # noqa: F401, F403
-    from bluesky import plan_stubs as bps  # noqa: F401
-    from bluesky import plans as bp  # noqa: F401
-
-    from .suspenders.shutters_suspenders import shutter_suspenders  # noqa: F401
-    from .suspenders.suspender_utils import suspender_change_sleep  # noqa: F401
-    from .suspenders.suspender_utils import suspender_restart  # noqa: F401
-    from .suspenders.suspender_utils import suspender_stop  # noqa: F401
-    from .utils.attenuator_utils import atten  # noqa: F401
-    from .utils.counters_class import counters  # noqa: F401
-    from .utils.dm_utils import *  # noqa: F401, F403
-    from .utils.experiment_utils import *  # noqa: F401, F403
-    from .utils.hkl_utils import *  # noqa: F401, F403
-    from .utils.pr_setup import pr_setup  # noqa: F401
-    from .utils.shorts import opt  # noqa: F401
-    from .utils.undulator_setup import undulator_setup  # noqa: F401
-    from .utils.wax import wa_new  # noqa: F401
-    from .utils.wax import wax  # noqa: F401
-    from .utils.wax import wm  # noqa: F401
-
-    # TODO: DM, hklpy, experiment_utils seems to be changing the
-    # logging level. I don't know why.
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-
-    from .plans import *  # noqa: F401, F403
-    from .utils.device_loader import connect_device  # noqa: F401
-    from .utils.device_loader import find_loadable_devices  # noqa: F401
-    from .utils.device_loader import load_device  # noqa: F401
-    from .utils.device_loader import load_yaml_devices  # noqa: F401
-    from .utils.device_loader import reload_all_devices  # noqa: F401
-    from .utils.device_loader import remove_device  # noqa: F401
-    from .utils.load_vortex import load_vortex  # noqa: F401
-    from .utils.oregistry_auxiliar import get_devices  # noqa: F401
-    from .utils.polartools_hklpy_imports import *  # noqa: F401, F403
+from ._common_startup import *  # noqa: F401, F403, E402
 
 _load_devices = input("\n==> Do you want to load all devices? [Y/n]: ") or "y"
 
@@ -131,12 +37,12 @@ try:
     if _load_devices.lower() in ["y", "yes"]:
         logger.info("Loading all devices, this can take a few minutes.")
 
-        make_devices(clear=True, file="devices.yml", device_manager=instrument)
+        make_devices(clear=True, file="devices.yml", device_manager=instrument)  # noqa: F405
         stations = ["core", "4idb", "4idg", "4idh"]
-        for device in oregistry.findall(stations):
-            connect_device(device, raise_error=False)
+        for device in oregistry.findall(stations):  # noqa: F405
+            connect_device(device, raise_error=False)  # noqa: F405
 
-        counters.plotselect(11, 0)
+        counters.plotselect(11, 0)  # noqa: F405
 
         # Diffractometer
         select_diffractometer(get_huber_euler())  # noqa: F405
@@ -154,5 +60,5 @@ except AttributeError:
         "load devices."
     )
 
-for sus in shutter_suspenders.values():
-    RE.install_suspender(sus)
+for sus in shutter_suspenders.values():  # noqa: F405
+    RE.install_suspender(sus)  # noqa: F405
