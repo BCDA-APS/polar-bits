@@ -43,7 +43,7 @@ get_ipython().register_magics(LocalMagics)
 
 from id4_common.utils.run_engine import RE  # noqa: F401, E402
 from id4_common.utils.run_engine import bec  # noqa: F401, E402
-from id4_common.utils.run_engine import cat  # noqa: F401, E402
+from id4_common.utils.run_engine import cat as cat_full  # noqa: F401, E402
 from id4_common.utils.run_engine import cat_legacy  # noqa: F401, E402
 from id4_common.utils.run_engine import peaks  # noqa: F401, E402
 from id4_common.utils.run_engine import sd  # noqa: F401, E402
@@ -136,3 +136,6 @@ else:
         get_devices,  # noqa: F401, E402
     )
     from id4_common.utils.polartools_hklpy_imports import *  # noqa: F401, F403, E402
+
+# Use only the A shutter suspender, but the B shutter is still there.
+RE.install_suspender(shutter_suspenders["a_shutter"])  # noqa: F405

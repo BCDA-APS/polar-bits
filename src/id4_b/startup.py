@@ -38,5 +38,7 @@ for device in oregistry.findall(["core", "4idb"]):  # noqa: F405
 
 counters.plotselect(11, 0)  # noqa: F405
 
-# Use only the A shutter suspender, but the B shutter is still there.
-RE.install_suspender(shutter_suspenders["a_shutter"])  # noqa: F405
+# Select catalog of this instrument
+cat = db_query(
+    cat_full, query=dict(instrument_name=f"polar-{iconfig['STATION']}")
+)
