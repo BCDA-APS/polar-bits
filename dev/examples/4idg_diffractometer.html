@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>4IDG: Diffractometer Usage &#8212; polar-bits</title>
+    <title>Starting the Session &#8212; polar-bits</title>
   
   
   
@@ -166,7 +166,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    4IDG: Diffractometer Usage
+    Starting the Session
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    4IDG: Diffractometer Usage
+    Starting the Session
   </a>
 </li>
 
@@ -518,7 +518,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">4IDG: Diffractometer Usage</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Starting the Session</span></li>
   </ul>
 </nav>
 </div>
@@ -535,192 +535,274 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="idg-diffractometer-usage">
-<h1>4IDG: Diffractometer Usage<a class="headerlink" href="#idg-diffractometer-usage" title="Link to this heading">#</a></h1>
+  <p>!# 4IDG: Diffractometer Usage</p>
 <p>4IDG is the diffraction hutch. The primary instrument is the Huber Euler
 6-circle diffractometer (<code class="docutils literal notranslate"><span class="pre">huber_euler</span></code>), controlled through
-<a class="reference external" href="https://blueskyproject.io/hklpy/">hklpy</a> for reciprocal-space navigation.
+<a class="reference external" href="https://blueskyproject.io/hklpy2/">hklpy2</a> for reciprocal-space navigation.
 An HP (high-pressure) diffractometer (<code class="docutils literal notranslate"><span class="pre">huber_hp</span></code>) is also available.</p>
+<p>The HKL utility functions are provided by <code class="docutils literal notranslate"><span class="pre">hkl_utils_hklpy2.py</span></code> and cover
+sample management, orientation, forward/inverse calculations, mode selection,
+constraint management, and configuration save/restore.</p>
 <hr class="docutils" />
 <section id="starting-the-session">
-<h2>Starting the Session<a class="headerlink" href="#starting-the-session" title="Link to this heading">#</a></h2>
+<h1>Starting the Session<a class="headerlink" href="#starting-the-session" title="Link to this heading">#</a></h1>
 <p>Use the beamline startup script from a terminal:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bluesky-4idg
 </pre></div>
 </div>
 <p>This activates the <code class="docutils literal notranslate"><span class="pre">polar-bits</span></code> conda environment and launches IPython with all
 4IDG devices pre-loaded (equivalent to <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">id4_g.startup</span> <span class="pre">import</span> <span class="pre">*</span></code>).</p>
-</section>
 <hr class="docutils" />
-<section id="motor-shortcuts">
-<h2>Motor Shortcuts<a class="headerlink" href="#motor-shortcuts" title="Link to this heading">#</a></h2>
-<p>After the main startup, users typically run a per-session startup file
-(e.g. <code class="docutils literal notranslate"><span class="pre">startup_4idg.py</span></code>) that assigns convenient short names to frequently
-used motors:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">apsbits.core.instrument_init</span><span class="w"> </span><span class="kn">import</span> <span class="n">oregistry</span>
-
-<span class="n">huber_euler</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;huber_euler&quot;</span><span class="p">)</span>
-<span class="n">huber_hp</span>    <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;huber_hp&quot;</span><span class="p">)</span>
-<span class="n">energy</span>      <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
-<span class="n">gkb</span>         <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;gkb&quot;</span><span class="p">)</span>
-
-<span class="c1"># Motor shortcuts for huber_euler</span>
-<span class="n">sx</span>  <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">x</span>
-<span class="n">sy</span>  <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">y</span>
-<span class="n">sz</span>  <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">z</span>
-<span class="n">mu</span>  <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">mu</span>
-<span class="n">delta</span> <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">delta</span>
-<span class="n">chi</span>   <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">chi</span>
-<span class="n">phi</span>   <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">phi</span>
-<span class="n">gamma</span> <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">gamma</span>
-
-<span class="c1"># Motor shortcuts for huber_hp (nanofocusing stage)</span>
-<span class="n">nanox</span> <span class="o">=</span> <span class="n">huber_hp</span><span class="o">.</span><span class="n">nanox</span>
-<span class="n">nanoy</span> <span class="o">=</span> <span class="n">huber_hp</span><span class="o">.</span><span class="n">nanoy</span>
-<span class="n">sx_hp</span> <span class="o">=</span> <span class="n">huber_hp</span><span class="o">.</span><span class="n">x</span>
-<span class="n">sy_hp</span> <span class="o">=</span> <span class="n">huber_hp</span><span class="o">.</span><span class="n">y</span>
+</section>
+<section id="selecting-the-active-diffractometer">
+<h1>Selecting the Active Diffractometer<a class="headerlink" href="#selecting-the-active-diffractometer" title="Link to this heading">#</a></h1>
+<p>Two diffractometers are available. Call <code class="docutils literal notranslate"><span class="pre">change_diffractometer()</span></code> to select one.
+This sets the active diffractometer for all HKL utility functions, applies the
+appropriate axis constraints, and injects motor aliases into the session
+namespace:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">change_diffractometer</span><span class="p">(</span><span class="s2">&quot;huber_euler&quot;</span><span class="p">)</span>   <span class="c1"># Cradle Euler (most common)</span>
+<span class="n">change_diffractometer</span><span class="p">(</span><span class="s2">&quot;huber_hp&quot;</span><span class="p">)</span>      <span class="c1"># High-pressure cell</span>
+<span class="n">change_diffractometer</span><span class="p">()</span>                <span class="c1"># interactive prompt</span>
 </pre></div>
 </div>
-<p>Run this file at the start of each session:</p>
+<section id="motor-aliases-created-automatically">
+<h2>Motor aliases created automatically<a class="headerlink" href="#motor-aliases-created-automatically" title="Link to this heading">#</a></h2>
+<p>After <code class="docutils literal notranslate"><span class="pre">change_diffractometer(&quot;huber_euler&quot;)</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Alias</p></th>
+<th class="head"><p>Motor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">tau</span></code></p></td>
+<td><p>Diffractometer circles</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cryox</span></code>, <code class="docutils literal notranslate"><span class="pre">cryoy</span></code>, <code class="docutils literal notranslate"><span class="pre">cryoz</span></code></p></td>
+<td><p>Sample stage</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ath</span></code>, <code class="docutils literal notranslate"><span class="pre">atth</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">achi</span></code></p></td>
+<td><p>Analyzer arm</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>After <code class="docutils literal notranslate"><span class="pre">change_diffractometer(&quot;huber_hp&quot;)</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Alias</p></th>
+<th class="head"><p>Motor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">tau</span></code></p></td>
+<td><p>Diffractometer circles</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, <code class="docutils literal notranslate"><span class="pre">z</span></code></p></td>
+<td><p>Sample stage</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nanox</span></code>, <code class="docutils literal notranslate"><span class="pre">nanoy</span></code>, <code class="docutils literal notranslate"><span class="pre">nanoz</span></code></p></td>
+<td><p>Nano-focusing stage</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">basex</span></code>, <code class="docutils literal notranslate"><span class="pre">basey</span></code>, <code class="docutils literal notranslate"><span class="pre">basez</span></code></p></td>
+<td><p>Base stage</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ath</span></code>, <code class="docutils literal notranslate"><span class="pre">atth</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">achi</span></code></p></td>
+<td><p>Analyzer arm</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="per-session-startup">
+<h1>Per-Session Startup<a class="headerlink" href="#per-session-startup" title="Link to this heading">#</a></h1>
+<p>Users typically run a per-session startup file to set additional shortcuts and
+load experiment-specific settings:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">run</span> <span class="n">startup_4idg</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-</section>
 <hr class="docutils" />
-<section id="selecting-the-active-diffractometer">
-<h2>Selecting the Active Diffractometer<a class="headerlink" href="#selecting-the-active-diffractometer" title="Link to this heading">#</a></h2>
-<p>Two diffractometer geometries are available. Select the one in use before
-running any HKL calculations or moves:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">select_diffractometer</span><span class="p">(</span><span class="n">huber_euler</span><span class="p">)</span>   <span class="c1"># Cradle Euler (most common)</span>
-<span class="n">select_diffractometer</span><span class="p">(</span><span class="n">huber_hp</span><span class="p">)</span>      <span class="c1"># High-pressure cell</span>
+</section>
+<section id="sample-management">
+<h1>Sample Management<a class="headerlink" href="#sample-management" title="Link to this heading">#</a></h1>
+<section id="add-a-new-sample">
+<h2>Add a new sample<a class="headerlink" href="#add-a-new-sample" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">newsample()</span></code> prompts interactively for the sample name and lattice constants.
+It also adds two default reflections and computes an initial UB matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newsample</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
-<hr class="docutils" />
-<section id="defining-a-sample">
-<h2>Defining a Sample<a class="headerlink" href="#defining-a-sample" title="Link to this heading">#</a></h2>
-<p>Create a sample with its unit cell parameters (a, b, c in Å; α, β, γ in °).
-<code class="docutils literal notranslate"><span class="pre">sampleNew</span></code> prompts interactively if called without arguments, or accepts
-positional arguments:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Interactive (prompts for name and lattice constants)</span>
-<span class="n">sampleNew</span><span class="p">()</span>
-
-<span class="c1"># Non-interactive</span>
-<span class="n">sampleNew</span><span class="p">(</span><span class="s2">&quot;Si&quot;</span><span class="p">,</span> <span class="mf">5.4</span><span class="p">,</span> <span class="mf">5.4</span><span class="p">,</span> <span class="mf">5.4</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>          <span class="c1"># cubic Si</span>
-<span class="n">sampleNew</span><span class="p">(</span><span class="s2">&quot;MyOxide&quot;</span><span class="p">,</span> <span class="mf">3.84</span><span class="p">,</span> <span class="mf">3.84</span><span class="p">,</span> <span class="mf">12.6</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>   <span class="c1"># tetragonal</span>
-</pre></div>
-</div>
-<p>Verify the current sample and orientation matrix:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wh</span>     <span class="c1"># print current reciprocal-space position and sample info (no parentheses needed)</span>
-<span class="n">pa</span><span class="p">()</span>   <span class="c1"># print full engine parameters: UB matrix, reflections, mode</span>
+<section id="list-switch-and-remove-samples">
+<h2>List, switch, and remove samples<a class="headerlink" href="#list-switch-and-remove-samples" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampleList</span><span class="p">()</span>                  <span class="c1"># list all defined samples; mark current one</span>
+<span class="n">sampleChange</span><span class="p">(</span><span class="s2">&quot;Si&quot;</span><span class="p">)</span>            <span class="c1"># switch to sample named &quot;Si&quot;</span>
+<span class="n">sampleChange</span><span class="p">()</span>                <span class="c1"># interactive selection</span>
+<span class="n">sampleRemove</span><span class="p">(</span><span class="s2">&quot;old_sample&quot;</span><span class="p">)</span>    <span class="c1"># remove a sample by name</span>
+<span class="n">sampleRemove</span><span class="p">()</span>                <span class="c1"># interactive selection</span>
 </pre></div>
 </div>
 </section>
+<section id="update-lattice-constants">
+<h2>Update lattice constants<a class="headerlink" href="#update-lattice-constants" title="Link to this heading">#</a></h2>
+<p>Set lattice constants directly or interactively:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">setlat</span><span class="p">(</span><span class="mf">5.43</span><span class="p">,</span> <span class="mf">5.43</span><span class="p">,</span> <span class="mf">5.43</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>   <span class="c1"># direct: a, b, c, alpha, beta, gamma</span>
+<span class="n">setlat</span><span class="p">()</span>                                 <span class="c1"># interactive with current values as defaults</span>
+</pre></div>
+</div>
+<p>Refine a single lattice constant from the current HKL position
+(auto-detects which parameter to refine based on position):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">update_lattice</span><span class="p">()</span>        <span class="c1"># auto: refines a, b, or c depending on current HKL</span>
+<span class="n">update_lattice</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>     <span class="c1"># refine only c</span>
+</pre></div>
+</div>
 <hr class="docutils" />
+</section>
+</section>
+<section id="checking-the-current-position">
+<h1>Checking the Current Position<a class="headerlink" href="#checking-the-current-position" title="Link to this heading">#</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">wh</span>     <span class="c1"># print H K L, energy, motor positions, PSI — no parentheses</span>
+<span class="n">ca</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>     <span class="c1"># calculate motor angles for (1 0 0) without moving</span>
+<span class="n">ca</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>     <span class="c1"># calculate motor angles for (1 1 0) without moving</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
 <section id="orientation-ub-matrix">
-<h2>Orientation (UB Matrix)<a class="headerlink" href="#orientation-ub-matrix" title="Link to this heading">#</a></h2>
-<p>Set orientation reflections one at a time. Move to the peak physically, then
-call <code class="docutils literal notranslate"><span class="pre">setor0()</span></code> / <code class="docutils literal notranslate"><span class="pre">setor1()</span></code> to record the reflection at the current motor
-positions:</p>
+<h1>Orientation (UB Matrix)<a class="headerlink" href="#orientation-ub-matrix" title="Link to this heading">#</a></h1>
+<section id="setting-orientation-reflections">
+<h2>Setting orientation reflections<a class="headerlink" href="#setting-orientation-reflections" title="Link to this heading">#</a></h2>
+<p>Two workflows exist depending on whether you are at the peak or not.</p>
+<p><strong>If you are physically at the peak</strong> — use <code class="docutils literal notranslate"><span class="pre">or0()</span></code> / <code class="docutils literal notranslate"><span class="pre">or1()</span></code>, which capture
+the current motor positions and only ask for H K L:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Move to the first reflection physically, then:</span>
-<span class="n">setor0</span><span class="p">()</span>    <span class="c1"># record orientation reflection 0 — prompts for H K L if not at peak</span>
+<span class="n">or0</span><span class="p">()</span>             <span class="c1"># record primary reflection at current motors — prompts for H K L</span>
+<span class="n">or0</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>      <span class="c1"># record primary reflection — no prompt</span>
 
 <span class="c1"># Move to the second reflection, then:</span>
-<span class="n">setor1</span><span class="p">()</span>    <span class="c1"># record orientation reflection 1 — UB matrix is now calculated</span>
+<span class="n">or1</span><span class="p">()</span>             <span class="c1"># record secondary reflection at current motors — prompts for H K L</span>
+<span class="n">or1</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>      <span class="c1"># record secondary reflection — no prompt</span>
 </pre></div>
 </div>
-<p>List stored reflections:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">list_reflections</span><span class="p">()</span>
+<p><strong>To enter motor positions manually</strong> — use <code class="docutils literal notranslate"><span class="pre">setor0()</span></code> / <code class="docutils literal notranslate"><span class="pre">setor1()</span></code>, which
+prompt for both motor positions and H K L:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">setor0</span><span class="p">()</span>    <span class="c1"># enter angles + H K L for primary reflection</span>
+<span class="n">setor1</span><span class="p">()</span>    <span class="c1"># enter angles + H K L for secondary reflection; triggers UB calculation</span>
 </pre></div>
 </div>
 </section>
-<hr class="docutils" />
-<section id="checking-angles-and-moving-in-reciprocal-space">
-<h2>Checking Angles and Moving in Reciprocal Space<a class="headerlink" href="#checking-angles-and-moving-in-reciprocal-space" title="Link to this heading">#</a></h2>
-<p>Calculate motor angles for any HKL without moving:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ca</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>     <span class="c1"># angles for (1 0 0)</span>
-<span class="n">ca</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>     <span class="c1"># angles for (1 1 0)</span>
-<span class="n">ca</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>     <span class="c1"># angles for (0 0 2)</span>
+<section id="recompute-the-ub-matrix">
+<h2>Recompute the UB matrix<a class="headerlink" href="#recompute-the-ub-matrix" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">compute_UB</span><span class="p">()</span>    <span class="c1"># recompute from the current orienting reflections</span>
 </pre></div>
 </div>
-<p>Move to an HKL position (executes as a plan):</p>
+</section>
+<section id="inspect-and-manage-reflections">
+<h2>Inspect and manage reflections<a class="headerlink" href="#inspect-and-manage-reflections" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">list_reflections</span><span class="p">()</span>         <span class="c1"># list all reflections for the current sample</span>
+<span class="n">list_orienting</span><span class="p">()</span>           <span class="c1"># list only the two orienting reflections</span>
+<span class="n">set_orienting</span><span class="p">()</span>            <span class="c1"># interactively pick which reflections are orienting</span>
+<span class="n">or_swap</span><span class="p">()</span>                  <span class="c1"># swap first and second orienting reflections; recomputes UB</span>
+<span class="n">del_reflection</span><span class="p">()</span>           <span class="c1"># interactively delete a non-orienting reflection</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="moving-in-reciprocal-space">
+<h1>Moving in Reciprocal Space<a class="headerlink" href="#moving-in-reciprocal-space" title="Link to this heading">#</a></h1>
+<p>Move to an HKL position (executes as a Bluesky plan):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">br</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>     <span class="c1"># move to (1 0 0)</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">br</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>     <span class="c1"># move to (2 0 0)</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">br</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>     <span class="c1"># move to (1 1 0)</span>
-<span class="n">wh</span>                  <span class="c1"># confirm position after move</span>
+</pre></div>
+</div>
+<p>Move directly without wrapping in <code class="docutils literal notranslate"><span class="pre">RE</span></code> (runs its own RunEngine):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ubr</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>        <span class="c1"># move to (1 0 0)</span>
+<span class="n">ubr</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>        <span class="c1"># move to (2 0 0)</span>
+</pre></div>
+</div>
+<p>Move gamma and mu together (for detector arm alignment):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">uan</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>         <span class="c1"># move to gamma=40, mu=20</span>
 </pre></div>
 </div>
 <p>Move individual real-space axes with the <code class="docutils literal notranslate"><span class="pre">%mov</span></code> magic:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">mov</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">phi</span> <span class="mi">5</span>        <span class="c1"># move phi to 5°</span>
-<span class="o">%</span><span class="n">mov</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">chi</span> <span class="mi">0</span>        <span class="c1"># move chi to 0°</span>
-<span class="o">%</span><span class="n">mov</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">delta</span> <span class="mi">30</span>     <span class="c1"># move delta to 30°</span>
-
-<span class="c1"># Or using shortcuts:</span>
-<span class="o">%</span><span class="n">mov</span> <span class="n">phi</span> <span class="mi">5</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">mov</span> <span class="n">phi</span> <span class="mi">5</span>          <span class="c1"># move phi to 5°</span>
 <span class="o">%</span><span class="n">mov</span> <span class="n">chi</span> <span class="mi">0</span>
+<span class="o">%</span><span class="n">mov</span> <span class="n">delta</span> <span class="mi">30</span>
 </pre></div>
 </div>
-</section>
 <hr class="docutils" />
+</section>
 <section id="diffractometer-modes">
-<h2>Diffractometer Modes<a class="headerlink" href="#diffractometer-modes" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">setmode()</span></code> opens an interactive prompt listing all available modes.
-Pass a mode number to set it directly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">setmode</span><span class="p">()</span>      <span class="c1"># interactive selection</span>
-<span class="n">setmode</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>     <span class="c1"># e.g. &quot;4-circles bissecting horizontal&quot;</span>
-<span class="n">setmode</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>    <span class="c1"># e.g. &quot;psi constant horizontal&quot;</span>
+<h1>Diffractometer Modes<a class="headerlink" href="#diffractometer-modes" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">setmode()</span></code> lists all available modes (1-indexed). Selecting a mode
+automatically freezes the unused detector angle at 0:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">setmode</span><span class="p">()</span>       <span class="c1"># interactive selection (shows numbered list)</span>
+<span class="n">setmode</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>      <span class="c1"># e.g. &quot;4-circles constant phi horizontal&quot; → freezes delta=0</span>
+<span class="n">setmode</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>      <span class="c1"># e.g. &quot;4-circles bissecting horizontal&quot;</span>
+<span class="n">setmode</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>     <span class="c1"># e.g. &quot;psi constant horizontal&quot;</span>
 </pre></div>
 </div>
 <p>Available modes include (geometry-dependent):</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">4-circles</span> <span class="pre">constant</span> <span class="pre">phi</span> <span class="pre">horizontal</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">zaxis</span> <span class="pre">+</span> <span class="pre">alpha-fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">zaxis</span> <span class="pre">+</span> <span class="pre">beta-fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">zaxis</span> <span class="pre">+</span> <span class="pre">alpha=beta</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">4-circles</span> <span class="pre">constant</span> <span class="pre">mu</span> <span class="pre">horizontal</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">4-circles</span> <span class="pre">constant</span> <span class="pre">chi</span> <span class="pre">horizontal</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">4-circles</span> <span class="pre">bissecting</span> <span class="pre">horizontal</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">4-circles</span> <span class="pre">constant</span> <span class="pre">omega</span> <span class="pre">horizontal</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">psi</span> <span class="pre">constant</span> <span class="pre">horizontal</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">psi</span> <span class="pre">constant</span> <span class="pre">horizontal</span></code>, <code class="docutils literal notranslate"><span class="pre">psi</span> <span class="pre">constant</span> <span class="pre">vertical</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zaxis</span> <span class="pre">+</span> <span class="pre">alpha-fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">zaxis</span> <span class="pre">+</span> <span class="pre">beta-fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">zaxis</span> <span class="pre">+</span> <span class="pre">alpha=beta</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">lifting</span> <span class="pre">detector</span> <span class="pre">mu/omega/chi/phi</span></code></p></li>
 </ul>
-</section>
 <hr class="docutils" />
+</section>
 <section id="azimuth-reference-and-constraints">
-<h2>Azimuth Reference and Constraints<a class="headerlink" href="#azimuth-reference-and-constraints" title="Link to this heading">#</a></h2>
-<p>Set the azimuth reference vector (interactive if called without arguments):</p>
+<h1>Azimuth Reference and Constraints<a class="headerlink" href="#azimuth-reference-and-constraints" title="Link to this heading">#</a></h1>
+<p>Set the azimuthal reference vector. This updates the psi-engine counterpart
+diffractometer and reports the resulting PSI value:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">setaz</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>   <span class="c1"># [001] azimuth reference</span>
 <span class="n">setaz</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>   <span class="c1"># [010] azimuth reference</span>
+<span class="n">setaz</span><span class="p">()</span>          <span class="c1"># interactive prompt</span>
 </pre></div>
 </div>
-<p>Freeze an axis at a fixed value (freezes phi by default; interactive if no
-argument given):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">freeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>     <span class="c1"># freeze phi at 0°</span>
-<span class="n">freeze</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>     <span class="c1"># freeze phi at 5°</span>
-<span class="n">freeze</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>   <span class="c1"># freeze phi at -90°</span>
+<p>Freeze the constant axis for the current mode. Behavior depends on mode:</p>
+<ul class="simple">
+<li><p><strong>Psi constant modes</strong>: freezes psi (uses current psi if no argument)</p></li>
+<li><p><strong>Single-axis modes</strong> (<code class="docutils literal notranslate"><span class="pre">constant</span> <span class="pre">phi/mu/chi</span></code>): freezes that axis (uses current
+motor position if no argument)</p></li>
+<li><p><strong>Other modes</strong>: interactive prompt for each constant axis</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">freeze</span><span class="p">()</span>        <span class="c1"># auto-detect from current mode; prompt or use current position</span>
+<span class="n">freeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>       <span class="c1"># freeze axis at 0 (mode-dependent)</span>
+<span class="n">freeze</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>       <span class="c1"># freeze axis at 5 (mode-dependent)</span>
+<span class="n">freeze_general</span><span class="p">()</span>  <span class="c1"># always prompts interactively for all constant axes</span>
 </pre></div>
 </div>
-<p>Show and manage axis constraints:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_constraints</span><span class="p">()</span>    <span class="c1"># print current limits and frozen values</span>
-<span class="n">reset_constraints</span><span class="p">()</span>   <span class="c1"># reset all to defaults</span>
-<span class="n">set_constraints</span><span class="p">()</span>     <span class="c1"># interactive loop — set low/high limits per axis</span>
+<p>Show and manage axis constraints (angle limits):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_constraints</span><span class="p">()</span>          <span class="c1"># print low/high limits for each axis</span>
+<span class="n">reset_constraints</span><span class="p">()</span>         <span class="c1"># reset all limits to defaults</span>
+<span class="n">set_constraints</span><span class="p">()</span>           <span class="c1"># interactive: set limits for each axis</span>
+<span class="n">set_constraints</span><span class="p">(</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>   <span class="c1"># set limits for one axis</span>
+<span class="n">set_constraints</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">140</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>  <span class="c1"># set all 6 axes</span>
 </pre></div>
 </div>
-</section>
 <hr class="docutils" />
+</section>
 <section id="inverse-calculation">
-<h2>Inverse Calculation<a class="headerlink" href="#inverse-calculation" title="Link to this heading">#</a></h2>
-<p>Convert real-space motor positions to reciprocal-space coordinates:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># (mu, delta, gamma, chi, phi, omega) → (h, k, l)</span>
-<span class="n">sol</span> <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">inverse</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">))</span>
+<h1>Inverse Calculation<a class="headerlink" href="#inverse-calculation" title="Link to this heading">#</a></h1>
+<p>Convert real-space motor positions to reciprocal-space coordinates.
+Motor order for 6-circle is <code class="docutils literal notranslate"><span class="pre">(gamma,</span> <span class="pre">mu,</span> <span class="pre">chi,</span> <span class="pre">phi,</span> <span class="pre">delta,</span> <span class="pre">tau)</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span> <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">inverse</span><span class="p">((</span><span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">l</span><span class="p">)</span>
-
-<span class="n">sol</span> <span class="o">=</span> <span class="n">huber_euler</span><span class="o">.</span><span class="n">inverse</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mf">33.2</span><span class="p">,</span> <span class="o">-</span><span class="mi">139</span><span class="p">,</span> <span class="mf">33.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
 <hr class="docutils" />
+</section>
 <section id="scanning-in-reciprocal-space">
-<h2>Scanning in Reciprocal Space<a class="headerlink" href="#scanning-in-reciprocal-space" title="Link to this heading">#</a></h2>
-<p>Scan along real-space motors while monitoring intensity with the scalers.
-All plans use <code class="docutils literal notranslate"><span class="pre">counters.detectors</span></code> and <code class="docutils literal notranslate"><span class="pre">counters.monitor</span></code> by default
+<h1>Scanning in Reciprocal Space<a class="headerlink" href="#scanning-in-reciprocal-space" title="Link to this heading">#</a></h1>
+<p>All plans use <code class="docutils literal notranslate"><span class="pre">counters.detectors</span></code> and <code class="docutils literal notranslate"><span class="pre">counters.monitor</span></code> by default
 (see <a class="reference internal" href="general.html"><span class="std std-doc">General Examples</span></a> for detector selection):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rock phi around current position (relative scan, 50 pts, 1.0 s dwell)</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
@@ -736,8 +818,9 @@ All plans use <code class="docutils literal notranslate"><span class="pre">count
 </pre></div>
 </div>
 <p>For the HP diffractometer sample stage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">sx_hp</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>    <span class="c1"># sample X scan</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">sy_hp</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>    <span class="c1"># sample Y scan</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>      <span class="c1"># sample X scan</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>      <span class="c1"># sample Y scan</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">nanox</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>  <span class="c1"># nanofocusing X</span>
 </pre></div>
 </div>
 <p>Center on a peak after a scan:</p>
@@ -745,19 +828,17 @@ All plans use <code class="docutils literal notranslate"><span class="pre">count
 <span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">phi</span><span class="p">))</span>     <span class="c1"># moves phi to the center-of-mass of the last scan</span>
 </pre></div>
 </div>
-</section>
 <hr class="docutils" />
+</section>
 <section id="d-maps">
-<h2>2D Maps<a class="headerlink" href="#d-maps" title="Link to this heading">#</a></h2>
+<h1>2D Maps<a class="headerlink" href="#d-maps" title="Link to this heading">#</a></h1>
 <p>Raster scan over two motors:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grid scan over sample position (useful for mapping or alignment)</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">grid_scan</span><span class="p">(</span>
-    <span class="n">sx</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="n">sy</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="mf">0.2</span><span class="p">,</span>    <span class="c1"># dwell time per point</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">grid_scan</span><span class="p">(</span>
+    <span class="n">cryox</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">cryoy</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="mf">0.2</span><span class="p">,</span>
 <span class="p">))</span>
 
-<span class="c1"># Relative grid scan with snake trajectory</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">rel_grid_scan</span><span class="p">(</span>
     <span class="n">nanoy</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span>
     <span class="n">nanox</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span>
@@ -766,23 +847,74 @@ All plans use <code class="docutils literal notranslate"><span class="pre">count
 <span class="p">))</span>
 </pre></div>
 </div>
-</section>
 <hr class="docutils" />
+</section>
+<section id="analyzer">
+<h1>Analyzer<a class="headerlink" href="#analyzer" title="Link to this heading">#</a></h1>
+<p>Configure and move the analyzer arm. <code class="docutils literal notranslate"><span class="pre">analyzer_configuration()</span></code> prompts
+for the analyzer crystal and sets its d-spacing. <code class="docutils literal notranslate"><span class="pre">analyzer_set()</span></code> moves
+the analyzer to the correct angles for the current energy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analyzer_configuration</span><span class="p">()</span>      <span class="c1"># select crystal, set d-spacing; optionally pass energy (keV)</span>
+<span class="n">analyzer_configuration</span><span class="p">(</span><span class="mf">7.0</span><span class="p">)</span>   <span class="c1"># configure for 7.0 keV</span>
+<span class="n">analyzer_set</span><span class="p">()</span>                <span class="c1"># move ath/atth to correct Bragg angles</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
 <section id="detector-selection">
-<h2>Detector Selection<a class="headerlink" href="#detector-selection" title="Link to this heading">#</a></h2>
-<p>See <a class="reference internal" href="general.html"><span class="std std-doc">General Examples → Detector Selection</span></a> for
-the full <code class="docutils literal notranslate"><span class="pre">counters.plotselect()</span></code> walkthrough.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Quick selection: detector index 14, monitor index 5</span>
-<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-
-<span class="c1"># Multiple detectors</span>
-<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+<h1>Detector Selection<a class="headerlink" href="#detector-selection" title="Link to this heading">#</a></h1>
+<p>Switch between the Eiger area detector and the point detector/analyzer arm
+(motors are 25° apart in delta):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">set_detector</span><span class="p">()</span>    <span class="c1"># interactive: (E)iger or (P)oint Detector/Analyzer</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+<section id="saving-and-restoring-configuration">
+<h1>Saving and Restoring Configuration<a class="headerlink" href="#saving-and-restoring-configuration" title="Link to this heading">#</a></h1>
+<section id="write-to-file">
+<h2>Write to file<a class="headerlink" href="#write-to-file" title="Link to this heading">#</a></h2>
+<p>Save the current diffractometer state (sample, reflections, UB matrix,
+constraints, mode) to a YAML file in the current directory:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">write_config</span><span class="p">()</span>              <span class="c1"># saves to default_polar_config.yml</span>
+<span class="n">write_config</span><span class="p">(</span><span class="s2">&quot;EuAl4_run1&quot;</span><span class="p">)</span>  <span class="c1"># saves to EuAl4_run1_polar_config.yml</span>
+<span class="n">write_config</span><span class="p">(</span><span class="s2">&quot;EuAl4_run1&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># skip confirmation prompt</span>
 </pre></div>
 </div>
 </section>
+<section id="read-from-file">
+<h2>Read from file<a class="headerlink" href="#read-from-file" title="Link to this heading">#</a></h2>
+<p>Lists all <code class="docutils literal notranslate"><span class="pre">*_polar_config.yml</span></code> files in the current directory and prompts
+to overwrite or append the current configuration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">read_config</span><span class="p">()</span>    <span class="c1"># interactive file selection; choose overwrite or append</span>
+</pre></div>
+</div>
+</section>
+<section id="restore-from-a-previous-scan">
+<h2>Restore from a previous scan<a class="headerlink" href="#restore-from-a-previous-scan" title="Link to this heading">#</a></h2>
+<p>Restore diffractometer orientation from the supplemental data stored in a
+databroker scan:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>                           <span class="c1"># most recent scan</span>
+<span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>                         <span class="c1"># scan ID 1234</span>
+<span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="n">sample_name</span><span class="o">=</span><span class="s2">&quot;EuAl4&quot;</span><span class="p">)</span>    <span class="c1"># override sample name</span>
+<span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>             <span class="c1"># use first available info</span>
+</pre></div>
+</div>
 <hr class="docutils" />
+</section>
+</section>
+<section id="id1">
+<h1>Detector Selection<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>See <a class="reference internal" href="general.html"><span class="std std-doc">General Examples → Detector Selection</span></a> for
+the full <code class="docutils literal notranslate"><span class="pre">counters.plotselect()</span></code> walkthrough.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>        <span class="c1"># detector index 14, monitor index 5</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># multiple detectors</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
 <section id="temperature-control">
-<h2>Temperature Control<a class="headerlink" href="#temperature-control" title="Link to this heading">#</a></h2>
+<h1>Temperature Control<a class="headerlink" href="#temperature-control" title="Link to this heading">#</a></h1>
 <p>Temperature controllers are available at 4IDG:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># LakeShore 336 (primary)</span>
 <span class="n">temp_336_4idg</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">temperature</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>     <span class="c1"># read sensor A</span>
@@ -795,10 +927,10 @@ the full <code class="docutils literal notranslate"><span class="pre">counters.p
 <span class="n">temp</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;temp_340_4idg&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">control</span>
 </pre></div>
 </div>
-</section>
 <hr class="docutils" />
+</section>
 <section id="saving-data">
-<h2>Saving Data<a class="headerlink" href="#saving-data" title="Link to this heading">#</a></h2>
+<h1>Saving Data<a class="headerlink" href="#saving-data" title="Link to this heading">#</a></h1>
 <p>SPEC files are enabled by default. Use <code class="docutils literal notranslate"><span class="pre">newSpecFile</span></code> to start a new file and
 <code class="docutils literal notranslate"><span class="pre">spec_comment</span></code> to annotate the logbook:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newSpecFile</span><span class="p">(</span><span class="s2">&quot;EuAl4_experiment&quot;</span><span class="p">)</span>
@@ -815,21 +947,16 @@ the full <code class="docutils literal notranslate"><span class="pre">counters.p
 </div>
 <p><a class="reference external" href="https://github.com/APS-4ID-POLAR/polartools">polartools</a> provides higher-level
 routines for diffraction data analysis, available in the session namespace:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fit a single peak: load data first, then fit the arrays</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">load_table</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cat</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">load_table</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cat</span><span class="p">)</span>
 <span class="n">fit</span> <span class="o">=</span> <span class="n">fit_peak</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;delta&quot;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">])</span>
 
-<span class="c1"># Fit and plot a series of scans (scan IDs as start, stop, step triplet)</span>
-<span class="c1"># e.g. scans 10 through 20 in steps of 1</span>
 <span class="n">plot_fit</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">cat</span><span class="p">,</span> <span class="n">positioner</span><span class="o">=</span><span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>
 <span class="n">fit_series</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">cat</span><span class="p">,</span> <span class="n">positioner</span><span class="o">=</span><span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>
 
-<span class="c1"># Load and display a 2D mesh scan</span>
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">load_mesh</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cat</span><span class="p">,</span> <span class="n">xmotor</span><span class="o">=</span><span class="s2">&quot;sx&quot;</span><span class="p">,</span> <span class="n">ymotor</span><span class="o">=</span><span class="s2">&quot;sy&quot;</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">load_mesh</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cat</span><span class="p">,</span> <span class="n">xmotor</span><span class="o">=</span><span class="s2">&quot;cryox&quot;</span><span class="p">,</span> <span class="n">ymotor</span><span class="o">=</span><span class="s2">&quot;cryoy&quot;</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>
 <span class="n">plot_2d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
 </section>
 
 
@@ -879,21 +1006,44 @@ routines for diffraction data analysis, available in the session namespace:</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-session">Starting the Session</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motor-shortcuts">Motor Shortcuts</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-the-active-diffractometer">Selecting the Active Diffractometer</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-a-sample">Defining a Sample</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#orientation-ub-matrix">Orientation (UB Matrix)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-angles-and-moving-in-reciprocal-space">Checking Angles and Moving in Reciprocal Space</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffractometer-modes">Diffractometer Modes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#azimuth-reference-and-constraints">Azimuth Reference and Constraints</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inverse-calculation">Inverse Calculation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scanning-in-reciprocal-space">Scanning in Reciprocal Space</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-maps">2D Maps</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#detector-selection">Detector Selection</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-control">Temperature Control</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saving-data">Saving Data</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Starting the Session</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-the-active-diffractometer">Selecting the Active Diffractometer</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motor-aliases-created-automatically">Motor aliases created automatically</a></li>
 </ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#per-session-startup">Per-Session Startup</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-management">Sample Management</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-new-sample">Add a new sample</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#list-switch-and-remove-samples">List, switch, and remove samples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-lattice-constants">Update lattice constants</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-the-current-position">Checking the Current Position</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#orientation-ub-matrix">Orientation (UB Matrix)</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-orientation-reflections">Setting orientation reflections</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recompute-the-ub-matrix">Recompute the UB matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-and-manage-reflections">Inspect and manage reflections</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#moving-in-reciprocal-space">Moving in Reciprocal Space</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#diffractometer-modes">Diffractometer Modes</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#azimuth-reference-and-constraints">Azimuth Reference and Constraints</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#inverse-calculation">Inverse Calculation</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#scanning-in-reciprocal-space">Scanning in Reciprocal Space</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#d-maps">2D Maps</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#analyzer">Analyzer</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#detector-selection">Detector Selection</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#saving-and-restoring-configuration">Saving and Restoring Configuration</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-to-file">Write to file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#read-from-file">Read from file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#restore-from-a-previous-scan">Restore from a previous scan</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Detector Selection</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-control">Temperature Control</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#saving-data">Saving Data</a></li>
+</ul>
+
   </nav></div>
 
   <div class="sidebar-secondary-item">
