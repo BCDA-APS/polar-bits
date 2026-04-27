@@ -440,7 +440,7 @@ class CountersClass:
             )
             extra_str = input(
                 "Enter indexes of extra read channels "
-                f"(optional, Enter to keep {current_read}): "
+                f"(optional) {current_read}): "
             )
             if extra_str.strip():
                 try:
