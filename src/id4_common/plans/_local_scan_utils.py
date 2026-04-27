@@ -9,6 +9,7 @@ from bluesky.plan_stubs import move_per_step
 from bluesky.plan_stubs import mv as bps_mv
 from bluesky.plan_stubs import rd
 from bluesky.plan_stubs import trigger_and_read
+from bluesky.preprocessors import finalize_wrapper
 
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..utils.counters_class import counters
@@ -301,14 +302,50 @@ def _hkl_motors(fixq):
     """
     Return the real (physical) motors of the diffractometer when fixq is True.
 
-    Uses the actual motors rather than pseudo-motors so that reset_positions_
-    decorator can restore hardware positions directly, without depending on the
-    current sample orientation or UB matrix.
+    Uses the actual motors rather than pseudo-motors so that the snapshot/
+    reset wrapper can restore hardware positions directly, without depending
+    on the current sample orientation or UB matrix.
     """
     if not fixq:
         return []
     huber = current_diffractometer()
     return list(huber.real_positioners) if huber is not None else []
+
+
+def reset_real_motors_decorator(motors):
+    """Snapshot motor positions at plan start and restore them on finalize.
+
+    Unlike :func:`bluesky.preprocessors.reset_positions_decorator`, which
+    records a position only when it observes a ``set`` message on the device,
+    this decorator reads ``obj.position`` immediately when the plan begins
+    iterating and restores it via ``mv`` in a ``finalize_wrapper``.
+
+    Required for diffractometer real positioners that move via
+    ``PseudoPositioner`` inverse kinematics (h/k/l ``set`` messages do not
+    propagate as ``set`` messages on the underlying real motors), so
+    ``reset_positions_decorator`` would never stash — and therefore never
+    restore — their initial positions.
+    """
+
+    def decorator(plan_func):
+        def inner(*args, **kwargs):
+            initial = [(m, m.position) for m in motors]
+
+            def reset():
+                if not initial:
+                    return
+                pairs = []
+                for m, v in initial:
+                    pairs += [m, v]
+                yield from bps_mv(*pairs)
+
+            return (
+                yield from finalize_wrapper(plan_func(*args, **kwargs), reset())
+            )
+
+        return inner
+
+    return decorator
 
 
 def _default_per_step(fixq, dichro, vortex_sgz):

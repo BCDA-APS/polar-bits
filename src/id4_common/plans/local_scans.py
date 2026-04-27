@@ -46,6 +46,7 @@ from ._local_scan_utils import _hkl_motors
 from ._local_scan_utils import _setup_detectors
 from ._local_scan_utils import _setup_file_io
 from ._local_scan_utils import flag
+from ._local_scan_utils import reset_real_motors_decorator
 from .local_preprocessors import configure_counts_decorator
 from .local_preprocessors import extra_devices_decorator
 from .local_preprocessors import stage_4idg_softglue_decorator
@@ -356,7 +357,8 @@ def lup(
     _md.update(md)
     motors = [motor for motor, _, _ in partition(3, args)]
 
-    @reset_positions_decorator(motors + _hkl_motors(fixq))
+    @reset_positions_decorator(motors)
+    @reset_real_motors_decorator(_hkl_motors(fixq))
     @relative_set_decorator(motors)
     def inner_lup():
         return (
@@ -676,7 +678,8 @@ def rel_grid_scan(
     _md.update(md or {})
     motors = [m[0] for m in chunk_outer_product_args(args)]
 
-    @reset_positions_decorator(motors + _hkl_motors(fixq))
+    @reset_positions_decorator(motors)
+    @reset_real_motors_decorator(_hkl_motors(fixq))
     @relative_set_decorator(motors)
     def inner_rel_grid_scan():
         return (
