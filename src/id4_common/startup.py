@@ -37,7 +37,12 @@ try:
     if _load_devices.lower() in ["y", "yes"]:
         logger.info("Loading all devices, this can take a few minutes.")
 
-        make_devices(clear=True, file="devices.yml", device_manager=instrument)  # noqa: F405
+        make_devices(  # noqa: F405
+            clear=True,
+            file="devices.yml",
+            device_manager=instrument,  # noqa: F405
+            connect=False,
+        )
         stations = ["core", "4idb", "4idg", "4idh"]
         for device in oregistry.findall(stations):  # noqa: F405
             connect_device(device, raise_error=False)  # noqa: F405

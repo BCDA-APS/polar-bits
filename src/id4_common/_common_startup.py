@@ -17,13 +17,13 @@ Usage in an instrument startup::
 import logging
 
 from apsbits.core.instrument_init import init_instrument
-from apsbits.core.instrument_init import make_devices  # noqa: F401
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
 from IPython import get_ipython
 
 from id4_common.utils.aps_functions import aps_dm_setup
+from id4_common.utils.make_devices import make_devices  # noqa: F401
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)

@@ -32,7 +32,12 @@ logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 from id4_common._common_startup import *  # noqa: F401, F403, E402
 
 logger.info("Loading 4-ID-G devices, this can take a few minutes.")
-make_devices(clear=True, file="devices.yml", device_manager=instrument)  # noqa: F405
+make_devices(  # noqa: F405
+    clear=True,
+    file="devices.yml",
+    device_manager=instrument,  # noqa: F405
+    connect=False,
+)
 for device in oregistry.findall(["core", "4idg"]):  # noqa: F405
     connect_device(device, raise_error=False)  # noqa: F405
 

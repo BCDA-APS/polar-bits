@@ -13,15 +13,16 @@ import logging
 from pathlib import Path
 
 from apsbits.core.instrument_init import init_instrument
-from apsbits.core.instrument_init import make_devices
 from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.config_loaders import load_config_yaml
 from apsbits.utils.config_loaders import update_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
-from id4_common.utils.aps_functions import aps_dm_setup
 from IPython import get_ipython
+
+from id4_common.utils.aps_functions import aps_dm_setup
+from id4_common.utils.make_devices import make_devices
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -111,6 +112,7 @@ else:
     # from apstools.utils import *  # noqa: F401, F403
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
+
     from id4_common.suspenders.shutters_suspenders import (  # noqa: F401
         shutter_suspenders,
     )
@@ -152,7 +154,9 @@ else:
     from id4_common.utils.polartools_hklpy_imports import *  # noqa: F401, F403
 
 logger.info("Loading 4-ID-B devices, this can take a few minutes.")
-make_devices(clear=True, file="devices.yml", device_manager=instrument)
+make_devices(
+    clear=True, file="devices.yml", device_manager=instrument, connect=False
+)  # noqa: E501
 stations = ["4idb"]
 for device in oregistry.findall(stations):
     connect_device(device, raise_error=False)
