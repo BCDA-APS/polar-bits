@@ -25,6 +25,7 @@ Submodules
    /api/id4_common/devices/aps_undulator/index
    /api/id4_common/devices/aps_xbpm/index
    /api/id4_common/devices/chopper_device/index
+   /api/id4_common/devices/counters_mixin/index
    /api/id4_common/devices/diamond_window_table/index
    /api/id4_common/devices/electromagnet/index
    /api/id4_common/devices/energy_device/index
