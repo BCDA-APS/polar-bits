@@ -288,19 +288,52 @@ class CountersClass:
 
         self._dets = dets
 
+    def _ensure_monitor_scaler(self):
+        """Add the scaler(s) backing a scaler-type monitor to self._dets.
+
+        ``select_plot_channels`` only auto-adds scalers when
+        ``use_scalers=True`` or when one is explicitly chosen for plotting,
+        so a scaler-type monitor would otherwise not be triggered. For a
+        ``Time`` monitor this includes every available scaler; for a
+        specific scaler channel it includes only that scaler's parent.
+        """
+        if not self.is_scaler_monitor:
+            return
+        if self._mon == "Time":
+            targets = list(self._available_scalers)
+        else:
+            sc = oregistry.find(self._selected_mon[0], allow_none=True)
+            targets = [sc] if sc is not None else []
+        for sc in targets:
+            if sc not in self._dets:
+                self._dets.append(sc)
+                sc.select_plot_channels([""])
+
     def _apply_extra_read(self, extra_read_indices, options):
-        """Apply extra-read channel selections to devices (Issue #17)."""
+        """Apply extra-read channel selections to devices.
+
+        Devices added via extra-read have their hinted attributes cleared
+        (via ``select_plot([])``) so that stale hints from previous
+        ``plotselect`` calls do not get plotted. If the same device was
+        also picked for plotting, those hints were already (re)applied by
+        ``select_plot_channels`` and are preserved.
+        """
         if not extra_read_indices:
             return
+        plot_dev_names = {dev_name for dev_name, _ in self._selected_dets}
         extra = options.iloc[list(extra_read_indices)]
         for name, group in extra.groupby("detectors"):
             if name == "scalers":
                 continue
             det = oregistry.find(name, allow_none=True)
-            if det is not None and hasattr(det, "select_read"):
+            if det is None:
+                continue
+            if name not in plot_dev_names and hasattr(det, "select_plot"):
+                det.select_plot([])
+            if hasattr(det, "select_read"):
                 det.select_read(list(group["channels"].values))
-                if det not in self._dets:
-                    self._dets.append(det)
+            if det not in self._dets:
+                self._dets.append(det)
 
     # ------------------------------------------------------------------
     # Interactive selection
@@ -317,7 +350,9 @@ class CountersClass:
         mon : int, optional
             Row index of the monitor channel.
         extra_read : list of int, optional
-            Row indices of channels to read but not plot (Issue #17).
+            Row indices of channels to read but not plot. Pass
+            an empty list to clear all extra-read channels. In interactive
+            mode, type ``none`` (or ``None``) at the prompt to clear them.
         """
         _valid_dets = False
         _valid_mon = False
@@ -433,18 +468,26 @@ class CountersClass:
         )
         self._mon = options.loc[mon]["channels"]
 
-        # --- Extra read channels (Issue #17) ---
+        # Make sure the scaler backing a scaler-type monitor is triggered
+        # even when use_scalers=False.
+        self._ensure_monitor_scaler()
+
+        # --- Extra read channels ---
         if interactive and not _valid_extra:
             current_read = self._tuples_to_indices(
                 self._selected_extra_read, options
             )
             extra_str = input(
                 "Enter indexes of extra read channels "
-                f"(optional) {current_read}): "
+                f"(optional, type 'none' to clear) {current_read}: "
             )
-            if extra_str.strip():
+            stripped = extra_str.strip()
+            if stripped.lower() == "none":
+                extra_read = []
+                _valid_extra = True
+            elif stripped:
                 try:
-                    extra_read = [int(i) for i in extra_str.split()]
+                    extra_read = [int(i) for i in stripped.split()]
                     # Remove overlap with plot channels and monitor.
                     extra_read = [
                         i for i in extra_read if i not in dets and i != mon
@@ -470,7 +513,7 @@ class CountersClass:
                 )
                 _valid_extra = True
 
-        if _valid_extra and extra_read:
+        if _valid_extra:
             self._selected_extra_read = [
                 (options.loc[i]["detectors"], options.loc[i]["channels"])
                 for i in extra_read
