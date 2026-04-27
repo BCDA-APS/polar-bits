@@ -298,7 +298,8 @@ def _configure_fixq(fixq):
 
 
 def _hkl_motors(fixq):
-    """Return the real (physical) motors of the diffractometer when fixq is True.
+    """
+    Return the real (physical) motors of the diffractometer when fixq is True.
 
     Uses the actual motors rather than pseudo-motors so that reset_positions_
     decorator can restore hardware positions directly, without depending on the
