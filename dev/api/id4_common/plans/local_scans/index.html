@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -500,6 +500,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/aps_undulator/index.html">id4_common.devices.aps_undulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/chopper_device/index.html">id4_common.devices.chopper_device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../devices/counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -577,20 +578,18 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/aps_functions/index.html">id4_common.utils.aps_functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class/index.html">id4_common.utils.counters_class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class_for_dual/index.html">id4_common.utils.counters_class_for_dual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils/index.html">id4_common.utils.hkl_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_hklpy2/index.html">id4_common.utils.hkl_utils_hklpy2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_new/index.html">id4_common.utils.hkl_utils_new</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/local_magics/index.html">id4_common.utils.local_magics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports/index.html">id4_common.utils.polartools_hklpy_imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports_hklpy2/index.html">id4_common.utils.polartools_hklpy_imports_hklpy2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
@@ -699,16 +698,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.plans.local_scans.count">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lockin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dichro</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vortex_sgz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_sgz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_shot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">md</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.count" title="Link to this definition">#</a></dt>
-<dd><p>Take one or more readings from detectors.
-This is a local version of <cite>bluesky.plans.count</cite>. Note that the <cite>per_shot</cite>
-cannot be set here, as it is used for dichro scans.
-:param num: number of readings to take</p>
-<blockquote>
-<div><p>If None, capture data until canceled</p>
-</div></blockquote>
+<dd><p>Take one or more readings from detectors.</p>
+<p>This is a local version of <cite>bluesky.plans.count</cite>. Note that the <cite>per_shot</cite>
+cannot be set here, as it is used for dichro scans.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>num</strong> (<em>integer</em>) – number of readings to take
+If None, capture data until canceled</p></li>
 <li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – If a number is passed, it will modify the counts over time. All
 detectors need to have a .preset_monitor signal.</p></li>
 <li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – List of ‘readable’ objects. If None, will use the detectors defined in
@@ -817,7 +814,8 @@ points by a factor of 4</p></li>
 position during the scan. This is particularly useful for energy scan.
 Note that hkl is moved ~after~ the other motors!</p></li>
 <li><p><strong>vortex_sgz</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Measures the Vortex detector using the softgluezynq triggers. This is a
-special mode that requires the ‘vortex’ and ‘sgz_vortex’ devices to        exist otherwise an error will be thrown.</p></li>
+special mode that requires the ‘vortex’ and ‘sgz_vortex’ devices to
+exist otherwise an error will be thrown.</p></li>
 <li><p><strong>per_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – hook for customizing action of inner loop (messages per step).
 See docstring of <code class="xref py py-func docutils literal notranslate"><span class="pre">bluesky.plan_stubs.one_nd_step()</span></code> (the default)
 for details.</p></li>
@@ -834,10 +832,11 @@ for details.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.plans.local_scans.grid_scan">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">grid_scan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snake_axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lockin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dichro</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vortex_sgz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_sgz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">md</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.grid_scan" title="Link to this definition">#</a></dt>
-<dd><p>Scan over a mesh; each motor is on an independent trajectory.
-:param <code class="docutils literal notranslate"><span class="pre">*args</span></code>:</p>
-<blockquote>
-<div><dl class="simple">
+<dd><p>Scan over a mesh; each motor is on an independent trajectory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – <dl class="simple">
 <dt>patterned like (<code class="docutils literal notranslate"><span class="pre">motor1,</span> <span class="pre">start1,</span> <span class="pre">stop1,</span> <span class="pre">num1,</span></code></dt><dd><p><code class="docutils literal notranslate"><span class="pre">motor2,</span> <span class="pre">start2,</span> <span class="pre">stop2,</span> <span class="pre">num2,</span></code>
 <code class="docutils literal notranslate"><span class="pre">motor3,</span> <span class="pre">start3,</span> <span class="pre">stop3,</span> <span class="pre">num3,</span></code> …
 <code class="docutils literal notranslate"><span class="pre">motorN,</span> <span class="pre">startN,</span> <span class="pre">stopN,</span> <span class="pre">numN</span></code>)</p>
@@ -847,10 +846,7 @@ for details.</p></li>
 except the first motor, there is a “snake” argument: a boolean
 indicating whether to following snake-like, winding trajectory or a
 simple left-to-right trajectory.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
+</p></li>
 <li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – If a number is passed, it will modify the counts over time. All
 detectors need to have a .preset_monitor signal.</p></li>
 <li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – List of detectors to be used in the scan. If None, will use the
@@ -998,8 +994,8 @@ is specifed, the movements are done in parallel.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.plans.local_scans.mvr">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">mvr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.mvr" title="Link to this definition">#</a></dt>
-<dd><p>Move one or more devices to a relative setpoint. Wait for all to complete.
-If more than one device is specified, the movements are done in parallel.</p>
+<dd><p>Move one or more devices to a relative setpoint. Wait for all to complete.</p>
+<p>If more than one device is specified, the movements are done in parallel.</p>
 <p>This is a local version of <cite>bluesky.plan_stubs.mvr</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1021,8 +1017,8 @@ If more than one device is specified, the movements are done in parallel.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.plans.local_scans.abs_set">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">abs_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.abs_set" title="Link to this definition">#</a></dt>
-<dd><p>Set a value. Optionally, wait for it to complete before continuing.
-This is a local version of <cite>bluesky.plan_stubs.abs_set</cite>. If more than one
+<dd><p>Set a value. Optionally, wait for it to complete before continuing.</p>
+<p>This is a local version of <cite>bluesky.plan_stubs.abs_set</cite>. If more than one
 device is specifed, the movements are done in parallel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

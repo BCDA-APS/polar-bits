@@ -17,8 +17,10 @@ Module Contents
 .. py:function:: count(num, time, detectors=None, lockin=False, dichro=False, vortex_sgz=False, g_sgz=False, delay=None, per_shot=None, md=None)
 
    Take one or more readings from detectors.
+
    This is a local version of `bluesky.plans.count`. Note that the `per_shot`
    cannot be set here, as it is used for dichro scans.
+
    :param num: number of readings to take
                If None, capture data until canceled
    :type num: integer
@@ -133,7 +135,8 @@ Module Contents
                 Note that hkl is moved ~after~ the other motors!
    :type fixq: boolean, optional
    :param vortex_sgz: Measures the Vortex detector using the softgluezynq triggers. This is a
-                      special mode that requires the 'vortex' and 'sgz_vortex' devices to        exist otherwise an error will be thrown.
+                      special mode that requires the 'vortex' and 'sgz_vortex' devices to
+                      exist otherwise an error will be thrown.
    :type vortex_sgz: boolean, optional
    :param per_step: hook for customizing action of inner loop (messages per step).
                     See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
@@ -148,6 +151,7 @@ Module Contents
 .. py:function:: grid_scan(*args, detectors=None, snake_axes=None, lockin=False, dichro=False, fixq=False, vortex_sgz=False, g_sgz=False, per_step=None, md=None)
 
    Scan over a mesh; each motor is on an independent trajectory.
+
    :param ``*args``:
                      patterned like (``motor1, start1, stop1, num1,``
                                      ``motor2, start2, stop2, num2,``
@@ -299,6 +303,7 @@ Module Contents
 .. py:function:: mvr(*args, **kwargs)
 
    Move one or more devices to a relative setpoint. Wait for all to complete.
+
    If more than one device is specified, the movements are done in parallel.
 
    This is a local version of `bluesky.plan_stubs.mvr`.
@@ -314,6 +319,7 @@ Module Contents
 .. py:function:: abs_set(*args, **kwargs)
 
    Set a value. Optionally, wait for it to complete before continuing.
+
    This is a local version of `bluesky.plan_stubs.abs_set`. If more than one
    device is specifed, the movements are done in parallel.
 

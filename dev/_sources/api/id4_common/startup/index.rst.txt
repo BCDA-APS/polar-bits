@@ -29,9 +29,9 @@ Module Contents
 
 .. py:data:: iconfig
 
-.. py:data:: logger
-
 .. py:data:: stations
    :value: ['core', '4idb', '4idg', '4idh']
 
+
+.. py:data:: cat
 
