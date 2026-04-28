@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="id4_common.utils.local_magics" href="../local_magics/index.html" />
-    <link rel="prev" title="id4_common.utils.hkl_utils_hklpy2" href="../hkl_utils_hklpy2/index.html" />
+    <link rel="prev" title="id4_common.utils.hkl_utils_new" href="../hkl_utils_new/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -500,7 +500,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/aps_undulator/index.html">id4_common.devices.aps_undulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/chopper_device/index.html">id4_common.devices.chopper_device</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../devices/counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -578,16 +577,17 @@
 <li class="toctree-l3"><a class="reference internal" href="../aps_functions/index.html">id4_common.utils.aps_functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../counters_class/index.html">id4_common.utils.counters_class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../counters_class_for_dual/index.html">id4_common.utils.counters_class_for_dual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hkl_utils/index.html">id4_common.utils.hkl_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../hkl_utils_hklpy2/index.html">id4_common.utils.hkl_utils_hklpy2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hkl_utils_new/index.html">id4_common.utils.hkl_utils_new</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../polartools_hklpy_imports/index.html">id4_common.utils.polartools_hklpy_imports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../polartools_hklpy_imports_hklpy2/index.html">id4_common.utils.polartools_hklpy_imports_hklpy2</a></li>
@@ -710,19 +710,14 @@
 <dt class="sig sig-object py" id="id4_common.utils.load_vortex.load_vortex">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.load_vortex.</span></span><span class="sig-name descname"><span class="pre">load_vortex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">electronic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'vortex'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.load_vortex.load_vortex" title="Link to this definition">#</a></dt>
 <dd><p>Load Vortex detector. kwargs are passed to the detector class.</p>
-<p>If a device named <code class="docutils literal notranslate"><span class="pre">name</span></code> already exists in the registry it is removed
-first. A warning is issued, and the warning is more prominent when the
-existing device is a different electronics type than the one being loaded.</p>
-<p>The device is added to the <code class="docutils literal notranslate"><span class="pre">__main__</span></code> namespace under <code class="docutils literal notranslate"><span class="pre">name</span></code> so it is
-available in the interactive session without capturing the return value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>electronic</strong> (<em>string</em>) – Name of the electronic. Must be one of the keys in DETECTORS:
-“dante1”, “dante4”, “xmap”, “xspress4”, “xspress7”.</p></li>
+<li><p><strong>electronic</strong> (<em>string</em>) – Name of the electronic. Currently must be one of: dante, xmap,
+xspress4, xspress7</p></li>
 <li><p><strong>pv</strong> (<em>string</em><em>, </em><em>optional</em>) – PV prefix of detector. If None it will use the default.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Bluesky name of the detector. Defaults to ‘vortex’.</p></li>
-<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><em>strings</em><em>, </em><em>optional</em>) – Bluesky labels. Defaults to [“detector”].</p></li>
+<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><em>strings</em><em>, </em><em>optional</em>) – Bluesky labels. Defaults to [“detectexior”,]</p></li>
 <li><p><strong>baseline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Flag to add the device to the baseline. Defaults to False.</p></li>
 </ul>
 </dd>
@@ -749,12 +744,12 @@ available in the interactive session without capturing the return value.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../hkl_utils_hklpy2/index.html"
+       href="../hkl_utils_new/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">id4_common.utils.hkl_utils_hklpy2</p>
+        <p class="prev-next-title">id4_common.utils.hkl_utils_new</p>
       </div>
     </a>
     <a class="right-next"

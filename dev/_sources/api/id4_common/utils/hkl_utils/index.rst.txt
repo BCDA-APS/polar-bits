@@ -72,9 +72,18 @@ Module Contents
 
 .. py:function:: get_huber_euler()
 
+   Return the huber_euler diffractometer from the device registry.
+
+
 .. py:function:: get_huber_hp()
 
+   Return the huber_hp diffractometer from the device registry.
+
+
 .. py:function:: get_huber_euler_psi()
+
+   Return the huber_euler_psi diffractometer from the device registry.
+
 
 .. py:function:: select_engine_for_psi(instrument=None)
 
@@ -418,7 +427,13 @@ Module Contents
 
 .. py:function:: setaz(*args)
 
+   Set the azimuthal reference vector (h k l) for psi-constant mode.
+
+
 .. py:function:: freeze(*args)
+
+   Freeze the psi angle for psi-constant scans on the current diffractometer.
+
 
 .. py:function:: update_lattice(lattice_constant=None)
 
@@ -494,5 +509,13 @@ Module Contents
 
    .. py:method:: sync_callback(value=None, **kwargs)
 
+      Copy the UB matrix from source to target when a change is received.
+
+
 
 .. py:function:: restore_huber_from_scan(scan_id, diffractometer=None, sample_name=None, force=False)
+
+   Restore diffractometer orientation (sample, constraints, reflections) from a
+   saved scan.
+
+
