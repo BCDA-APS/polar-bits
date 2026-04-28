@@ -151,7 +151,7 @@ Module Contents
 
 .. py:class:: VimbaDetector(*args, default_folder='', hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', max_num_images=65535, **kwargs)
 
-   Bases: :py:obj:`Trigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`Trigger`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
    Vimba area detector with ROI/stats plugins, HDF5 output, and alignment
@@ -211,11 +211,6 @@ Module Contents
       Wait for the cam to fully connect before calling the parent
       wait_for_connection.
 
-
-
-   .. py:property:: preset_monitor
-
-      Return the cam acquire_time signal used as the preset monitor.
 
 
    .. py:method:: align_on(time=0.1)
@@ -334,6 +329,18 @@ Module Contents
 
       Set hinted kind for the given channel label list, delegating to
       plot_select.
+
+
+
+   .. py:method:: field_for_label(label)
+
+      Return the ophyd field name for a plot-option label.
+
+
+
+   .. py:method:: select_read(channels)
+
+      No-op: all stats channels are always read (only hinted/normal differ).
 
 
 
