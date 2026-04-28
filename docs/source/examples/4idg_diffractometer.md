@@ -403,18 +403,16 @@ RE(ascan(delta, 28, 32, 40, 0.5))
 
 #### th-2th scan
 
-Coupled scan where gamma (detector) moves at twice the rate of mu (sample).
-Use `rel_scan` from Bluesky to drive both motors simultaneously:
+`th2th` is a local plan that scans `mu` and `gamma` simultaneously with the
+coupled 1:2 ratio. Arguments give the relative 2-theta (gamma) range; mu
+moves at half that rate. Positions are restored after the scan (same as `lup`).
 
 ```python
-from bluesky.plans import rel_scan
+RE(th2th(tth_start, tth_end, number_of_points, time_per_point))
 
-# ±0.5° in mu, ±1° in gamma, 51 points
-RE(rel_scan(counters.detectors, mu, -0.5, 0.5, gamma, -1.0, 1.0, 51))
-
-# Absolute th-2th scan
-from bluesky.plans import scan
-RE(scan(counters.detectors, mu, 19.5, 20.5, gamma, 39.0, 41.0, 51))
+# Examples
+RE(th2th(-1, 1, 50, 0.5))    # ±1° in 2θ, 50 pts, 0.5 s/pt
+RE(th2th(-2, 2, 100, 0.5))   # ±2° in 2θ, 100 pts
 ```
 
 ### Scans in reciprocal space
