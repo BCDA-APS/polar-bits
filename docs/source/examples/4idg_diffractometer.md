@@ -19,7 +19,7 @@ constraint management, and configuration save/restore.
 
 | Command | Description |
 |---------|-------------|
-| `change_diffractometer(name)` | Select active diffractometer; injects motor aliases |
+| `change_diffractometer(name)` | Select active diffractometer and update motor aliases and axis constraints |
 | `set_detector()` | Select Eiger or point detector/analyzer arm |
 
 ### Moving
@@ -36,7 +36,7 @@ constraint management, and configuration save/restore.
 
 | Command | Description |
 |---------|-------------|
-| `newsample()` | Add sample interactively; seeds default UB and azimuthal reference |
+| `newsample()` | Add sample interactively |
 | `sampleList()` | List all samples; mark current one |
 | `sampleChange(name)` | Switch active sample |
 | `sampleRemove(name)` | Remove a sample |
@@ -75,7 +75,7 @@ constraint management, and configuration save/restore.
 | Command | Description |
 |---------|-------------|
 | `analyzer_configuration(energy)` | Select crystal and set d-spacing |
-| `analyzer_set()` | Move analyzer to Bragg angles for current energy |
+| `analyzer_set()` | Calibrate current motor position to calculated Bragg angle |
 
 ### Configuration save/restore
 
@@ -472,14 +472,17 @@ RE(rel_grid_scan(
 
 ## Analyzer
 
-Configure and move the analyzer arm. `analyzer_configuration()` prompts
-for the analyzer crystal and sets its d-spacing. `analyzer_set()` moves
-the analyzer to the correct angles for the current energy:
+Configure and calibrate the analyzer arm. `analyzer_configuration()` prompts
+for the analyzer crystal and sets its d-spacing. `analyzer_set()` calibrates
+the motor position — use it when the analyzer is physically on peak to set the
+motor offset so the reported position matches the calculated Bragg angles for
+the current energy. Pass `"r"` to release (clear) the calibration offset:
 
 ```python
 analyzer_configuration()      # select crystal, set d-spacing; optionally pass energy (keV)
 analyzer_configuration(7.0)   # configure for 7.0 keV
-analyzer_set()                # move ath/atth to correct Bragg angles
+analyzer_set()                # calibrate ath/atth offset to calculated Bragg angles (must be on peak)
+analyzer_set("r")             # release calibration; restore raw motor positions
 ```
 
 ---
