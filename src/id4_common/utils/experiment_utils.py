@@ -359,7 +359,7 @@ class ExperimentClass:
                 RE.md["scan_id"] = reset_scan_id - 1
         else:
             print(
-                f"WARNING: {reset_scan_id = } is not valid. It must be an "  # noqa: E251, E202
+                f"WARNING: {reset_scan_id = } is not valid. It must be an "
                 "integer. Will not reset it. Next scan_id = "
                 f"{RE.md['scan_id'] + 1}."
             )

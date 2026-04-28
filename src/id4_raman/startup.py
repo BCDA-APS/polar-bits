@@ -58,7 +58,7 @@ from id4_common.utils.local_magics import LocalMagics  # noqa: E402
 get_ipython().register_magics(LocalMagics)
 
 # Initialize core bluesky components
-from id4_common.utils.run_engine import RE  # noqa: F401, E402
+from id4_common.utils.run_engine import RE  # noqa: E402
 from id4_common.utils.run_engine import bec  # noqa: F401, E402
 from id4_common.utils.run_engine import cat  # noqa: F401, E402
 from id4_common.utils.run_engine import cat_legacy  # noqa: F401, E402
@@ -74,7 +74,7 @@ if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
     )
 
 if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
-    from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
+    from id4_common.callbacks.spec_data_file_writer import (
         init_specwriter_with_RE,
     )
     from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
@@ -103,17 +103,15 @@ if running_in_queueserver():
     # To make all the standard plans available in QS, import by '*', otherwise
     # import plan by plan.
     from apstools.plans import lineup2  # noqa: F401
-    from bluesky.plans import *  # noqa: F403, F401
+    from bluesky.plans import *  # noqa: F403
 else:
     # Import bluesky plans and stubs with prefixes set by common conventions.
     # The apstools plans and utils are imported by '*'.
-    # from apstools.plans import *  # noqa: F401, F403
-    # from apstools.utils import *  # noqa: F401, F403
+    # from apstools.plans import *
+    # from apstools.utils import *
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
-    from id4_common.suspenders.shutters_suspenders import (  # noqa: F401
-        shutter_suspenders,
-    )
+    from id4_common.suspenders.shutters_suspenders import shutter_suspenders
     from id4_common.suspenders.suspender_utils import (  # noqa: F401
         suspender_change_sleep,
     )
@@ -124,10 +122,10 @@ else:
         suspender_stop,
     )
     from id4_common.utils.attenuator_utils import atten  # noqa: F401
-    from id4_common.utils.counters_class import counters  # noqa: F401
-    from id4_common.utils.dm_utils import *  # noqa: F401, F403
-    from id4_common.utils.experiment_utils import *  # noqa: F401, F403
-    from id4_common.utils.hkl_utils import *  # noqa: F401, F403
+    from id4_common.utils.counters_class import counters
+    from id4_common.utils.dm_utils import *  # noqa: F403
+    from id4_common.utils.experiment_utils import *  # noqa: F403
+    from id4_common.utils.hkl_utils import *  # noqa: F403
     from id4_common.utils.pr_setup import pr_setup  # noqa: F401
     from id4_common.utils.wax import wa_new  # noqa: F401
     from id4_common.utils.wax import wax  # noqa: F401
@@ -138,8 +136,8 @@ else:
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    from id4_common.plans import *  # noqa: F401, F403
-    from id4_common.utils.device_loader import connect_device  # noqa: F401
+    from id4_common.plans import *  # noqa: F403
+    from id4_common.utils.device_loader import connect_device
     from id4_common.utils.device_loader import (  # noqa: F401
         find_loadable_devices,
     )
@@ -149,12 +147,12 @@ else:
     from id4_common.utils.device_loader import remove_device  # noqa: F401
     from id4_common.utils.load_vortex import load_vortex  # noqa: F401
     from id4_common.utils.oregistry_auxiliar import get_devices  # noqa: F401
-    from id4_common.utils.polartools_hklpy_imports import *  # noqa: F401, F403
+    from id4_common.utils.polartools_hklpy_imports import *  # noqa: F403
 
 logger.info("Loading 4-ID-B devices, this can take a few minutes.")
 make_devices(
     clear=True, file="devices.yml", device_manager=instrument, connect=False
-)  # noqa: E501
+)
 stations = ["4idb"]
 for device in oregistry.findall(stations):
     connect_device(device, raise_error=False)

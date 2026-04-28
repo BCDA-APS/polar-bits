@@ -2,13 +2,13 @@
 Re-exports of hkl/polartools user-facing symbols for hklpy2-based sessions.
 """
 
-# from hkl.user import (  # noqa: F401
+# from hkl.user import (
 #     select_diffractometer,
 #     show_selected_diffractometer,
 #     pa
 # )
 
-# from hkl.util import (  # noqa: F401
+# from hkl.util import (
 #     list_orientation_runs,
 #     restore_constraints,
 #     restore_energy,

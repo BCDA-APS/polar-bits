@@ -305,7 +305,7 @@ class SixCircleDiffractometer(ApsPolar):
     # HKL and 6C motors
     h = Component(PseudoSingle, "", labels=("hkl",))
     k = Component(PseudoSingle, "", labels=("hkl",))
-    l = Component(PseudoSingle, "", labels=("hkl",))  # noqa: E741
+    l = Component(PseudoSingle, "", labels=("hkl",))
 
     # 03/16/2025 - Tau is the whole diffractometer "theta" angle, but
     # it is not currently setup. m73 is a simulated motor.

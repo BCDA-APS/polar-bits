@@ -2,7 +2,7 @@
 Polar diffractometer
 """
 
-import math  # noqa: E402
+import math
 from pathlib import Path
 
 from hklpy2 import diffractometer_class_factory

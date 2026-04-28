@@ -29,7 +29,7 @@ update_config(
 
 logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 
-from id4_common._common_startup import *  # noqa: F401, F403, E402
+from id4_common._common_startup import *  # noqa: F403, E402
 
 logger.info("Loading 4-ID-G devices, this can take a few minutes.")
 make_devices(  # noqa: F405

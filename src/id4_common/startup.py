@@ -25,11 +25,11 @@ instrument_path = Path(__file__).parent
 iconfig_path = instrument_path / "configs" / "iconfig.yml"
 load_config(iconfig_path)
 
-iconfig = get_config()  # noqa: F841
+iconfig = get_config()
 
 logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 
-from ._common_startup import *  # noqa: F401, F403, E402
+from ._common_startup import *  # noqa: F403, E402
 
 _load_devices = input("\n==> Do you want to load all devices? [Y/n]: ") or "y"
 

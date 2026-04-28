@@ -41,7 +41,7 @@ from id4_common.utils.local_magics import LocalMagics  # noqa: E402
 
 get_ipython().register_magics(LocalMagics)
 
-from id4_common.utils.run_engine import RE  # noqa: F401, E402
+from id4_common.utils.run_engine import RE  # noqa: E402
 from id4_common.utils.run_engine import bec  # noqa: F401, E402
 from id4_common.utils.run_engine import cat as cat_full  # noqa: F401, E402
 from id4_common.utils.run_engine import cat_legacy  # noqa: F401, E402
@@ -50,21 +50,21 @@ from id4_common.utils.run_engine import sd  # noqa: F401, E402
 
 if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
     from id4_common.callbacks.nexus_data_file_writer import (
-        nxwriter,  # noqa: F401, E402
+        nxwriter,  # noqa: F401
     )
 
 if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
-    from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401, E402
+    from id4_common.callbacks.spec_data_file_writer import (
         init_specwriter_with_RE,
     )
     from id4_common.callbacks.spec_data_file_writer import (
-        newSpecFile,  # noqa: F401, E402
+        newSpecFile,  # noqa: F401
     )
     from id4_common.callbacks.spec_data_file_writer import (
-        spec_comment,  # noqa: F401, E402
+        spec_comment,  # noqa: F401
     )
     from id4_common.callbacks.spec_data_file_writer import (
-        specwriter,  # noqa: F401, E402
+        specwriter,  # noqa: F401
     )
 
     init_specwriter_with_RE(RE)
@@ -79,63 +79,51 @@ from id4_common.callbacks.dichro_stream import (  # noqa: F401, E402
 )
 
 if running_in_queueserver():
-    from apstools.plans import lineup2  # noqa: F401, E402
-    from bluesky.plans import *  # noqa: F403, F401, E402
+    from apstools.plans import lineup2  # noqa: F401
+    from bluesky.plans import *  # noqa: F403
 else:
-    from bluesky import plan_stubs as bps  # noqa: F401, E402
-    from bluesky import plans as bp  # noqa: F401, E402
+    from bluesky import plan_stubs as bps  # noqa: F401
+    from bluesky import plans as bp  # noqa: F401
 
-    from id4_common.suspenders.shutters_suspenders import (  # noqa: F401, E402
-        shutter_suspenders,
-    )
-    from id4_common.suspenders.suspender_utils import (  # noqa: F401, E402
+    from id4_common.suspenders.shutters_suspenders import shutter_suspenders
+    from id4_common.suspenders.suspender_utils import (  # noqa: F401
         suspender_change_sleep,
     )
     from id4_common.suspenders.suspender_utils import (
-        suspender_restart,  # noqa: F401, E402
+        suspender_restart,  # noqa: F401
     )
     from id4_common.suspenders.suspender_utils import (
-        suspender_stop,  # noqa: F401, E402
+        suspender_stop,  # noqa: F401
     )
-    from id4_common.utils.attenuator_utils import atten  # noqa: F401, E402
-    from id4_common.utils.counters_class import counters  # noqa: F401, E402
-    from id4_common.utils.dm_utils import *  # noqa: F401, F403, E402
-    from id4_common.utils.experiment_utils import *  # noqa: F401, F403, E402
-    from id4_common.utils.hkl_utils import *  # noqa: F401, F403, E402
-    from id4_common.utils.pr_setup import pr_setup  # noqa: F401, E402
-    from id4_common.utils.shorts import opt  # noqa: F401, E402
-    from id4_common.utils.undulator_setup import (
-        undulator_setup,  # noqa: F401, E402
-    )
-    from id4_common.utils.wax import wa_new  # noqa: F401, E402
-    from id4_common.utils.wax import wax  # noqa: F401, E402
-    from id4_common.utils.wax import wm  # noqa: F401, E402
+    from id4_common.utils.attenuator_utils import atten  # noqa: F401
+    from id4_common.utils.counters_class import counters  # noqa: F401
+    from id4_common.utils.dm_utils import *  # noqa: F403
+    from id4_common.utils.experiment_utils import *  # noqa: F403
+    from id4_common.utils.hkl_utils import *  # noqa: F403
+    from id4_common.utils.pr_setup import pr_setup  # noqa: F401
+    from id4_common.utils.shorts import opt  # noqa: F401
+    from id4_common.utils.undulator_setup import undulator_setup  # noqa: F401
+    from id4_common.utils.wax import wa_new  # noqa: F401
+    from id4_common.utils.wax import wax  # noqa: F401
+    from id4_common.utils.wax import wm  # noqa: F401
 
     # TODO: DM, hklpy, experiment_utils seems to be changing the
     # logging level. I don't know why.
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    from id4_common.plans import *  # noqa: F401, F403, E402
+    from id4_common.plans import *  # noqa: F403
+    from id4_common.utils.device_loader import connect_device  # noqa: F401
     from id4_common.utils.device_loader import (
-        connect_device,  # noqa: F401, E402
+        find_loadable_devices,  # noqa: F401
     )
-    from id4_common.utils.device_loader import (
-        find_loadable_devices,  # noqa: F401, E402
-    )
-    from id4_common.utils.device_loader import load_device  # noqa: F401, E402
-    from id4_common.utils.device_loader import (
-        load_yaml_devices,  # noqa: F401, E402
-    )
-    from id4_common.utils.device_loader import (
-        reload_all_devices,  # noqa: F401, E402
-    )
-    from id4_common.utils.device_loader import remove_device  # noqa: F401, E402
-    from id4_common.utils.load_vortex import load_vortex  # noqa: F401, E402
-    from id4_common.utils.oregistry_auxiliar import (
-        get_devices,  # noqa: F401, E402
-    )
-    from id4_common.utils.polartools_hklpy_imports import *  # noqa: F401, F403, E402
+    from id4_common.utils.device_loader import load_device  # noqa: F401
+    from id4_common.utils.device_loader import load_yaml_devices  # noqa: F401
+    from id4_common.utils.device_loader import reload_all_devices  # noqa: F401
+    from id4_common.utils.device_loader import remove_device  # noqa: F401
+    from id4_common.utils.load_vortex import load_vortex  # noqa: F401
+    from id4_common.utils.oregistry_auxiliar import get_devices  # noqa: F401
+    from id4_common.utils.polartools_hklpy_imports import *  # noqa: F403
 
 # Use only the A shutter suspender, but the B shutter is still there.
-RE.install_suspender(shutter_suspenders["a_shutter"])  # noqa: F405
+RE.install_suspender(shutter_suspenders["a_shutter"])
