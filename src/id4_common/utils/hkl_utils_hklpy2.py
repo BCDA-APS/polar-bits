@@ -253,7 +253,7 @@ def change_diffractometer(diffractometer=None):
             }
         )
     try:
-        ip = get_ipython()  # noqa: F821 — available in IPython/Bluesky sessions
+        ip = get_ipython()  # — available in IPython/Bluesky sessions
         ip.push(aliases)
     except NameError:
         globals().update(aliases)
