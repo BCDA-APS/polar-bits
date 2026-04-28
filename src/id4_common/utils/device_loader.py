@@ -1,13 +1,18 @@
+"""Device loading, connecting, and registry management utilities."""
+
+import sys
+from logging import getLogger
 from pathlib import Path
+
 import yaml
-from pyRestTable import Table
 from apsbits.core.instrument_init import oregistry
 from apstools.utils import dynamic_import
-from logging import getLogger
-import sys
-from apsbits.core.instrument_init import make_devices
 from ophyd import OphydObject
-from .run_engine import sd, RE
+from pyRestTable import Table
+
+from .make_devices import make_devices
+from .run_engine import RE
+from .run_engine import sd
 
 logger = getLogger(__name__)
 
@@ -101,7 +106,7 @@ def find_loadable_devices(name=None, label=None, exact_name=False):
 
     # Find names
     if name is not None:
-        for key, item in AVAILABLE_DEVICES.items():
+        for key, _ in AVAILABLE_DEVICES.items():
             if not func(name, key):
                 del output[key]
 
@@ -182,6 +187,10 @@ def connect_device(device, baseline=None, raise_error=True):
         logger.info(f"Connecting to {device.name}...")
         device.wait_for_connection()
 
+        # Call post-connection setup hook if defined by the device
+        if hasattr(device, "_post_connect_setup"):
+            device._post_connect_setup()
+
         # Apply default settings if available
         if hasattr(device, "default_settings"):
             device.default_settings()
@@ -218,12 +227,8 @@ def connect_device(device, baseline=None, raise_error=True):
 
     except TimeoutError:
         message = (
-            f"Device {device.name} is disconnected, removing it from oregistry."
+            f"Device {device.name} is disconnected, removing it from baseline."
         )
-
-    	# Remove device from registry if it already exists
-        if oregistry.find(device.name, allow_none=True) is not None:
-            oregistry.pop(device)
 
         if device in sd.baseline:
             sd.baseline.remove(device)
@@ -283,8 +288,7 @@ def load_device(name, file=None):
     class_path = params.pop("class", None)
     if class_path is None:
         raise ValueError(
-            "Could not find the class of the device. Please check the .yaml "
-            "file."
+            "Could not find the class of the device. Please check the .yaml file."
         )
 
     baseline = False
@@ -377,7 +381,7 @@ def AD_prime_plugin2(plugin):
         )
 
 
-def reload_all_devices(file="devices.yml"):
+def reload_all_devices(file="devices.yml", stations=None):
     """
     Reload all devices from a configuration file and connect devices.
 
@@ -385,6 +389,9 @@ def reload_all_devices(file="devices.yml"):
     ----------
     file : str, optional
         Path to the YAML devices configuration file. Defaults to "devices.yml".
+    stations : list of str, optional
+        List of station labels to connect after reloading. If None, connects
+        all stations: ["core", "4idb", "4idg", "4idh"].
 
     Returns
     -------
@@ -396,14 +403,16 @@ def reload_all_devices(file="devices.yml"):
     This function:
     1. Invokes the `make_devices` plan with `clear=True` via the RunEngine to
        rebuild and register devices from the specified configuration file.
-    2. Searches the registry for devices matching known station identifiers
-       ("source", "4ida", "4idb", "4idg", "4idh") and attempts to connect them
-       without raising errors on failure.
+    2. Searches the registry for devices matching the given station labels
+       and attempts to connect them without raising errors on failure.
     """
 
-    RE(make_devices(clear=True, file=file))  # Create the devices.
+    if stations is None:
+        stations = ["core", "4idb", "4idg", "4idh"]
 
-    stations = ["source", "4ida", "4idb", "4idg", "4idh"]
+    # Create the devices.
+    RE(make_devices(clear=True, file=file, connect=False))
+
     for device in oregistry.findall(stations):
         connect_device(device, raise_error=False)
 

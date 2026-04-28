@@ -1,0 +1,13 @@
+babel
+ipykernel
+jinja2
+markupsafe
+myst_parser
+nbsphinx
+pydata-sphinx-theme
+pygments
+pygments-ipython-console
+sphinx
+sphinx-autoapi
+sphinx-design
+sphinx-tabs

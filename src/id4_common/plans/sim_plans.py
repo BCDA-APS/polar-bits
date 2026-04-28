@@ -12,10 +12,9 @@ For development and testing only, provides plans.
 
 import logging
 
+from apsbits.core.instrument_init import oregistry
 from bluesky import plan_stubs as bps
 from bluesky import plans as bp
-
-from apsbits.core.instrument_init import oregistry
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -66,4 +65,6 @@ def sim_rel_scan_plan(
     print(f"sim_rel_scan_plan(): {sim_det.read()=}.")
     print(f"sim_rel_scan_plan(): {sim_det.read_configuration()=}.")
     print(f"sim_rel_scan_plan(): {sim_det.noise._enum_strs=}.")
-    yield from bp.rel_scan([sim_det], sim_motor, -span / 2, span / 2, num=num, md=md)
+    yield from bp.rel_scan(
+        [sim_det], sim_motor, -span / 2, span / 2, num=num, md=md
+    )

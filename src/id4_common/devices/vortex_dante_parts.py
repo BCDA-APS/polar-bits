@@ -2,14 +2,22 @@
 Dante CAM
 """
 
-from ophyd import EpicsSignalRO, EpicsSignal, DynamicDeviceComponent
-from ophyd.areadetector import ADBase, ADComponent, EpicsSignalWithRBV, ad_group
 from collections import OrderedDict
 from time import sleep
+
+from ophyd import DynamicDeviceComponent
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd.areadetector import ADBase
+from ophyd.areadetector import ADComponent
+from ophyd.areadetector import EpicsSignalWithRBV
+from ophyd.areadetector import ad_group
+
 from .ad_mixins import PolarHDF5Plugin
 
 
 class DanteCAM1(ADBase):
+    """Area-detector CAM interface for a single-element Dante MCA detector."""
 
     _default_configuration_attrs = (
         "port_name",
@@ -98,8 +106,13 @@ class DanteCAM1(ADBase):
 
 
 class DanteCAM4(DanteCAM1):
-    _default_configuration_attrs = (
-        DanteCAM1._default_configuration_attrs + ("snl_connected",)
+    """
+    DanteCAM1 variant for a 4-element Dante detector with SNL connectivity
+    status.
+    """
+
+    _default_configuration_attrs = DanteCAM1._default_configuration_attrs + (
+        "snl_connected",
     )
 
     # Multi Channel
@@ -107,6 +120,10 @@ class DanteCAM4(DanteCAM1):
 
 
 class DanteSCA(ADBase):
+    """
+    Per-channel SCA (single-channel analyser) statistics and parameters for a
+    Dante board.
+    """
 
     _default_read_attrs = ("icr", "ocr", "f1_deadtime")
 
@@ -174,6 +191,11 @@ class DanteSCA(ADBase):
 
 
 class DanteHDF1Plugin(PolarHDF5Plugin):
+    """
+    HDF5 plugin for the Dante detector with Dante-specific array counter and
+    warmup.
+    """
+
     # The array counter readback pv is different...
     array_counter = ADComponent(EpicsSignal, "ArrayCounter", kind="config")
     array_counter_readback = ADComponent(
@@ -181,10 +203,18 @@ class DanteHDF1Plugin(PolarHDF5Plugin):
     )
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize DanteHDF1Plugin and set the num_images source to
+        cam.mca_mapping_points.
+        """
         super().__init__(*args, **kwargs)
         self._num_images_device = "cam.mca_mapping_points"
 
     def warmup(self):
+        """
+        Perform a single-point MCA mapping acquisition to warm up the HDF5
+        plugin.
+        """
         sigs = OrderedDict(
             [
                 (self.enable, 1),

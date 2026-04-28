@@ -2,14 +2,22 @@
 Diffractometer magnet
 """
 
-from apstools.devices import PVPositionerSoftDone
-from ophyd import Component, EpicsSignal, EpicsSignalRO, Device
 from logging import getLogger
+
+from apstools.devices import PVPositionerSoftDone
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
 
 logger = getLogger(__name__)
 
 
 class KepcoDevice(Device):
+    """
+    Kepco power supply device with field/current/voltage positioners and
+    protection limits.
+    """
 
     # Info and status
     manufacturer = Component(EpicsSignalRO, "manufacturer", kind="omitted")
@@ -92,6 +100,7 @@ class KepcoDevice(Device):
     status_temperature = Component(EpicsSignalRO, "htsstatus", kind="config")
 
     def default_settings(self):
+        """Enable automatic current-mode enforcement on connect."""
         self.start_auto_mode()
 
     def _auto_mode(self, value, **kwargs):
@@ -103,10 +112,18 @@ class KepcoDevice(Device):
             self.mode.set("CURRENT").wait()
 
     def start_auto_mode(self):
+        """
+        Subscribe to mode changes so voltage mode is automatically corrected to
+        current mode.
+        """
         self._auto_mode_subs.append(
             self.mode.subscribe(self._auto_mode, run=True)
         )
 
     def stop_auto_mode(self):
+        """
+        Unsubscribe all auto-mode callbacks so voltage mode is no longer
+        enforced.
+        """
         for _sub in self._auto_mode_subs:
             self.unsubscribe(_sub)

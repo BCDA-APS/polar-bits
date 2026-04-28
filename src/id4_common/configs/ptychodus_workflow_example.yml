@@ -17,6 +17,3 @@ numGpus : 2
 settings : /home/beams/POLAR/ptychodusDefaults/default-settings.ini
 demand : False
 name : fly001
-
-
-

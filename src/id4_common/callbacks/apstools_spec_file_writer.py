@@ -64,7 +64,6 @@ import time
 from collections import OrderedDict
 
 import numpy as np
-
 from apstools.callbacks.callback_base import FileWriterCallbackBase
 
 SPEC_TIME_FORMAT = "%a %b %d %H:%M:%S %Y"
@@ -218,6 +217,7 @@ class SpecWriterCallback(object):
     def __init__(
         self, filename=None, auto_write=True, RE=None, reset_scan_id=False
     ):
+        """Initialize the SPEC data file writer callback."""
         self.clear()
         self.buffered_comments = self._empty_comments_dict()
         self.auto_write = auto_write
@@ -747,6 +747,7 @@ class SpecWriterCallback2(FileWriterCallbackBase):
     # Override Methods
 
     def __init__(self, *args, **kwargs):
+        """Initialize the line-by-line SPEC data file writer callback."""
         super().__init__(*args, **kwargs)
 
         self._file_header_motor_keys = None
@@ -822,6 +823,7 @@ class SpecWriterCallback2(FileWriterCallbackBase):
         self.write_new_scan_header = True
 
     def event(self, doc):
+        """Handle *event* documents and write data rows on-the-fly."""
         super().event(doc)  # process the document
 
         descriptor = self._streams.get(doc["descriptor"])

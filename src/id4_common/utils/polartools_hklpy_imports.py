@@ -1,60 +1,46 @@
-from hkl.user import (  # noqa: F401
-    select_diffractometer,
-    show_selected_diffractometer,
-    pa,
-)
+"""Re-exports of hkl/polartools user-facing symbols for session convenience."""
 
+from hkl.user import pa  # noqa: F401
+from hkl.user import select_diffractometer  # noqa: F401
+from hkl.user import show_selected_diffractometer  # noqa: F401
+from hkl.util import list_orientation_runs  # noqa: F401
+from hkl.util import restore_constraints  # noqa: F401
+from hkl.util import restore_energy  # noqa: F401
 from hkl.util import (  # noqa: F401
-    list_orientation_runs,
-    restore_constraints,
-    restore_energy,
     restore_orientation as hkl_restore_orientation,
-    restore_reflections,
-    restore_sample,
-    restore_UB,
-    run_orientation_info,
 )
-
-from polartools.absorption import (  # noqa: F401
-    load_absorption,
-    load_dichro,
-    load_lockin,
-    load_multi_dichro,
-    load_multi_lockin,
-    load_multi_xas,
-    process_xmcd,
-    plot_xmcd,
-)
-
-from polartools.diffraction import (  # noqa: F401
-    fit_peak,
-    load_info,
-    fit_series,
-    load_series,
-    get_type,
-    load_mesh,
-    plot_2d,
-    plot_fit,
-    load_axes,
-    plot_data,
-    dbplot,
-)
-
-from polartools.load_data import (  # noqa: F401
-    db_query,
-    show_meta,
-    collect_meta,
-    lookup_position,
-    load_catalog,
-    load_table,
-    load_hdf5_master,
-)
-
+from hkl.util import restore_reflections  # noqa: F401
+from hkl.util import restore_sample  # noqa: F401
+from hkl.util import restore_UB  # noqa: F401
+from hkl.util import run_orientation_info  # noqa: F401
+from polartools.absorption import load_absorption  # noqa: F401
+from polartools.absorption import load_dichro  # noqa: F401
+from polartools.absorption import load_lockin  # noqa: F401
+from polartools.absorption import load_multi_dichro  # noqa: F401
+from polartools.absorption import load_multi_lockin  # noqa: F401
+from polartools.absorption import load_multi_xas  # noqa: F401
+from polartools.absorption import plot_xmcd  # noqa: F401
+from polartools.absorption import process_xmcd  # noqa: F401
+from polartools.diffraction import dbplot  # noqa: F401
+from polartools.diffraction import fit_peak  # noqa: F401
+from polartools.diffraction import fit_series  # noqa: F401
+from polartools.diffraction import get_type  # noqa: F401
+from polartools.diffraction import load_axes  # noqa: F401
+from polartools.diffraction import load_info  # noqa: F401
+from polartools.diffraction import load_mesh  # noqa: F401
+from polartools.diffraction import load_series  # noqa: F401
+from polartools.diffraction import plot_2d  # noqa: F401
+from polartools.diffraction import plot_data  # noqa: F401
+from polartools.diffraction import plot_fit  # noqa: F401
+from polartools.load_data import collect_meta  # noqa: F401
+from polartools.load_data import db_query  # noqa: F401
+from polartools.load_data import load_catalog  # noqa: F401
+from polartools.load_data import load_hdf5_master  # noqa: F401
+from polartools.load_data import load_table  # noqa: F401
+from polartools.load_data import lookup_position  # noqa: F401
+from polartools.load_data import show_meta  # noqa: F401
 from polartools.pressure_calibration import xrd_calibrate_pressure  # noqa: F401
-
-from polartools.process_images import (  # noqa: F401
-    load_images,
-    get_curvature,
-    get_spectrum,
-    get_spectra,
-)
+from polartools.process_images import get_curvature  # noqa: F401
+from polartools.process_images import get_spectra  # noqa: F401
+from polartools.process_images import get_spectrum  # noqa: F401
+from polartools.process_images import load_images  # noqa: F401

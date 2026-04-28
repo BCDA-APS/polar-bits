@@ -2,22 +2,26 @@
 9T magnet
 """
 
-from ophyd import (
-    Device,
-    Component,
-    DynamicDeviceComponent,
-    FormattedComponent,
-    EpicsMotor,
-    EpicsSignalRO,
-    EpicsSignal,
-    PVPositioner
-)
-from ophyd.status import Status
-from apstools.devices import PVPositionerSoftDoneWithStop
 from collections import OrderedDict
+
+from apstools.devices import PVPositionerSoftDoneWithStop
+from ophyd import Component
+from ophyd import Device
+from ophyd import DynamicDeviceComponent
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
+from ophyd import PVPositioner
+from ophyd.status import Status
 
 
 class TableMotors(Device):
+    """
+    Three-axis (X, Y, Z) table motor bundle with sample rotation and tilt for
+    the 911 magnet.
+    """
+
     x = Component(EpicsMotor, "m14", labels=("motor",))
     y = Component(EpicsMotor, "m15", labels=("motor",))
     z = Component(EpicsMotor, "m16", labels=("motor",))
@@ -28,6 +32,10 @@ class TableMotors(Device):
 
 
 class RamanMotors(Device):
+    """
+    Raman spectrometer motor bundle with XYZ translation and tilt/rotation axes.
+    """
+
     x = Component(EpicsMotor, "m24", labels=("motor",))
     y = Component(EpicsMotor, "m25", labels=("motor",))
     z = Component(EpicsMotor, "m26", labels=("motor",))
@@ -37,11 +45,18 @@ class RamanMotors(Device):
 
 
 class MagnetMotors(Device):
+    """Magnet sample stage with Y translation and theta rotation motors."""
+
     y = FormattedComponent(EpicsMotor, "4idhAero:m2", labels=("motor",))
     th = FormattedComponent(EpicsMotor, "4idhAero:m1", labels=("motor",))
 
 
 class FieldPositioner(PVPositioner):
+    """
+    PVPositioner for the 9T superconducting magnet field ramp with heater
+    interlock.
+    """
+
     setpoint = Component(
         EpicsSignal, "TargetField", write_pv="SetField.VAL", put_complete=True
     )
@@ -74,15 +89,21 @@ class FieldPositioner(PVPositioner):
     )
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize FieldPositioner, rename readback to parent name, and set 0.05
+        T tolerance.
+        """
         super().__init__(*args, **kwargs)
         self.readback.name = self.name
         self._tolerance = 0.05
 
     def move(self, position, wait=True, timeout=None, moved_cb=None):
-
-        if (
-            (self.parent.heater.get() in [0, "ON"]) &
-            (abs(position-self.readback.get()) < self._tolerance)
+        """
+        Move to position; return immediately done if heater is ON and within
+        tolerance.
+        """
+        if (self.parent.heater.get() in [0, "ON"]) & (
+            abs(position - self.readback.get()) < self._tolerance
         ):
             status = Status()
             status.set_finished()
@@ -94,6 +115,10 @@ class FieldPositioner(PVPositioner):
 
 
 class PowerSupply(Device):
+    """
+    9T magnet power supply with field ramp control, safety status, and heater
+    monitoring.
+    """
 
     field = Component(FieldPositioner, "")
 
@@ -122,16 +147,12 @@ class PowerSupply(Device):
         string=True,
         kind="config",
     )
-    set_ignore_table = Component(
-        EpicsSignal, "SetIgnoreTable", kind="config"
-    )
+    set_ignore_table = Component(EpicsSignal, "SetIgnoreTable", kind="config")
 
     set_persistent = Component(
         EpicsSignal, "SetPersistent.PROC", kind="omitted"
     )
-    set_pm_zero = Component(
-        EpicsSignal, "SetPMZero.PROC", kind="omitted"
-    )
+    set_pm_zero = Component(EpicsSignal, "SetPMZero.PROC", kind="omitted")
 
     ramp_pause = Component(EpicsSignal, "SetPause", kind="config")
     ramp_start = Component(EpicsSignal, "StartRamp.PROC", kind="omitted")
@@ -142,7 +163,14 @@ class PowerSupply(Device):
 
 
 class MonChannel(Device):
-    temperature_name = FormattedComponent(EpicsSignalRO, "{prefix}TempName{ch}")
+    """
+    Single monitoring channel with temperature and Hall-probe resistance/field
+    readbacks.
+    """
+
+    temperature_name = FormattedComponent(
+        EpicsSignalRO, "{prefix}TempName{ch}", string=True
+    )
     temperature = FormattedComponent(EpicsSignalRO, "{prefix}Temp{ch}")
     hall_resistance = FormattedComponent(EpicsSignalRO, "{prefix}HallRes{ch}")
     hall_field = FormattedComponent(EpicsSignalRO, "{prefix}HallField{ch}")
@@ -151,6 +179,10 @@ class MonChannel(Device):
     read_scan = Component(EpicsSignal, "Read.SCAN", string=True, kind="omitted")
 
     def __init__(self, *args, ch_num=1, **kwargs):
+        """
+        Initialize MonChannel and store the channel number for
+        FormattedComponent substitution.
+        """
         self.ch = ch_num
         super().__init__(*args, **kwargs)
 
@@ -158,7 +190,7 @@ class MonChannel(Device):
 def _make_monitors(num=1):
     defn = OrderedDict()
     for i in range(1, num + 1):
-        defn[f"m{i :02d}"] = (
+        defn[f"m{i:02d}"] = (
             MonChannel,
             "911TMagnet:TMon:",
             {"ch_num": i, "kind": "normal"},
@@ -169,6 +201,11 @@ def _make_monitors(num=1):
 
 # TODO: Change these names to something more meaningful.
 class VTIDevice(Device):
+    """
+    Variable Temperature Insert device with four temperature sensors and
+    setpoint positioners.
+    """
+
     sensor_a = Component(
         EpicsSignalRO, "SensorA", kind="hinted", labels=["temperature"]
     )
@@ -222,6 +259,10 @@ class VTIDevice(Device):
 
 
 class NVDevice(Device):
+    """
+    Needle valve controller device with temperature and pressure positioners.
+    """
+
     control_mode = Component(
         EpicsSignal, "SetControlMode", string=True, kind="config"
     )
@@ -251,6 +292,10 @@ class NVDevice(Device):
 
 
 class Magnet911(Device):
+    """
+    Complete 9T superconducting magnet system with table motors, field control,
+    and temperature.
+    """
 
     connection = Component(EpicsSignalRO, "911TMagnet:asyn.CNCT", kind="config")
 

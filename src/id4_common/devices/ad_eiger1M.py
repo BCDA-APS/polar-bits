@@ -1,23 +1,27 @@
 """Eiger 1M setup"""
 
-from ophyd import ADComponent, Staged
-from ophyd.status import wait as status_wait, SubscriptionStatus
-from ophyd.areadetector import DetectorBase
-from apstools.utils import run_in_thread
 from pathlib import Path
-from time import time as ttime, sleep
-from .ad_mixins import (
-    EigerDetectorCam,
-    TriggerBase,
-    CodecPlugin,
-    ImagePlugin,
-    ROIPlugin,
-    StatsPlugin,
-    PolarHDF5Plugin,
-    ProcessPlugin,
-    TransformPlugin,
-    ADTriggerStatus
-)
+from time import sleep
+from time import time as ttime
+
+from apstools.utils import run_in_thread
+from ophyd import ADComponent
+from ophyd import Staged
+from ophyd.areadetector import DetectorBase
+from ophyd.status import SubscriptionStatus
+from ophyd.status import wait as status_wait
+
+from .ad_mixins import ADTriggerStatus
+from .ad_mixins import CodecPlugin
+from .ad_mixins import EigerDetectorCam
+from .ad_mixins import ImagePlugin
+from .ad_mixins import PolarHDF5Plugin
+from .ad_mixins import ProcessPlugin
+from .ad_mixins import ROIPlugin
+from .ad_mixins import StatsPlugin
+from .ad_mixins import TransformPlugin
+from .ad_mixins import TriggerBase
+from .counters_mixin import CountersMixin
 
 
 class TriggerTime(TriggerBase):
@@ -32,6 +36,9 @@ class TriggerTime(TriggerBase):
     def __init__(
         self, *args, image_name=None, min_period=0.0, delay=0.3, **kwargs
     ):
+        """
+        Initialize TriggerTime with optional image name, min period, and delay.
+        """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -43,31 +50,37 @@ class TriggerTime(TriggerBase):
 
     @property
     def acquisition_signal(self):
+        """Return the acquisition signal object."""
         return getattr(self, self._acquisition_signal_pv)
 
     @property
     def delay(self):
+        """Return the post-trigger delay in seconds."""
         return self._delay
-    
+
     @delay.setter
     def delay(self, value):
+        """Set the post-trigger delay in seconds."""
         try:
             self._delay = float(value)
         except ValueError:
-            raise ValueError("delay must be a number.")
+            raise ValueError("delay must be a number.") from None
 
     @property
     def min_period(self):
+        """Return the minimum time between triggers in seconds."""
         return self._min_period
 
     @min_period.setter
     def min_period(self, value):
+        """Set the minimum time between triggers in seconds."""
         try:
             self._min_period = float(value)
         except ValueError:
-            raise ValueError("min_period must be a number.")
+            raise ValueError("min_period must be a number.") from None
 
     def setup_manual_trigger(self):
+        """Configure detector stage signals for manual (software) triggering."""
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "Continuous"
         self.cam.stage_sigs["manual_trigger"] = "Enable"
@@ -78,6 +91,7 @@ class TriggerTime(TriggerBase):
         self.cam.stage_sigs["num_triggers"] = int(1e5)
 
     def setup_external_trigger(self, trigger_type="gate"):
+        """Configure detector stage signals for external hardware triggering."""
         if trigger_type not in "gate rising_edge".split():
             raise ValueError(
                 "trigger_type must be either 'gate' or 'rising_edge', but"
@@ -94,7 +108,6 @@ class TriggerTime(TriggerBase):
             self.cam.stage_sigs["num_triggers"] = self.max_num_images
 
         elif trigger_type == "gate":
-
             # Stage signals
             self.cam.stage_sigs["num_triggers"] = 1
             # The num_triggers need to be the first in the Ordered dict! This is
@@ -108,6 +121,9 @@ class TriggerTime(TriggerBase):
             self.cam.stage_sigs["num_exposures"] = 1
 
     def stage(self):
+        """
+        Stage the detector, optionally enabling external trigger for flyscans.
+        """
         if self._flysetup:
             self.setup_external_trigger()
 
@@ -117,6 +133,10 @@ class TriggerTime(TriggerBase):
         self.cam.acquire.set(1).wait(timeout=10)
 
     def unstage(self):
+        """
+        Unstage the detector, stopping acquisition and waiting for processing to
+        finish.
+        """
         self.cam.acquire.set(0).wait(timeout=10)
 
         def check_value(*, old_value, value, **kwargs):
@@ -156,7 +176,8 @@ class TriggerTime(TriggerBase):
         return self._status
 
 
-class Eiger1MDetector(TriggerTime, DetectorBase):
+class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
+    """Eiger 1M area detector with HDF5 file writing and statistics plugins."""
 
     _default_configuration_attrs = (
         "roi1",
@@ -204,15 +225,16 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
         max_num_images=600000,
         **kwargs,
     ):
+        """
+        Initialize Eiger1MDetector with HDF5 file naming and image count
+        settings.
+        """
         self.default_folder = default_folder
         self.hdf1_name_format = hdf1_name_template + "." + hdf1_file_extension
         self.max_num_images = max_num_images
         super().__init__(*args, **kwargs)
 
-    # Make this compatible with other detectors
-    @property
-    def preset_monitor(self):
-        return self.cam.acquire_time
+    _preset_monitor_attr = "cam.acquire_time"
 
     def align_on(self, time=0.1):
         """Start detector in alignment mode"""
@@ -228,18 +250,23 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
         self.cam.acquire.set(0).wait(timeout=10)
 
     def save_images_on(self):
+        """Enable HDF5 image saving."""
         self.hdf1.enable.set("Enable").wait(timeout=10)
 
     def save_images_off(self):
+        """Disable HDF5 image saving."""
         self.hdf1.enable.set("Disable").wait(timeout=10)
 
     def auto_save_on(self):
+        """Enable automatic HDF5 saving on each acquisition."""
         self.hdf1.autosave.put("on")
 
     def auto_save_off(self):
+        """Disable automatic HDF5 saving on each acquisition."""
         self.hdf1.autosave.put("off")
 
     def default_settings(self):
+        """Apply default detector settings and stage signal configuration."""
 
         self.cam.num_triggers.put(1)
         self.cam.manual_trigger.put("Disable")
@@ -268,26 +295,33 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
         ]
 
     def plot_all(self):
+        """Set all five stats channels to be plotted."""
         self.plot_select([1, 2, 3, 4, 5])
 
     def plot_stats1(self):
+        """Set only Stats1 total to be plotted."""
         self.plot_select([1])
 
     def plot_stats2(self):
+        """Set only Stats2 total to be plotted."""
         self.plot_select([2])
 
     def plot_stats3(self):
+        """Set only Stats3 total to be plotted."""
         self.plot_select([3])
 
     def plot_stats4(self):
+        """Set only Stats4 total to be plotted."""
         self.plot_select([4])
 
     def plot_stats5(self):
+        """Set only Stats5 total to be plotted."""
         self.plot_select([5])
 
     def setup_images(
         self, base_path, name_template, file_number, flyscan=False
     ):
+        """Configure HDF5 file path, name, and number for the upcoming scan."""
 
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.hdf1.file_name.set(name_template).wait(timeout=10)
@@ -322,19 +356,34 @@ class Eiger1MDetector(TriggerTime, DetectorBase):
 
     @property
     def save_image_flag(self):
+        """Return True if images will be saved on next acquisition."""
         _hdf1_auto = True if self.hdf1.autosave.get() == "on" else False
         _hdf1_on = True if self.hdf1.enable.get() == "Enable" else False
         return _hdf1_on or _hdf1_auto
 
     @property
     def label_option_map(self):
+        """
+        Return mapping of stats channel label names to their index numbers.
+        """
         return {f"Stats{i} Total": i for i in range(1, 5 + 1)}
 
     @property
     def plot_options(self):
+        """Return list of available channel names for plot selection."""
         # Return all named scaler channels
         return list(self.label_option_map.keys())
 
     def select_plot(self, channels):
+        """Select which stats channels to plot by label name."""
         chans = [self.label_option_map[i] for i in channels]
         self.plot_select(chans)
+
+    def field_for_label(self, label):
+        """Return the ophyd field name for a plot-option label."""
+        stats_index = self.label_option_map[label]
+        return getattr(self, f"stats{stats_index}").total.name
+
+    def select_read(self, channels):
+        """No-op: all stats channels are always read (only hinted/normal differ)."""
+        pass

@@ -2,17 +2,29 @@
 Phase retarders.
 """
 
-from ophyd import Device, EpicsMotor, PseudoPositioner, PseudoSingle
-from ophyd import Component, FormattedComponent
-from ophyd import EpicsSignal, EpicsSignalRO, Signal, DerivedSignal
-from ophyd.pseudopos import pseudo_position_argument, real_position_argument
-from scipy.constants import speed_of_light, Planck
-from numpy import arcsin, pi, sin
-from apstools.devices import TrackingSignal, PVPositionerSoftDoneWithStop
+from apstools.devices import PVPositionerSoftDoneWithStop
+from apstools.devices import TrackingSignal
 
 # This is here because PRDevice.select_pr has a micron symbol that utf-8
 # cannot read. See: https://github.com/bluesky/ophyd/issues/930
 from epics import utils
+from numpy import arcsin
+from numpy import pi
+from numpy import sin
+from ophyd import Component
+from ophyd import DerivedSignal
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
+from ophyd import PseudoPositioner
+from ophyd import PseudoSingle
+from ophyd import Signal
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
+from scipy.constants import Planck
+from scipy.constants import speed_of_light
 
 utils.IOENCODING = "latin-1"
 
@@ -21,10 +33,14 @@ class MicronsSignal(DerivedSignal):
     """A signal that converts the offset from degrees to microns"""
 
     def __init__(self, parent_attr, *, parent=None, **kwargs):
+        """
+        Initialize with parent attribute name for the underlying degrees signal.
+        """
         degrees_signal = getattr(parent, parent_attr)
         super().__init__(derived_from=degrees_signal, parent=parent, **kwargs)
 
     def describe(self):
+        """Override describe to report units as microns."""
         desc = super().describe()
         desc[self.name]["units"] = "microns"
         return desc
@@ -65,30 +81,31 @@ class PRPzt(Device):
 
     selectDC = FormattedComponent(
         EpicsSignal,
-        "4idaSoft:232DRIO:1:OFF_ch{_prnum}.PROC",
+        "{_drio}OFF_ch{_prnum}.PROC",
         kind="omitted",
         put_complete=True,
     )
 
     selectAC = FormattedComponent(
         EpicsSignal,
-        "4idaSoft:232DRIO:1:ON_ch{_prnum}.PROC",
+        "{_drio}ON_ch{_prnum}.PROC",
         kind="omitted",
         put_complete=True,
     )
 
-    ACstatus = FormattedComponent(
-        EpicsSignal, "4idaSoft:232DRIO:1:status", kind="config"
-    )
+    ACstatus = FormattedComponent(EpicsSignal, "{_drio}status", kind="config")
 
     conversion_factor = Component(Signal, value=0.1, kind="config")
 
-    def __init__(self, PV, *args, **kwargs):
+    def __init__(self, PV, *args, drio_prefix="4idaSoft:232DRIO:1:", **kwargs):
+        """Initialize PRPzt with parametric DRIO IOC prefix."""
         self._prnum = PV.split(":")[-2]
+        self._drio = drio_prefix
         super().__init__(PV, *args, **kwargs)
 
 
 class PRDeviceBase(PseudoPositioner):
+    """Base class for phase retarder devices mapping energy to Bragg angle."""
 
     energy = Component(PseudoSingle, limits=(2.7, 20))
     th = FormattedComponent(
@@ -115,11 +132,19 @@ class PRDeviceBase(PseudoPositioner):
     tracking = Component(TrackingSignal, value=False, kind="config")
 
     def __init__(self, prefix, name, motorsDict, **kwargs):
+        """
+        Initialize PRDeviceBase with a dict mapping axis names to motor PV
+        suffixes.
+        """
         self._motorsDict = motorsDict
         super().__init__(prefix, name=name, **kwargs)
         self._energy_cid = None
 
     def convert_energy_to_theta(self, energy):
+        """
+        Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / 2 / self.d_spacing.get()) * 180.0 / pi
@@ -131,6 +156,10 @@ class PRDeviceBase(PseudoPositioner):
         return theta
 
     def convert_theta_to_energy(self, theta):
+        """
+        Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+        d-spacing.
+        """
         # If we are using the motor to switch polarization, then the correct
         # energy will be based on the theta minus the offset
         if self.motor_switch.get():
@@ -157,6 +186,9 @@ class PRDeviceBase(PseudoPositioner):
         )
 
     def set_energy(self, energy):
+        """
+        Calibrate the Bragg-angle motor to match the given photon energy (keV).
+        """
         _motor_switch = self.motor_switch.get()
         if _motor_switch:
             self.motor_switch.put(False)
@@ -169,12 +201,19 @@ class PRDeviceBase(PseudoPositioner):
             self.motor_switch.put(True)
 
     def default_settings(self):
+        """
+        Apply default d-spacing and motor-switch settings for this phase
+        retarder.
+        """
         if self.name == "pr3":
             self.d_spacing.put(3.135)
             self.motor_switch.put(True)
 
 
 class PRDevice(PRDeviceBase):
+    """
+    Phase retarder with PZT piezo control and crystal-plane auto-selection.
+    """
 
     pzt = FormattedComponent(PRPzt, "{prefix}Soft:E665:{_prnum}:")
     select_pr = FormattedComponent(
@@ -186,6 +225,9 @@ class PRDevice(PRDeviceBase):
     )
 
     def __init__(self, prefix, name, prnum, motorsDict, **kwargs):
+        """
+        Initialize PRDevice with phase retarder number and motor PV mapping.
+        """
         self._prnum = prnum
         super().__init__(prefix, name, motorsDict, **kwargs)
 
@@ -197,6 +239,10 @@ class PRDevice(PRDeviceBase):
         self.d_spacing.put(spacing_dictionary[plane])
 
     def default_settings(self):
+        """
+        Set PZT conversion factor and d-spacing based on the selected crystal
+        plane.
+        """
         conv_factor = 0.00165122 if self._prnum == 1 else 0.00190893
         self.pzt.conversion_factor.put(conv_factor)
 

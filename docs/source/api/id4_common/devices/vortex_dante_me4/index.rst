@@ -1,0 +1,171 @@
+id4_common.devices.vortex_dante_me4
+===================================
+
+.. py:module:: id4_common.devices.vortex_dante_me4
+
+.. autoapi-nested-parse::
+
+   Vortex 4 element with Dante electronics
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: MAX_TIME
+   :value: 3600
+
+
+.. py:data:: MAX_ROIS
+   :value: 32
+
+
+.. py:class:: Trigger(*args, image_name=None, **kwargs)
+
+   Bases: :py:obj:`id4_common.devices.ad_mixins.TriggerBase`
+
+
+   This trigger mixin class takes one acquisition per trigger.
+
+
+   .. py:attribute:: stage_sigs
+
+
+   .. py:method:: setup_manual_trigger()
+
+
+   .. py:method:: setup_external_trigger()
+      :abstractmethod:
+
+
+
+   .. py:method:: stage()
+
+
+   .. py:method:: unstage()
+
+
+   .. py:method:: trigger()
+
+
+.. py:class:: TotalCorrectedSignal(prefix, roi_index=0, **kwargs)
+
+   Bases: :py:obj:`ophyd.SignalRO`
+
+
+   Signal that returns the deadtime corrected total counts
+
+
+   .. py:attribute:: roi_index
+      :value: 0
+
+
+
+   .. py:method:: get(**kwargs)
+
+      The readback value
+
+
+
+.. py:class:: VortexDante4(*args, default_folder=Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex'), hdf1_file_format='%s/%s_%6.6d.h5', **kwargs)
+
+   Bases: :py:obj:`Trigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+
+
+   This trigger mixin class takes one acquisition per trigger.
+
+
+   .. py:attribute:: cam
+
+
+   .. py:attribute:: mcas
+
+
+   .. py:attribute:: scas
+
+
+   .. py:attribute:: total
+
+
+   .. py:attribute:: hdf1
+
+
+   .. py:attribute:: default_folder
+
+
+   .. py:attribute:: hdf1_file_format
+      :value: '%s/%s_%6.6d.h5'
+
+
+
+   .. py:property:: preset_monitor
+
+
+   .. py:property:: num_channels
+
+
+   .. py:method:: align_on()
+
+      Start detector in alignment mode
+
+
+
+   .. py:method:: align_off()
+
+      Stop detector
+
+
+
+   .. py:method:: save_images_on()
+
+
+   .. py:method:: save_images_off()
+
+
+   .. py:method:: auto_save_on()
+
+
+   .. py:method:: auto_save_off()
+
+
+   .. py:method:: default_settings()
+
+
+   .. py:property:: read_rois
+
+
+   .. py:method:: select_roi(rois)
+
+
+   .. py:method:: plot_roi0()
+
+
+   .. py:method:: plot_roi1()
+
+
+   .. py:method:: plot_roi2()
+
+
+   .. py:method:: plot_roi3()
+
+
+   .. py:method:: plot_roi4()
+
+
+   .. py:property:: label_option_map
+
+
+   .. py:property:: plot_options
+
+
+   .. py:method:: select_plot(channels)
+
+
+   .. py:method:: setup_images(base_folder, file_name_base, file_number, flyscan=False)
+
+
+   .. py:property:: save_image_flag

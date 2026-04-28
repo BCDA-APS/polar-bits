@@ -2,8 +2,10 @@
 GE pressure controllers
 """
 
-from ophyd import Component, EpicsSignalRO, EpicsSignalWithRBV
 from apstools.devices import PVPositionerSoftDoneWithStop
+from ophyd import Component
+from ophyd import EpicsSignalRO
+from ophyd import EpicsSignalWithRBV
 
 
 class GEController(PVPositionerSoftDoneWithStop):
@@ -19,11 +21,16 @@ class GEController(PVPositionerSoftDoneWithStop):
     )
 
     def __init__(self, *args, timeout=60 * 60 * 10, **kwargs):
+        """
+        Initialize GEController with a default 10-hour timeout and zero settle
+        time.
+        """
         super().__init__(*args, timeout=timeout, **kwargs)
         self._settle_time = 0
 
     @property
     def settle_time(self):
+        """Return the settle time in seconds after a move completes."""
         return self._settle_time
 
     @settle_time.setter
@@ -35,9 +42,11 @@ class GEController(PVPositionerSoftDoneWithStop):
 
     @property
     def egu(self):
+        """Return the engineering units string from the EPICS units signal."""
         return self.units.get(as_string=True)
 
     def stop(self, *, success=False):
+        """Stop the positioner; hold current position if not successful."""
         if success is False:
             self.setpoint.put(self._position)
         super().stop(success=success)

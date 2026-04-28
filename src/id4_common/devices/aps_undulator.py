@@ -2,15 +2,27 @@
 Undulator support
 """
 
-from apstools.devices import STI_Undulator, TrackingSignal
+from typing import Any
+from typing import Callable
+
+from apstools.devices import STI_Undulator
+from apstools.devices import TrackingSignal
 from apstools.devices.aps_undulator import UndulatorPositioner
-from ophyd import Component, Device, Signal, EpicsSignal, EpicsSignalRO
-from ophyd.status import Status, StatusBase
-from typing import Any, Callable
 from numpy import abs
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import Signal
+from ophyd.status import Status
+from ophyd.status import StatusBase
 
 
 class PolarUndulatorPositioner(UndulatorPositioner):
+    """
+    UndulatorPositioner that skips waiting if the target is within the energy
+    deadband.
+    """
 
     def set(
         self,
@@ -20,6 +32,10 @@ class PolarUndulatorPositioner(UndulatorPositioner):
         moved_cb: Callable = None,
         wait: bool = False,
     ) -> StatusBase:
+        """
+        Move to new_position; return immediately done if already within the
+        energy deadband.
+        """
         # If position is within the deadband --> move, but do not wait
         # for it?
         if (
@@ -37,6 +53,10 @@ class PolarUndulatorPositioner(UndulatorPositioner):
 
 
 class PolarUndulator(STI_Undulator):
+    """
+    STI undulator subclass with energy tracking, offset, and deadband signals.
+    """
+
     # TODO: The energy should really follow the gap 1 um deadband...
 
     tracking = Component(TrackingSignal, value=False, kind="config")
@@ -48,6 +68,10 @@ class PolarUndulator(STI_Undulator):
 
 
 class PhaseShifterDevice(Device):
+    """
+    Phase shifter device with gap positioner and start/stop control signals.
+    """
+
     gap = Component(UndulatorPositioner, "Gap")
 
     start_button = Component(EpicsSignal, "StartC.VAL")
@@ -66,11 +90,17 @@ class PhaseShifterDevice(Device):
     )
 
     def __init__(self, *args, **kwargs):
+        """Initialize PhaseShifterDevice and set the gap done-value to 0."""
         super().__init__(*args, **kwargs)
         self.gap.done_value = 0
 
 
 class PolarUndulatorPair(Device):
+    """
+    Composite device grouping upstream and downstream undulators with a phase
+    shifter.
+    """
+
     us = Component(PolarUndulator, "USID:", labels=("track_energy",))
     ds = Component(PolarUndulator, "DSID:", labels=("track_energy",))
     phase_shifter = Component(PhaseShifterDevice, "ILPS:")

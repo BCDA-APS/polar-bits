@@ -1,7 +1,9 @@
+"""Instantiate the Sydor T4U beam position monitor for 4IDG (gsydor)."""
+
 __all__ = ["gsydor"]
 
-from .quadems import SydorEMRO
 from ..utils._logging_setup import logger
+from .quadems import SydorEMRO
 
 logger.info(__file__)
 

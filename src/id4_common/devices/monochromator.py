@@ -2,21 +2,29 @@
 Monochromator with energy controller by bluesky
 """
 
-from ophyd import (
-    Component,
-    FormattedComponent,
-    EpicsMotor,
-    EpicsSignal,
-    PseudoPositioner,
-    PseudoSingle,
-)
-from ophyd.pseudopos import pseudo_position_argument, real_position_argument
-from scipy.constants import speed_of_light, Planck
-from numpy import arcsin, pi, sin, cos
+from numpy import arcsin
+from numpy import cos
+from numpy import pi
+from numpy import sin
+from ophyd import Component
+from ophyd import EpicsMotor
+from ophyd import EpicsSignal
+from ophyd import FormattedComponent
+from ophyd import PseudoPositioner
+from ophyd import PseudoSingle
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
+from scipy.constants import Planck
+from scipy.constants import speed_of_light
+
 from .labjacks import AnalogOutput
 
 
 class MonoDevice(PseudoPositioner):
+    """
+    Double-crystal monochromator as a pseudo-positioner converting energy to
+    theta and y2.
+    """
 
     energy = Component(PseudoSingle, limits=(2.6, 32))
     th = Component(EpicsMotor, "m1", labels=("motor",))
@@ -34,8 +42,8 @@ class MonoDevice(PseudoPositioner):
     chi2 = Component(EpicsMotor, "m5", labels=("motor",))
 
     # PZTs from labjack
-    pzt_thf2 = FormattedComponent(AnalogOutput, "4idaSoft:LJ:Ao5")
-    pzt_chi2 = FormattedComponent(AnalogOutput, "4idaSoft:LJ:Ao3")
+    pzt_thf2 = FormattedComponent(AnalogOutput, "{_pzt_thf2}")
+    pzt_chi2 = FormattedComponent(AnalogOutput, "{_pzt_chi2}")
 
     # Parameters
     y_offset = Component(EpicsSignal, "Kohzu_yOffsetAO.VAL", kind="config")
@@ -48,18 +56,42 @@ class MonoDevice(PseudoPositioner):
         EpicsSignal, "BraggTypeMO", string=True, kind="config"
     )
 
+    def __init__(
+        self,
+        prefix,
+        *,
+        pzt_thf2_pv="4idaSoft:LJ:Ao5",
+        pzt_chi2_pv="4idaSoft:LJ:Ao3",
+        **kwargs,
+    ):
+        """Initialize MonoDevice with parametric LabJack PZT PV addresses."""
+        self._pzt_thf2 = pzt_thf2_pv
+        self._pzt_chi2 = pzt_chi2_pv
+        super().__init__(prefix, **kwargs)
+
     def convert_energy_to_theta(self, energy):
+        """
+        Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = speed_of_light * Planck * 6.241509e15 * 1e10 / energy
         theta = arcsin(lamb / self.crystal_2d.get()) * 180.0 / pi
         return theta
 
     def convert_energy_to_y(self, energy):
+        """
+        Convert photon energy (keV) to second-crystal vertical position (mm).
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         theta = self.convert_energy_to_theta(energy)
         return self.y_offset.get() / (2 * cos(theta * pi / 180))
 
     def convert_theta_to_energy(self, theta):
+        """
+        Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+        d-spacing.
+        """
         # lambda in angstroms, theta in degrees, energy in keV
         lamb = self.crystal_2d.get() * sin(theta * pi / 180)
         energy = speed_of_light * Planck * 6.241509e15 * 1e10 / lamb
@@ -82,9 +114,16 @@ class MonoDevice(PseudoPositioner):
         )
 
     def set_energy(self, energy):
+        """
+        Update the theta readback offset so that the current theta corresponds
+        to energy (keV).
+        """
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
         self.th.set_current_position(theta)
 
     def default_settings(self):
+        """
+        Remove crystal_select from the sub-device list so it is not staged.
+        """
         self._sub_devices.remove("crystal_select")

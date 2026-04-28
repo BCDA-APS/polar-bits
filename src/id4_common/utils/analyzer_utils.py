@@ -1,7 +1,14 @@
+"""
+Crystallographic d-spacing and structure factor utilities for analyzer crystals.
+"""
+
 import math
 
 
 def calcdhkl(h, k, l, alpha, beta, gamma, symmetry, a, b, c):
+    """
+    Calculate the d-spacing for an (hkl) reflection given lattice parameters.
+    """
     if symmetry == "cub":
         dhkl2inv = (h * h + k * k + l * l) / (a * a)
     elif symmetry == "tet":
@@ -90,6 +97,10 @@ def calcdhkl(h, k, l, alpha, beta, gamma, symmetry, a, b, c):
 
 
 def check_structure_factor(h, k, l, spacegroupnumber, special):
+    """
+    Return True if the (hkl) reflection is allowed by the space group selection
+    rules.
+    """
     if spacegroupnumber == 225 and special == "none":
         return (h + k) % 2 == 0 and (k + l) % 2 == 0 and (h + l) % 2 == 0
     elif spacegroupnumber == 229 and special == "none":

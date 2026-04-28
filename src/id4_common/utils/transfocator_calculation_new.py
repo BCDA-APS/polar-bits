@@ -6,22 +6,28 @@ Transfocator functions.
     ~transfocator
 """
 
-from numpy import loadtxt, array, eye, dot, inf
-from scipy.interpolate import interp1d
-from pandas import read_csv, DataFrame
 from itertools import combinations
+
+from numpy import array
+from numpy import dot
+from numpy import eye
+from numpy import inf
+from numpy import loadtxt
+from pandas import DataFrame
+from pandas import read_csv
+from scipy.interpolate import interp1d
 
 BE_REFR_INDEX_FILE = (
     "/home/beams/POLAR/polar_instrument/src/instrument/utils/Be_refr_index.dat"
 )
 
-LENS_SETTINGS = (
-    "/home/beams/POLAR/polar_instrument/src/instrument/utils/"
-    "transfocator_settings.csv"
-)
+LENS_SETTINGS = "/home/beams/POLAR/polar_instrument/src/instrument/utils/transfocator_settings.csv"
 
 
 def read_delta(energy, path=BE_REFR_INDEX_FILE):
+    """
+    Return the refractive index delta for beryllium at the given energy (eV).
+    """
     if energy < 2700 or energy > 27000:
         raise ValueError("Energy {} out of range [2700, 27000].".format(energy))
 
@@ -51,7 +57,7 @@ def _compute_effective_focal_length(focuses, positions):
     distances = abs(positions[1:] - positions[:-1])
 
     # Multiply matrices for N lenses with spacing d between them
-    for f, d in zip(focuses, distances):
+    for f, d in zip(focuses, distances, strict=False):
         M = dot(_lens_matrix(f), M)  # Apply lens matrix
         M = dot(_propagation_matrix(d), M)  # Apply propagation matrix
 
@@ -70,7 +76,6 @@ def _compute_effective_focal_length(focuses, positions):
 
 
 def _find_optimal_combination(lenses, f_eff):
-
     lenses_list = [i for _, i in lenses.iterrows()]
 
     # Find the best combination of lens packages
@@ -155,8 +160,7 @@ def transfocator_calculation(
 
     if distance_only and not selected_lenses:
         _inp = input(
-            "Enter the number of the lenses that will be used (space separated)"
-            ": "
+            "Enter the number of the lenses that will be used (space separated): "
         )
         selected_lenses = [int(i) for i in _inp.split()]
 
@@ -232,8 +236,9 @@ def transfocator_calculation(
         print("CRL Z position = {:6.1f} mm".format(crlz_position))
         print("-" * 65)
         print(
-            "Distance CRLs to sample = {:6.1f} mm at photon energy of "
-            "{} eV".format(best_sample_distance / 1e3, energy)
+            "Distance CRLs to sample = {:6.1f} mm at photon energy of {} eV".format(
+                best_sample_distance / 1e3, energy
+            )
         )
         print("-" * 65)
         print(

@@ -1,14 +1,21 @@
 """Local decorators"""
 
-from bluesky.utils import make_decorator
-from bluesky.preprocessors import finalize_wrapper
-from bluesky.plan_stubs import mv, null, subscribe, unsubscribe, rd, sleep
-from ophyd import Kind
 from logging import getLogger
-from apsbits.core.instrument_init import oregistry
 from time import time
 
-from ..callbacks.dichro_stream import plot_dichro_settings, dichro_bec
+from apsbits.core.instrument_init import oregistry
+from bluesky.plan_stubs import mv
+from bluesky.plan_stubs import null
+from bluesky.plan_stubs import rd
+from bluesky.plan_stubs import sleep
+from bluesky.plan_stubs import subscribe
+from bluesky.plan_stubs import unsubscribe
+from bluesky.preprocessors import finalize_wrapper
+from bluesky.utils import make_decorator
+from ophyd import Kind
+
+from ..callbacks.dichro_stream import dichro_bec
+from ..callbacks.dichro_stream import plot_dichro_settings
 from ..utils.counters_class import counters
 from ..utils.pr_setup import pr_setup
 from ..utils.run_engine import bec
@@ -18,7 +25,9 @@ logger.info(__file__)
 
 
 def extra_devices_wrapper(plan, extras):
-
+    """
+    Stage extra devices during a plan without adding them to the plot hints.
+    """
     hinted_stash = []
 
     def _stage():
@@ -66,11 +75,10 @@ def configure_counts_wrapper(plan, detectors, count_time):
 
     def setup():
         if count_time < 0:
-            if counters.monitor == "Time":
+            if counters.monitor == "Time" or not counters.is_scaler_monitor:
                 raise ValueError(
-                    'count_time cannot be < 0 because "Time" is the monitor.'
-                    "Run counters.plotselect() to change the monitor to a"
-                    "scaler channel."
+                    "count_time < 0 requires a scaler channel as monitor. "
+                    "Run counters.plotselect() to change the monitor."
                 )
 
             scaler = counters.monitor_detector
@@ -95,7 +103,7 @@ def configure_counts_wrapper(plan, detectors, count_time):
             raise ValueError("count_time cannot be zero.")
 
     def reset():
-        if count_time < 0:
+        if count_time < 0 and counters.is_scaler_monitor:
             scaler = counters.monitor_detector
             scaler_channel = getattr(
                 scaler.channels, scaler.channels_name_map[counters.monitor]
@@ -169,7 +177,6 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
                 )
 
         if lockin or sgz:
-            
             # TODO: This is a bit of a workaround because the select DC and
             # select AC button have a bit of a lag. If we do multiple lockin
             # scans back to back, it may not turn on the AC because the
@@ -190,14 +197,14 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             initial_status = yield from rd(pr_setup.positioner.parent.ACstatus)
             if initial_status != 0:
                 yield from _change_mode("selectDC")
-            
+
             yield from _change_mode("selectAC")
 
         if dichro:
             for i in range(len(positioner)):
                 setattr(
                     plot_dichro_settings.settings,
-                    f"positioner{i+1}",
+                    f"positioner{i + 1}",
                     None if positioner[i] is None else positioner[i].name,
                 )
 
@@ -213,7 +220,7 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
 
                 plot_dichro_settings.settings.detector = counters.plot_names[0]
 
-            plot_dichro_settings.settings.monitor = counters.monitor
+            plot_dichro_settings.settings.monitor = counters.monitor_field
 
             dichro_bec.enable_plots()
             bec.disable_plots()
@@ -228,7 +235,6 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             yield from mv(pr_setup.positioner.parent.selectDC, 1)
 
     def _unstage():
-
         if pr_setup.positioner is not None:
             yield from mv(pr_setup.positioner.parent.selectDC, 1)
 
@@ -284,6 +290,7 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
     if magnet911 is None:
         # raise ValueError("magnet911 is not registered in the oregistry.")
         logger.debug("magnet911 is not registered in the oregistry.")
+
     def _stage():
         _ready = yield from rd(magnet911.ps.ready)
         if _ready == 0:
@@ -294,7 +301,7 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
             _message = yield from rd(magnet911.ps.status)
             print(_message, end="\r")
 
-            if time() - _start_time > 10*60:
+            if time() - _start_time > 10 * 60:
                 raise TimeoutError("Magnet took more than 10 min to be ready.")
 
             yield from sleep(0.1)
@@ -319,12 +326,11 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
 
 
 def stage_4idg_softglue_wrapper(plan, use_sg):
-
+    """Stage the 4IDG SoftGlue FPGA for fly-scan position streaming."""
     sg = oregistry.find("gsgz", allow_none=True)
     pos_stream = oregistry.find("pos_stream", allow_none=True)
 
     def _stage():
-        
         if sg is None:
             raise ValueError("4idG softglue must be loaded in oregistry!")
 
@@ -333,9 +339,11 @@ def stage_4idg_softglue_wrapper(plan, use_sg):
 
         # Reset softglue, make sure ckInt is enabled.
         yield from mv(
-            sg.buffers.in1.signal, "1!",
+            sg.buffers.in1.signal,
+            "1!",
             # sg.buffers.in2.signal, "1!",
-            sg.buffers.in4.signal, "1"
+            sg.buffers.in4.signal,
+            "1",
         )
 
         # Clear and enable DMA
@@ -344,34 +352,25 @@ def stage_4idg_softglue_wrapper(plan, use_sg):
         # Start pos stream
 
         yield from mv(
-            pos_stream.cam.array_counter, 0,
-            pos_stream.hdf1.capture, 1
+            pos_stream.cam.array_counter, 0, pos_stream.hdf1.capture, 1
         )
-        yield from mv(
-            pos_stream.cam.acquire, 1
-        )
+        yield from mv(pos_stream.cam.acquire, 1)
 
     def _unstage():
         # Make sure that the circular buffer is emptied
         for _ in range(7):
             yield from mv(sg.scaltostream.flush.signal, "1!")
             yield from sleep(0.1)
-        
+
         # Clear and disable DMA
         yield from sg.clear_disable_dma()
 
         # Stop softglue
-        yield from mv(
-            sg.buffers.in4.signal, "0"
-        )
-        
+        yield from mv(sg.buffers.in4.signal, "0")
+
         # Stop position stream
-        yield from mv(
-            pos_stream.hdf1.capture, 0
-        )
-        yield from mv(
-            pos_stream.cam.acquire, 0
-        )
+        yield from mv(pos_stream.hdf1.capture, 0)
+        yield from mv(pos_stream.cam.acquire, 0)
 
     def _inner_plan():
         yield from _stage()

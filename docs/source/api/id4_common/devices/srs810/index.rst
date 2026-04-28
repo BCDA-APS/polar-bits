@@ -1,0 +1,70 @@
+id4_common.devices.srs810
+=========================
+
+.. py:module:: id4_common.devices.srs810
+
+.. autoapi-nested-parse::
+
+   SRS 810 Lock-in.
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: LockinDevice(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   SRS 810 Lock-in amplifier.
+
+
+   .. py:attribute:: time_multiplier
+
+
+   .. py:attribute:: time_decade
+
+
+   .. py:attribute:: time_unit
+
+
+   .. py:attribute:: time_filter
+
+
+   .. py:attribute:: time_readback
+
+
+   .. py:attribute:: gain_multiplier
+
+
+   .. py:attribute:: gain_decade
+
+
+   .. py:attribute:: gain_unit
+
+
+   .. py:attribute:: gain_readback
+
+
+   .. py:attribute:: reserve
+
+
+   .. py:attribute:: reference_freq
+
+
+   .. py:attribute:: reference_phase
+
+
+   .. py:attribute:: chan1_x
+
+
+   .. py:attribute:: chan1_y
+
+
+   .. py:attribute:: chan1_r
+
+
+   .. py:attribute:: chan1_q

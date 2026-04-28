@@ -320,8 +320,6 @@ def sampleList():
     print("\nCurrent sample: " + _geom_.sample.name)
 
 
-
-
 def sampleChange(sample_key=None):
     """
     Change selected sample in hklpy2.
@@ -1644,8 +1642,7 @@ def restore_huber_from_scan(
             )
         else:
             raise NameError(
-                f"Could not find a setup for {diffractometer.name} "
-                f"in scan {scan_id}."
+                f"Could not find a setup for {diffractometer.name} in scan {scan_id}."
             )
         inp = list(info.items())[0]
     else:

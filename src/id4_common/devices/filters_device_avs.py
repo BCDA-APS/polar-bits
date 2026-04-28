@@ -2,19 +2,22 @@
 APS filter support
 """
 
-from ophyd import (
-    Component,
-    DynamicDeviceComponent,
-    Device,
-    EpicsSignal,
-    EpicsSignalRO,
-    EpicsSignalWithRBV,
-)
+from ophyd import Component
+from ophyd import Device
+from ophyd import DynamicDeviceComponent
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import EpicsSignalWithRBV
 
 NUM_FILTERS = 12
 
 
 class FilterSlot(Device):
+    """
+    Single AVS filter slot with insertion control, lock, material, and PV
+    routing.
+    """
+
     setpoint = Component(EpicsSignal, "", string=True)
     readback = Component(EpicsSignalRO, "_RBV", string=True)
 
@@ -31,13 +34,20 @@ class FilterSlot(Device):
 
 
 def make_filter_slots(num: int):
+    """
+    Return an OrderedDict of FilterSlot component definitions for a
+    DynamicDeviceComponent.
+    """
     defn = {}
     for n in range(1, num + 1):
-        defn[f"f{n}"] = (FilterSlot, f"filter{n :02d}", dict(kind="config"))
+        defn[f"f{n}"] = (FilterSlot, f"filter{n:02d}", dict(kind="config"))
     return defn
 
 
 class APSFilter(Device):
+    """
+    AVS-style APS filter bank with attenuation control and per-slot management.
+    """
 
     # Status and information
 

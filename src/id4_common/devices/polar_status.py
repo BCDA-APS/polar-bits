@@ -2,57 +2,64 @@
 Polar status
 """
 
-from ophyd import Component, FormattedComponent, EpicsSignalRO, Device
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsSignalRO
+from ophyd import FormattedComponent
 
 
-class GHStatus(Device):
+class HutchStatus(Device):
+    """EPICS status device for a single APS sector-4 experimental hutch."""
 
     user_enable = FormattedComponent(
-        EpicsSignalRO, "{prefix}{_hutch}_USER_KEY", string=True
+        EpicsSignalRO, "{prefix}{_hutch}:UserKey:CM", string=True
     )
 
     aps_enable = FormattedComponent(
-        EpicsSignalRO, "{prefix}{_hutch}_APS_KEY", string=True
+        EpicsSignalRO, "{prefix}{_hutch}:APSKey:CM", string=True
     )
 
     searched = FormattedComponent(
-        EpicsSignalRO, "{prefix}{_hutch}_SEARCHED", string=True
+        EpicsSignalRO, "{prefix}{_hutch}:Secure:BM", string=True
     )
 
     beam_present = FormattedComponent(
-        EpicsSignalRO, "{prefix}{_hutch}_BEAM_PRESENT", string=True
+        EpicsSignalRO, "{prefix}{_hutch}:BeamPresent:CM", string=True
     )
 
-    manual_shutter = FormattedComponent(
-        EpicsSignalRO, "{prefix}S{_hutch}S_BLOCKING_BEAM.VAL", string=True
+    shutter = FormattedComponent(
+        EpicsSignalRO,
+        "{self.parent.prefix}S{_hutch}S:BLEPS_Status:CM",
+        string=True,
     )
 
     def __init__(self, prefix, hutch=None, **kwargs):
+        """
+        Initialize HutchStatus with the single-letter hutch identifier (e.g.
+        'B').
+        """
         self._hutch = hutch
         super().__init__(prefix, **kwargs)
 
 
-class ABStatus(GHStatus):
-    beam_ready = FormattedComponent(
-        EpicsSignalRO, "{prefix}{self._beam_ready}", string=True
+class AStatus(HutchStatus):
+    """HutchStatus variant for the A hutch with its front-end shutter PV."""
+
+    shutter = FormattedComponent(
+        EpicsSignalRO, "{self.parent.prefix}FES:BeamBlocking:CM", string=True
     )
-
-    manual_shutter = None
-
-    def __init__(self, prefix, hutch=None, **kwargs):
-        if hutch == "A":
-            self._beam_ready = "FES_PERMIT.VAL"
-        elif hutch == "B":
-            self._beam_ready = "SBS_PERMIT.VAL"
-        super().__init__(prefix, hutch=hutch, **kwargs)
 
 
 class Status4ID(Device):
+    """
+    Aggregate status device for all hutches and the front-end at APS sector 4.
+    """
 
-    online = Component(EpicsSignalRO, "ACIS_GLOBAL_ONLINE.VAL", string=True)
-    acis = Component(EpicsSignalRO, "ACIS_FES_PERMIT.VAL", string=True)
+    online = Component(EpicsSignalRO, "FES:GlobalOnline:CM", string=True)
+    acis = Component(EpicsSignalRO, "FES:ACISPermit:CM", string=True)
+    fe_eps = Component(EpicsSignalRO, "FES:FEEPSPermit:CM", string=True)
 
-    a_hutch = Component(ABStatus, "", hutch="A", labels=("4ida",))
-    b_hutch = Component(ABStatus, "", hutch="B", labels=("4idb",))
-    g_hutch = Component(GHStatus, "", hutch="G", labels=("4idg",))
-    h_hutch = Component(GHStatus, "", hutch="H", labels=("4idh",))
+    a_hutch = Component(AStatus, "Sta", hutch="A", labels=("4ida",))
+    b_hutch = Component(HutchStatus, "Sta", hutch="B", labels=("4idb",))
+    g_hutch = Component(HutchStatus, "Sta", hutch="G", labels=("4idg",))
+    h_hutch = Component(HutchStatus, "Sta", hutch="H", labels=("4idh",))

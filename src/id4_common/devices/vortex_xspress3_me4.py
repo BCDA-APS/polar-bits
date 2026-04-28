@@ -1,31 +1,32 @@
 """Eiger 1M setup"""
 
-from ophyd import (
-    ADComponent,
-    Staged,
-    Component,
-    EpicsSignalRO,
-    Device,
-    EpicsSignal,
-    SignalRO,
-    DynamicDeviceComponent,
-)
-from ophyd.areadetector import DetectorBase, EpicsSignalWithRBV
-from ophyd.areadetector.trigger_mixins import TriggerBase, ADTriggerStatus
-from bluesky.plan_stubs import wait_for
 import asyncio
-from pathlib import Path
 from collections import OrderedDict
-from time import time as ttime
-from apsbits.core.instrument_init import oregistry
 from logging import getLogger
-from .ad_mixins import (
-    ROIPlugin,
-    AttributePlugin,
-    ROIStatPlugin,
-    PolarHDF5Plugin,
-    VortexDetectorCam,
-)
+from pathlib import Path
+from time import time as ttime
+
+from apsbits.core.instrument_init import oregistry
+from bluesky.plan_stubs import wait_for
+from ophyd import ADComponent
+from ophyd import Component
+from ophyd import Device
+from ophyd import DynamicDeviceComponent
+from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
+from ophyd import SignalRO
+from ophyd import Staged
+from ophyd.areadetector import DetectorBase
+from ophyd.areadetector import EpicsSignalWithRBV
+from ophyd.areadetector.trigger_mixins import ADTriggerStatus
+from ophyd.areadetector.trigger_mixins import TriggerBase
+
+from .ad_mixins import AttributePlugin
+from .ad_mixins import PolarHDF5Plugin
+from .ad_mixins import ROIPlugin
+from .ad_mixins import ROIStatPlugin
+from .ad_mixins import VortexDetectorCam
+from .counters_mixin import ROICountersMixin
 
 logger = getLogger(__name__)
 
@@ -41,6 +42,10 @@ class Trigger(TriggerBase):
     _status_type = ADTriggerStatus
 
     def __init__(self, *args, image_name=None, **kwargs):
+        """
+        Initialize Trigger, setting acquisition and busy signals from the
+        Xspress3 CAM.
+        """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
@@ -54,18 +59,23 @@ class Trigger(TriggerBase):
         self._sleep_after_trigger = 0.1
 
     def setup_manual_trigger(self):
+        """
+        Configure stage_sigs for internal single-image triggered acquisition.
+        """
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "Internal"
         self.cam.stage_sigs["num_images"] = 1
         self.cam.stage_sigs["wait_for_plugins"] = "Yes"
 
     def setup_external_trigger(self):
+        """Configure stage_sigs for TTL-veto flyscan triggering."""
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
         self.cam.stage_sigs["num_images"] = MAX_IMAGES
         self.cam.stage_sigs["wait_for_plugins"] = "No"
 
     def setup_sgzbca_trigger(self):
+        """Configure stage_sigs for SoftGlue BCA TTL-veto triggering."""
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
         self.cam.stage_sigs["wait_for_plugins"] = "No"
@@ -79,7 +89,10 @@ class Trigger(TriggerBase):
             )
 
     def stage(self):
-
+        """
+        Erase the detector, configure the trigger mode, and arm the Xspress3
+        before staging.
+        """
         self.cam.erase.set(1).wait(timeout=10)
 
         if self._flysetup:
@@ -95,6 +108,10 @@ class Trigger(TriggerBase):
             self._acquisition_signal.set(1).wait(timeout=10)
 
     def unstage(self):
+        """
+        Stop the Xspress3, unsubscribe the busy callback, and restore manual-
+        trigger mode.
+        """
         super().unstage()
         self.cam.acquire.set(0).wait(timeout=10)
         self._flysetup = False
@@ -103,6 +120,10 @@ class Trigger(TriggerBase):
         self.setup_manual_trigger()
 
     def trigger(self):
+        """
+        Start one Xspress3 acquisition and return a status object that completes
+        when done.
+        """
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
@@ -129,6 +150,11 @@ class Trigger(TriggerBase):
             self._status = None
 
     def arm_plan(self):
+        """
+        Bluesky plan that arms the Xspress3 and waits until the detector is
+        ready.
+        """
+
         async def _wait_for_read():
             future = asyncio.Future()
 
@@ -139,7 +165,9 @@ class Trigger(TriggerBase):
                 # while status != 1:
                 #     status = self.cam.acquire_busy.get()
 
-                while (self.cam.acquire_busy.get() != 1) | (self.cam.detector_state.get() != 1):
+                while (self.cam.acquire_busy.get() != 1) | (
+                    self.cam.detector_state.get() != 1
+                ):
                     await asyncio.sleep(0.01)
 
                 await asyncio.sleep(self._arm_plan_delay)
@@ -155,6 +183,11 @@ class Trigger(TriggerBase):
 
 
 class ROIStatN(Device):
+    """
+    Single ROI statistics device with name, bounds, and integrated-count
+    readbacks.
+    """
+
     roi_name = Component(EpicsSignal, "Name", kind="config")
     use = Component(EpicsSignal, "Use", kind="config")
 
@@ -177,6 +210,11 @@ class ROIStatN(Device):
 
 
 class VortexROIStatPlugin(ROIStatPlugin):
+    """
+    ROIStatPlugin with eight named ROI statistics sub-devices for the Vortex
+    Xspress3.
+    """
+
     _default_read_attrs = tuple(f"roi{i}" for i in range(1, MAX_ROIS + 1))
 
     # ROIs
@@ -191,6 +229,9 @@ class VortexROIStatPlugin(ROIStatPlugin):
 
 
 class VortexSCA(AttributePlugin):
+    """
+    Xspress3 per-channel SCA providing deadtime and event-count attributes.
+    """
 
     _default_read_attrs = (
         "clock_ticks",
@@ -220,6 +261,11 @@ class VortexSCA(AttributePlugin):
 
 
 class VortexHDF1Plugin(PolarHDF5Plugin):
+    """
+    HDF5 plugin for the Xspress3 4-element Vortex with a separate array-counter
+    readback PV.
+    """
+
     # The array counter readback pv is different...
     array_counter = Component(EpicsSignal, "ArrayCounter", kind="config")
     array_counter_readback = Component(
@@ -231,15 +277,22 @@ class TotalCorrectedSignal(SignalRO):
     """Signal that returns the deadtime corrected total counts"""
 
     def __init__(self, prefix, roi_index, **kwargs):
+        """
+        Initialize TotalCorrectedSignal, storing the ROI index for deadtime-
+        corrected summation.
+        """
         if not roi_index:
             raise ValueError(
-                "chnum must be the channel number, but "
-                "f{roi_index} was passed."
+                "chnum must be the channel number, but f{roi_index} was passed."
             )
         self.roi_index = roi_index
         super().__init__(**kwargs)
 
     def get(self, **kwargs):
+        """
+        Return the sum of deadtime-corrected ROI counts across all Xspress3
+        channels.
+        """
         value = 0
         for ch_num in range(1, self.root.cam.num_channels.get() + 1):
             channel = getattr(self.root, f"sca{ch_num}")
@@ -264,7 +317,11 @@ def _totals(attr_fix, id_range):
     return defn
 
 
-class VortexXspress34(Trigger, DetectorBase):
+class VortexXspress34(Trigger, ROICountersMixin, DetectorBase):
+    """
+    Four-element Vortex detector driven by an Xspress3 controller with HDF5 file
+    saving.
+    """
 
     _default_configuration_attrs = ("cam", "chan1", "chan2", "chan3", "chan4")
     _default_read_attrs = (
@@ -316,14 +373,15 @@ class VortexXspress34(Trigger, DetectorBase):
         hdf1_file_format="%s/%s_%6.6d.h5",
         **kwargs,
     ):
+        """
+        Initialize VortexXspress34 with default HDF5 save folder and file-name
+        format.
+        """
         self.default_folder = default_folder
         self.hdf1_file_format = hdf1_file_format
         super().__init__(*args, **kwargs)
 
-    # Make this compatible with other detectors
-    @property
-    def preset_monitor(self):
-        return self.cam.acquire_time
+    _preset_monitor_attr = "cam.acquire_time"
 
     def align_on(self, time=0.1):
         """Start detector in alignment mode"""
@@ -338,18 +396,26 @@ class VortexXspress34(Trigger, DetectorBase):
         self.cam.acquire.set(0).wait(timeout=10)
 
     def save_images_on(self):
+        """Enable the HDF5 plugin so acquisitions are written to disk."""
         self.hdf1.enable.set("Enable").wait(timeout=10)
 
     def save_images_off(self):
+        """Disable the HDF5 plugin so acquisitions are not written to disk."""
         self.hdf1.enable.set("Disable").wait(timeout=10)
 
     def auto_save_on(self):
+        """Enable HDF5 autosave so files are written automatically."""
         self.hdf1.autosave.put("on")
 
     def auto_save_off(self):
+        """Disable HDF5 autosave."""
         self.hdf1.autosave.put("off")
 
     def wait_for_detector(self):
+        """
+        Bluesky plan that waits until the detector array counter stops
+        incrementing.
+        """
 
         async def _wait_for_read():
             future = asyncio.Future()
@@ -384,7 +450,7 @@ class VortexXspress34(Trigger, DetectorBase):
         yield from wait_for([_wait_for_read], timeout=15)
 
     def default_settings(self):
-
+        """Configure HDF5 path, stage signals, ROIs, and manual-trigger mode."""
         self.hdf1.file_template.put(self.hdf1_file_format)
         self.hdf1.file_path.put(str(self.default_folder))
         self.hdf1.num_capture.put(0)
@@ -411,10 +477,17 @@ class VortexXspress34(Trigger, DetectorBase):
 
     @property
     def read_rois(self):
+        """
+        Return the list of ROI indices that are currently included in reads.
+        """
         return self._read_rois
 
     @read_rois.setter
     def read_rois(self, rois):
+        """
+        Set which ROI indices are read and update the stats plugin component
+        kinds.
+        """
         for pixel in range(1, 5):
             pix = getattr(self, f"stats{pixel}")
             for i in range(1, MAX_ROIS + 1):
@@ -423,9 +496,11 @@ class VortexXspress34(Trigger, DetectorBase):
         self._read_rois = list(rois)
 
     def select_roi(self, rois):
-
+        """
+        Set the hinted ROI totals to those in rois, keeping other read_rois as
+        normal.
+        """
         for i in range(1, MAX_ROIS + 1):
-
             if i in rois:
                 getattr(self.total, f"roi{i}").kind = "hinted"
                 if i not in self.read_rois:
@@ -447,34 +522,36 @@ class VortexXspress34(Trigger, DetectorBase):
         #         getattr(pix, f"roi{i}").kind = kr
 
     def plot_roi1(self):
+        """Set ROI 1 as the hinted plot channel."""
         self.select_roi([1])
 
     def plot_roi2(self):
+        """Set ROI 2 as the hinted plot channel."""
         self.select_roi([2])
 
     def plot_roi3(self):
+        """Set ROI 3 as the hinted plot channel."""
         self.select_roi([3])
 
     def plot_roi4(self):
+        """Set ROI 4 as the hinted plot channel."""
         self.select_roi([4])
 
     @property
     def label_option_map(self):
+        """
+        Return a mapping from human-readable ROI label strings to ROI index
+        integers.
+        """
         return {f"ROI{i} Total": i for i in range(1, MAX_ROIS + 1)}
-
-    @property
-    def plot_options(self):
-        # Return all named scaler channels
-        return list(self.label_option_map.keys())
-
-    def select_plot(self, channels):
-        chans = [self.label_option_map[i] for i in channels]
-        self.select_roi(chans)
 
     def setup_images(
         self, base_folder, file_name_base, file_number, flyscan=False
     ):
-
+        """
+        Configure HDF5 file name, number, path, and flysetup flag for an
+        upcoming scan.
+        """
         self.hdf1.file_name.set(file_name_base).wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.auto_save_on()
@@ -491,6 +568,7 @@ class VortexXspress34(Trigger, DetectorBase):
 
     @property
     def save_image_flag(self):
+        """Return True if the HDF5 plugin is enabled or autosave is on."""
         _hdf1_auto = True if self.hdf1.autosave.get() == "on" else False
         _hdf1_on = True if self.hdf1.enable.get() == "Enable" else False
         return _hdf1_on or _hdf1_auto

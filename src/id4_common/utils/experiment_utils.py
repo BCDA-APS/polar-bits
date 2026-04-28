@@ -15,26 +15,26 @@ __all__ = """
 """.split()
 
 # TODO: Temporarily removed
-from apstools.utils import (
-    dm_start_daq,
-    dm_get_experiment_datadir_active_daq,
-    dm_setup
-)
-from dm import ObjectNotFound, DmException
+from logging import getLogger
 from os import chdir
 from pathlib import Path
-from apsbits.utils.config_loaders import get_config
+
 from apsbits.core.instrument_init import oregistry
-from logging import getLogger
-from .dm_utils import (
-    get_esaf_info,
-    get_proposal_info,
-    get_experiment,
-    dm_experiment_setup,
-    get_current_run_name,
-)
-from .run_engine import RE, cat
+from apsbits.utils.config_loaders import get_config
+from apstools.utils import dm_get_experiment_datadir_active_daq
+from apstools.utils import dm_setup
+from apstools.utils import dm_start_daq
+from dm import DmException
+from dm import ObjectNotFound
+
 from ..callbacks.spec_data_file_writer import specwriter
+from .dm_utils import dm_experiment_setup
+from .dm_utils import get_current_run_name
+from .dm_utils import get_esaf_info
+from .dm_utils import get_experiment
+from .dm_utils import get_proposal_info
+from .run_engine import RE
+from .run_engine import cat
 
 logger = getLogger(__name__)
 logger.info(__file__)
@@ -53,8 +53,7 @@ def _get_dm_experiment():
     dm = oregistry.find("dm_experiment", allow_none=True)
     if dm is None:
         raise ValueError(
-            "The dm_experiment device was not found. Please load and register "
-            "it."
+            "The dm_experiment device was not found. Please load and register it."
         )
     return dm
 
@@ -102,8 +101,7 @@ class ExperimentClass:
         print("\n-- Experiment setup --")
         if isinstance(self.proposal, dict):
             output = (
-                f"Proposal #{self.proposal['id']} - {self.proposal['title']}"
-                "\n"
+                f"Proposal #{self.proposal['id']} - {self.proposal['title']}\n"
             )
         else:
             output = "No proposal entered\n"
@@ -317,13 +315,16 @@ class ExperimentClass:
         dm_setup(iconfig["DM_SETUP_FILE"])
 
         # Check DM DAQ is running for this experiment, if not then start it.
-        if dm_get_experiment_datadir_active_daq(
-            self.experiment_name, data_directory
-        ) is None:
+        if (
+            dm_get_experiment_datadir_active_daq(
+                self.experiment_name, data_directory
+            )
+            is None
+        ):
+            dm_setup(iconfig["DM_SETUP_FILE"])
 
             logger.info(
-                "Starting DM voyager DAQ: experiment %r",
-                self.experiment_name
+                "Starting DM voyager DAQ: experiment %r", self.experiment_name
             )
             dm_start_daq(self.experiment_name, "@sojourner")
 
@@ -373,15 +374,16 @@ class ExperimentClass:
         self.spec_file = specwriter.spec_filename.name
 
     def load_from_bluesky(
-            self,
-            scan_id: int = -1,
-            reset_scan_id: int = -1,
-            skip_DM: bool = False,
-            useRE=False
-        ):
-        metadata = RE.md if useRE == True else cat[scan_id].metadata["start"]
+        self,
+        scan_id: int = -1,
+        reset_scan_id: int = -1,
+        skip_DM: bool = False,
+        useRE=False,
+    ):
+        metadata = RE.md if useRE is True else cat[scan_id].metadata["start"]
         kwargs = {
-            key: metadata[key] for key in (
+            key: metadata[key]
+            for key in (
                 "esaf_id",
                 "proposal_id",
                 "base_name",
@@ -504,7 +506,6 @@ class ExperimentClass:
         reset_scan_id: int = None,
         skip_DM: bool = False,
     ):
-
         self.setup(
             esaf_id,
             proposal_id,
