@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -500,6 +500,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../aps_undulator/index.html">id4_common.devices.aps_undulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../chopper_device/index.html">id4_common.devices.chopper_device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -577,7 +578,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/aps_functions/index.html">id4_common.utils.aps_functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class/index.html">id4_common.utils.counters_class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class_for_dual/index.html">id4_common.utils.counters_class_for_dual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
@@ -588,6 +588,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_new/index.html">id4_common.utils.hkl_utils_new</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/local_magics/index.html">id4_common.utils.local_magics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports/index.html">id4_common.utils.polartools_hklpy_imports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports_hklpy2/index.html">id4_common.utils.polartools_hklpy_imports_hklpy2</a></li>
@@ -849,7 +850,7 @@ paths.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lightfield.</span></span><span class="sig-name descname"><span class="pre">LightFieldDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_name_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bluesky_files_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windows_files_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_lightfield.MySingleTrigger" title="id4_common.devices.ad_lightfield.MySingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MySingleTrigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_lightfield.MySingleTrigger" title="id4_common.devices.ad_lightfield.MySingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MySingleTrigger</span></code></a>, <a class="reference internal" href="../counters_mixin/index.html#id4_common.devices.counters_mixin.CountersMixin" title="id4_common.devices.counters_mixin.CountersMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.counters_mixin.CountersMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
 <p>Princeton Instruments LightField spectrometer detector with HDF5 and SPE
 file writing.</p>
 <dl class="py attribute">
@@ -893,9 +894,27 @@ file writing.</p>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.preset_monitor">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.preset_monitor" title="Link to this definition">#</a></dt>
-<dd><p>Return the signal used to set exposure time.</p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.label_option_map">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.label_option_map" title="Link to this definition">#</a></dt>
+<dd><p>No selectable plot channels — LightField saves full spectra.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.plot_options">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.plot_options" title="Link to this definition">#</a></dt>
+<dd><p>Return empty list — LightField has no selectable plot channels.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.select_plot">
+<span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.select_plot" title="Link to this definition">#</a></dt>
+<dd><p>No-op — LightField has no selectable plot channels.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.field_for_label">
+<span class="sig-name descname"><span class="pre">field_for_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.field_for_label" title="Link to this definition">#</a></dt>
+<dd><p>Return label unchanged — LightField has no channel mapping.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -938,6 +957,14 @@ file writing.</p>
 <dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.save_image_flag">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">save_image_flag</span></span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.save_image_flag" title="Link to this definition">#</a></dt>
 <dd><p>Return True; LightField detector always saves images.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lightfield.LightFieldDetector.predict_save_path">
+<span class="sig-name descname"><span class="pre">predict_save_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lightfield.LightFieldDetector.predict_save_path" title="Link to this definition">#</a></dt>
+<dd><p>Return (full_path, relative_path) without any EPICS I/O.</p>
+<p>Overrides CountersMixin default because LightField uses read_path.name
+(not a trailing slash) as the directory token in make_write_read_paths.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1040,7 +1067,10 @@ file writing.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.default_ioc_folder"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.default_ioc_folder</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.bluesky_files_root"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.bluesky_files_root</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.windows_files_root"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.windows_files_root</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.preset_monitor"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.preset_monitor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.label_option_map"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.label_option_map</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.plot_options"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.plot_options</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.select_plot"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.select_plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.field_for_label"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.field_for_label()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.save_images_on"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.save_images_on()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.save_images_off"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.save_images_off()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.auto_save_on"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.auto_save_on()</span></code></a></li>
@@ -1048,6 +1078,7 @@ file writing.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.default_settings"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.default_settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.setup_images"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.setup_images()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.save_image_flag"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.save_image_flag</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.LightFieldDetector.predict_save_path"><code class="docutils literal notranslate"><span class="pre">LightFieldDetector.predict_save_path()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lightfield.spectrometer"><code class="docutils literal notranslate"><span class="pre">spectrometer</span></code></a></li>
