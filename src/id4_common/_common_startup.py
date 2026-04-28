@@ -124,7 +124,7 @@ else:
     from id4_common.utils.load_vortex import load_vortex  # noqa: F401
     from id4_common.utils.logbook_mcr import *  # noqa: F403
     from id4_common.utils.oregistry_auxiliar import get_devices  # noqa: F401
-    from id4_common.utils.polartools_hklpy_imports import *  # noqa: F403
+    from id4_common.utils.polartools_hklpy2_imports import *  # noqa: F403
     from id4_common.utils.utilities import *  # noqa: F403
 
 # Use only the A shutter suspender, but the B shutter is still there.
