@@ -50,8 +50,7 @@ try:
         counters.plotselect(11, 0)  # noqa: F405
 
         # Diffractometer
-        select_diffractometer(get_huber_euler())  # noqa: F405
-        select_engine_for_psi(get_huber_euler_psi())  # noqa: F405
+        set_diffractometer(geometries.huber_euler)  # noqa: F405
     else:
         logger.info(
             "No device has been loaded. Please see the reload_all_devices, "
