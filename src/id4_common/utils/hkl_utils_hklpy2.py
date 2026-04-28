@@ -108,6 +108,7 @@ __all__ = """
     read_config
     restore_huber_from_scan
     set_detector
+    geometries
 """.split()
 
 polar_config = pathlib.Path("polar-config.json")
@@ -166,8 +167,6 @@ class Geometries:
 geometries = Geometries(
     "huber_euler", "huber_euler_psi", "huber_hp", "huber_hp_psi"
 )
-
-# set_diffractometer(geometries.huber_euler)
 
 _DIFFRACTOMETER_NAMES = ["huber_euler", "huber_hp"]
 
