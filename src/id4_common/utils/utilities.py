@@ -25,7 +25,7 @@ import gi
 
 gi.require_version("Hkl", "5.0")
 from apstools import utils
-from gi.repository import Hkl  # noqa: E402
+from gi.repository import Hkl
 from hkl import user
 from hkl import util
 from hkl.user import _check_geom_selected

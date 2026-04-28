@@ -5,12 +5,12 @@ from logging import getLogger
 from pathlib import Path
 
 import yaml
-from apsbits.core.instrument_init import make_devices
 from apsbits.core.instrument_init import oregistry
 from apstools.utils import dynamic_import
 from ophyd import OphydObject
 from pyRestTable import Table
 
+from .make_devices import make_devices
 from .run_engine import RE
 from .run_engine import sd
 
@@ -410,7 +410,8 @@ def reload_all_devices(file="devices.yml", stations=None):
     if stations is None:
         stations = ["core", "4idb", "4idg", "4idh"]
 
-    RE(make_devices(clear=True, file=file))  # Create the devices.
+    # Create the devices.
+    RE(make_devices(clear=True, file=file, connect=False))
 
     for device in oregistry.findall(stations):
         connect_device(device, raise_error=False)

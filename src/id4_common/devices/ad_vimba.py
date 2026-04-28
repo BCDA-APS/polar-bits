@@ -18,6 +18,7 @@ from .ad_mixins import PolarHDF5Plugin
 from .ad_mixins import ROIPlugin
 from .ad_mixins import StatsPlugin
 from .ad_mixins import TriggerBase
+from .counters_mixin import CountersMixin
 
 
 class Trigger(TriggerBase):
@@ -192,7 +193,7 @@ class VimbaCam(CamBase):
     gain_auto = ADComponent(EpicsSignalWithRBV, "GainAuto", string=True)
 
 
-class VimbaDetector(Trigger, DetectorBase):
+class VimbaDetector(Trigger, CountersMixin, DetectorBase):
     """
     Vimba area detector with ROI/stats plugins, HDF5 output, and alignment
     helpers.
@@ -248,11 +249,7 @@ class VimbaDetector(Trigger, DetectorBase):
         self.cam.wait_for_connection(all_signals=True, timeout=timeout)
         super().wait_for_connection(all_signals, timeout)
 
-    # Make this compatible with other detectors
-    @property
-    def preset_monitor(self):
-        """Return the cam acquire_time signal used as the preset monitor."""
-        return self.cam.acquire_time
+    _preset_monitor_attr = "cam.acquire_time"
 
     def align_on(self, time=0.1):
         """Start detector in alignment mode"""
@@ -407,3 +404,12 @@ class VimbaDetector(Trigger, DetectorBase):
         """
         chans = [self.label_option_map[i] for i in channels]
         self.plot_select(chans)
+
+    def field_for_label(self, label):
+        """Return the ophyd field name for a plot-option label."""
+        stats_index = self.label_option_map[label]
+        return getattr(self, f"stats{stats_index}").total.name
+
+    def select_read(self, channels):
+        """No-op: all stats channels are always read (only hinted/normal differ)."""
+        pass

@@ -37,8 +37,13 @@ queue-monitor &                           # GUI client
 **Start interactive session (IPython):**
 ```bash
 ipython
-# then:
+# Combined session (prompts to load all stations' devices):
 from id4_common.startup import *
+# Or per-beamline (loads only that station's devices, no prompt):
+from id4_b.startup import *      # 4IDB
+from id4_g.startup import *      # 4IDG
+from id4_h.startup import *      # 4IDH
+from id4_raman.startup import *  # Raman
 ```
 
 ## Architecture
@@ -106,15 +111,20 @@ Multiple devices sharing a class must all be listed under **one** class key in `
 
 ### Startup Flow
 
-`startup.py` orchestrates the session:
-1. Load `iconfig.yml`
-2. Set up APS DM integration (`aps_dm_setup`)
-3. Initialize RunEngine (`RE`), databroker catalog (`cat`), BEC, and supplementary data streams
-4. Conditionally load SPEC/NeXus callbacks based on `iconfig.yml`
-5. Load dichro stream callback
-6. Prompt user to load devices (calls `make_devices` which reads `devices.yml`)
-7. Connect devices tagged with that beamline's station labels
-8. Install shutter suspenders on the RunEngine
+There are two startup entry points:
+
+1. `id4_{b,g,h,raman}/startup.py` — per-beamline. Loads station-specific config, then `from id4_common._common_startup import *`, then `make_devices(..., connect=False)`, then `connect_device(...)` for devices matching that beamline's stations list. No interactive prompt.
+2. `id4_common/startup.py` — combined. Loads the shared config and prompts the user `"Do you want to load all devices?"`. If yes, loads every station (`["core", "4idb", "4idg", "4idh"]`).
+
+Both paths share `id4_common/_common_startup.py`, which in order:
+1. Calls `init_instrument("guarneri")` and clears `oregistry`
+2. Sets up APS DM integration (`aps_dm_setup`)
+3. Registers Bluesky and POLAR-local IPython magics
+4. Imports `RE`, `bec`, `cat`, `cat_legacy`, `peaks`, `sd`
+5. Conditionally loads NeXus and SPEC callbacks based on `iconfig.yml`
+6. Loads dichro stream callbacks
+7. In non-QueueServer sessions, imports plans, suspenders, counters, attenuators, etc.
+8. Installs the A-shutter suspender on the RunEngine
 
 Each beamline startup connects only the devices whose labels match its `stations` list:
 
@@ -123,17 +133,33 @@ Each beamline startup connects only the devices whose labels match its `stations
 | 4IDB | `["core", "4idb"]` |
 | 4IDG | `["core", "4idg"]` |
 | 4IDH | `["core", "4idh"]` |
-| Raman | (beamline-specific) |
+| Raman | `["4idb"]` |
 
 Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry the `"core"` label in `devices.yml`.
 
 ### Key Components in `id4_common/`
 
-- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `transfocator_device.py` (`make_transfocator_class` factory)
-- **`plans/`** — Bluesky scan plans: `local_scans.py` (lup, ascan, grid_scan), `dm_plans.py` (DM workflow submission), `center_maximum.py`, `flyscan_demo.py`
+- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `transfocator_device.py` (`make_transfocator_class` factory), `counters_mixin.py` (detector plotting API — see below)
+- **`plans/`** — Bluesky scan plans: `local_scans.py` (lup, ascan, grid_scan, qxscan, count, mv/mvr), `_local_scan_utils.py` (private helpers shared by local_scans — `_hkl_motors`, `reset_real_motors_decorator` for fixQ position restore, `_setup_file_io`, etc.), `local_preprocessors.py` (decorators: `configure_counts`, `stage_dichro`, `stage_magnet911`, `stage_4idg_softglue`, `extra_devices`), `dm_plans.py` (DM workflow submission), `center_maximum.py`, `flyscan_demo.py`
 - **`callbacks/`** — `spec_data_file_writer.py`, `nexus_data_file_writer.py`, `dichro_stream.py`
-- **`utils/`** — ~36 modules including HKL/crystallography utilities, DM integration, counters class, attenuator control, device loader (`device_loader.py`), experiment utilities, and `polartools`/`hklpy2` import wrappers
+- **`utils/`** — ~30 modules including HKL/crystallography utilities, DM integration, counters class (`counters_class.py`, provides `CountersClass` with `is_scaler_monitor`, `monitor_field`, `plotselect()`), attenuator control, device loader (`device_loader.py`), local `make_devices` shim (`make_devices.py`, see "Deferred EPICS Connection Pattern"), experiment utilities, and `polartools`/`hklpy2` import wrappers
 - **`suspenders/`** — shutter-based RunEngine suspenders for beamline safety
+
+### Detector Plotting API
+
+All detectors used with `CountersClass.plotselect()` must inherit from one of:
+
+- **`CountersMixin`** (abstract) — defines the five-method contract: `plot_options`, `label_option_map`, `select_plot`, `field_for_label`, `select_read` (no-op default). Also provides `preset_monitor` resolved from a dotted-path class attribute.
+- **`ROICountersMixin(CountersMixin)`** — concrete shared implementation for MCA detectors (Xspress3, Dante, XMAP). Subclasses supply `label_option_map` and `select_roi`; everything else is inherited.
+
+Set the count-time signal via a class attribute instead of overriding the property:
+
+```python
+class MyDetector(Trigger, CountersMixin, DetectorBase):
+    _preset_monitor_attr = "cam.acquire_time"  # dotted path, resolved at runtime
+```
+
+For devices where `preset_monitor` is an ophyd `Component` (e.g. `LocalScalerCH`), the class-body descriptor shadows the inherited property automatically — no override needed.
 
 ### Device Loading at Runtime
 
@@ -151,8 +177,22 @@ The `oregistry` (from `apsbits`) is the central device registry.
 
 ### Deferred EPICS Connection Pattern
 
-`make_devices()` instantiates all device objects **without** making EPICS connections.
-Only `connect_device()` (via `wait_for_connection()`) triggers actual EPICS interaction.
+All beamline `startup.py` files use the local `make_devices` from
+`id4_common.utils.make_devices` and call it with `connect=False`. With that
+flag, `make_devices()` only instantiates and registers devices in `oregistry`
+/ `__main__` — it does **not** trigger EPICS connections. The subsequent
+`for device in oregistry.findall([...]): connect_device(device, raise_error=False)`
+loop owns all EPICS I/O.
+
+This local module is a near-line-for-line copy of `apsbits.core.instrument_init`'s
+`make_devices` and `guarneri_namespace_loader`, with a single `connect: bool = True`
+flag added to each. Remove it once the same flag is available upstream in apsbits.
+Until then, every call site (the four beamline startups, the orphan
+`id4_common/startup.py`, and `reload_all_devices` in `device_loader.py`) must use
+`connect=False`; the upstream apsbits `make_devices` eagerly calls
+`await instrument.connect()` and waits up to `DEFAULT_TIMEOUT` per disconnected
+device, generating ~70 s of dead time and `NotConnectedError` log spam when any
+IOC is off.
 
 **Rule:** Never subscribe to or read from EPICS/PVA signals inside `__init__`. Instead,
 implement a `_post_connect_setup()` method on the device class. `connect_device()` calls
@@ -187,8 +227,7 @@ and hosted on GitHub Pages. Source files live in `docs/source/`.
 
 **Build locally:**
 ```bash
-pip install -e ".[doc]" sphinx-autoapi
-sphinx-build -M html docs/source docs/build
+conda run -n p313 sphinx-build -M html docs/source docs/build
 # open docs/build/html/index.html
 ```
 
@@ -223,23 +262,9 @@ docs/source/
 - Example pages only document functions **defined in this repo**; user-defined macros belong in `examples/writing_macros.md` as patterns, not as calls
 - `docs/source/api/` is committed but regenerated on every build; consider adding it to `.gitignore` if it becomes a maintenance burden
 
-## Usage Logs
-
-`.usage_logs/` contains IPython session logs and example macro/startup files
-from real beamtime sessions. These are the source of truth for example content
-in the docs. Key files:
-
-| File | Content |
-|------|---------|
-| `startup_4idg_1.py`, `startup_4idh.py` | Per-session startup pattern |
-| `startup_4idg_2.py` | Non-interactive `experiment_setup()` example |
-| `motor_shortcuts_4idh.py` | Motor shortcut pattern for magnet911 |
-| `macros_4idg.py` | 4IDG user macro examples (Bluesky plans) |
-| `macros_4idh_1.py` | 4IDH user macro examples (XMCD, field control) |
-
 ## Code Style
 
-- Line length: 80 (black), 88 (ruff)
+- Line length: 80 (both ruff and black configs in `pyproject.toml`)
 - Python 3.11+
 - Linting: ruff (replaces flake8/isort/black in pre-commit)
 - Docstrings required for all public classes/functions/methods/modules (ruff rules D100-D107)

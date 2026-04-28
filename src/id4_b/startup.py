@@ -12,152 +12,39 @@ Includes:
 import logging
 from pathlib import Path
 
-from apsbits.core.instrument_init import init_instrument
-from apsbits.core.instrument_init import make_devices
-from apsbits.utils.config_loaders import get_config
 from apsbits.utils.config_loaders import load_config
 from apsbits.utils.config_loaders import load_config_yaml
 from apsbits.utils.config_loaders import update_config
-from apsbits.utils.helper_functions import register_bluesky_magics
-from apsbits.utils.helper_functions import running_in_queueserver
-from id4_common.utils.aps_functions import aps_dm_setup
-from IPython import get_ipython
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
 
-# Get the path to the instrument package
 instrument_path = Path(__file__).parent
 
-# Load configuration to be used by the instrument.
-
-# First the general iconfig
 iconfig_path = instrument_path.parent / "id4_common" / "configs" / "iconfig.yml"
 load_config(iconfig_path)
-
-# Load extras for this station and update the config
-extras = load_config_yaml(instrument_path / "configs" / "iconfig_extras.yml")
-update_config(extras)
-
-# Get the configuration
-iconfig = get_config()
+update_config(
+    load_config_yaml(instrument_path / "configs" / "iconfig_extras.yml")
+)
 
 logger.info("Starting Instrument with iconfig: %s", iconfig_path)
 
-instrument, oregistry = init_instrument("guarneri")
-oregistry.clear()
-
-# Configure the session with callbacks, devices, and plans.
-aps_dm_setup(iconfig.get("DM_SETUP_FILE"))
-
-# Command-line tools, such as %wa, %ct, ...
-register_bluesky_magics()
-
-from id4_common.utils.local_magics import LocalMagics  # noqa: E402
-
-get_ipython().register_magics(LocalMagics)
-
-# Initialize core bluesky components
-from id4_common.utils.run_engine import RE  # noqa: F401, E402
-from id4_common.utils.run_engine import bec  # noqa: F401, E402
-from id4_common.utils.run_engine import cat  # noqa: F401, E402
-from id4_common.utils.run_engine import cat_legacy  # noqa: F401, E402
-from id4_common.utils.run_engine import peaks  # noqa: F401, E402
-from id4_common.utils.run_engine import sd  # noqa: F401, E402
-
-# Import optional components based on configuration
-if iconfig.get("NEXUS_DATA_FILES", {}).get("ENABLE", False):
-    # from .callbacks.nexus_data_file_writer import nxwriter_init
-    # nxwriter = nxwriter_init(RE)
-    from id4_common.callbacks.nexus_data_file_writer import (  # noqa: F401
-        nxwriter,
-    )
-
-if iconfig.get("SPEC_DATA_FILES", {}).get("ENABLE", False):
-    from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
-        init_specwriter_with_RE,
-    )
-    from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
-        newSpecFile,
-    )
-    from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
-        spec_comment,
-    )
-    from id4_common.callbacks.spec_data_file_writer import (  # noqa: F401
-        specwriter,
-    )
-
-    init_specwriter_with_RE(RE)
-    # Remove specwritter preprocessor --> the extra stream tried to trigger
-    # devices that are disconnected.
-    _ = RE.preprocessors.pop()
-
-from id4_common.callbacks.dichro_stream import dichro  # noqa: F401, E402
-from id4_common.callbacks.dichro_stream import dichro_bec  # noqa: F401, E402
-from id4_common.callbacks.dichro_stream import (  # noqa: E402, F401
-    plot_dichro_settings,
-)
-
-# These imports must come after the above setup.
-if running_in_queueserver():
-    # To make all the standard plans available in QS, import by '*', otherwise
-    # import plan by plan.
-    from apstools.plans import lineup2  # noqa: F401
-    from bluesky.plans import *  # noqa: F403, F401
-else:
-    # Import bluesky plans and stubs with prefixes set by common conventions.
-    # The apstools plans and utils are imported by '*'.
-    # from apstools.plans import *  # noqa: F401, F403
-    # from apstools.utils import *  # noqa: F401, F403
-    from bluesky import plan_stubs as bps  # noqa: F401
-    from bluesky import plans as bp  # noqa: F401
-    from id4_common.suspenders.shutters_suspenders import (  # noqa: F401
-        shutter_suspenders,
-    )
-    from id4_common.suspenders.suspender_utils import (  # noqa: F401
-        suspender_change_sleep,
-    )
-    from id4_common.suspenders.suspender_utils import (  # noqa: F401
-        suspender_restart,
-    )
-    from id4_common.suspenders.suspender_utils import (  # noqa: F401
-        suspender_stop,
-    )
-    from id4_common.utils.attenuator_utils import atten  # noqa: F401
-    from id4_common.utils.counters_class import counters  # noqa: F401
-    from id4_common.utils.dm_utils import *  # noqa: F401, F403
-    from id4_common.utils.experiment_utils import *  # noqa: F401, F403
-    from id4_common.utils.hkl_utils import *  # noqa: F401, F403
-    from id4_common.utils.pr_setup import pr_setup  # noqa: F401
-    from id4_common.utils.wax import wa_new  # noqa: F401
-    from id4_common.utils.wax import wax  # noqa: F401
-    from id4_common.utils.wax import wm  # noqa: F401
-
-    # TODO: DM, hklpy, experiment_utils seems to be changing the
-    # logging level. I don't know why.
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-
-    from id4_common.plans import *  # noqa: F401, F403
-    from id4_common.utils.device_loader import connect_device  # noqa: F401
-    from id4_common.utils.device_loader import (  # noqa: F401
-        find_loadable_devices,
-    )
-    from id4_common.utils.device_loader import load_device  # noqa: F401
-    from id4_common.utils.device_loader import load_yaml_devices  # noqa: F401
-    from id4_common.utils.device_loader import reload_all_devices  # noqa: F401
-    from id4_common.utils.device_loader import remove_device  # noqa: F401
-    from id4_common.utils.load_vortex import load_vortex  # noqa: F401
-    from id4_common.utils.oregistry_auxiliar import get_devices  # noqa: F401
-    from id4_common.utils.polartools_hklpy_imports import *  # noqa: F401, F403
+from id4_common._common_startup import *  # noqa: F403, E402
 
 logger.info("Loading 4-ID-B devices, this can take a few minutes.")
-make_devices(clear=True, file="devices.yml", device_manager=instrument)
-stations = ["core", "4idb"]
-for device in oregistry.findall(stations):
-    connect_device(device, raise_error=False)
+make_devices(  # noqa: F405
+    clear=True,
+    file="devices.yml",
+    device_manager=instrument,  # noqa: F405
+    connect=False,
+)
+for device in oregistry.findall(["core", "4idb"]):  # noqa: F405
+    connect_device(device, raise_error=False)  # noqa: F405
 
-counters.plotselect(11, 0)
+counters.plotselect(11, 0)  # noqa: F405
 
-for sus in shutter_suspenders.values():
-    RE.install_suspender(sus)
+# Select catalog of this instrument
+cat = db_query(  # noqa: F405
+    cat_full,  # noqa: F405
+    query=dict(instrument_name=f"polar-{iconfig['STATION']}"),  # noqa: F405
+)
