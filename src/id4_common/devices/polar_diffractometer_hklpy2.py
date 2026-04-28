@@ -2,13 +2,9 @@
 Polar diffractometer
 """
 
-from ophyd.pseudopos import pseudo_position_argument, real_position_argument
-from scipy.constants import speed_of_light, Planck
-from .jj_slits import SlitDevice
-from .huber_filter import HuberFilter
-from ..utils.analyzer_utils import check_structure_factor, calcdhkl
-from pathlib import Path
 import math
+from pathlib import Path
+
 from hklpy2 import diffractometer_class_factory
 from numpy import arcsin
 from numpy import pi
@@ -32,7 +28,6 @@ from ..utils.analyzer_utils import check_structure_factor
 from .huber_filter import HuberFilter
 from .jj_slits import SlitDevice
 
-
 # Constants
 WAVELENGTH_CONSTANT = 12.39
 PTTH_MIN_DEGREES = 79
@@ -51,16 +46,19 @@ class UBMatrixSignal(Signal):
     """
 
     def __init__(self, pv_name, *, parent=None, name=None, **kwargs):
-        # pv_name (prefix + suffix) is passed by Component but not needed
+        """Initialize, ignoring the PV name (Component-required, unused here)."""
         super().__init__(name=name, parent=parent, **kwargs)
 
     def get(self, **kwargs):
+        """Return the parent diffractometer's current UB matrix."""
         self._readback = self.parent.sample.UB
         return self._readback
 
     def put(self, value, *, timestamp=None, force=False, **kwargs):
+        """Write the UB matrix back to the parent and notify subscribers."""
         self.parent.sample.UB = value
-        super().put(value, timestamp=timestamp, force=force, **kwargs)ß
+        super().put(value, timestamp=timestamp, force=force, **kwargs)
+
 
 class AnalyzerDevice(PseudoPositioner):
     """
@@ -169,7 +167,7 @@ class AnalyzerDevice(PseudoPositioner):
         theta = self.convert_energy_to_theta(energy)
         self.th_motor.set_current_position(theta)
 
-    def calc(self, acal='No'):
+    def calc(self, acal="No"):
         """
         Print analyzer Bragg angles for the current crystal at the current
         beamline energy.
@@ -187,16 +185,13 @@ class AnalyzerDevice(PseudoPositioner):
             f"[ath, atth] = [{th_angle:.2f}, {tth_angle:.2f}] for {cryst} "
             f"analyzer at {energy:.2f} keV"
         )
-        if acal == 'No':
-            acal = (
-                input(f"Calibrate ath position (y/n/r)? [{acal}]: ")
-                or acal
-            )            
-        if acal in ['Yes','yes','Y','y']:
-            print(f'Calibrating ath to {th_angle:.2f}')
+        if acal == "No":
+            acal = input(f"Calibrate ath position (y/n/r)? [{acal}]: ") or acal
+        if acal in ["Yes", "yes", "Y", "y"]:
+            print(f"Calibrating ath to {th_angle:.2f}")
             self.set_energy(energy)
-        elif acal == 'r':
-            print('Releasing calibration for ath!')
+        elif acal == "r":
+            print("Releasing calibration for ath!")
             self.th_motor.user_offset.put(45)
 
     def setup(
@@ -389,8 +384,8 @@ CradleDiffractometerBase = diffractometer_class_factory(
     reals=dict(
         tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"
     ),
-    _real = "tau mu chi phi gamma delta".split(),
-    beam_kwargs=mono_kwargs.copy()
+    _real="tau mu chi phi gamma delta".split(),
+    beam_kwargs=mono_kwargs.copy(),
 )
 
 
@@ -409,8 +404,8 @@ HPDiffractometerBase = diffractometer_class_factory(
     reals=dict(
         tau="m73", mu="m4", gamma="m19", delta="m20", chi="m5", phi="m6"
     ),
-    _real = "tau mu chi phi gamma delta".split(),
-    beam_kwargs=mono_kwargs.copy()
+    _real="tau mu chi phi gamma delta".split(),
+    beam_kwargs=mono_kwargs.copy(),
 )
 
 
@@ -418,6 +413,7 @@ class HPDiffractometer(HPDiffractometerBase, DiffractometerMixin):
     """
     hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
     """
+
     chi = Component(EpicsMotor, "m5", labels=("motor",))
     phi = Component(EpicsMotor, "m6", labels=("motor",))
 
@@ -452,8 +448,8 @@ CradleDiffractometerPSI = diffractometer_class_factory(
     reals=dict(
         tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"
     ),
-    _real = "tau mu chi phi gamma delta".split(),
-    beam_kwargs=mono_kwargs.copy()
+    _real="tau mu chi phi gamma delta".split(),
+    beam_kwargs=mono_kwargs.copy(),
 )
 
 
@@ -465,6 +461,6 @@ HPDiffractometerPSI = diffractometer_class_factory(
     reals=dict(
         tau="m73", mu="m4", gamma="m19", delta="m20", chi="m5", phi="m6"
     ),
-    _real = "tau mu chi phi gamma delta".split(),
-    beam_kwargs=mono_kwargs.copy()
+    _real="tau mu chi phi gamma delta".split(),
+    beam_kwargs=mono_kwargs.copy(),
 )

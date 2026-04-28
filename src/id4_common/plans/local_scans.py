@@ -29,9 +29,10 @@ from bluesky.preprocessors import monitor_during_decorator
 from bluesky.preprocessors import relative_set_decorator
 from bluesky.preprocessors import reset_positions_decorator
 from bluesky.preprocessors import subs_decorator
+from hklpy2.user import get_diffractometer
 from numpy import array
 from toolz import partition
-from hklpy2.user import get_diffractometer
+
 from ..callbacks.dichro_stream import dichro as dichro_device
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ._local_scan_utils import _build_scan_md

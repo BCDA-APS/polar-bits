@@ -8,37 +8,28 @@ Utility functions.
 
 """
 
-import fileinput
 import pathlib
-import sys
 from inspect import getmembers
 from inspect import isfunction
 
-from inspect import getmembers, isfunction
-import fileinput
-import pathlib
-import sys
-
-from id4_common.utils.run_engine import RE
 from id4_common.utils import hkl_utils_hklpy2
 from id4_common.utils.counters_class import counters
 
 try:
-    from hkl import user, util
+    from hkl import user
+    from hkl import util
 except ModuleNotFoundError:
     user = util = None
 
 
 try:
-    from polartools import (
-        load_data,
-        diffraction,
-        absorption,
-        pressure_calibration,
-        process_images,
-        area_detector_handlers,
-        manage_database,
-    )
+    from polartools import absorption
+    from polartools import area_detector_handlers
+    from polartools import diffraction
+    from polartools import load_data
+    from polartools import manage_database
+    from polartools import pressure_calibration
+    from polartools import process_images
 except ModuleNotFoundError:
     load_data = diffraction = absorption = None
     pressure_calibration = process_images = None
@@ -69,7 +60,9 @@ def _select_monitor():
     print(scaler_rows[["channels", "detectors"]].to_string())
     current_mon = counters.monitor
     mon_matches = scaler_rows[scaler_rows["channels"] == current_mon].index
-    current_idx = int(mon_matches[0]) if len(mon_matches) else int(scaler_rows.index[0])
+    current_idx = (
+        int(mon_matches[0]) if len(mon_matches) else int(scaler_rows.index[0])
+    )
     idx = input(f"Monitor index [{current_idx}]: ") or current_idx
     return all_options.loc[int(idx), "channels"]
 
@@ -95,7 +88,11 @@ def set_counting_time(time=None, monitor=False):
         if monitor:
             if monitor != "Time" and time > 199:
                 _set_monitor(monitor, time)
-                print("Counting against monitor '{}' for {} counts".format(monitor, time))
+                print(
+                    "Counting against monitor '{}' for {} counts".format(
+                        monitor, time
+                    )
+                )
             elif monitor == "Time" and time < 200:
                 _set_time(time)
                 print("New counting time = {}".format(time))
@@ -107,9 +104,11 @@ def set_counting_time(time=None, monitor=False):
                 print("New counting time: {} s".format(time))
             else:
                 _set_monitor(counters.monitor, time)
-                print("Counting against monitor '{}' for {} counts".format(
-                    counters.monitor, time
-                ))
+                print(
+                    "Counting against monitor '{}' for {} counts".format(
+                        counters.monitor, time
+                    )
+                )
     else:
         if counters.monitor == "Time":
             current = scalers[0].preset_monitor.get() if scalers else 1
@@ -123,8 +122,11 @@ def set_counting_time(time=None, monitor=False):
         else:
             monitor = _select_monitor()
             _set_monitor(monitor, int(time))
-            print("Counting against monitor '{}' for {} counts".format(monitor, int(time)))
-
+            print(
+                "Counting against monitor '{}' for {} counts".format(
+                    monitor, int(time)
+                )
+            )
 
 
 def list_functions(select=None):

@@ -41,7 +41,7 @@ make_devices(  # noqa: F405
 for device in oregistry.findall(["core", "4idg"]):  # noqa: F405
     connect_device(device, raise_error=False)  # noqa: F405
 
-counters.plotselect(14, 5)
+counters.plotselect(14, 5)  # noqa: F405
 
 # Diffractometer
 set_diffractometer(geometries.huber_euler)  # noqa: F405
