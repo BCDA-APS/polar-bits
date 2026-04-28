@@ -19,10 +19,9 @@ from apsbits.utils.config_loaders import load_config_yaml
 from apsbits.utils.config_loaders import update_config
 from apsbits.utils.helper_functions import register_bluesky_magics
 from apsbits.utils.helper_functions import running_in_queueserver
-from IPython import get_ipython
-
 from id4_common.utils.aps_functions import aps_dm_setup
 from id4_common.utils.make_devices import make_devices
+from IPython import get_ipython
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -112,7 +111,6 @@ else:
     # from apstools.utils import *  # noqa: F401, F403
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
-
     from id4_common.suspenders.shutters_suspenders import (  # noqa: F401
         shutter_suspenders,
     )

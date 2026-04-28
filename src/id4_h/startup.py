@@ -44,6 +44,7 @@ for device in oregistry.findall(["core", "4idh"]):  # noqa: F405
 counters.plotselect(11, 0)  # noqa: F405
 
 # Select catalog of this instrument
-cat = db_query(
-    cat_full, query=dict(instrument_name=f"polar-{iconfig['STATION']}")
+cat = db_query(  # noqa: F405
+    cat_full,  # noqa: F405
+    query=dict(instrument_name=f"polar-{iconfig['STATION']}"),  # noqa: F405
 )

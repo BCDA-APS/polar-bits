@@ -48,6 +48,7 @@ select_diffractometer(get_huber_euler())  # noqa: F405
 select_engine_for_psi(get_huber_euler_psi())  # noqa: F405
 
 # Select catalog of this instrument
-cat = db_query(
-    cat_full, query=dict(instrument_name=f"polar-{iconfig['STATION']}")
+cat = db_query(  # noqa: F405
+    cat_full,  # noqa: F405
+    query=dict(instrument_name=f"polar-{iconfig['STATION']}"),  # noqa: F405
 )
