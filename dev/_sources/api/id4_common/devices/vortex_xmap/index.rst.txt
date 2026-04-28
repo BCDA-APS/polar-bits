@@ -106,7 +106,7 @@ Module Contents
 
 .. py:class:: VortexXMAP(*args, **kwargs)
 
-   Bases: :py:obj:`SingleTrigger`, :py:obj:`id4_common.devices.counters_mixin.ROICountersMixin`
+   Bases: :py:obj:`SingleTrigger`
 
 
    Four-element Vortex detector driven by an XIA XMAP DXP controller.
@@ -187,6 +187,11 @@ Module Contents
    .. py:attribute:: dxp4
 
 
+   .. py:property:: preset_monitor
+
+      Return the real_preset signal as the scan count-time control.
+
+
    .. py:method:: default_kinds()
 
       Set default read/configuration attribute lists for MCA channels
@@ -246,5 +251,16 @@ Module Contents
 
       Return a mapping from human-readable ROI label strings to ROI index
       integers.
+
+
+   .. py:property:: plot_options
+
+      Return all available ROI label strings for plot channel selection.
+
+
+   .. py:method:: select_plot(channels)
+
+      Select which ROI channels are plotted by label name.
+
 
 

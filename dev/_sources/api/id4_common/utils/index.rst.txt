@@ -20,6 +20,7 @@ Submodules
    /api/id4_common/utils/aps_functions/index
    /api/id4_common/utils/attenuator_utils/index
    /api/id4_common/utils/counters_class/index
+   /api/id4_common/utils/counters_class_for_dual/index
    /api/id4_common/utils/device_loader/index
    /api/id4_common/utils/dm_utils/index
    /api/id4_common/utils/experiment_utils/index
@@ -30,7 +31,6 @@ Submodules
    /api/id4_common/utils/hkl_utils_new/index
    /api/id4_common/utils/load_vortex/index
    /api/id4_common/utils/local_magics/index
-   /api/id4_common/utils/make_devices/index
    /api/id4_common/utils/oregistry_auxiliar/index
    /api/id4_common/utils/polartools_hklpy_imports/index
    /api/id4_common/utils/polartools_hklpy_imports_hklpy2/index
