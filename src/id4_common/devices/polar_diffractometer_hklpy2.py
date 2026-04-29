@@ -18,6 +18,7 @@ from ophyd import FormattedComponent
 from ophyd import PseudoPositioner
 from ophyd import PseudoSingle
 from ophyd import Signal
+from ophyd import Kind
 from ophyd.pseudopos import pseudo_position_argument
 from ophyd.pseudopos import real_position_argument
 from scipy.constants import Planck
@@ -344,16 +345,16 @@ class DiffractometerMixin(Device):
     # Analyzer
     ana = Component(AnalyzerDevice, "", labels=("track_energy",))
 
-    # TODO: This is needed to prevent busy plotting.
-    # TODO: Still needed?
-    # @property
-    # def hints(self):
-    #     fields = []
-    #     for _, component in self._get_components_of_kind(Kind.hinted):
-    #         if (~Kind.normal & Kind.hinted) & component.kind:
-    #             c_hints = component.hints
-    #             fields.extend(c_hints.get("fields", []))
-    #     return {"fields": fields}
+    # This is needed to prevent busy plotting. Note that the Kind items are
+    # binary, so the operations are a bit different.
+    @property
+    def hints(self):
+        fields = []
+        for _, component in self._get_components_of_kind(Kind.hinted):
+            if (~Kind.normal & Kind.hinted) & component.kind:
+                c_hints = component.hints
+                fields.extend(c_hints.get("fields", []))
+        return {"fields": fields}
 
     def default_settings(self):
         """
@@ -388,6 +389,11 @@ CradleDiffractometerBase = diffractometer_class_factory(
     beam_kwargs=mono_kwargs.copy(),
 )
 
+# Changes the positioners kind to config or normal. This will prevent busy
+# plotting.
+for pos in CradleDiffractometerBase._real+CradleDiffractometerBase._pseudo:
+    getattr(CradleDiffractometerBase, pos).kind = Kind.config | Kind.normal
+
 
 class CradleDiffractometer(CradleDiffractometerBase, DiffractometerMixin):
     """hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation."""
@@ -408,6 +414,10 @@ HPDiffractometerBase = diffractometer_class_factory(
     beam_kwargs=mono_kwargs.copy(),
 )
 
+# Changes the positioners kind to config or normal. This will prevent busy
+# plotting.
+for pos in CradleDiffractometerBase._real+CradleDiffractometerBase._pseudo:
+    getattr(CradleDiffractometerBase, pos).kind = Kind.config | Kind.normal
 
 class HPDiffractometer(HPDiffractometerBase, DiffractometerMixin):
     """
