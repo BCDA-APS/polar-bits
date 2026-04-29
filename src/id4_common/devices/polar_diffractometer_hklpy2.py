@@ -422,8 +422,8 @@ HPDiffractometerBase = diffractometer_class_factory(
 
 # Changes the positioners kind to config or normal. This will prevent busy
 # plotting.
-for pos in CradleDiffractometerBase._real + CradleDiffractometerBase._pseudo:
-    getattr(CradleDiffractometerBase, pos).kind = Kind.config | Kind.normal
+for pos in HPDiffractometerBase._real + HPDiffractometerBase._pseudo:
+    getattr(HPDiffractometerBase, pos).kind = Kind.config | Kind.normal
 
 
 class HPDiffractometer(HPDiffractometerBase, DiffractometerMixin):
