@@ -120,12 +120,12 @@ else:
     from id4_common.utils.device_loader import load_yaml_devices  # noqa: F401
     from id4_common.utils.device_loader import reload_all_devices  # noqa: F401
     from id4_common.utils.device_loader import remove_device  # noqa: F401
-    from id4_common.utils.hkl_utils_hklpy2 import *  # noqa: F403
     from id4_common.utils.load_vortex import load_vortex  # noqa: F401
     from id4_common.utils.logbook_mcr import *  # noqa: F403
     from id4_common.utils.oregistry_auxiliar import get_devices  # noqa: F401
-    from id4_common.utils.polartools_hklpy2_imports import *  # noqa: F403
     from id4_common.utils.utilities import *  # noqa: F403
+    from id4_common.utils.polartools_hklpy2_imports import *  # noqa: F403
+    from id4_common.utils.hkl_utils_hklpy2 import *  # noqa: F403
 
 # Use only the A shutter suspender, but the B shutter is still there.
 RE.install_suspender(shutter_suspenders["a_shutter"])

@@ -66,9 +66,10 @@ try:
     from hklpy2.user import add_sample
     from hklpy2.user import cahkl
     from hklpy2.user import get_diffractometer
-    from hklpy2.user import set_diffractometer
+    from hklpy2.user import set_diffractometer as hklpy2_set_diffract
+    from hklpy2 import ConfigurationRunWrapper
 
-    from id4_common.utils.run_engine import cat
+    from .run_engine import cat, RE as polar_RE
 except ModuleNotFoundError:
     print("gi module is not installed, the hkl_utils functions will not work!")
 
@@ -109,6 +110,7 @@ __all__ = """
     restore_huber_from_scan
     set_detector
     geometries
+    set_diffractometer
 """.split()
 
 polar_config = pathlib.Path("polar-config.json")
@@ -122,6 +124,8 @@ logging.getLogger("hklpy2").setLevel(logging.WARNING)
 
 class Geometries:
     """Register the diffractometer geometries."""
+
+    configuration_wrapper = None
 
     def __init__(
         self, huber_euler_nm, huber_euler_psi_nm, huber_hp_nm, huber_hp_psi_nm
@@ -169,6 +173,28 @@ geometries = Geometries(
 )
 
 _DIFFRACTOMETER_NAMES = ["huber_euler", "huber_hp"]
+
+
+def set_diffractometer(diffractometer):
+    """
+    Wraps the `hklpy2.user.set_diffractometer` and adds the diffractometer
+    configuration wrapper to the RunEngine preprocessors.
+
+    Parameters
+    ----------
+    diffractometer : str or DiffractometerBase, optional
+        Name or device instance to activate.
+    """
+
+    hklpy2_set_diffract(diffractometer)
+
+    try:
+        polar_RE.preprocessors.remove(geometries.configuration_wrapper)
+    except ValueError:
+        pass
+
+    geometries.configuration_wrapper= ConfigurationRunWrapper(diffractometer)
+    polar_RE.preprocessors.append(geometries.configuration_wrapper.wrapper)
 
 
 def change_diffractometer(diffractometer=None):
