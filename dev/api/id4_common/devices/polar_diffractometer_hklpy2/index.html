@@ -925,7 +925,13 @@ a diffractometer.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.hints">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.hints" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return only explicitly-hinted sub-components to avoid busy plotting.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Kind</span></code> is a bitfield: <code class="docutils literal notranslate"><span class="pre">Kind.hinted</span></code> (0b101) shares the
+<code class="docutils literal notranslate"><span class="pre">Kind.normal</span></code> bit (0b001). <code class="docutils literal notranslate"><span class="pre">_get_components_of_kind(Kind.hinted)</span></code>
+therefore yields <em>both</em> normal and hinted components. The mask
+<code class="docutils literal notranslate"><span class="pre">(~Kind.normal</span> <span class="pre">&amp;</span> <span class="pre">Kind.hinted)</span></code> isolates the “hinted-only” bit so
+only components explicitly tagged <code class="docutils literal notranslate"><span class="pre">Kind.hinted</span></code> contribute fields.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.default_settings">

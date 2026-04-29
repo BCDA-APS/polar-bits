@@ -205,6 +205,14 @@ Module Contents
 
    .. py:property:: hints
 
+      Return only explicitly-hinted sub-components to avoid busy plotting.
+
+      ``Kind`` is a bitfield: ``Kind.hinted`` (0b101) shares the
+      ``Kind.normal`` bit (0b001). ``_get_components_of_kind(Kind.hinted)``
+      therefore yields *both* normal and hinted components. The mask
+      ``(~Kind.normal & Kind.hinted)`` isolates the "hinted-only" bit so
+      only components explicitly tagged ``Kind.hinted`` contribute fields.
+
 
    .. py:method:: default_settings()
 
