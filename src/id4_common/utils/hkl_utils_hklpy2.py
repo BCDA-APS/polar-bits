@@ -63,13 +63,14 @@ try:
     from hkl.util import restore_reflections
     from hkl.util import restore_sample
     from hkl.util import run_orientation_info
+    from hklpy2 import ConfigurationRunWrapper
     from hklpy2.user import add_sample
     from hklpy2.user import cahkl
     from hklpy2.user import get_diffractometer
     from hklpy2.user import set_diffractometer as hklpy2_set_diffract
-    from hklpy2 import ConfigurationRunWrapper
 
-    from .run_engine import cat, RE as polar_RE
+    from .run_engine import RE as polar_RE
+    from .run_engine import cat
 except ModuleNotFoundError:
     print("gi module is not installed, the hkl_utils functions will not work!")
 
@@ -193,7 +194,7 @@ def set_diffractometer(diffractometer):
     except ValueError:
         pass
 
-    geometries.configuration_wrapper= ConfigurationRunWrapper(diffractometer)
+    geometries.configuration_wrapper = ConfigurationRunWrapper(diffractometer)
     polar_RE.preprocessors.append(geometries.configuration_wrapper.wrapper)
 
 
