@@ -1,88 +1,9 @@
-!# 4IDG: Diffractometer Usage
+# 4IDG: Diffractometer Usage
 
-4IDG is the diffraction hutch. The 6-circle diffractometer is controlled through
-[hklpy2](https://blueskyproject.io/hklpy2/) for reciprocal-space navigation.
-Two configurations are available depending on which insert is mounted:
-
-- `huber_euler` — Huber Eulerian cradle
-- `huber_hp` — high-precision goniometer
-
-The HKL utility functions are provided by `hkl_utils_hklpy2.py` and cover
-sample management, orientation, forward/inverse calculations, mode selection,
-constraint management, and configuration save/restore.
-
----
-
-## Command Reference
-
-### Diffractometer and status
-
-| Command | Description |
-|---------|-------------|
-| `change_diffractometer(name)` | Select active diffractometer; update motor aliases, h/k/l aliases, and axis constraints |
-| `set_detector()` | Select Eiger or point detector/analyzer arm |
-
-### Moving
-
-| Command | Description |
-|---------|-------------|
-| `wh` | Current H K L, motor positions, energy, PSI (no parentheses) |
-| `ca(h, k, l)` | Calculate motor angles for HKL without moving |
-| `ubr(h, k, l)` | Move to HKL (runs own RunEngine) |
-| `RE(br(h, k, l))` | Move to HKL as a Bluesky plan |
-| `uan(gamma, mu)` | Move gamma and mu together |
-
-### Sample management
-
-| Command | Description |
-|---------|-------------|
-| `newsample()` | Add sample interactively |
-| `sampleList()` | List all samples; mark current one |
-| `sampleChange(name)` | Switch active sample |
-| `sampleRemove(name)` | Remove a sample |
-| `setlat(a,b,c,α,β,γ)` | Set lattice constants (no args = interactive) |
-| `update_lattice(par)` | Refine one lattice constant from current HKL position |
-
-### Orientation / UB matrix
-
-| Command | Description |
-|---------|-------------|
-| `or0(h, k, l)` | Set primary reflection at current motor positions |
-| `or1(h, k, l)` | Set secondary reflection at current motor positions |
-| `setor0()` | Set primary reflection — prompts for motor positions and HKL |
-| `setor1()` | Set secondary reflection — prompts for motor positions and HKL |
-| `list_reflections()` | List all reflections for current sample |
-| `list_orienting()` | List only the two orienting reflections |
-| `set_orienting()` | Interactively pick which reflections are orienting |
-| `or_swap()` | Swap first and second orienting reflections |
-| `del_reflection()` | Delete a non-orienting reflection |
-
-### Modes, azimuth and constraints
-
-| Command | Description |
-|---------|-------------|
-| `setmode(n)` | Set diffractometer mode by number (no args = interactive list) |
-| `setaz(h, k, l)` | Set azimuthal reference vector |
-| `freeze(val)` | Freeze constant axis for current mode (no args = use current position) |
-| `freeze_general()` | Interactively freeze all constant axes |
-| `show_constraints()` | Show angle limits for each axis |
-| `set_constraints(…)` | Set angle limits (no args = interactive per axis) |
-| `reset_constraints()` | Reset all limits to defaults |
-
-### Analyzer
-
-| Command | Description |
-|---------|-------------|
-| `analyzer_configuration(energy)` | Select crystal and set d-spacing |
-| `analyzer_set()` | Calibrate current motor position to calculated Bragg angle |
-
-### Configuration save/restore
-
-| Command | Description |
-|---------|-------------|
-| `write_config(name)` | Save sample, UB, reflections, constraints to YAML |
-| `read_config()` | Load configuration from YAML (overwrite or append) |
-| `restore_huber_from_scan(id)` | Restore orientation from a previous scan |
+4IDG is the diffraction hutch. The primary instrument is the Huber Euler
+6-circle diffractometer (`huber_euler`), controlled through
+[hklpy](https://blueskyproject.io/hklpy/) for reciprocal-space navigation.
+An HP (high-pressure) diffractometer (`huber_hp`) is also available.
 
 ---
 
@@ -99,275 +20,206 @@ This activates the `polar-bits` conda environment and launches IPython with all
 
 ---
 
-## Selecting the Active Diffractometer
+## Motor Shortcuts
 
-Two diffractometers are available. Call `change_diffractometer()` to select one.
-This sets the active diffractometer for all HKL utility functions, applies the
-appropriate axis constraints, and injects motor aliases into the session
-namespace:
+After the main startup, users typically run a per-session startup file
+(e.g. `startup_4idg.py`) that assigns convenient short names to frequently
+used motors:
 
 ```python
-change_diffractometer("huber_euler")   # Eulerian cradle
-change_diffractometer("huber_hp")      # High-precision goniometer
-change_diffractometer()                # interactive prompt
+from apsbits.core.instrument_init import oregistry
+
+huber_euler = oregistry.find("huber_euler")
+huber_hp    = oregistry.find("huber_hp")
+energy      = oregistry.find("energy")
+gkb         = oregistry.find("gkb")
+
+# Motor shortcuts for huber_euler
+sx  = huber_euler.x
+sy  = huber_euler.y
+sz  = huber_euler.z
+mu  = huber_euler.mu
+delta = huber_euler.delta
+chi   = huber_euler.chi
+phi   = huber_euler.phi
+gamma = huber_euler.gamma
+
+# Motor shortcuts for huber_hp (nanofocusing stage)
+nanox = huber_hp.nanox
+nanoy = huber_hp.nanoy
+sx_hp = huber_hp.x
+sy_hp = huber_hp.y
 ```
 
-### Motor aliases created automatically
-
-After `change_diffractometer("huber_euler")`:
-
-| Alias | Motor |
-|-------|-------|
-| `mu`, `gamma`, `delta`, `chi`, `phi`, `tau` | Diffractometer circles (angular space) |
-| `cryox`, `cryoy`, `cryoz` | Sample stage |
-| `ath`, `atth`, `eta`, `achi` | Analyzer arm |
-
-After `change_diffractometer("huber_hp")`:
-
-| Alias | Motor |
-|-------|-------|
-| `mu`, `gamma`, `delta`, `chi`, `phi`, `tau` | Diffractometer circles (angular space) |
-| `x`, `y`, `z` | Sample stage |
-| `nanox`, `nanoy`, `nanoz` | Nano-focusing stage |
-| `basex`, `basey`, `basez` | Base stage |
-| `ath`, `atth`, `eta`, `achi` | Analyzer arm |
-
-The reciprocal-space pseudo-axes `h`, `k`, `l` are also injected automatically
-into the session namespace by `change_diffractometer()`.
-
----
-
-## Per-Session Startup
-
-Users typically run a per-session startup file to set additional shortcuts and
-load experiment-specific settings:
+Run this file at the start of each session:
 
 ```python
 %run startup_4idg.py
 ```
 
-```python
-change_diffractometer("huber_euler")
-```
-
-`change_diffractometer()` injects motor aliases and the reciprocal-space
-pseudo-axes `h`, `k`, `l` into the session namespace automatically.
-
 ---
 
-## Sample Management
+## Selecting the Active Diffractometer
 
-### Add a new sample
-
-`newsample()` prompts interactively for the sample name and lattice constants.
-It also seeds two default reflections — `(0 0 2)` and `(2 0 0)` — computes an
-initial UB matrix from them, and sets `(1 0 0)` as the azimuthal reference
-vector. These defaults get the diffractometer into a working state immediately;
-replace them with measured reflections using `or0()`/`or1()` or
-`setor0()`/`setor1()`, and update the azimuthal reference with `setaz()` as
-needed.
+Two diffractometer geometries are available. Select the one in use before
+running any HKL calculations or moves:
 
 ```python
-newsample()
-```
-
-### List, switch, and remove samples
-
-```python
-sampleList()                  # list all defined samples; mark current one
-sampleChange("Si")            # switch to sample named "Si"
-sampleChange()                # interactive selection
-sampleRemove("old_sample")    # remove a sample by name
-sampleRemove()                # interactive selection
-```
-
-### Update lattice constants
-
-Set lattice constants directly or interactively:
-
-```python
-setlat(5.43, 5.43, 5.43, 90, 90, 90)   # direct: a, b, c, alpha, beta, gamma
-setlat()                                 # interactive with current values as defaults
-```
-
-Refine a single lattice constant from the current HKL position
-(auto-detects which parameter to refine based on position):
-
-```python
-update_lattice()        # auto: refines a, b, or c depending on current HKL
-update_lattice("c")     # refine only c
+select_diffractometer(huber_euler)   # Cradle Euler (most common)
+select_diffractometer(huber_hp)      # High-pressure cell
 ```
 
 ---
 
-## Checking the Current Position
+## Defining a Sample
+
+Create a sample with its unit cell parameters (a, b, c in Å; α, β, γ in °).
+`sampleNew` prompts interactively if called without arguments, or accepts
+positional arguments:
 
 ```python
-wh     # print H K L, energy, motor positions, PSI — no parentheses
-ca(1, 0, 0)     # calculate motor angles for (1 0 0) without moving
-ca(1, 1, 0)     # calculate motor angles for (1 1 0) without moving
+# Interactive (prompts for name and lattice constants)
+sampleNew()
+
+# Non-interactive
+sampleNew("Si", 5.4, 5.4, 5.4, 90, 90, 90)          # cubic Si
+sampleNew("MyOxide", 3.84, 3.84, 12.6, 90, 90, 90)   # tetragonal
+```
+
+Verify the current sample and orientation matrix:
+
+```python
+wh     # print current reciprocal-space position and sample info (no parentheses needed)
+pa()   # print full engine parameters: UB matrix, reflections, mode
 ```
 
 ---
 
 ## Orientation (UB Matrix)
 
-### Setting orientation reflections
-
-Two workflows exist depending on whether you are at the peak or not.
-
-**If you are physically at the peak** — use `or0()` / `or1()`, which capture
-the current motor positions and only ask for H K L:
+Set orientation reflections one at a time. Move to the peak physically, then
+call `setor0()` / `setor1()` to record the reflection at the current motor
+positions:
 
 ```python
 # Move to the first reflection physically, then:
-or0()             # record primary reflection at current motors — prompts for H K L
-or0(0, 0, 2)      # record primary reflection — no prompt
+setor0()    # record orientation reflection 0 — prompts for H K L if not at peak
 
 # Move to the second reflection, then:
-or1()             # record secondary reflection at current motors — prompts for H K L
-or1(2, 0, 0)      # record secondary reflection — no prompt
+setor1()    # record orientation reflection 1 — UB matrix is now calculated
 ```
 
-**To enter motor positions manually** — use `setor0()` / `setor1()`, which
-prompt for both motor positions and H K L:
+List stored reflections:
 
 ```python
-setor0()    # enter angles + H K L for primary reflection
-setor1()    # enter angles + H K L for secondary reflection
-```
-
-The UB matrix is recalculated automatically whenever the orienting reflections
-or lattice parameters are updated — including after `or0()`, `or1()`,
-`setor0()`, `setor1()`, `or_swap()`, `set_orienting()`, `setlat()`, and
-`update_lattice()`.
-
-### Inspect and manage reflections
-
-```python
-list_reflections()         # list all reflections for the current sample
-list_orienting()           # list only the two orienting reflections
-set_orienting()            # interactively pick which reflections are orienting
-or_swap()                  # swap first and second orienting reflections; recomputes UB
-del_reflection()           # interactively delete a non-orienting reflection
+list_reflections()
 ```
 
 ---
 
-## Moving in Reciprocal Space
+## Checking Angles and Moving in Reciprocal Space
 
-Move to an HKL position (executes as a Bluesky plan):
+Calculate motor angles for any HKL without moving:
+
+```python
+ca(1, 0, 0)     # angles for (1 0 0)
+ca(1, 1, 0)     # angles for (1 1 0)
+ca(0, 0, 2)     # angles for (0 0 2)
+```
+
+Move to an HKL position (executes as a plan):
 
 ```python
 RE(br(1, 0, 0))     # move to (1 0 0)
 RE(br(2, 0, 0))     # move to (2 0 0)
-```
-
-Move directly without wrapping in `RE` (runs its own RunEngine):
-
-```python
-ubr(1, 0, 0)        # move to (1 0 0)
-ubr(2, 0, 0)        # move to (2 0 0)
-```
-
-Move gamma and mu together (for detector arm alignment):
-
-```python
-uan(40, 20)         # move to gamma=40, mu=20
+RE(br(1, 1, 0))     # move to (1 1 0)
+wh                  # confirm position after move
 ```
 
 Move individual real-space axes with the `%mov` magic:
 
 ```python
-%mov phi 5          # move phi to 5°
+%mov huber_euler.phi 5        # move phi to 5°
+%mov huber_euler.chi 0        # move chi to 0°
+%mov huber_euler.delta 30     # move delta to 30°
+
+# Or using shortcuts:
+%mov phi 5
 %mov chi 0
-%mov delta 30
 ```
 
 ---
 
 ## Diffractometer Modes
 
-`setmode()` lists all available modes (1-indexed). Selecting a mode
-automatically freezes the unused detector angle at 0:
+`setmode()` opens an interactive prompt listing all available modes.
+Pass a mode number to set it directly:
 
 ```python
-setmode()       # interactive selection (shows numbered list)
-setmode(1)      # e.g. "4-circles constant phi horizontal" → freezes delta=0
-setmode(7)      # e.g. "4-circles bissecting horizontal"
-setmode(12)     # e.g. "psi constant horizontal"
+setmode()      # interactive selection
+setmode(7)     # e.g. "4-circles bissecting horizontal"
+setmode(12)    # e.g. "psi constant horizontal"
 ```
 
 Available modes include (geometry-dependent):
 
 - `4-circles constant phi horizontal`
-- `4-circles constant mu horizontal`
-- `4-circles constant chi horizontal`
+- `zaxis + alpha-fixed`, `zaxis + beta-fixed`, `zaxis + alpha=beta`
 - `4-circles bissecting horizontal`
 - `4-circles constant omega horizontal`
-- `psi constant horizontal`, `psi constant vertical`
-- `zaxis + alpha-fixed`, `zaxis + beta-fixed`, `zaxis + alpha=beta`
+- `psi constant horizontal`
 - `lifting detector mu/omega/chi/phi`
 
 ---
 
 ## Azimuth Reference and Constraints
 
-Set the azimuthal reference vector. This updates the psi-engine counterpart
-diffractometer and reports the resulting PSI value:
+Set the azimuth reference vector (interactive if called without arguments):
 
 ```python
 setaz(0, 0, 1)   # [001] azimuth reference
 setaz(0, 1, 0)   # [010] azimuth reference
-setaz()          # interactive prompt
 ```
 
-Freeze the constant axis for the current mode. Behavior depends on mode:
-
-- **Psi constant modes**: freezes psi (uses current psi if no argument)
-- **Single-axis modes** (`constant phi/mu/chi`): freezes that axis (uses current
-  motor position if no argument)
-- **Other modes**: interactive prompt for each constant axis
+Freeze an axis at a fixed value (freezes phi by default; interactive if no
+argument given):
 
 ```python
-freeze()        # auto-detect from current mode; prompt or use current position
-freeze(0)       # freeze axis at 0 (mode-dependent)
-freeze(5)       # freeze axis at 5 (mode-dependent)
-freeze_general()  # always prompts interactively for all constant axes
+freeze(0)     # freeze phi at 0°
+freeze(5)     # freeze phi at 5°
+freeze(-90)   # freeze phi at -90°
 ```
 
-Show and manage axis constraints (angle limits):
+Show and manage axis constraints:
 
 ```python
-show_constraints()          # print low/high limits for each axis
-reset_constraints()         # reset all limits to defaults
-set_constraints()           # interactive: set limits for each axis
-set_constraints("phi", -180, 180)   # set limits for one axis
-set_constraints(-1,1, 0,90, -20,200, -180,180, -2,140, -5,50)  # set all 6 axes
+show_constraints()    # print current limits and frozen values
+reset_constraints()   # reset all to defaults
+set_constraints()     # interactive loop — set low/high limits per axis
 ```
 
 ---
 
 ## Inverse Calculation
 
-Convert real-space motor positions to reciprocal-space coordinates.
-Motor order for 6-circle is `(gamma, mu, chi, phi, delta, tau)`:
+Convert real-space motor positions to reciprocal-space coordinates:
 
 ```python
-sol = huber_euler.inverse((40, 20, 90, 0, 0, 0))
+# (mu, delta, gamma, chi, phi, omega) → (h, k, l)
+sol = huber_euler.inverse((0, 30, 0, 0, 0, 69.0966))
 print(sol.h, sol.k, sol.l)
+
+sol = huber_euler.inverse((0, 92, 33.2, -139, 33.1, 0))
+print(sol)
 ```
 
 ---
 
-## Scans
+## Scanning in Reciprocal Space
 
+Scan along real-space motors while monitoring intensity with the scalers.
 All plans use `counters.detectors` and `counters.monitor` by default
-(see [General Examples](general.md) for detector selection).
-
-### Scans in angular space
-
-Scan individual diffractometer circles directly:
+(see [General Examples](general.md) for detector selection):
 
 ```python
 # Rock phi around current position (relative scan, 50 pts, 1.0 s dwell)
@@ -383,50 +235,18 @@ RE(lup(chi, -5, 5, 50, 0.5))
 RE(ascan(delta, 28, 32, 40, 0.5))
 ```
 
-#### th-2th scan
-
-`th2th` is a local plan that scans `mu` and `gamma` simultaneously with the
-coupled 1:2 ratio. Arguments give the relative 2-theta (gamma) range; mu
-moves at half that rate. Positions are restored after the scan (same as `lup`).
+For the HP diffractometer sample stage:
 
 ```python
-RE(th2th(tth_start, tth_end, number_of_points, time_per_point))
-
-# Examples
-RE(th2th(-1, 1, 50, 0.5))    # ±1° in 2θ, 50 pts, 0.5 s/pt
-RE(th2th(-2, 2, 100, 0.5))   # ±2° in 2θ, 100 pts
-```
-
-### Scans in reciprocal space
-
-Scan directly along a reciprocal-space direction using the `h`, `k`, `l` aliases
-set by `change_diffractometer()`. The diffractometer moves all
-required angular axes simultaneously to follow the path:
-
-```python
-# L-scan through (0 0 2)
-RE(lup(l, 1.8, 2.2, 40, 0.5))
-
-# H-scan through (2 0 0)
-RE(lup(h, 1.8, 2.2, 40, 0.5))
-
-# Absolute scan along K
-RE(ascan(k, -0.1, 0.1, 40, 0.5))
+RE(lup(sx_hp, -0.5, 0.5, 50, 0.1))    # sample X scan
+RE(lup(sy_hp, -0.5, 0.5, 50, 0.1))    # sample Y scan
 ```
 
 Center on a peak after a scan:
 
 ```python
-RE(lup(l, 1.8, 2.2, 40, 0.5))
-RE(cen(l))     # moves to the center-of-mass of the last scan
-```
-
-For the HP diffractometer sample stage:
-
-```python
-RE(lup(x, -0.5, 0.5, 50, 0.1))        # sample X scan
-RE(lup(y, -0.5, 0.5, 50, 0.1))        # sample Y scan
-RE(lup(nanox, -0.05, 0.05, 50, 0.1))  # nanofocusing X
+RE(lup(phi, -1, 1, 50, 0.5))
+RE(cen(phi))     # moves phi to the center-of-mass of the last scan
 ```
 
 ---
@@ -436,12 +256,14 @@ RE(lup(nanox, -0.05, 0.05, 50, 0.1))  # nanofocusing X
 Raster scan over two motors:
 
 ```python
+# Grid scan over sample position (useful for mapping or alignment)
 RE(grid_scan(
-    cryox, -1, 1, 20,
-    cryoy, -1, 1, 20,
-    0.2,
+    sx, -1, 1, 20,
+    sy, -1, 1, 20,
+    0.2,    # dwell time per point
 ))
 
+# Relative grid scan with snake trajectory
 RE(rel_grid_scan(
     nanoy, -3.5, 3.5, 45,
     nanox, -2, 2, 31,
@@ -452,78 +274,17 @@ RE(rel_grid_scan(
 
 ---
 
-## Analyzer
-
-Configure and calibrate the analyzer arm. `analyzer_configuration()` prompts
-for the analyzer crystal and sets its d-spacing. `analyzer_set()` calibrates
-the motor position — use it when the analyzer is physically on peak to set the
-motor offset so the reported position matches the calculated Bragg angles for
-the current energy. Pass `"r"` to release (clear) the calibration offset:
-
-```python
-analyzer_configuration()      # select crystal, set d-spacing; optionally pass energy (keV)
-analyzer_configuration(7.0)   # configure for 7.0 keV
-analyzer_set()                # calibrate ath/atth offset to calculated Bragg angles (must be on peak)
-analyzer_set("r")             # release calibration; restore raw motor positions
-```
-
----
-
-## Detector Selection
-
-Switch between the Eiger area detector and the point detector/analyzer arm
-(motors are 25° apart in delta):
-
-```python
-set_detector()    # interactive: (E)iger or (P)oint Detector/Analyzer
-```
-
----
-
-## Saving and Restoring Configuration
-
-### Write to file
-
-Save the current diffractometer state (sample, reflections, UB matrix,
-constraints, mode) to a YAML file in the current directory:
-
-```python
-write_config()              # saves to default_polar_config.yml
-write_config("EuAl4_run1")  # saves to EuAl4_run1_polar_config.yml
-write_config("EuAl4_run1", overwrite=True)  # skip confirmation prompt
-```
-
-### Read from file
-
-Lists all `*_polar_config.yml` files in the current directory and prompts
-to overwrite or append the current configuration:
-
-```python
-read_config()    # interactive file selection; choose overwrite or append
-```
-
-### Restore from a previous scan
-
-Restore diffractometer orientation from the supplemental data stored in a
-databroker scan:
-
-```python
-restore_huber_from_scan(-1)                           # most recent scan
-restore_huber_from_scan(1234)                         # scan ID 1234
-restore_huber_from_scan(1234, sample_name="EuAl4")    # override sample name
-restore_huber_from_scan(1234, force=True)             # use first available info
-```
-
----
-
 ## Detector Selection
 
 See [General Examples → Detector Selection](general.md) for
 the full `counters.plotselect()` walkthrough.
 
 ```python
-counters.plotselect(14, 5)        # detector index 14, monitor index 5
-counters.plotselect([14, 19], 5)  # multiple detectors
+# Quick selection: detector index 14, monitor index 5
+counters.plotselect(14, 5)
+
+# Multiple detectors
+counters.plotselect([14, 19], 5)
 ```
 
 ---
@@ -570,12 +331,16 @@ run.primary.read()         # read as xarray Dataset
 routines for diffraction data analysis, available in the session namespace:
 
 ```python
+# Fit a single peak: load data first, then fit the arrays
 df = load_table(-1, cat)
 fit = fit_peak(df["delta"], df["scaler1_ch14"])
 
+# Fit and plot a series of scans (scan IDs as start, stop, step triplet)
+# e.g. scans 10 through 20 in steps of 1
 plot_fit([10, 20, 1], cat, positioner="delta", detector="scaler1_ch14")
 fit_series([10, 20, 1], cat, positioner="delta", detector="scaler1_ch14")
 
-mesh = load_mesh(-1, cat, xmotor="cryox", ymotor="cryoy", detector="scaler1_ch14")
+# Load and display a 2D mesh scan
+mesh = load_mesh(-1, cat, xmotor="sx", ymotor="sy", detector="scaler1_ch14")
 plot_2d(mesh)
 ```

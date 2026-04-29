@@ -8,39 +8,47 @@ id4_common.utils.hkl_utils_hklpy2
    Auxilary HKL functions.
 
    .. autosummary::
-       ~select_engine_for_psi
-       ~engine_for_psi
-       ~set_experiment
-       ~set_diffractometer
-       ~sampleNew
-       ~sampleChange
+       ~change_diffractometer
+       ~newsample
        ~sampleList
+       ~sampleChange
        ~sampleRemove
        ~list_reflections
+       ~list_orienting
        ~or_swap
        ~setor0
        ~setor1
        ~set_orienting
        ~del_reflection
-       ~list_orienting
        ~or0
        ~or1
        ~compute_UB
-       ~calc_UB
        ~setmode
        ~ca
+       ~wh
+       ~ubr
        ~br
        ~uan
-       ~wh
        ~setlat
        ~setaz
        ~freeze
-       ~update_lattice
-       ~write_config
-       ~read_config
+       ~freeze_general
        ~show_constraints
        ~reset_constraints
        ~set_constraints
+       ~analyzer_configuration
+       ~analyzer_set
+       ~update_lattice
+       ~write_config
+       ~read_config
+       ~restore_huber_from_scan
+       ~set_detector
+
+
+   Provide a simplified UI for hklpy2 diffractometer users.
+
+   The user must define a diffractometer instance, then
+   register that instance here calling `set_diffractometer(instance)`.
 
 
 
@@ -53,73 +61,78 @@ id4_common.utils.hkl_utils_hklpy2
 Module Contents
 ---------------
 
-.. py:data:: logger
-
 .. py:data:: polar_config
 
-.. py:data:: fourc_config
+.. py:data:: RE
 
 .. py:data:: pbar_manager
 
-.. py:data:: POLAR_DIFFRACTOMETER
-   :value: 'huber_euler'
+.. py:class:: Geometries(huber_euler_nm, huber_euler_psi_nm, huber_hp_nm, huber_hp_psi_nm)
+
+   Register the diffractometer geometries.
 
 
-.. py:data:: fourc
-   :value: None
+   .. py:attribute:: configuration_wrapper
+      :value: None
 
 
-.. py:function:: get_huber_euler()
 
-   Return the huber_euler diffractometer from the device registry.
-
-
-.. py:function:: get_huber_hp()
-
-   Return the huber_hp diffractometer from the device registry.
+   .. py:property:: huber_euler
 
 
-.. py:function:: get_huber_euler_psi()
-
-   Return the huber_euler_psi diffractometer from the device registry.
+   .. py:property:: huber_euler_psi
 
 
-.. py:function:: select_engine_for_psi(instrument=None)
-
-   Name the diffractometer to be used.
+   .. py:property:: huber_hp
 
 
-.. py:function:: engine_for_psi()
-
-   Return the currently-selected psi calc engine (or ``None``).
+   .. py:property:: huber_hp_psi
 
 
-.. py:function:: set_diffractometer(instrument=None)
+.. py:data:: geometries
 
-   Name the diffractometer to be used.
+.. py:function:: set_diffractometer(diffractometer)
+
+   Wraps the `hklpy2.user.set_diffractometer` and adds the diffractometer
+   configuration wrapper to the RunEngine preprocessors.
+
+   :param diffractometer: Name or device instance to activate.
+   :type diffractometer: str or DiffractometerBase, optional
 
 
-.. py:function:: sampleNew(*args)
+.. py:function:: change_diffractometer(diffractometer=None)
 
-   Set the lattice constants.
+   Select and initialize the active diffractometer (huber_euler or huber_hp).
 
-   :param a: Lattice constants. If None, it will ask for input.
-   :type a: float, optional
-   :param b: Lattice constants. If None, it will ask for input.
-   :type b: float, optional
-   :param c: Lattice constants. If None, it will ask for input.
-   :type c: float, optional
-   :param alpha: Lattice constants. If None, it will ask for input.
-   :type alpha: float, optional
-   :param beta: Lattice constants. If None, it will ask for input.
-   :type beta: float, optional
-   :param gamma: Lattice constants. If None, it will ask for input.
-   :type gamma: float, optional
+   1. Selects the diffractometer (interactive prompt or argument).
+   2. Applies the appropriate axis constraints.
+   3. Creates aliases for all real diffractometer axes in the calling
+      namespace (mu, gamma, delta, chi, phi, tau).
+
+   :param diffractometer: Name or device instance to activate. If not provided, prompts
+                          interactively with the current diffractometer as the default.
+   :type diffractometer: str or DiffractometerBase, optional
+
+
+.. py:function:: newsample()
+
+   Interactively add a new sample with lattice constants.
+
+   Prompts the user for:
+     - sample name
+     - lattice constants (a, b, c, alpha, beta, gamma)
+
+   Uses defaults if the user just presses Enter.
+
+
+.. py:function:: sampleList()
+
+   List all samples currently defined in hklpy2; specify  current one.
 
 
 .. py:function:: sampleChange(sample_key=None)
 
-   Change selected sample in hklpy.
+   Change selected sample in hklpy2.
 
    :param sample_key: Name of the sample as set in hklpy. If None it will ask for which
                       sample.
@@ -137,14 +150,11 @@ Module Contents
 
 .. py:function:: list_reflections(all_samples=False)
 
-   Lists all reflections in defined in hklpy.
+   Lists all reflections defined in hklpy for six-circle geometry.
 
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-   :param all_samples: If True, it will list the reflections for all samples, if False, only
-                       the current sample. Defaults to False.
-   :type all_samples: boolean, optional
+   :param all_samples: If True, list reflections for all samples.
+                       If False, only the current sample. Defaults to False.
+   :type all_samples: bool, optional
 
 
 .. py:function:: or_swap()
@@ -152,146 +162,9 @@ Module Contents
    Swaps the two orientation reflections in hklpy.
 
 
-.. py:function:: setor0(*args)
-
-   Sets the primary orientation in hklpy.
-
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-   :param delta: Values of motor positions for current reflection. If None, it will ask
-                 for it.
-   :type delta: float, optional
-   :param th: Values of motor positions for current reflection. If None, it will ask
-              for it.
-   :type th: float, optional
-   :param chi: Values of motor positions for current reflection. If None, it will ask
-               for it.
-   :type chi: float, optional
-   :param phi: Values of motor positions for current reflection. If None, it will ask
-               for it.
-   :type phi: float, optional
-   :param gamma: Values of motor positions for current reflection. If None, it will ask
-                 for it.
-   :type gamma: float, optional
-   :param mu: Values of motor positions for current reflection. If None, it will ask
-              for it.
-   :type mu: float, optional
-   :param h: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type h: float, optional
-   :param k: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type k: float, optional
-   :param l: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type l: float, optional
-
-
-.. py:function:: setor1(*args)
-
-   Sets the primary secondary in hklpy.
-
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-   :param delta: Values of motor positions for current reflection. If None, it will ask
-                 for it.
-   :type delta: float, optional
-   :param th: Values of motor positions for current reflection. If None, it will ask
-              for it.
-   :type th: float, optional
-   :param chi: Values of motor positions for current reflection. If None, it will ask
-               for it.
-   :type chi: float, optional
-   :param phi: Values of motor positions for current reflection. If None, it will ask
-               for it.
-   :type phi: float, optional
-   :param gamma: Values of motor positions for current reflection. If None, it will ask
-                 for it.
-   :type gamma: float, optional
-   :param mu: Values of motor positions for current reflection. If None, it will ask
-              for it.
-   :type mu: float, optional
-   :param h: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type h: float, optional
-   :param k: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type k: float, optional
-   :param l: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type l: float, optional
-
-
-.. py:function:: set_orienting()
-
-   Change the primary and/or secondary orienting reflections to existing reflecitons
-   in reflection list in hklpy.
-
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-
-.. py:function:: del_reflection()
-
-   Delete existing reflection from in reflection list in hklpy.
-
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-
-.. py:function:: list_orienting(all_samples=False)
-
-   Prints the two reflections used in the UB matrix.
-
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-   :param all_samples: If True, it will print the reflections of all samples, if False, only of
-                       the current one.
-   :type all_samples: boolean, optional
-
-
-.. py:function:: or0(h=None, k=None, l=None)
-
-   Sets the primary orientation in hklpy using the current motor positions.
-
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-   :param h: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type h: float, optional
-   :param k: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type k: float, optional
-   :param l: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type l: float, optional
-
-
-.. py:function:: or1(h=None, k=None, l=None)
-
-   Sets the secondary orientation in hklpy using the current motor positions.
-
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-   :param h: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type h: float, optional
-   :param k: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type k: float, optional
-   :param l: Values of H, K, L positions for current reflection. If None, it will ask
-             for it.
-   :type l: float, optional
-
-
 .. py:function:: compute_UB()
 
-   Calculates the UB matrix.
+   Calculates the UB matrix. v
 
    This fixes one issue with the hklpy calc_UB in that using wh() right after
    will not work, it needs to run one calculation first.
@@ -307,32 +180,150 @@ Module Contents
    :type l: float, optional
 
 
-.. py:function:: calc_UB(r1, r2, wavelength=None, output=False)
+.. py:class:: Sync_UB_Matrix(source, target)
 
-   Compute the UB matrix with two reflections.
+   Keep the UB matrix of target in sync with source via an ophyd subscription.
 
-   :param r1: Orienting reflections from hklpy.
-   :type r1: hklpy reflections
-   :param r2: Orienting reflections from hklpy.
-   :type r2: hklpy reflections
-   :param wavelength: This is not used...
-   :type wavelength: float, optional
-   :param output: Toggle to decide whether to print the UB matrix.
-   :type output: boolean
+   Subscribes to source._ub_sync (an ArrayAttributeSignal pointing at
+   core.sample.UB) so that whenever the signal is updated the callback
+   copies the new matrix to the target and syncs simulated motor positions.
+   Call cleanup() to remove the subscription when no longer needed.
+
+
+   .. py:attribute:: source
+
+
+   .. py:attribute:: target
+
+
+   .. py:method:: cleanup()
+
+      Remove the UB-sync subscription.
+
+
+
+   .. py:method:: sync_callback(value=None, **kwargs)
+
+
+.. py:function:: setor0()
+
+   Sets the primary orientation in hklpy2.
+
+   :param diffractometer real motors: Values of motor positions for current reflection. It will ask
+                                      for it.
+   :type diffractometer real motors: float, optional
+   :param h: Values of H, K, L positions for current reflection. It will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. It will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. It will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: setor1()
+
+   Sets the primary orientation in hklpy2.
+
+   :param diffractometer real motors: Values of motor positions for current reflection. It will ask
+                                      for it.
+   :type diffractometer real motors: float, optional
+   :param h: Values of H, K, L positions for current reflection. It will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. It will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. It will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: or0(h=None, k=None, l=None)
+
+   Sets the primary orientation in hklpy2 using the current motor positions.
+
+   :param h: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: or1(h=None, k=None, l=None)
+
+   Sets the secondary orientation in hklpy2 using the current motor positions.
+
+   :param h: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type h: float, optional
+   :param k: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type k: float, optional
+   :param l: Values of H, K, L positions for current reflection. If None, it will ask
+             for it.
+   :type l: float, optional
+
+
+.. py:function:: set_orienting()
+
+   Change the primary and secondary orienting reflections
+   to existing reflections in the reflection list (hklpy2).
+
+   WARNING: Works only with six-circle geometry (fix in progress).
+
+
+.. py:function:: del_reflection()
+
+   Delete a reflection from the current sample's reflection list.
+
+   - Displays reflections like set_orienting()
+   - User inputs index number of reflection to delete
+   - Orienting reflections (first/second) cannot be deleted
+
+
+.. py:function:: list_orienting()
+
+   List the first and second orienting reflections only
+   from the current sample's reflection list.
 
 
 .. py:function:: setmode(mode=None)
 
    Set the mode of the currently selected diffractometer.
 
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
    :param mode: Mode to be selected. If None, it will ask.
    :type mode: string, optional
 
 
-.. py:function:: ca(h, k, l, energy=None)
+.. py:function:: freeze(*args)
+
+   Set preset values for the constant axes of the current mode.
+
+   - For psi constant modes: freezes psi. Uses args[0] if given, otherwise
+     computes the current psi from the psi-engine counterpart diffractometer.
+   - For '4-circles constant phi/mu/chi horizontal': freezes that axis.
+     Uses args[0] if given, otherwise uses the current motor position.
+   - For other modes: prompts interactively for each constant axis,
+     showing the current preset as the default.
+   Updates ``_geom_.core.presets`` or ``_geom_.core.extras`` as appropriate.
+
+
+.. py:function:: freeze_general()
+
+   Interactively set preset values for the constant axes of the current mode.
+
+   For each angle held constant in the current mode, prompts for a value
+   (showing the current preset as default). Updates ``_geom_.core.presets``.
+
+
+.. py:function:: ca(h, k, l)
 
    Calculate the motors position of a reflection.
 
@@ -342,8 +333,6 @@ Module Contents
    :type k: float
    :param l: H, K, and L values.
    :type l: float
-   :param energy: energy (Optional)
-   :type energy: float
 
 
 .. py:function:: ubr(h, k, l)
@@ -371,93 +360,76 @@ Module Contents
 
    :rtype: Generator for the bluesky Run Engine.
 
+   .. rubric:: Example
+
+   RE(br(2, 2, 0))
+
 
 .. py:function:: uan(*args)
 
-   Moves the delta and theta motors.
+   Moves the delta and eta motors.
 
    WARNING: This function will only work with six circles. This will be fixed
    in future releases.
 
-   :param gamma: Delta and th motor angles to be moved to.
-   :type gamma: float, optional??
-   :param mu: Delta and th motor angles to be moved to.
-   :type mu: float, optional??
-
-
-.. py:function:: an(*args)
-
-   Moves the delta and theta motors.
-
-   WARNING: This function will only work with six circles. This will be fixed
-   in future releases.
-
-   :param delta: Delta and th motor angles to be moved to.
+   :param delta: Delta and eta motor angles to be moved to.
    :type delta: float, optional??
-   :param th: Delta and th motor angles to be moved to.
-   :type th: float, optional??
-
-   :rtype: Generator for the bluesky Run Engine.
-
-
-.. py:function:: pa_new()
-
-   Retrieve information on the current reciprocal space position.
-
+   :param eta: Delta and eta motor angles to be moved to.
+   :type eta: float, optional??
 
 
 .. py:function:: setlat(*args)
 
-   Set the lattice constants.
+   Set the lattice constants for the current sample.
 
-   :param a: Lattice constants. If None, it will ask for input.
+   :param a: Lattice constants.
+             - If all 6 are provided as arguments, they are used directly.
+             - If none are provided, the user will be prompted interactively.
    :type a: float, optional
-   :param b: Lattice constants. If None, it will ask for input.
+   :param b: Lattice constants.
+             - If all 6 are provided as arguments, they are used directly.
+             - If none are provided, the user will be prompted interactively.
    :type b: float, optional
-   :param c: Lattice constants. If None, it will ask for input.
+   :param c: Lattice constants.
+             - If all 6 are provided as arguments, they are used directly.
+             - If none are provided, the user will be prompted interactively.
    :type c: float, optional
-   :param alpha: Lattice constants. If None, it will ask for input.
+   :param alpha: Lattice constants.
+                 - If all 6 are provided as arguments, they are used directly.
+                 - If none are provided, the user will be prompted interactively.
    :type alpha: float, optional
-   :param beta: Lattice constants. If None, it will ask for input.
+   :param beta: Lattice constants.
+                - If all 6 are provided as arguments, they are used directly.
+                - If none are provided, the user will be prompted interactively.
    :type beta: float, optional
-   :param gamma: Lattice constants. If None, it will ask for input.
+   :param gamma: Lattice constants.
+                 - If all 6 are provided as arguments, they are used directly.
+                 - If none are provided, the user will be prompted interactively.
    :type gamma: float, optional
+
+   .. rubric:: Notes
+
+   If two orienting reflections are defined, UB will be recomputed automatically.
 
 
 .. py:function:: setaz(*args)
 
-   Set the azimuthal reference vector (h k l) for psi-constant mode.
+   Set the azimuthal reference reflection (h2, k2, l2).
 
+   Always updates the psi counterpart of the active diffractometer (which uses the psi engine).
+   If the main diffractometer is currently in a psi constant mode,
+   its h2/k2/l2 extras are also updated while preserving the psi value.
+   Works regardless of the current mode.
 
-.. py:function:: freeze(*args)
-
-   Freeze the psi angle for psi-constant scans on the current diffractometer.
-
-
-.. py:function:: update_lattice(lattice_constant=None)
-
-   Update lattice constants.
-
-   :param lattice_constant: a, b or c or auto (default)
-   :type lattice_constant: string, optional
-
-
-.. py:function:: write_config(method='File', overwrite=False)
-
-   Write configuration from file in current directory.
-
-   :param method: right now only "File" possible, but later PV or other
-   :type method: string, optional
-   :param overwrite: asks if existing file hould be overwritten
-   :type overwrite: Boolean, optional
-
-
-.. py:function:: read_config(method='File')
-
-   Read configuration from file in current directory.
-
-   :param method: right now only "File" possible, but later PV or other
-   :type method: string, optional
+   :param h2: Miller indices of the azimuthal reference reflection.
+              If not provided, the user will be prompted interactively.
+   :type h2: int or float, optional
+   :param k2: Miller indices of the azimuthal reference reflection.
+              If not provided, the user will be prompted interactively.
+   :type k2: int or float, optional
+   :param l2: Miller indices of the azimuthal reference reflection.
+              If not provided, the user will be prompted interactively.
+   :type l2: int or float, optional
 
 
 .. py:function:: show_constraints()
@@ -475,46 +447,75 @@ Module Contents
    Change constraint values for specific axis
 
 
+.. py:function:: analyzer_configuration(energy=None)
+
+   Configure analyzer
+       - Select analyzer crystal and determine d-spacing
+
+
+
+.. py:function:: analyzer_set()
+
+   Set analyzer
+
+
+
+.. py:function:: update_lattice(lattice_constant=None)
+
+   Update lattice constants.
+
+   :param lattice_constant: a, b or c or auto (default)
+   :type lattice_constant: string, optional
+
+
+.. py:function:: write_config(filename='default', overwrite=False)
+
+   Write diffractometer configuration to file in current directory.
+
+   :param method: Only "File" is currently supported.
+   :type method: string, optional
+   :param overwrite: If False, asks for confirmation before overwriting an existing file.
+   :type overwrite: bool, optional
+
+
+.. py:function:: read_config()
+
+   Read diffractometer configuration from file in current directory.
+
+   Lists all files matching *_polar_config.yml, prompts the user to select
+   one, and loads it. Defaults to default_polar_config.yml if it exists.
+
+
+.. py:function:: restore_huber_from_scan(scan_id, diffractometer=None, sample_name=None, force=False)
+
+   Restore diffractometer orientation from a previous scan.
+
+   :param scan_id: Scan ID to restore orientation from.
+   :type scan_id: int or string
+   :param diffractometer: Diffractometer to restore. Defaults to the current diffractometer.
+   :type diffractometer: diffractometer object, optional
+   :param sample_name: Override the sample name stored in the scan.
+   :type sample_name: string, optional
+   :param force: If True, use the first available diffractometer info even if the
+                 name does not match. Defaults to False.
+   :type force: bool, optional
+
+
+.. py:function:: set_detector()
+
+   Interactively select detector on Huber detectorarm to be used.
+   Detectors are mounted 25 degrees apart from each other in delta
+
+   Prompts the user for:
+     - Detector: (E)iger or (P)oint Detector/Analyzer
+
+   Uses defaults if the user just presses Enter.
+
+
 .. py:class:: whClass
 
    _wh function used without parenthesis
 
 
 .. py:data:: wh
-
-.. py:class:: sampleListClass
-
-   _sampleList function used without parenthesis
-
-
-.. py:data:: sampleList
-
-.. py:class:: Sync_UB_Matrix(source: hkl.diffract.Diffractometer, target: hkl.diffract.Diffractometer)
-
-   Copy the UB matrix from source to target diffractometers.
-
-
-   .. py:attribute:: source
-
-
-   .. py:attribute:: target
-
-
-   .. py:method:: cleanup(*args, **kwargs)
-
-      Remove all our subscriptions to ophyd objects.
-
-
-
-   .. py:method:: sync_callback(value=None, **kwargs)
-
-      Copy the UB matrix from source to target when a change is received.
-
-
-
-.. py:function:: restore_huber_from_scan(scan_id, diffractometer=None, sample_name=None, force=False)
-
-   Restore diffractometer orientation (sample, constraints, reflections) from a
-   saved scan.
-
 

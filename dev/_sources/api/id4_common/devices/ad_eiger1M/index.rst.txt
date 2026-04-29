@@ -70,7 +70,7 @@ Module Contents
 
 .. py:class:: Eiger1MDetector(*args, default_folder='', hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', max_num_images=600000, **kwargs)
 
-   Bases: :py:obj:`TriggerTime`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`TriggerTime`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
    Eiger 1M area detector with HDF5 file writing and statistics plugins.
@@ -137,11 +137,6 @@ Module Contents
    .. py:attribute:: max_num_images
       :value: 600000
 
-
-
-   .. py:property:: preset_monitor
-
-      Return the signal used to set exposure time.
 
 
    .. py:method:: align_on(time=0.1)
@@ -257,6 +252,18 @@ Module Contents
    .. py:method:: select_plot(channels)
 
       Select which stats channels to plot by label name.
+
+
+
+   .. py:method:: field_for_label(label)
+
+      Return the ophyd field name for a plot-option label.
+
+
+
+   .. py:method:: select_read(channels)
+
+      No-op: all stats channels are always read (only hinted/normal differ).
 
 
 

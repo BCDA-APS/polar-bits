@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -500,6 +500,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../aps_undulator/index.html">id4_common.devices.aps_undulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../chopper_device/index.html">id4_common.devices.chopper_device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -577,20 +578,18 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/aps_functions/index.html">id4_common.utils.aps_functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class/index.html">id4_common.utils.counters_class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class_for_dual/index.html">id4_common.utils.counters_class_for_dual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils/index.html">id4_common.utils.hkl_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_hklpy2/index.html">id4_common.utils.hkl_utils_hklpy2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_new/index.html">id4_common.utils.hkl_utils_new</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/local_magics/index.html">id4_common.utils.local_magics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports/index.html">id4_common.utils.polartools_hklpy_imports</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports_hklpy2/index.html">id4_common.utils.polartools_hklpy_imports_hklpy2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
@@ -735,7 +734,7 @@ pass through).
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.scaler.</span></span><span class="sig-name descname"><span class="pre">LocalScalerCH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.scaler.ScalerCH</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="../counters_mixin/index.html#id4_common.devices.counters_mixin.CountersMixin" title="id4_common.devices.counters_mixin.CountersMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.counters_mixin.CountersMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.scaler.ScalerCH</span></code></p>
 <p>ScalerCH subclass with a flexible monitor channel and plot/read channel
 selection.</p>
 <dl class="py attribute">
@@ -746,7 +745,10 @@ selection.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.preset_monitor">
 <span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.preset_monitor" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Return the ophyd signal used to control scan count time.</p>
+<p>Resolved by walking the dotted path in _preset_monitor_attr. Set
+that class attribute in subclasses instead of overriding this property.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.freq">
@@ -797,6 +799,19 @@ If <em>None</em>, select all channels named in the EPICS scaler.</p>
 <span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.select_plot" title="Link to this definition">#</a></dt>
 <dd><p>Set the hinted kind for the given channels by delegating to
 select_plot_channels.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.label_option_map">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.label_option_map" title="Link to this definition">#</a></dt>
+<dd><p>Identity map — scaler labels are already field names after match_names().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.scaler.LocalScalerCH.field_for_label">
+<span class="sig-name descname"><span class="pre">field_for_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.scaler.LocalScalerCH.field_for_label" title="Link to this definition">#</a></dt>
+<dd><p>Return the ophyd field name for a plot-option label.</p>
+<p>For scalers the label is already the field name after match_names().</p>
 </dd></dl>
 
 <dl class="py method">
@@ -874,6 +889,8 @@ channels.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.scaler.LocalScalerCH.monitor"><code class="docutils literal notranslate"><span class="pre">LocalScalerCH.monitor</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.scaler.LocalScalerCH.plot_options"><code class="docutils literal notranslate"><span class="pre">LocalScalerCH.plot_options</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.scaler.LocalScalerCH.select_plot"><code class="docutils literal notranslate"><span class="pre">LocalScalerCH.select_plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.scaler.LocalScalerCH.label_option_map"><code class="docutils literal notranslate"><span class="pre">LocalScalerCH.label_option_map</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.scaler.LocalScalerCH.field_for_label"><code class="docutils literal notranslate"><span class="pre">LocalScalerCH.field_for_label()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.scaler.LocalScalerCH.default_settings"><code class="docutils literal notranslate"><span class="pre">LocalScalerCH.default_settings()</span></code></a></li>
 </ul>
 </li>
