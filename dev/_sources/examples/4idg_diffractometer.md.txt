@@ -56,7 +56,6 @@ constraint management, and configuration save/restore.
 | `set_orienting()` | Interactively pick which reflections are orienting |
 | `or_swap()` | Swap first and second orienting reflections |
 | `del_reflection()` | Delete a non-orienting reflection |
-| `compute_UB()` | Force UB recomputation (normally automatic) |
 
 ### Modes, azimuth and constraints
 
@@ -241,14 +240,7 @@ setor1()    # enter angles + H K L for secondary reflection
 The UB matrix is recalculated automatically whenever the orienting reflections
 or lattice parameters are updated — including after `or0()`, `or1()`,
 `setor0()`, `setor1()`, `or_swap()`, `set_orienting()`, `setlat()`, and
-`update_lattice()`. There is no need to call `compute_UB()` manually in normal
-use.
-
-### Recompute the UB matrix
-
-```python
-compute_UB()    # force recomputation — only needed in exceptional cases
-```
+`update_lattice()`.
 
 ### Inspect and manage reflections
 

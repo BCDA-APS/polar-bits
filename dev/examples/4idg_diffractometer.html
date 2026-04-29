@@ -663,9 +663,6 @@ constraint management, and configuration save/restore.</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">del_reflection()</span></code></p></td>
 <td><p>Delete a non-orienting reflection</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">compute_UB()</span></code></p></td>
-<td><p>Force UB recomputation (normally automatic)</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -910,14 +907,7 @@ prompt for both motor positions and H K L:</p>
 <p>The UB matrix is recalculated automatically whenever the orienting reflections
 or lattice parameters are updated — including after <code class="docutils literal notranslate"><span class="pre">or0()</span></code>, <code class="docutils literal notranslate"><span class="pre">or1()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">setor0()</span></code>, <code class="docutils literal notranslate"><span class="pre">setor1()</span></code>, <code class="docutils literal notranslate"><span class="pre">or_swap()</span></code>, <code class="docutils literal notranslate"><span class="pre">set_orienting()</span></code>, <code class="docutils literal notranslate"><span class="pre">setlat()</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">update_lattice()</span></code>. There is no need to call <code class="docutils literal notranslate"><span class="pre">compute_UB()</span></code> manually in normal
-use.</p>
-</section>
-<section id="recompute-the-ub-matrix">
-<h2>Recompute the UB matrix<a class="headerlink" href="#recompute-the-ub-matrix" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">compute_UB</span><span class="p">()</span>    <span class="c1"># force recomputation — only needed in exceptional cases</span>
-</pre></div>
-</div>
+<code class="docutils literal notranslate"><span class="pre">update_lattice()</span></code>.</p>
 </section>
 <section id="inspect-and-manage-reflections">
 <h2>Inspect and manage reflections<a class="headerlink" href="#inspect-and-manage-reflections" title="Link to this heading">#</a></h2>
@@ -1287,7 +1277,6 @@ routines for diffraction data analysis, available in the session namespace:</p>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-the-current-position">Checking the Current Position</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Orientation (UB Matrix)</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-orientation-reflections">Setting orientation reflections</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recompute-the-ub-matrix">Recompute the UB matrix</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-and-manage-reflections">Inspect and manage reflections</a></li>
 </ul>
 </li>
