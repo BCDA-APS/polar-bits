@@ -38,29 +38,6 @@ Module Contents
 
 .. py:data:: ANALYZER_LIST_PATH
 
-.. py:class:: UBMatrixSignal(pv_name, *, parent=None, name=None, **kwargs)
-
-   Bases: :py:obj:`ophyd.Signal`
-
-
-   In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
-
-   Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
-   other components can subscribe to UB matrix changes via .subscribe().
-
-
-   .. py:method:: get(**kwargs)
-
-      Return the parent diffractometer's current UB matrix.
-
-
-
-   .. py:method:: put(value, *, timestamp=None, force=False, **kwargs)
-
-      Write the UB matrix back to the parent and notify subscribers.
-
-
-
 .. py:class:: AnalyzerDevice
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
@@ -159,7 +136,7 @@ Module Contents
 
 
 
-   .. py:method:: calc(acal='No')
+   .. py:method:: calc()
 
       Print analyzer Bragg angles for the current crystal at the current
       beamline energy.
@@ -235,16 +212,10 @@ Module Contents
 
 .. py:class:: HPDiffractometer
 
-   Bases: :py:obj:`HPDiffractometerBase`, :py:obj:`DiffractometerMixin`
+   Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
 
 
    hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
-
-
-   .. py:attribute:: chi
-
-
-   .. py:attribute:: phi
 
 
    .. py:attribute:: basex

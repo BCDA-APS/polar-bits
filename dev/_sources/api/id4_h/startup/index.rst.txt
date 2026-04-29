@@ -27,5 +27,13 @@ Module Contents
 
 .. py:data:: iconfig_path
 
-.. py:data:: cat
+.. py:data:: extras
+
+.. py:data:: iconfig
+
+.. py:data:: logger
+
+.. py:data:: stations
+   :value: ['core', '4idh']
+
 

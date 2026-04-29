@@ -295,7 +295,7 @@ Module Contents
    :type eta: float, optional??
 
 
-.. py:function:: an(delta=None, eta=None)
+.. py:function:: an(*args)
 
    Moves the delta and theta motors.
 
@@ -367,3 +367,4 @@ Module Contents
 
 
 .. py:function:: freeze_psi(*args)
+

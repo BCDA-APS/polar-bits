@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -500,7 +500,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../aps_undulator/index.html">id4_common.devices.aps_undulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../chopper_device/index.html">id4_common.devices.chopper_device</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -578,18 +577,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/aps_functions/index.html">id4_common.utils.aps_functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class/index.html">id4_common.utils.counters_class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class_for_dual/index.html">id4_common.utils.counters_class_for_dual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils/index.html">id4_common.utils.hkl_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_hklpy2/index.html">id4_common.utils.hkl_utils_hklpy2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_new/index.html">id4_common.utils.hkl_utils_new</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/local_magics/index.html">id4_common.utils.local_magics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports/index.html">id4_common.utils.polartools_hklpy_imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports_hklpy2/index.html">id4_common.utils.polartools_hklpy_imports_hklpy2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
@@ -881,7 +882,7 @@ signals.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_vimba.</span></span><span class="sig-name descname"><span class="pre">VimbaDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_name_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">65535</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_vimba.Trigger" title="id4_common.devices.ad_vimba.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <a class="reference internal" href="../counters_mixin/index.html#id4_common.devices.counters_mixin.CountersMixin" title="id4_common.devices.counters_mixin.CountersMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.counters_mixin.CountersMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_vimba.Trigger" title="id4_common.devices.ad_vimba.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
 <p>Vimba area detector with ROI/stats plugins, HDF5 output, and alignment
 helpers.</p>
 <dl class="py attribute">
@@ -959,6 +960,12 @@ helpers.</p>
 <span class="sig-name descname"><span class="pre">wait_for_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_signals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.wait_for_connection" title="Link to this definition">#</a></dt>
 <dd><p>Wait for the cam to fully connect before calling the parent
 wait_for_connection.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector.preset_monitor">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.preset_monitor" title="Link to this definition">#</a></dt>
+<dd><p>Return the cam acquire_time signal used as the preset monitor.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1084,18 +1091,6 @@ selection.</p>
 plot_select.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector.field_for_label">
-<span class="sig-name descname"><span class="pre">field_for_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.field_for_label" title="Link to this definition">#</a></dt>
-<dd><p>Return the ophyd field name for a plot-option label.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.ad_vimba.VimbaDetector.select_read">
-<span class="sig-name descname"><span class="pre">select_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_vimba.VimbaDetector.select_read" title="Link to this definition">#</a></dt>
-<dd><p>No-op: all stats channels are always read (only hinted/normal differ).</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -1203,6 +1198,7 @@ plot_select.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.hdf1_name_format"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.hdf1_name_format</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.max_num_images"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.max_num_images</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.wait_for_connection"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.wait_for_connection()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.preset_monitor"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.preset_monitor</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.align_on"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.align_on()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.align_off"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.align_off()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.save_images_on"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.save_images_on()</span></code></a></li>
@@ -1222,8 +1218,6 @@ plot_select.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.label_option_map"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.label_option_map</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.plot_options"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.plot_options</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.select_plot"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.select_plot()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.field_for_label"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.field_for_label()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_vimba.VimbaDetector.select_read"><code class="docutils literal notranslate"><span class="pre">VimbaDetector.select_read()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -243,7 +243,7 @@ Module Contents
 
 .. py:class:: VortexXspress37(*args, default_folder=Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex'), hdf1_file_format='%s/%s_%6.6d.h5', **kwargs)
 
-   Bases: :py:obj:`Trigger`, :py:obj:`id4_common.devices.counters_mixin.ROICountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`Trigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
    Seven-element Vortex detector driven by an Xspress3 controller with HDF5
@@ -328,6 +328,11 @@ Module Contents
    .. py:attribute:: hdf1_file_format
       :value: '%s/%s_%6.6d.h5'
 
+
+
+   .. py:property:: preset_monitor
+
+      Return the cam acquire_time signal as the scan count-time control.
 
 
    .. py:property:: num_channels
@@ -424,6 +429,17 @@ Module Contents
 
       Return a mapping from human-readable ROI label strings to ROI index
       integers.
+
+
+   .. py:property:: plot_options
+
+      Return all available ROI label strings for plot channel selection.
+
+
+   .. py:method:: select_plot(channels)
+
+      Select which ROI channels are plotted by label name.
+
 
 
    .. py:method:: setup_images(base_folder, file_name_base, file_number, flyscan=False)

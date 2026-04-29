@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -500,7 +500,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../aps_undulator/index.html">id4_common.devices.aps_undulator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../chopper_device/index.html">id4_common.devices.chopper_device</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -578,18 +577,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/aps_functions/index.html">id4_common.utils.aps_functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class/index.html">id4_common.utils.counters_class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/counters_class_for_dual/index.html">id4_common.utils.counters_class_for_dual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils/index.html">id4_common.utils.hkl_utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_hklpy2/index.html">id4_common.utils.hkl_utils_hklpy2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/hkl_utils_new/index.html">id4_common.utils.hkl_utils_new</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/local_magics/index.html">id4_common.utils.local_magics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports/index.html">id4_common.utils.polartools_hklpy_imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy_imports_hklpy2/index.html">id4_common.utils.polartools_hklpy_imports_hklpy2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
@@ -786,7 +787,7 @@ channels.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xmap.</span></span><span class="sig-name descname"><span class="pre">VortexXMAP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.vortex_xmap.SingleTrigger" title="id4_common.devices.vortex_xmap.SingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleTrigger</span></code></a>, <a class="reference internal" href="../counters_mixin/index.html#id4_common.devices.counters_mixin.ROICountersMixin" title="id4_common.devices.counters_mixin.ROICountersMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.counters_mixin.ROICountersMixin</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.vortex_xmap.SingleTrigger" title="id4_common.devices.vortex_xmap.SingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleTrigger</span></code></a></p>
 <p>Four-element Vortex detector driven by an XIA XMAP DXP controller.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.start">
@@ -913,6 +914,12 @@ channels.</p>
 <span class="sig-name descname"><span class="pre">dxp4</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.dxp4" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.preset_monitor">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.preset_monitor" title="Link to this definition">#</a></dt>
+<dd><p>Return the real_preset signal as the scan count-time control.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.default_kinds">
 <span class="sig-name descname"><span class="pre">default_kinds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.default_kinds" title="Link to this definition">#</a></dt>
@@ -974,6 +981,18 @@ normal.</p>
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.label_option_map" title="Link to this definition">#</a></dt>
 <dd><p>Return a mapping from human-readable ROI label strings to ROI index
 integers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.plot_options">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_options" title="Link to this definition">#</a></dt>
+<dd><p>Return all available ROI label strings for plot channel selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.vortex_xmap.VortexXMAP.select_plot">
+<span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xmap.VortexXMAP.select_plot" title="Link to this definition">#</a></dt>
+<dd><p>Select which ROI channels are plotted by label name.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1076,6 +1095,7 @@ integers.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.dxp2"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.dxp2</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.dxp3"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.dxp3</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.dxp4"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.dxp4</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.preset_monitor"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.preset_monitor</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.default_kinds"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.default_kinds()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.default_settings"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.default_settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.read_rois"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.read_rois</span></code></a></li>
@@ -1086,6 +1106,8 @@ integers.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_roi3"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.plot_roi3()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_roi4"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.plot_roi4()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.label_option_map"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.label_option_map</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.plot_options"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.plot_options</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xmap.VortexXMAP.select_plot"><code class="docutils literal notranslate"><span class="pre">VortexXMAP.select_plot()</span></code></a></li>
 </ul>
 </li>
 </ul>

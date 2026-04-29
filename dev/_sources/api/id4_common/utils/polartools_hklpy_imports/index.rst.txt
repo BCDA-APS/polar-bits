@@ -2,3 +2,10 @@ id4_common.utils.polartools_hklpy_imports
 =========================================
 
 .. py:module:: id4_common.utils.polartools_hklpy_imports
+
+.. autoapi-nested-parse::
+
+   Re-exports of hkl/polartools user-facing symbols for session convenience.
+
+
+

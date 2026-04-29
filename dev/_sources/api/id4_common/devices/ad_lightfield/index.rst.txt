@@ -148,7 +148,7 @@ Module Contents
 
 .. py:class:: LightFieldDetector(*args, hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', bluesky_files_root='', windows_files_root='', relative_default_folder='', **kwargs)
 
-   Bases: :py:obj:`MySingleTrigger`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
    Princeton Instruments LightField spectrometer detector with HDF5 and SPE
@@ -187,30 +187,9 @@ Module Contents
 
 
 
-   .. py:property:: label_option_map
-      :type: dict
+   .. py:property:: preset_monitor
 
-
-      No selectable plot channels — LightField saves full spectra.
-
-
-   .. py:property:: plot_options
-      :type: list
-
-
-      Return empty list — LightField has no selectable plot channels.
-
-
-   .. py:method:: select_plot(channels: list) -> None
-
-      No-op — LightField has no selectable plot channels.
-
-
-
-   .. py:method:: field_for_label(label: str) -> str
-
-      Return label unchanged — LightField has no channel mapping.
-
+      Return the signal used to set exposure time.
 
 
    .. py:method:: save_images_on()
@@ -252,15 +231,6 @@ Module Contents
    .. py:property:: save_image_flag
 
       Return True; LightField detector always saves images.
-
-
-   .. py:method:: predict_save_path(base_path, name_template, file_number)
-
-      Return (full_path, relative_path) without any EPICS I/O.
-
-      Overrides CountersMixin default because LightField uses read_path.name
-      (not a trailing slash) as the directory token in make_write_read_paths.
-
 
 
 .. py:data:: spectrometer
