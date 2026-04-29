@@ -19,7 +19,7 @@ constraint management, and configuration save/restore.
 
 | Command | Description |
 |---------|-------------|
-| `change_diffractometer(name)` | Select active diffractometer and update motor aliases and axis constraints |
+| `change_diffractometer(name)` | Select active diffractometer; update motor aliases, h/k/l aliases, and axis constraints |
 | `set_detector()` | Select Eiger or point detector/analyzer arm |
 
 ### Moving
@@ -133,14 +133,8 @@ After `change_diffractometer("huber_hp")`:
 | `basex`, `basey`, `basez` | Base stage |
 | `ath`, `atth`, `eta`, `achi` | Analyzer arm |
 
-The reciprocal-space pseudo-axes `h`, `k`, `l` are **not** injected automatically.
-Assign them once per session (see [Per-Session Startup](#per-session-startup)):
-
-```python
-h = huber_euler.h
-k = huber_euler.k
-l = huber_euler.l
-```
+The reciprocal-space pseudo-axes `h`, `k`, `l` are also injected automatically
+into the session namespace by `change_diffractometer()`.
 
 ---
 
@@ -153,16 +147,12 @@ load experiment-specific settings:
 %run startup_4idg.py
 ```
 
-This file should also alias the reciprocal-space pseudo-axes so they can be
-used directly in scans:
-
 ```python
 change_diffractometer("huber_euler")
-
-h = huber_euler.h
-k = huber_euler.k
-l = huber_euler.l
 ```
+
+`change_diffractometer()` injects motor aliases and the reciprocal-space
+pseudo-axes `h`, `k`, `l` into the session namespace automatically.
 
 ---
 
@@ -417,8 +407,8 @@ RE(th2th(-2, 2, 100, 0.5))   # ±2° in 2θ, 100 pts
 
 ### Scans in reciprocal space
 
-With `h`, `k`, `l` aliased (see [Per-Session Startup](#per-session-startup)),
-scan directly along a reciprocal-space direction. The diffractometer moves all
+Scan directly along a reciprocal-space direction using the `h`, `k`, `l` aliases
+set by `change_diffractometer()`. The diffractometer moves all
 required angular axes simultaneously to follow the path:
 
 ```python
