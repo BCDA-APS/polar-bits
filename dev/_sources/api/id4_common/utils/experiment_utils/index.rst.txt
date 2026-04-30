@@ -5,12 +5,18 @@ id4_common.utils.experiment_utils
 
 .. autoapi-nested-parse::
 
-   Utility functions
-   =================
+   Experiment session setup.
+
+   Public API
+   ==========
 
    .. autosummary::
 
-       ~set_experiment
+       ~experiment
+       ~experiment_setup
+       ~experiment_change_sample
+       ~experiment_load_from_bluesky
+       ~experiment_resume
 
 
 
@@ -25,127 +31,334 @@ Module Contents
 
 .. py:data:: logger
 
-.. py:data:: iconfig
+.. py:data:: PERSIST_FILENAME
+   :value: '.polar_experiment.yml'
 
-.. py:data:: SERVERS
 
-.. py:data:: path_startup
+.. py:data:: RESET_SCAN_ID_NOOP
+   :value: -1
 
-.. py:class:: ExperimentClass
+
+.. py:class:: ExperimentClass(*, prompt: Callable[[str], str] = input, printer: Callable[Ellipsis, None] = print)
+
+   Drives interactive experiment setup, server/path resolution, and
+   optional Data Management (DM) integration.
+
+   The class accepts ``prompt`` and ``printer`` callables so it can be
+   driven deterministically from tests; the module-level singleton
+   ``experiment`` uses :func:`input` and :func:`print`.
+
+   .. attribute:: esaf
+
+      Cached ESAF record (or ``"dev"`` for development runs).
+
+      :type: dict | str | None
+
+   .. attribute:: proposal
+
+      Cached proposal record (or ``"dev"``).
+
+      :type: dict | str | None
+
+   .. attribute:: server
+
+      ``"data management"`` or ``"dserv"``.
+
+      :type: str | None
+
+   .. attribute:: base_experiment_path
+
+      Server root + run + experiment_name.
+
+      :type: Path | None
+
+   .. attribute:: windows_base_experiment_path
+
+      Windows-mounted equivalent (only set when running on dserv).
+
+      :type: Path | None
+
+   .. attribute:: experiment_name
+
+
+
+      :type: str | None
+
+   .. attribute:: sample
+
+
+
+      :type: str | None
+
+   .. attribute:: file_base_name
+
+
+
+      :type: str | None
+
+   .. attribute:: spec_file
+
+
+
+      :type: str | None
+
+   .. attribute:: data_management
+
+      Cached DM experiment record when ``server == "data management"``.
+
+      :type: dict | None
+
+   .. attribute:: start_daq
+
+      If True, ``setup_dm_daq`` will start the DAQ. Off by default
+      because the DAQ start changes file permissions and can prevent
+      new files being written (TODO 2025-07-15).
+
+      :type: bool
+
+
+   .. py:attribute:: start_daq
+      :type:  bool
+      :value: False
+
+
 
    .. py:attribute:: esaf
+      :type:  dict | str | None
       :value: None
 
 
 
    .. py:attribute:: proposal
+      :type:  dict | str | None
       :value: None
 
 
 
    .. py:attribute:: server
+      :type:  str | None
       :value: None
 
 
 
    .. py:attribute:: base_experiment_path
+      :type:  pathlib.Path | None
       :value: None
 
 
 
    .. py:attribute:: windows_base_experiment_path
+      :type:  pathlib.Path | None
       :value: None
 
 
 
    .. py:attribute:: experiment_name
+      :type:  str | None
       :value: None
 
 
 
    .. py:attribute:: data_management
+      :type:  dict | None
       :value: None
 
 
 
    .. py:attribute:: sample
+      :type:  str | None
       :value: None
 
 
 
    .. py:attribute:: file_base_name
+      :type:  str | None
       :value: None
 
 
 
    .. py:attribute:: spec_file
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: dm_experiment
       :value: None
 
 
 
    .. py:property:: experiment_path
+      :type: pathlib.Path
 
 
-   .. py:method:: esaf_input(esaf_id: int = None)
+      ``base_experiment_path / sample``.
+
+      :type: Linux-side experiment folder
 
 
-   .. py:method:: proposal_input(proposal_id: int = None)
+   .. py:property:: windows_experiment_path
+      :type: pathlib.Path | None
 
 
-   .. py:method:: sample_input(sample: str = None)
+      Windows-mounted experiment folder, or None when DM owns the data.
 
 
-   .. py:method:: base_name_input(base_name: str = None)
+   .. py:method:: esaf_input(esaf_id: int | str | None = None) -> None
 
-
-   .. py:method:: server_input(server: str = None)
-
-
-   .. py:method:: experiment_name_input(experiment_name: str = None)
-
-
-   .. py:method:: dm_experiment_setup(experiment_name)
-
-
-   .. py:method:: setup_dm_daq()
-
-      Configure bluesky session for this user.
-
-      PARAMETERS
-
-      dm_experiment_name *str*:
+      Resolve the ESAF; accepts ``"dev"`` to skip DM lookup.
 
 
 
-   .. py:method:: setup_path()
+   .. py:method:: proposal_input(proposal_id: int | str | None = None) -> None
+
+      Resolve the proposal; accepts ``"dev"`` to skip DM lookup.
 
 
-   .. py:method:: scan_number_input(reset_scan_id: int = None)
+
+   .. py:method:: sample_input(sample: str | None = None) -> None
+
+      Set the sample name (default ``"DefaultSample"``).
 
 
-   .. py:method:: start_specwriter()
+
+   .. py:method:: base_name_input(base_name: str | None = None) -> None
+
+      Set the file base name.
 
 
-   .. py:method:: load_from_bluesky(scan_id: int = -1, reset_scan_id: int = -1, skip_DM: bool = False, useRE=False)
+
+   .. py:method:: server_input(server: str | None = None) -> None
+
+      Pick the data server: ``"data management"`` or ``"dserv"``.
 
 
-   .. py:method:: save_params_to_yaml()
+
+   .. py:method:: experiment_name_input(experiment_name: str | None = None) -> None
+
+      Set (or prompt for) the DM experiment name.
 
 
-   .. py:method:: load_params_from_yaml()
+
+   .. py:method:: scan_number_input(reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
+
+      Set ``RE.md["scan_id"]`` to the *last completed* scan number.
+
+      Semantics:
+      - ``reset_scan_id`` is a non-negative int → write that value.
+        Next scan = value + 1.
+      - ``-1`` (default sentinel) → leave ``RE.md["scan_id"]`` alone.
+        Used by ``load_from_bluesky``.
+      - ``None`` → interactive prompt (default ``no``).
+      - any other int → log a warning and leave it alone.
 
 
-   .. py:method:: setup(esaf_id: int = None, proposal_id: int = None, base_name: str = None, sample: str = None, server: str = None, experiment_name: str = None, reset_scan_id: int = None, skip_DM: bool = False)
+
+   .. py:method:: dm_experiment_setup(experiment_name: str) -> bool
+
+      Configure (or look up + reuse) the DM experiment.
+
+      Returns False if the user wants to pick a different name. On any
+      DM error, demotes to ``server="dserv"`` and returns True so the
+      caller continues without DM.
 
 
-   .. py:method:: change_sample(sample_name: str = None, base_name: str = None, reset_scan_id: int = None)
+
+   .. py:method:: setup_dm_daq() -> None
+
+      Optionally start the DM voyager DAQ for this experiment.
+
+      Disabled by default (``start_daq=False``) because starting the
+      DAQ changes file permissions and prevents new files being
+      written (TODO 2025-07-15). Enable per-class instance via
+      ``experiment.start_daq = True``.
+
+      Wrapped in try/except so a transient DM failure here does not
+      abort the whole setup — we log a warning and demote to no-DM
+      mode.
+
+
+
+   .. py:method:: setup_path() -> None
+
+      Make sure the experiment folder exists; chdir into it.
+
+
+
+   .. py:method:: start_specwriter() -> None
+
+      Open a new SPEC file for the current sample.
+
+
+
+   .. py:method:: save_params_to_yaml() -> None
+
+      Write a minimal snapshot of current state to the experiment dir.
+
+      Best-effort — any write error is logged and swallowed so failure
+      here never aborts a setup.
+
+
+
+   .. py:method:: load_params_from_yaml(path: str | pathlib.Path) -> dict | None
+
+      Load a previously-saved snapshot. Returns the parsed dict or None.
+
+
+
+   .. py:method:: resume(path: str | pathlib.Path) -> None
+
+      Restore an experiment from a saved YAML snapshot.
+
+      Does NOT contact DM. Use this when DM is down or you want to
+      pick up a previous session quickly. The next scan continues
+      numbering from ``last_scan_id``.
+
+
+
+   .. py:method:: load_from_bluesky(scan_id: int = -1, reset_scan_id: int = RESET_SCAN_ID_NOOP, useRE: bool = False) -> None
+
+      Restore experiment state from a previous Bluesky run document.
+
+
+
+   .. py:method:: setup(esaf_id: int | str | None = None, proposal_id: int | str | None = None, base_name: str | None = None, sample: str | None = None, server: str | None = None, experiment_name: str | None = None, reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
+
+      Run the full experiment setup.
+
+      DM availability is auto-detected. When DM is unreachable, the
+      ESAF/proposal prompts are skipped, ``server`` is forced to
+      ``"dserv"``, and metadata is stamped as ``"dev"``. To force
+      bypass even when DM is up, pass ``server="dserv"`` or use
+      ``esaf_id="dev"``/``proposal_id="dev"``.
+
+
+
+   .. py:method:: change_sample(sample_name: str | None = None, base_name: str | None = None, reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
+
+      Switch sample, refresh paths, and start a new SPEC file.
+
 
 
 .. py:data:: experiment
 
-.. py:function:: experiment_setup(esaf_id: int = None, proposal_id: int = None, base_name: str = None, sample: str = None, server: str = None, experiment_name: str = None, reset_scan_id: int = None, skip_DM: bool = False)
+.. py:function:: experiment_setup(esaf_id: int | str | None = None, proposal_id: int | str | None = None, base_name: str | None = None, sample: str | None = None, server: str | None = None, experiment_name: str | None = None, reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
 
-.. py:function:: experiment_change_sample(sample_name: str = None, base_name: str = None, reset_scan_id: int = None)
+   Run the full experiment setup (delegates to ``experiment.setup``).
 
-.. py:function:: experiment_load_from_bluesky(reset_scan_id: int = -1, skip_DM: bool = False)
+
+.. py:function:: experiment_change_sample(sample_name: str | None = None, base_name: str | None = None, reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
+
+   Switch sample (delegates to ``experiment.change_sample``).
+
+
+.. py:function:: experiment_load_from_bluesky(reset_scan_id: int = RESET_SCAN_ID_NOOP) -> None
+
+   Restore experiment state from a previous Bluesky run.
+
+
+.. py:function:: experiment_resume(path: str | pathlib.Path) -> None
+
+   Restore experiment state from a saved YAML snapshot.
+
 
