@@ -239,7 +239,7 @@ Module Contents
 
 .. py:class:: CradleDiffractometer
 
-   Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+   Bases: :py:obj:`DiffractometerMixin`, :py:obj:`CradleDiffractometerBase`
 
 
    hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation.
