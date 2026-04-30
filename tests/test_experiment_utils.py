@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
 
-
 # Helpers ----------------------------------------------------------------
+
 
 def _scripted_prompt(answers):
     """Return a callable that yields the scripted answers in order.
@@ -34,6 +33,7 @@ def _scripted_prompt(answers):
 def reset_re_md():
     """Clear ``RE.md`` between tests so they don't leak scan_id state."""
     from id4_common.utils.run_engine import RE
+
     RE.md.clear()
     yield RE.md
     RE.md.clear()
@@ -54,6 +54,7 @@ def fresh_experiment(monkeypatch, reset_re_md):
 
 
 # scan_number_input ------------------------------------------------------
+
 
 def test_scan_number_input_writes_literal_value(fresh_experiment):
     exp, _, _ = fresh_experiment
@@ -109,6 +110,7 @@ def test_scan_number_input_interactive_no_keeps_value(fresh_experiment):
 
 # load_from_bluesky ------------------------------------------------------
 
+
 def test_load_from_bluesky_restores_scan_id(monkeypatch, fresh_experiment):
     """Loading a past run restores the last scan_id from its metadata.
 
@@ -117,7 +119,8 @@ def test_load_from_bluesky_restores_scan_id(monkeypatch, fresh_experiment):
     """
     exp, _, _ = fresh_experiment
     from id4_common.utils import experiment_utils
-    from id4_common.utils.run_engine import RE, cat
+    from id4_common.utils.run_engine import RE
+    from id4_common.utils.run_engine import cat
 
     # Stub the run document with a scan_id of 47.
     metadata = {
@@ -154,6 +157,7 @@ def test_load_from_bluesky_restores_scan_id(monkeypatch, fresh_experiment):
 
 # DM auto-detect ---------------------------------------------------------
 
+
 def test_setup_with_dm_unreachable_falls_back_to_dserv(
     monkeypatch, fresh_experiment, caplog
 ):
@@ -189,9 +193,7 @@ def test_setup_with_dm_unreachable_falls_back_to_dserv(
     assert RE.md["scan_id"] == 0
 
 
-def test_setup_initializes_scan_id_to_zero(
-    monkeypatch, fresh_experiment
-):
+def test_setup_initializes_scan_id_to_zero(monkeypatch, fresh_experiment):
     """setup() must guarantee RE.md["scan_id"] is set."""
     exp, prompts, _ = fresh_experiment
     from id4_common.utils import experiment_utils
@@ -215,6 +217,7 @@ def test_setup_initializes_scan_id_to_zero(
 
 # Repr -------------------------------------------------------------------
 
+
 def test_repr_no_side_effects(fresh_experiment, capsys):
     """repr(experiment) must not print anything by itself."""
     exp, _, _ = fresh_experiment
@@ -227,13 +230,16 @@ def test_repr_no_side_effects(fresh_experiment, capsys):
 
 # experiment_change_sample wrapper --------------------------------------
 
+
 def test_experiment_change_sample_calls_start_specwriter(monkeypatch):
     """The module-level wrapper must call start_specwriter (regression 1.2)."""
     from id4_common.utils import experiment_utils
 
     calls = []
     monkeypatch.setattr(
-        experiment_utils.experiment, "sample_input", lambda *a, **kw: calls.append("sample")
+        experiment_utils.experiment,
+        "sample_input",
+        lambda *a, **kw: calls.append("sample"),
     )
     monkeypatch.setattr(
         experiment_utils.experiment, "setup_path", lambda: calls.append("path")
@@ -244,21 +250,30 @@ def test_experiment_change_sample_calls_start_specwriter(monkeypatch):
         lambda *a, **kw: calls.append("scan"),
     )
     monkeypatch.setattr(
-        experiment_utils.experiment, "base_name_input", lambda *a, **kw: calls.append("name")
+        experiment_utils.experiment,
+        "base_name_input",
+        lambda *a, **kw: calls.append("name"),
     )
     monkeypatch.setattr(
-        experiment_utils.experiment, "start_specwriter", lambda: calls.append("spec")
+        experiment_utils.experiment,
+        "start_specwriter",
+        lambda: calls.append("spec"),
     )
     monkeypatch.setattr(
-        experiment_utils.experiment, "save_params_to_yaml", lambda: calls.append("save")
+        experiment_utils.experiment,
+        "save_params_to_yaml",
+        lambda: calls.append("save"),
     )
 
     experiment_utils.experiment_change_sample(sample_name="foo")
 
-    assert "spec" in calls, "experiment_change_sample must trigger start_specwriter"
+    assert (
+        "spec" in calls
+    ), "experiment_change_sample must trigger start_specwriter"
 
 
 # YAML persistence -------------------------------------------------------
+
 
 def test_yaml_save_load_roundtrip(monkeypatch, tmp_path, fresh_experiment):
     """Snapshot written by save_params_to_yaml round-trips via resume()."""
@@ -280,6 +295,7 @@ def test_yaml_save_load_roundtrip(monkeypatch, tmp_path, fresh_experiment):
 
     # Fresh class, then resume.
     from id4_common.utils import experiment_utils
+
     fresh = experiment_utils.ExperimentClass(
         prompt=_scripted_prompt([]),
         printer=lambda *a, **kw: None,
@@ -306,6 +322,7 @@ def test_resume_missing_file_no_raise(tmp_path, fresh_experiment, caplog):
 
 
 # experiment_path properties --------------------------------------------
+
 
 def test_experiment_path_no_more_dead_kwarg(fresh_experiment):
     """experiment_path is a plain property; windows variant is separate."""

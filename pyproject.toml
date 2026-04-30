@@ -98,6 +98,7 @@ line-ending = "auto"
 "*utilities.py" = [ "E402",]
 "*hkl_utils*.py" = [ "E501",]
 "*apstools_spec_file_writer.py" = [ "E501",]
+"tests/**.py" = [ "D100", "D101", "D102", "D103", "D104", "D107",]
 
 [tool.ruff.lint.isort]
 force-single-line = true
