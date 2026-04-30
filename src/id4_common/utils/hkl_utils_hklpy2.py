@@ -2,278 +2,380 @@
 Auxilary HKL functions.
 
 .. autosummary::
-    ~select_engine_for_psi
-    ~engine_for_psi
-    ~set_experiment
-    ~set_diffractometer
-    ~sampleNew
-    ~sampleChange
+    ~change_diffractometer
+    ~newsample
     ~sampleList
+    ~sampleChange
     ~sampleRemove
     ~list_reflections
+    ~list_orienting
     ~or_swap
     ~setor0
     ~setor1
     ~set_orienting
     ~del_reflection
-    ~list_orienting
     ~or0
     ~or1
     ~compute_UB
-    ~calc_UB
     ~setmode
     ~ca
+    ~wh
+    ~ubr
     ~br
     ~uan
-    ~wh
     ~setlat
     ~setaz
     ~freeze
-    ~update_lattice
-    ~write_config
-    ~read_config
+    ~freeze_general
     ~show_constraints
     ~reset_constraints
     ~set_constraints
+    ~analyzer_configuration
+    ~analyzer_set
+    ~update_lattice
+    ~write_config
+    ~read_config
+    ~restore_huber_from_scan
+    ~set_detector
+
+
+Provide a simplified UI for hklpy2 diffractometer users.
+
+The user must define a diffractometer instance, then
+register that instance here calling `set_diffractometer(instance)`.
 """
 
+import asyncio
+import logging
 import pathlib
-from logging import getLogger
 
-from apsbits.core.instrument_init import oregistry
-from bluesky import RunEngineInterrupted
-from bluesky.plan_stubs import mv
-from bluesky.utils import ProgressBarManager
-from ophyd import SoftPositioner
-
-from .polartools_hklpy_imports import pa
-from .run_engine import RE
-from .run_engine import cat
+import yaml
 
 try:
-    from hkl import cahkl
-    from hkl.configuration import DiffractometerConfiguration
-    from hkl.diffract import Diffractometer
-    from hkl.user import _check_geom_selected
-    from hkl.user import current_diffractometer
-    from hkl.user import select_diffractometer
-    from hkl.util import Constraint
-    from hkl.util import Lattice
+    from apsbits.core.instrument_init import oregistry
+    from bluesky import RunEngine
+    from bluesky import RunEngineInterrupted
+    from bluesky.plan_stubs import mv
+    from bluesky.utils import ProgressBarManager
+    from epics import caget
+    from epics import caput
     from hkl.util import restore_constraints
     from hkl.util import restore_reflections
     from hkl.util import restore_sample
     from hkl.util import run_orientation_info
+    from hklpy2 import ConfigurationRunWrapper
+    from hklpy2.user import add_sample
+    from hklpy2.user import cahkl
+    from hklpy2.user import get_diffractometer
+    from hklpy2.user import set_diffractometer as hklpy2_set_diffract
+
+    from .run_engine import RE as polar_RE
+    from .run_engine import cat
 except ModuleNotFoundError:
     print("gi module is not installed, the hkl_utils functions will not work!")
-    cahkl = _check_geom_selected = _geom_ = None
 
-logger = getLogger(__name__)
+__all__ = """
+    change_diffractometer
+    newsample
+    sampleList
+    sampleChange
+    sampleRemove
+    list_reflections
+    list_orienting
+    or_swap
+    setor0
+    setor1
+    set_orienting
+    del_reflection
+    or0
+    or1
+    compute_UB
+    setmode
+    ca
+    wh
+    ubr
+    br
+    uan
+    setlat
+    setaz
+    freeze
+    freeze_general
+    show_constraints
+    reset_constraints
+    set_constraints
+    analyzer_configuration
+    analyzer_set
+    update_lattice
+    write_config
+    read_config
+    restore_huber_from_scan
+    set_detector
+    geometries
+    set_diffractometer
+""".split()
 
 polar_config = pathlib.Path("polar-config.json")
-fourc_config = pathlib.Path("fourc-config.json")
+
+RE = RunEngine({}, loop=asyncio.new_event_loop())
 pbar_manager = ProgressBarManager()
-_geom_for_psi_ = None
-POLAR_DIFFRACTOMETER = "huber_euler"
 
-# TODO: THIS FILE NEEDS TO BE REVISED!!
-fourc = None
+logging.getLogger("hklpy2").setLevel(logging.WARNING)
+# Levels: DEBUG, INFO, WARNING (default), ERROR, CRITICAL
 
 
-def get_huber_euler():
-    """Return the huber_euler diffractometer from the device registry."""
-    huber_euler = oregistry.find("huber_euler", allow_none=True)
-    if huber_euler is None:
-        raise ValueError(
-            "Cannot find 'huber_euler' device. Please load and register it."
-        )
-    return huber_euler
+class Geometries:
+    """Register the diffractometer geometries."""
+
+    configuration_wrapper = None
+
+    def __init__(
+        self, huber_euler_nm, huber_euler_psi_nm, huber_hp_nm, huber_hp_psi_nm
+    ):
+        self._huber_euler = huber_euler_nm
+        self._huber_euler_psi = huber_euler_psi_nm
+        self._huber_hp = huber_hp_nm
+        self._huber_hp_psi = huber_hp_psi_nm
+
+    @property
+    def huber_euler(self):
+        return oregistry.find(self._huber_euler)
+
+    @huber_euler.setter
+    def huber_euler(self, value):
+        self._huber_euler = value
+
+    @property
+    def huber_euler_psi(self):
+        return oregistry.find(self._huber_euler_psi)
+
+    @huber_euler_psi.setter
+    def huber_euler_psi(self, value):
+        self._huber_euler_psi = value
+
+    @property
+    def huber_hp(self):
+        return oregistry.find(self._huber_hp)
+
+    @huber_hp.setter
+    def huber_hp(self, value):
+        self._huber_hp = value
+
+    @property
+    def huber_hp_psi(self):
+        return oregistry.find(self._huber_hp_psi)
+
+    @huber_hp_psi.setter
+    def huber_hp_psi(self, value):
+        self._huber_hp_psi = value
 
 
-def get_huber_hp():
-    """Return the huber_hp diffractometer from the device registry."""
-    huber_hp = oregistry.find("huber_hp", allow_none=True)
-    if huber_hp is None:
-        raise ValueError(
-            "Cannot find 'huber_hp' device. Please load and register it."
-        )
-    return huber_hp
+geometries = Geometries(
+    "huber_euler", "huber_euler_psi", "huber_hp", "huber_hp_psi"
+)
+
+_DIFFRACTOMETER_NAMES = ["huber_euler", "huber_hp"]
 
 
-def get_huber_euler_psi():
-    """Return the huber_euler_psi diffractometer from the device registry."""
-    huber_euler = oregistry.find("huber_euler_psi", allow_none=True)
-    if huber_euler is None:
-        raise ValueError(
-            "Cannot find 'huber_euler_psi' device. Please load and register it."
-        )
-    return huber_euler
-
-
-def select_engine_for_psi(instrument=None):
-    """Name the diffractometer to be used."""
-    global _geom_for_psi_
-    if instrument is None or isinstance(instrument, Diffractometer):
-        _geom_for_psi_ = instrument
-    else:
-        raise TypeError(f"{instrument} must be a 'Diffractometer' subclass")
-    return _geom_for_psi_
-
-
-def engine_for_psi():
-    """Return the currently-selected psi calc engine (or ``None``)."""
-    return _geom_for_psi_
-
-
-def set_diffractometer(instrument=None):
-    """Name the diffractometer to be used."""
-    _geom_ = current_diffractometer()
-    if instrument:
-        diff = instrument.name
-    elif instrument is None:
-        diff = (
-            input(
-                "Diffractometer [huber_euler, huber_hp or fourc] ({})? ".format(
-                    _geom_.name
-                )
-            )
-        ) or _geom_.name
-    else:
-        raise ValueError(
-            "either no argument or diffractometer polar or fourc to beprovided."
-        )
-    if diff == "fourc":
-        select_diffractometer(fourc)
-        print("Diffractometer {} selected".format(diff))
-    elif diff == "huber_euler":
-        select_diffractometer(get_huber_euler())
-        print("Diffractometer {} selected".format(diff))
-    elif diff == "huber_hp":
-        select_diffractometer(get_huber_hp())
-        print("Diffractometer {} selected".format(diff))
-    else:
-        raise ValueError("{} not an existing diffractometer".format(diff))
-
-
-def sampleNew(*args):
+def set_diffractometer(diffractometer):
     """
-    Set the lattice constants.
+    Wraps the `hklpy2.user.set_diffractometer` and adds the diffractometer
+    configuration wrapper to the RunEngine preprocessors.
 
     Parameters
     ----------
-    a, b, c, alpha, beta, gamma : float, optional
-        Lattice constants. If None, it will ask for input.
+    diffractometer : str or DiffractometerBase, optional
+        Name or device instance to activate.
     """
-    _geom_ = current_diffractometer()
-    current_sample = _geom_.calc.sample_name
-    sample = _geom_.calc._samples[current_sample]
-    lattice = [getattr(sample.lattice, parm) for parm in sample.lattice._fields]
 
-    if len(args) == 7:
-        nm, a, b, c, alpha, beta, gamma = args
-    elif len(args) == 0:
-        nm = (
-            input("Sample name ({})? ".format(current_sample))
-        ) or current_sample
-        a = (input("Lattice a ({})? ".format(lattice[0]))) or lattice[0]
-        b = (input("Lattice b ({})? ".format(lattice[1]))) or lattice[1]
-        c = (input("Lattice c ({})? ".format(lattice[2]))) or lattice[2]
-        alpha = (input("Lattice alpha ({})? ".format(lattice[3]))) or lattice[3]
-        beta = (input("Lattice beta ({})? ".format(lattice[4]))) or lattice[4]
-        gamma = (input("Lattice gamma ({})? ".format(lattice[5]))) or lattice[5]
+    hklpy2_set_diffract(diffractometer)
+
+    try:
+        polar_RE.preprocessors.remove(geometries.configuration_wrapper)
+    except ValueError:
+        pass
+
+    geometries.configuration_wrapper = ConfigurationRunWrapper(diffractometer)
+    polar_RE.preprocessors.append(geometries.configuration_wrapper.wrapper)
+
+
+def change_diffractometer(diffractometer=None):
+    """
+    Select and initialize the active diffractometer (huber_euler or huber_hp).
+
+    1. Selects the diffractometer (interactive prompt or argument).
+    2. Applies the appropriate axis constraints.
+    3. Creates aliases for all real diffractometer axes in the calling
+       namespace (mu, gamma, delta, chi, phi, tau).
+
+    Parameters
+    ----------
+    diffractometer : str or DiffractometerBase, optional
+        Name or device instance to activate. If not provided, prompts
+        interactively with the current diffractometer as the default.
+    """
+    current = get_diffractometer()
+    current_name = current.name if current is not None else "none"
+
+    if diffractometer is not None:
+        answer = (
+            diffractometer
+            if isinstance(diffractometer, str)
+            else diffractometer.name
+        )
     else:
-        raise ValueError(
-            "either no arguments or name, a, b, c, alpha, beta, gamma need to"
-            "be provided."
-        )
+        choices_str = "/".join(_DIFFRACTOMETER_NAMES)
+        answer = input(
+            f"Diffractometer ({choices_str}) [{current_name}]? "
+        ).strip()
+        if not answer:
+            answer = current_name
 
-    if nm in _geom_.calc._samples:
-        logger.info(f"Sample '{nm}' is already defined.")
-    else:
-        lattice = Lattice(
-            a=float(a),
-            b=float(b),
-            c=float(c),
-            alpha=float(alpha),
-            beta=float(beta),
-            gamma=float(gamma),
+    if answer not in _DIFFRACTOMETER_NAMES:
+        print(
+            f"Unknown diffractometer '{answer}'. Choose from: {'/'.join(_DIFFRACTOMETER_NAMES)}"
         )
-        _geom_.calc.new_sample(nm, lattice=lattice)
+        return
 
-        sample = _geom_.calc._sample
-        if len(_geom_.calc.physical_axes) == 6:
-            sample.add_reflection(
-                0,
-                0,
-                2,
-                position=_geom_.calc.Position(
-                    gamma=40,
-                    mu=20,
-                    chi=-90,
-                    phi=0,
-                    delta=0,
-                    tau=0,
-                ),
-            )
-            sample._orientation_reflections.insert(
-                0, sample._sample.reflections_get()[-1]
-            )
-            sample.add_reflection(
-                2,
-                0,
-                0,
-                position=_geom_.calc.Position(
-                    gamma=40,
-                    mu=20,
-                    chi=0,
-                    phi=0,
-                    delta=0,
-                    tau=0,
-                ),
-            )
-        if len(_geom_.calc.physical_axes) == 4:
-            sample.add_reflection(
-                0,
-                0,
-                2,
-                position=_geom_.calc.Position(
-                    tth=40,
-                    omega=20,
-                    chi=-90,
-                    phi=0,
-                ),
-            )
-            sample._orientation_reflections.insert(
-                0, sample._sample.reflections_get()[-1]
-            )
-            sample.add_reflection(
-                2,
-                0,
-                0,
-                position=_geom_.calc.Position(
-                    tth=40,
-                    omega=20,
-                    chi=0,
-                    phi=0,
-                ),
-            )
-        sample._orientation_reflections.insert(
-            1, sample._sample.reflections_get()[-1]
+    new_geom = oregistry.find(answer)
+    set_diffractometer(new_geom)
+    print(f"Active diffractometer: {new_geom.name}")
+
+    if new_geom.name == "huber_euler":
+        set_constraints(-1, 1, 0, 90, -20, 200, -180, 180, -2, 140, -5, 50)
+    elif new_geom.name == "huber_hp":
+        set_constraints(-1, 1, 0, 90, -7, 7, -7, 7, -2, 140, -5, 50)
+
+    aliases = {
+        axis: getattr(new_geom, axis) for axis in new_geom.real_axis_names
+    }
+    aliases.update(
+        {
+            "ath": new_geom.ana.th,
+            "atth": new_geom.ana.tth,
+            "eta": new_geom.ana.eta,
+            "achi": new_geom.ana.chi,
+        }
+    )
+    if new_geom.name == "huber_euler":
+        aliases.update(
+            {
+                "cryox": new_geom.x,
+                "cryoy": new_geom.y,
+                "cryoz": new_geom.z,
+            }
         )
+    elif new_geom.name == "huber_hp":
+        aliases.update(
+            {
+                "x": new_geom.x,
+                "y": new_geom.y,
+                "z": new_geom.z,
+                "nanox": new_geom.nanox,
+                "nanoy": new_geom.nanoy,
+                "nanoz": new_geom.nanoz,
+                "basex": new_geom.basex,
+                "basey": new_geom.basey,
+                "basez": new_geom.basez,
+            }
+        )
+    try:
+        ip = get_ipython()  # — available in IPython/Bluesky sessions
+        ip.push(aliases)
+    except NameError:
+        globals().update(aliases)
+    print(f"Aliases created: {', '.join(aliases)}")
+
+
+def newsample():
+    """
+    Interactively add a new sample with lattice constants.
+
+    Prompts the user for:
+      - sample name
+      - lattice constants (a, b, c, alpha, beta, gamma)
+
+    Uses defaults if the user just presses Enter.
+    """
+    _geom_ = get_diffractometer()
+    # Ask for sample name
+    name = input("Sample name? ").strip()
+    if not name:
+        print("Sample name cannot be empty.")
+        return
+
+    # Default values
+    defaults = {
+        "a": 5.0,
+        "b": 5.0,
+        "c": 5.0,
+        "alpha": 90.0,
+        "beta": 90.0,
+        "gamma": 90.0,
+    }
+
+    def ask(name, default):
+        val = input(f"{name} ({default})? ") or default
+        try:
+            return float(val)
+        except ValueError:
+            print(f"Invalid {name}, keeping {default}")
+            return default
+
+    # Collect lattice parameters
+    a = ask("a", defaults["a"])
+    b = ask("b", defaults["b"])
+    c = ask("c", defaults["c"])
+    alpha = ask("alpha", defaults["alpha"])
+    beta = ask("beta", defaults["beta"])
+    gamma = ask("gamma", defaults["gamma"])
+
+    # Call your existing function
+    add_sample(name, a=a, b=b, c=c, alpha=alpha, beta=beta, gamma=gamma)
+
+    print(
+        f"Added sample '{name}' with lattice constants: "
+        f"a={a}, b={b}, c={c}, alpha={alpha}, beta={beta}, gamma={gamma}"
+    )
+
+    if len(_geom_.real_positioners) == 6:
+        motors = _geom_.real_positioners._fields
+        ref1_hkl = (0, 0, 2)
+        ref1_pos = dict(gamma=40, mu=20, chi=90, phi=0, delta=0, tau=0)
+        _geom_.add_reflection(ref1_hkl, [ref1_pos[m] for m in motors])
+        ref2_hkl = (2, 0, 0)
+        ref2_pos = dict(gamma=40, mu=20, chi=0, phi=0, delta=0, tau=0)
+        _geom_.add_reflection(ref2_hkl, [ref2_pos[m] for m in motors])
+        list_reflections()
         compute_UB()
-        if POLAR_DIFFRACTOMETER in _geom_.name:
-            set_constraints("mu", -100, 100)
-            set_constraints("gamma", -10, 180)
-            set_constraints("delta", -20, 60)
-            set_constraints("tau", -0.5, 0.5)
-        if _geom_.name == "fourc":
-            set_constraints("omega", -100, 100)
-            set_constraints("tth", -10, 180)
-        setaz(0, 1, 0)
+        # Use the primitive direction of ref2 as the azimuthal reference
+        from functools import reduce
+        from math import gcd
+
+        g = reduce(gcd, (abs(x) for x in ref2_hkl if x != 0))
+        az_hkl = tuple(x // g for x in ref2_hkl)
+        setaz(*az_hkl)
+
+
+def sampleList():
+    """List all samples currently defined in hklpy2; specify  current one."""
+    _geom_ = get_diffractometer()
+    samples = _geom_.samples
+    print("")
+    for nm, sample in samples.items():
+        #        orienting_refl = samples[x].reflections
+        print(f"Sample = {nm}")
+        print("Lattice:", end=" ")
+        #        print(*samples[x].lattice._fields, sep=", ", end=" = ")
+        print(sample.lattice)
+        print(
+            "======================================================================"
+        )
+    print("\nCurrent sample: " + _geom_.sample.name)
 
 
 def sampleChange(sample_key=None):
     """
-    Change selected sample in hklpy.
+    Change selected sample in hklpy2.
 
     Parameters
     ----------
@@ -281,22 +383,19 @@ def sampleChange(sample_key=None):
         Name of the sample as set in hklpy. If None it will ask for which
         sample.
     """
-    _geom_ = current_diffractometer()
-
+    _geom_ = get_diffractometer()
     if sample_key is None:
-        d = _geom_.calc._samples.keys()
+        d = _geom_.samples.keys()
         print("Sample keys:", list(d))
         sample_key = (
-            input("\nEnter sample key [{}]: ".format(_geom_.calc.sample.name))
+            input("\nEnter sample key [{}]: ".format(_geom_.sample.name))
             or _geom_.calc.sample.name
         )
     try:
-        _geom_.calc.sample = _geom_.calc._samples[
-            sample_key
-        ]  # define the current sample
-        print("\nCurrent sample: " + _geom_.calc.sample.name)
+        _geom_.sample = sample_key  # define the current sample
+        print("\nCurrent sample: " + _geom_.sample.name)
         # to be done: check if orienting reflections exist
-        compute_UB()
+    #        compute_UB()
 
     except KeyError:
         print("Not a valid sample key")
@@ -312,1187 +411,109 @@ def sampleRemove(sample_key=None):
         Name of the sample as set in hklpy. If None it will ask for which
         sample.
     """
-    _geom_ = current_diffractometer()
+    _geom_ = get_diffractometer()
     if sample_key is None:
-        d = _geom_.calc._samples.keys()
+        d = _geom_.samples.keys()
         print("Sample keys:", list(d))
-        sample_key = input("\nEnter sample key to remove: ")
-        if sample_key == _geom_.calc.sample.name:
+        sample_key = input(
+            "\nEnter sample key to remove [{}]: ".format(_geom_.sample.name)
+        )
+        if sample_key == _geom_.sample.name:
             print("The current sample cannot be removed.")
             sample_key = " "
     try:
-        _geom_.calc._samples.pop(sample_key)  # remove the sample
+        _geom_.samples.pop(sample_key)  # remove the sample
         print("\n[{}] sample is removed.".format(sample_key))
 
     except KeyError:
         print("Not a valid sample key")
 
 
-# In development
-"""
-def sampleWrite(sample_key=None):
-
-    _geom_ = current_diffractometer()
-    config = DiffractometerConfiguration(_geom_)
-
-    if sample_key is None:
-        d = _geom_.calc._samples.keys()
-        print("Sample keys:", list(d))
-        sample_key = input("\nEnter sample key to write: ")
-    try:
-        print(config.export('dict')['samples'][sample_key])
-        print("\n[{}] sample info written to file.".format(sample_key))
-
-    except KeyError:
-        print("Not a valid sample key")
-
-
-
-def sampelRestore(sample_key=None):
-
-    _geom_ = current_diffractometer()
-    config = DiffractometerConfiguration(_geom_)
-
-    config.restore('test', clear=True)
-
-
-def eslave(selection=None):
-    if selection is None:
-        print("No slave device          (0)")
-        print("Undulator                (1)")
-        print("Polarization analyzer    (2)")
-        print("Phase plate 1            (4)")
-        print("Phase plate 2            (8)")
-        selection = int(input("\nEnter number: "))
-
-"""
-
-
-def _sampleList():
-    """List all samples currently defined in hklpy; specify  current one."""
-
-    _geom_ = current_diffractometer()
-    samples = _geom_.calc._samples
-    for x in list(samples.keys())[1:]:
-        orienting_refl = samples[x]._orientation_reflections
-        print("\nSample = {}".format(x))
-        print("Lattice:", end=" ")
-        print(*samples[x].lattice._fields, sep=", ", end=" = ")
-        print(*samples[x].lattice, sep=", ")
-        if len(orienting_refl) > 1:
-            if len(_geom_.calc.physical_axes) == 6:
-                print(
-                    "\n{:>3}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
-                        "#",
-                        "H",
-                        "K",
-                        "L",
-                        "Gamma",
-                        "Mu",
-                        "Chi",
-                        "Phi",
-                        "Delta",
-                        "Tau",
-                    )
-                )
-            if len(_geom_.calc.physical_axes) == 4:
-                print(
-                    "\n{:>3}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}".format(
-                        "#",
-                        "H",
-                        "K",
-                        "L",
-                        "tth",
-                        "th",
-                        "chi",
-                        "phi",
-                    )
-                )
-        for ref in samples[x]._sample.reflections_get():
-            if len(orienting_refl) > 1:
-                if orienting_refl[0] == ref:
-                    h, k, l = ref.hkl_get()
-                    pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                    if len(_geom_.calc.physical_axes) == 6:
-                        print(
-                            "{:>3}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}"
-                            "{:>9.3f}{:>9.3f}{:>9.3f}   ".format(
-                                "or0",
-                                int(h),
-                                int(k),
-                                int(l),
-                                pos[4],
-                                pos[1],
-                                pos[2],
-                                pos[3],
-                                pos[5],
-                                pos[0],
-                            )
-                        )
-                    elif len(_geom_.calc.physical_axes) == 4:
-                        print(
-                            "{:>3}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}"
-                            "{:>9.3f}   ".format(
-                                "or0",
-                                int(h),
-                                int(k),
-                                int(l),
-                                pos[3],
-                                pos[0],
-                                pos[1],
-                                pos[2],
-                            )
-                        )
-                    else:
-                        raise ValueError(
-                            "Geometry {} not supported.".format(_geom_.name)
-                        )
-
-                elif orienting_refl[1] == ref:
-                    h, k, l = ref.hkl_get()
-                    pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                    if len(_geom_.calc.physical_axes) == 6:
-                        print(
-                            "{:>3}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}"
-                            "{:>9.3f}{:>9.3f}{:>9.3f}  ".format(
-                                "or1",
-                                int(h),
-                                int(k),
-                                int(l),
-                                pos[4],
-                                pos[1],
-                                pos[2],
-                                pos[3],
-                                pos[5],
-                                pos[0],
-                            )
-                        )
-                    elif len(_geom_.calc.physical_axes) == 4:
-                        print(
-                            "{:>3}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}"
-                            "{:>9.3f}  ".format(
-                                "or1",
-                                int(h),
-                                int(k),
-                                int(l),
-                                pos[3],
-                                pos[0],
-                                pos[1],
-                                pos[2],
-                            )
-                        )
-                    else:
-                        raise ValueError(
-                            "Geometry {} not supported.".format(_geom_.name)
-                        )
-        print(
-            "======================================================================"
-        )
-    print("\nCurrent sample: " + _geom_.calc.sample.name)
-
-
 def list_reflections(all_samples=False):
     """
-    Lists all reflections in defined in hklpy.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
+    Lists all reflections defined in hklpy for six-circle geometry.
 
     Parameters
     ----------
-    all_samples : boolean, optional
-        If True, it will list the reflections for all samples, if False, only
-        the current sample. Defaults to False.
+    all_samples : bool, optional
+        If True, list reflections for all samples.
+        If False, only the current sample. Defaults to False.
     """
-    _geom_ = current_diffractometer()
-    _check_geom_selected()
+    _geom_ = get_diffractometer()
+    samples = _geom_.samples.values() if all_samples else [_geom_.sample]
 
-    if all_samples:
-        samples = _geom_.calc._samples.values()
-    else:
-        samples = [_geom_.calc._sample]
     for sample in samples:
-        print("Sample: {}".format(sample.name))
-        orienting_refl = sample._orientation_reflections
-        if len(_geom_.calc.physical_axes) == 6:
-            print(
-                "\n{:>2}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}   {:<12}".format(
-                    "#",
-                    "H",
-                    "K",
-                    "L",
-                    "Gamma",
-                    "Mu",
-                    "Chi",
-                    "Phi",
-                    "Delta",
-                    "Tau",
-                    "orienting",
-                )
-            )
-        elif len(_geom_.calc.physical_axes) == 4:
-            print(
-                "\n{:>2}{:>4}{:>3}{:>3}{:>12}{:>9}{:>9}{:>9}   {:<12}".format(
-                    "#",
-                    "H",
-                    "K",
-                    "L",
-                    "Two Theta",
-                    "Theta",
-                    "Chi",
-                    "Phi",
-                    "orienting",
-                )
-            )
-        else:
-            raise ValueError("Geometry {} not supported.".format(_geom_.name))
+        print(f"Sample: {sample.name}")
 
-        for i, ref in enumerate(sample._sample.reflections_get()):
-            if orienting_refl[0] == ref:
-                h, k, l = ref.hkl_get()
-                pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                if len(_geom_.calc.physical_axes) == 6:
-                    print(
-                        "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}"
-                        "{:>9.3f}{:>9.3f}   {:<12} ".format(
-                            i,
-                            int(h),
-                            int(k),
-                            int(l),
-                            pos[4],
-                            pos[1],
-                            pos[2],
-                            pos[3],
-                            pos[5],
-                            pos[0],
-                            "first",
-                        )
-                    )
-                elif len(_geom_.calc.physical_axes) == 4:
-                    print(
-                        "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f} "
-                        "  {:<12} ".format(
-                            i,
-                            int(h),
-                            int(k),
-                            int(l),
-                            pos[3],
-                            pos[0],
-                            pos[1],
-                            pos[2],
-                            "first",
-                        )
-                    )
-                else:
-                    raise ValueError(
-                        "Geometry {} not supported.".format(_geom_.name)
-                    )
-            elif orienting_refl[1] == ref:
-                h, k, l = ref.hkl_get()
-                pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                if len(_geom_.calc.physical_axes) == 6:
-                    print(
-                        "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}"
-                        "{:>9.3f}{:>9.3f}   {:<12} ".format(
-                            i,
-                            int(h),
-                            int(k),
-                            int(l),
-                            pos[4],
-                            pos[1],
-                            pos[2],
-                            pos[3],
-                            pos[5],
-                            pos[0],
-                            "second",
-                        )
-                    )
-                elif len(_geom_.calc.physical_axes) == 4:
-                    print(
-                        "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f} "
-                        "  {:<12} ".format(
-                            i,
-                            int(h),
-                            int(k),
-                            int(l),
-                            pos[3],
-                            pos[0],
-                            pos[1],
-                            pos[2],
-                            "second",
-                        )
-                    )
-                else:
-                    raise ValueError(
-                        "Geometry {} not supported.".format(_geom_.name)
-                    )
+        orienting_refl = sample.reflections.order  # orientation reflection keys
+
+        # column widths
+        refl_width = 8
+        pseudo_width = 9  # for h, k, l
+        real_width = 10  # for motor positions
+
+        # Header
+        if len(_geom_.real_positioners) == 6:
+            real_headers = ["Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"]
+        else:
+            real_headers = list(_geom_.real_positioners._fields)
+        header = (
+            f"\n{'#':>{refl_width}}"
+            + "".join(
+                f"{m:>{pseudo_width}}"
+                for m in _geom_.pseudo_positioners._fields
+            ).upper()
+            + "".join(f"{k:>{real_width}}" for k in real_headers)
+            + "   orienting"
+        )
+        print(header)
+
+        # Rows
+        for key, ref in sample.reflections.items():
+            h, k, l = list(ref.pseudos.values())
+            if len(_geom_.real_positioners) == 6:
+                reals = ref.reals
+                pos_vals = [
+                    reals["gamma"],
+                    reals["mu"],
+                    reals["chi"],
+                    reals["phi"],
+                    reals["delta"],
+                    reals["tau"],
+                ]
             else:
-                h, k, l = ref.hkl_get()
-                pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                if len(_geom_.calc.physical_axes) == 6:
-                    print(
-                        "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}"
-                        "{:>9.3f}{:>9.3f} ".format(
-                            i,
-                            int(h),
-                            int(k),
-                            int(l),
-                            pos[4],
-                            pos[1],
-                            pos[2],
-                            pos[3],
-                            pos[5],
-                            pos[0],
-                        )
-                    )
-                elif len(_geom_.calc.physical_axes) == 4:
-                    print(
-                        "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f} ".format(
-                            i,
-                            int(h),
-                            int(k),
-                            int(l),
-                            pos[3],
-                            pos[0],
-                            pos[1],
-                            pos[2],
-                        )
-                    )
-                else:
-                    raise ValueError(
-                        "Geometry {} not supported.".format(_geom_.name)
-                    )
-        if len(samples) > 1 and all_samples:
-            print(
-                "=============================================================="
-                "=============="
+                pos_vals = list(ref.reals.values())
+
+            tag = ""
+            if orienting_refl and key == orienting_refl[0]:
+                tag = "first"
+            elif len(orienting_refl) > 1 and key == orienting_refl[1]:
+                tag = "second"
+
+            row = (
+                f"{key:>{refl_width}}"
+                f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}{l:{pseudo_width}.3f}"
+                + "".join(f"{v:{real_width}.3f}" for v in pos_vals)
+                + (f"   {tag}" if tag else "")
             )
+            print(row)
+
+        if len(samples) > 1 and all_samples:
+            print("=" * 107)
 
 
 def or_swap():
     """Swaps the two orientation reflections in hklpy."""
-    _geom_ = current_diffractometer()
-    sample = _geom_.calc._sample
-    orienting_refl = sample._orientation_reflections
-    if len(orienting_refl) > 1:
-        sample.swap_orientation_reflections()
-        list_reflections()
-    else:
-        print("Missing orienting reflections!")
-    compute_UB()
-
-
-def setor0(*args):
-    """
-    Sets the primary orientation in hklpy.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-
-    Parameters
-    ----------
-    delta, th, chi, phi, gamma, mu : float, optional
-        Values of motor positions for current reflection. If None, it will ask
-        for it.
-    h, k, l : float, optional
-        Values of H, K, L positions for current reflection. If None, it will ask
-        for it.
-    """
-    _geom_ = current_diffractometer()
-    sample = _geom_.calc._sample
-    orienting_refl = sample._orientation_reflections
-
-    if POLAR_DIFFRACTOMETER in _geom_.name and len(args) == 9:
-        gamma, mu, chi, phi, delta, tau, h, k, l = args
-    elif _geom_.name == "fourc" and len(args) == 7:
-        delta, mu, chi, phi, h, k, l = args
-    else:
-        if len(orienting_refl) > 1:
-            for ref in sample._sample.reflections_get():
-                if (
-                    ref == orienting_refl[0]
-                    and POLAR_DIFFRACTOMETER in _geom_.name
-                ):
-                    pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                    old_delta = pos[5]
-                    old_mu = pos[1]
-                    old_chi = pos[2]
-                    old_phi = pos[3]
-                    old_gamma = pos[4]
-                    old_tau = pos[0]
-                    old_h, old_k, old_l = ref.hkl_get()
-                elif ref == orienting_refl[0] and _geom_.name == "fourc":
-                    pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                    old_delta = pos[3]
-                    old_mu = pos[0]
-                    old_chi = pos[1]
-                    old_phi = pos[2]
-                    old_h, old_k, old_l = ref.hkl_get()
-
-        else:
-            old_delta = 0
-            old_mu = 30
-            old_chi = 90
-            old_phi = 0
-            old_h = 0
-            old_k = 0
-            old_l = 2
-            old_gamma = 60
-            old_tau = 0
-
-        print("Enter primary-reflection angles:")
-        gamma = input("Gamma = [{:6.2f}]: ".format(old_gamma)) or old_gamma
-        mu = input("Mu = [{:6.2f}]: ".format(old_mu)) or old_mu
-        chi = input("Chi = [{:6.2f}]: ".format(old_chi)) or old_chi
-        phi = input("Phi = [{:6.2f}]: ".format(old_phi)) or old_phi
-        delta = input("Delta = [{:6.2f}]: ".format(old_delta)) or old_delta
-        tau = input("Tau = [{:6.2f}]: ".format(old_tau)) or old_tau
-        h = input("H = [{}]: ".format(old_h)) or old_h
-        k = input("K = [{}]: ".format(old_k)) or old_k
-        l = input("L = [{}]: ".format(old_l)) or old_l
-
-    if POLAR_DIFFRACTOMETER in _geom_.name:
-        sample.add_reflection(
-            float(h),
-            float(k),
-            float(l),
-            position=_geom_.calc.Position(
-                gamma=float(gamma),
-                mu=float(mu),
-                chi=float(chi),
-                phi=float(phi),
-                delta=float(delta),
-                tau=float(tau),
-            ),
-        )
-    elif _geom_.name == "fourc":
-        sample.add_reflection(
-            float(h),
-            float(k),
-            float(l),
-            position=_geom_.calc.Position(
-                tth=float(delta),
-                omega=float(mu),
-                chi=float(chi),
-                phi=float(phi),
-            ),
-        )
-
-    if len(orienting_refl) > 1:
-        sample._orientation_reflections.pop(0)
-    sample._orientation_reflections.insert(
-        0, sample._sample.reflections_get()[-1]
-    )
-    compute_UB()
-
-
-def setor1(*args):
-    """
-    Sets the primary secondary in hklpy.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-
-    Parameters
-    ----------
-    delta, th, chi, phi, gamma, mu : float, optional
-        Values of motor positions for current reflection. If None, it will ask
-        for it.
-    h, k, l : float, optional
-        Values of H, K, L positions for current reflection. If None, it will ask
-        for it.
-    """
-
-    _geom_ = current_diffractometer()
-    sample = _geom_.calc._sample
-    orienting_refl = sample._orientation_reflections
-
-    if POLAR_DIFFRACTOMETER in _geom_.name and len(args) == 9:
-        gamma, mu, chi, phi, delta, tau, h, k, l = args
-    elif _geom_.name == "fourc" and len(args) == 7:
-        delta, mu, chi, phi, h, k, l = args
-    else:
-        if len(orienting_refl) > 1:
-            for ref in sample._sample.reflections_get():
-                if (
-                    ref == orienting_refl[1]
-                    and POLAR_DIFFRACTOMETER in _geom_.name
-                ):
-                    pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                    old_gamma = pos[4]
-                    old_mu = pos[1]
-                    old_chi = pos[2]
-                    old_phi = pos[3]
-                    old_delta = pos[5]
-                    old_tau = pos[0]
-                    old_h, old_k, old_l = ref.hkl_get()
-                elif ref == orienting_refl[1] and _geom_.name == "fourc":
-                    pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-                    old_delta = pos[3]
-                    old_mu = pos[0]
-                    old_chi = pos[1]
-                    old_phi = pos[2]
-                    old_h, old_k, old_l = ref.hkl_get()
-
-        else:
-            old_delta = 0
-            old_mu = 30
-            old_chi = 0
-            old_phi = 0
-            old_h = 2
-            old_k = 0
-            old_l = 0
-            old_gamma = 60
-            old_tau = 0
-
-        print("Enter secondary-reflection angles:")
-        gamma = input("Gamma = [{:6.2f}]: ".format(old_gamma)) or old_gamma
-        mu = input("Mu = [{:6.2f}]: ".format(old_mu)) or old_mu
-        chi = input("Chi = [{:6.2f}]: ".format(old_chi)) or old_chi
-        phi = input("Phi = [{:6.2f}]: ".format(old_phi)) or old_phi
-        delta = input("Delta = [{:6.2f}]: ".format(old_delta)) or old_delta
-        tau = input("Theta = [{:6.2f}]: ".format(old_tau)) or old_tau
-
-        h = input("H = [{}]: ".format(old_h)) or old_h
-        k = input("K = [{}]: ".format(old_k)) or old_k
-        l = input("L = [{}]: ".format(old_l)) or old_l
-
-    if POLAR_DIFFRACTOMETER in _geom_.name:
-        sample.add_reflection(
-            float(h),
-            float(k),
-            float(l),
-            position=_geom_.calc.Position(
-                gamma=float(gamma),
-                mu=float(mu),
-                chi=float(chi),
-                phi=float(phi),
-                delta=float(delta),
-                tau=float(tau),
-            ),
-        )
-    elif _geom_.name == "fourc":
-        sample.add_reflection(
-            float(h),
-            float(k),
-            float(l),
-            position=_geom_.calc.Position(
-                tth=float(delta),
-                omega=float(mu),
-                chi=float(chi),
-                phi=float(phi),
-            ),
-        )
-    if len(orienting_refl) > 1:
-        sample._orientation_reflections.pop(1)
-    sample._orientation_reflections.insert(
-        1, sample._sample.reflections_get()[-1]
-    )
-    compute_UB()
-
-
-def set_orienting():
-    """
-    Change the primary and/or secondary orienting reflections to existing reflecitons
-    in reflection list in hklpy.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-    """
-    _geom_ = current_diffractometer()
-    sample = _geom_.calc._sample
-    orienting_refl = sample._orientation_reflections
-    if POLAR_DIFFRACTOMETER in _geom_.name:
-        print(
-            "\n{:>2}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}   {:<12}".format(
-                "#",
-                "H",
-                "K",
-                "L",
-                "Gamma",
-                "Mu",
-                "Chi",
-                "Phi",
-                "Delta",
-                "Tau",
-                "orienting",
-            )
-        )
-    elif _geom_.name == "fourc":
-        print(
-            "\n{:>2}{:>4}{:>3}{:>3}{:>12}{:>9}{:>9}{:>9}   {:<12}".format(
-                "#",
-                "H",
-                "K",
-                "L",
-                "Two Theta",
-                "Theta",
-                "Chi",
-                "Phi",
-                "orienting",
-            )
-        )
-    else:
-        raise ValueError("Geometry {} not supported.".format(_geom_.name))
-
-    for i, ref in enumerate(sample._sample.reflections_get()):
-        if orienting_refl[0] == ref:
-            or0_old = i
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                        "first",
-                    )
-                )
-            elif _geom_.name == "fourc":
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[3],
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                        "first",
-                    )
-                )
-            else:
-                raise ValueError(
-                    "Geometry {} not supported.".format(_geom_.name)
-                )
-        elif orienting_refl[1] == ref:
-            or1_old = i
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                        "second",
-                    )
-                )
-            elif _geom_.name == "fourc":
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[3],
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                        "second",
-                    )
-                )
-            else:
-                raise ValueError(
-                    "Geometry {} not supported.".format(_geom_.name)
-                )
-        else:
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                    )
-                )
-            elif _geom_.name == "fourc":
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[3],
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                    )
-                )
-            else:
-                raise ValueError(
-                    "Geometry {} not supported.".format(_geom_.name)
-                )
-
-    or0 = input("\nFirst orienting ({})? ".format(or0_old)) or or0_old
-    or1 = input("Second orienting ({})? ".format(or1_old)) or or1_old
-    sample._orientation_reflections.pop(0)
-    sample._orientation_reflections.insert(
-        0, sample._sample.reflections_get()[int(or0)]
-    )
-    sample._orientation_reflections.pop(1)
-    sample._orientation_reflections.insert(
-        1, sample._sample.reflections_get()[int(or1)]
-    )
-    compute_UB()
-
-
-def del_reflection():
-    """
-    Delete existing reflection from in reflection list in hklpy.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-    """
-    _geom_ = current_diffractometer()
-    sample = _geom_.calc._sample
-    orienting_refl = sample._orientation_reflections
-    if POLAR_DIFFRACTOMETER in _geom_.name:
-        print(
-            "\n{:>2}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}   {:<12}".format(
-                "#",
-                "H",
-                "K",
-                "L",
-                "Gamma",
-                "Mu",
-                "Chi",
-                "Phi",
-                "Delta",
-                "Tau",
-                "orienting",
-            )
-        )
-    elif _geom_.name == "fourc":
-        print(
-            "\n{:>2}{:>4}{:>3}{:>3}{:>12}{:>9}{:>9}{:>9}   {:<12}".format(
-                "#",
-                "H",
-                "K",
-                "L",
-                "Two Theta",
-                "Theta",
-                "Chi",
-                "Phi",
-                "orienting",
-            )
-        )
-    else:
-        raise ValueError("Geometry {} not supported.".format(_geom_.name))
-
-    for i, ref in enumerate(sample._sample.reflections_get()):
-        if orienting_refl[0] == ref:
-            or0_old = i
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                        "first",
-                    )
-                )
-            elif _geom_.name == "fourc":
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[3],
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                        "first",
-                    )
-                )
-            else:
-                raise ValueError(
-                    "Geometry {} not supported.".format(_geom_.name)
-                )
-        elif orienting_refl[1] == ref:
-            or1_old = i
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                        "second",
-                    )
-                )
-            elif _geom_.name == "fourc":
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[3],
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                        "second",
-                    )
-                )
-            else:
-                raise ValueError(
-                    "Geometry {} not supported.".format(_geom_.name)
-                )
-        else:
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                    )
-                )
-            elif _geom_.name == "fourc":
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[3],
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                    )
-                )
-            else:
-                raise ValueError(
-                    "Geometry {} not supported.".format(_geom_.name)
-                )
-
-    remove = input("\nRemove reflection # ")
-    if not remove:
-        print("No reflection removed")
-    elif int(remove) == or0_old or int(remove) == or1_old:
-        print("Orienting reflection not removable!")
-        print(
-            "Use 'set_orienting()' first to select different orienting reflection."
-        )
-    else:
-        sample._sample.del_reflection(
-            sample._sample.reflections_get()[int(remove)]
-        )
-
-
-def list_orienting(all_samples=False):
-    """
-    Prints the two reflections used in the UB matrix.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-
-    Parameters
-    ----------
-    all_samples : boolean, optional
-        If True, it will print the reflections of all samples, if False, only of
-        the current one.
-    """
-    _geom_ = current_diffractometer()
-    _check_geom_selected()
-    if all_samples:
-        samples = _geom_.calc._samples.values()
-    else:
-        samples = [_geom_.calc._sample]
-    for sample in samples:
-        orienting_refl = sample._orientation_reflections
-        if POLAR_DIFFRACTOMETER in _geom_.name:
-            print(
-                "\n{:>2}{:>4}{:>3}{:>3}{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}   {:<12}".format(
-                    "#",
-                    "H",
-                    "K",
-                    "L",
-                    "Gamma",
-                    "Mu",
-                    "Chi",
-                    "Phi",
-                    "Delta",
-                    "Tau",
-                    "orienting",
-                )
-            )
-        elif _geom_.name == "fourc":
-            print(
-                "\n{:>2}{:>4}{:>3}{:>3}{:>12}{:>9}{:>9}{:>9}   {:<12}".format(
-                    "#",
-                    "H",
-                    "K",
-                    "L",
-                    "Two Theta",
-                    "Theta",
-                    "Chi",
-                    "Phi",
-                    "orienting",
-                )
-            )
-        else:
-            raise ValueError("Geometry {} not supported.".format(_geom_.name))
-
-    for i, ref in enumerate(sample._sample.reflections_get()):
-        if orienting_refl[0] == ref:
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                        "first",
-                    )
-                )
-            elif _geom_.name == "fourc":
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[3],
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                        "first",
-                    )
-                )
-            else:
-                raise ValueError(
-                    "Geometry {} not supported.".format(_geom_.name)
-                )
-        elif orienting_refl[1] == ref:
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                        "second",
-                    )
-                )
-            elif _geom_.name == "fourc":
-                print(
-                    "{:>2}{:>4}{:>3}{:>3}{:>12.3f}{:>9.3f}{:>9.3f}{:>9.3f}   {:<12} ".format(
-                        i,
-                        int(h),
-                        int(k),
-                        int(l),
-                        pos[3],
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                        "second",
-                    )
-                )
-            else:
-                raise ValueError(
-                    "Geometry {} not supported.".format(_geom_.name)
-                )
-
-
-def or0(h=None, k=None, l=None):
-    """
-    Sets the primary orientation in hklpy using the current motor positions.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-
-    Parameters
-    ----------
-    h, k, l : float, optional
-        Values of H, K, L positions for current reflection. If None, it will ask
-        for it.
-    """
-    _geom_ = current_diffractometer()
-    sample = _geom_.calc._sample
-    orienting_refl = sample._orientation_reflections
-    if not h and not k and not l:
-        if len(orienting_refl) > 1:
-            for ref in sample._sample.reflections_get():
-                if ref == orienting_refl[0]:
-                    hr, kr, lr = ref.hkl_get()
-        else:
-            hr = 2
-            kr = 0
-            lr = 0
-        h = (input("H ({})? ".format(hr)) if not h else h) or hr
-        k = (input("K ({})? ".format(kr)) if not k else k) or kr
-        l = (input("L ({})? ".format(lr)) if not l else l) or lr
-    if POLAR_DIFFRACTOMETER in _geom_.name:
-        sample.add_reflection(
-            float(h),
-            float(k),
-            float(l),
-            position=_geom_.calc.Position(
-                gamma=_geom_.gamma.position,
-                mu=_geom_.mu.position,
-                chi=_geom_.chi.position,
-                phi=_geom_.phi.position,
-                delta=_geom_.delta.position,
-                tau=_geom_.tau.position,
-            ),
-        )
-    if _geom_.name == "fourc":
-        sample.add_reflection(
-            float(h),
-            float(k),
-            float(l),
-            position=_geom_.calc.Position(
-                tth=_geom_.tth.position,
-                omega=_geom_.omega.position,
-                chi=_geom_.chi.position,
-                phi=_geom_.phi.position,
-            ),
-        )
-
-    if len(orienting_refl) > 1:
-        sample._orientation_reflections.pop(0)
-    sample._orientation_reflections.insert(
-        0, sample._sample.reflections_get()[-1]
-    )
-
-    compute_UB()
-
-
-def or1(h=None, k=None, l=None):
-    """
-    Sets the secondary orientation in hklpy using the current motor positions.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-
-    Parameters
-    ----------
-    h, k, l : float, optional
-        Values of H, K, L positions for current reflection. If None, it will ask
-        for it.
-    """
-    _geom_ = current_diffractometer()
-    sample = _geom_.calc._sample
-    orienting_refl = sample._orientation_reflections
-    if not h and not k and not l:
-        if len(orienting_refl) > 1:
-            for ref in sample._sample.reflections_get():
-                if ref == orienting_refl[1]:
-                    hr, kr, lr = ref.hkl_get()
-        else:
-            hr = 0
-            kr = 2
-            lr = 0
-        h = (input("H ({})? ".format(hr)) if not h else h) or hr
-        k = (input("K ({})? ".format(kr)) if not k else k) or kr
-        l = (input("L ({})? ".format(lr)) if not l else l) or lr
-    if POLAR_DIFFRACTOMETER in _geom_.name:
-        sample.add_reflection(
-            float(h),
-            float(k),
-            float(l),
-            position=_geom_.calc.Position(
-                gamma=_geom_.gamma.position,
-                mu=_geom_.mu.position,
-                chi=_geom_.chi.position,
-                phi=_geom_.phi.position,
-                delta=_geom_.delta.position,
-                tau=_geom_.tau.position,
-            ),
-        )
-    if _geom_.name == "fourc":
-        sample.add_reflection(
-            float(h),
-            float(k),
-            float(l),
-            position=_geom_.calc.Position(
-                tth=_geom_.tth.position,
-                omega=_geom_.omega.position,
-                chi=_geom_.chi.position,
-                phi=_geom_.phi.position,
-            ),
-        )
-
-    if len(orienting_refl) > 1:
-        sample._orientation_reflections.pop(1)
-    sample._orientation_reflections.insert(
-        1, sample._sample.reflections_get()[-1]
-    )
-
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    sample.reflections.swap()
+    list_reflections()
     compute_UB()
 
 
 def compute_UB():
     """
-    Calculates the UB matrix.
+    Calculates the UB matrix. v
 
     This fixes one issue with the hklpy calc_UB in that using wh() right after
     will not work, it needs to run one calculation first.
@@ -1503,71 +524,620 @@ def compute_UB():
         Values of H, K, L positions for current reflection. If None, it will ask
         for it.
     """
+    _geom_ = get_diffractometer()
+    _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
 
-    _geom_ = current_diffractometer()
-    _geom_for_psi_ = engine_for_psi()
-    sample = _geom_.calc._sample
-    orienting_refl = sample._orientation_reflections
-    if len(orienting_refl) > 1:
-        print("Computing UB!")
-        calc_UB(
-            sample._orientation_reflections[0],
-            sample._orientation_reflections[1],
-        )
-        _geom_.forward(1, 0, 0)
-        if POLAR_DIFFRACTOMETER in _geom_.name:
-            Sync_UB_Matrix(_geom_, _geom_for_psi_)
+    sample = _geom_.sample
+    print("Computing UB!")
+    sample.core.calc_UB(
+        sample.reflections.order[0], sample.reflections.order[1]
+    )
+    Sync_UB_Matrix(_geom_, _geom_for_psi_)
+    first_ref = sample.reflections[sample.reflections.order[0]]
+    h, k, l = list(first_ref.pseudos.values())
+    _geom_.forward(h, k, l)
 
 
-def calc_UB(r1, r2, wavelength=None, output=False):
+class Sync_UB_Matrix:
     """
-    Compute the UB matrix with two reflections.
+    Keep the UB matrix of target in sync with source via an ophyd subscription.
+
+    Subscribes to source._ub_sync (an ArrayAttributeSignal pointing at
+    core.sample.UB) so that whenever the signal is updated the callback
+    copies the new matrix to the target and syncs simulated motor positions.
+    Call cleanup() to remove the subscription when no longer needed.
+    """
+
+    def __init__(self, source, target):
+        self.source = source
+        self.target = target
+        self.source._ub_sync.subscribe(self.sync_callback)
+        # Trigger an immediate copy using the current value
+        self.sync_callback(value=self.source._ub_sync.get())
+
+    def cleanup(self):
+        """Remove the UB-sync subscription."""
+        self.source._ub_sync.clear_sub(self.sync_callback)
+
+    def sync_callback(self, value=None, **kwargs):
+        if value is None:
+            return
+        print(f"Copy UB from {self.source.name} to {self.target.name}")
+        self.target.sample.UB = value
+
+        # Sync real motor positions if target has simulated motors
+        for axis_name in self.source.real_axis_names:
+            ptarget = getattr(self.target, axis_name, None)
+            if ptarget is not None and hasattr(ptarget, "move"):
+                psource = getattr(self.source, axis_name)
+                ptarget.move(psource.position)
+
+
+def setor0():
+    """
+    Sets the primary orientation in hklpy2.
 
     Parameters
     ----------
-    r1, r2 : hklpy reflections
-        Orienting reflections from hklpy.
-    wavelength : float, optional
-        This is not used...
-    output : boolean
-        Toggle to decide whether to print the UB matrix.
+    diffractometer real motors : float, optional
+        Values of motor positions for current reflection. It will ask
+        for it.
+    h, k, l : float, optional
+        Values of H, K, L positions for current reflection. It will ask
+        for it.
     """
-    _check_geom_selected()
-    _geom_ = current_diffractometer()
-    _geom_.calc.sample.compute_UB(r1, r2)
-    if output:
-        print(_geom_.calc.sample.UB)
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    orienting_refl = sample.reflections.order
+    motors = _geom_.real_positioners._fields
+    ordered_reals = (
+        ("gamma", "mu", "chi", "phi", "delta", "tau")
+        if len(_geom_.real_positioners) == 6
+        else motors
+    )
+    if len(orienting_refl) > 0:
+        for key, ref in sample.reflections.items():
+            if key == orienting_refl[0]:
+                pos = {k: ref.reals[k] for k in ordered_reals}
+                old_h, old_k, old_l = list(ref.pseudos.values())
+    else:
+        pos = {k: 0 for k in ordered_reals}
+        old_h = 0
+        old_k = 0
+        old_l = 0
+
+    print("Enter primary-reflection angles:")
+    inputs = {}
+    for m in ordered_reals:
+        temppos = input("{} = [{:6.2f}]: ".format(m, pos[m])) or pos[m]
+        inputs[m] = float(temppos)
+    or0pos = [inputs[m] for m in motors]
+    h = input("H = [{}]: ".format(old_h)) or old_h
+    k = input("K = [{}]: ".format(old_k)) or old_k
+    l = input("L = [{}]: ".format(old_l)) or old_l
+
+    try:
+        _geom_.add_reflection(
+            (float(h), float(k), float(l)),
+            or0pos,
+        )
+    except Exception as e:
+        print(f"Error adding reflection: {e}")
+
+    if len(orienting_refl) > 1:
+        sample.reflections.order.pop(0)
+        # sample.reflections.order.pop(-1)
+    sample.reflections.order.insert(0, list(sample.reflections.keys())[-1])
+
+    if len(orienting_refl) > 2:
+        compute_UB()
+
+
+def setor1():
+    """
+    Sets the primary orientation in hklpy2.
+
+    Parameters
+    ----------
+    diffractometer real motors : float, optional
+        Values of motor positions for current reflection. It will ask
+        for it.
+    h, k, l : float, optional
+        Values of H, K, L positions for current reflection. It will ask
+        for it.
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    orienting_refl = sample.reflections.order
+    motors = _geom_.real_positioners._fields
+    ordered_reals = (
+        ("gamma", "mu", "chi", "phi", "delta", "tau")
+        if len(_geom_.real_positioners) == 6
+        else motors
+    )
+    if len(orienting_refl) > 1:
+        for key, ref in sample.reflections.items():
+            if key == orienting_refl[1]:
+                pos = {k: ref.reals[k] for k in ordered_reals}
+                old_h, old_k, old_l = list(ref.pseudos.values())
+    else:
+        pos = {k: 0 for k in ordered_reals}
+        old_h = 0
+        old_k = 0
+        old_l = 0
+
+    print("Enter secondary-reflection angles:")
+    inputs = {}
+    for m in ordered_reals:
+        temppos = input("{} = [{:6.2f}]: ".format(m, pos[m])) or pos[m]
+        inputs[m] = float(temppos)
+    or0pos = [inputs[m] for m in motors]
+    h = input("H = [{}]: ".format(old_h)) or old_h
+    k = input("K = [{}]: ".format(old_k)) or old_k
+    l = input("L = [{}]: ".format(old_l)) or old_l
+
+    try:
+        _geom_.add_reflection((float(h), float(k), float(l)), or0pos)
+    except Exception as e:
+        print(f"Error adding reflection: {e}")
+
+    if len(orienting_refl) > 1:
+        sample.reflections.order.pop(1)
+        # sample.reflections.order.pop(-1)
+    sample.reflections.order.insert(1, list(sample.reflections.keys())[-1])
+
+    if len(orienting_refl) > 1:
+        compute_UB()
+
+
+def or0(h=None, k=None, l=None):
+    """
+    Sets the primary orientation in hklpy2 using the current motor positions.
+
+    Parameters
+    ----------
+    h, k, l : float, optional
+        Values of H, K, L positions for current reflection. If None, it will ask
+        for it.
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    orienting_refl = sample.reflections.order
+    if not h and not k and not l:
+        if len(orienting_refl) > 0:
+            for key, ref in sample.reflections.items():
+                if key == orienting_refl[0]:
+                    hr, kr, lr = list(ref.pseudos.values())
+        else:
+            hr = 2
+            kr = 0
+            lr = 0
+        h = (input("H ({})? ".format(hr)) if not h else h) or hr
+        k = (input("K ({})? ".format(kr)) if not k else k) or kr
+        l = (input("L ({})? ".format(lr)) if not l else l) or lr
+    _geom_.add_reflection((float(h), float(k), float(l)), _geom_.real_position)
+
+    if len(orienting_refl) > 1:
+        sample.reflections.order.pop(0)
+        # sample.reflections.order.pop(-1)
+        sample.reflections.order.insert(0, list(sample.reflections.keys())[-1])
+
+    if len(orienting_refl) > 2:
+        compute_UB()
+
+
+def or1(h=None, k=None, l=None):
+    """
+    Sets the secondary orientation in hklpy2 using the current motor positions.
+
+    Parameters
+    ----------
+    h, k, l : float, optional
+        Values of H, K, L positions for current reflection. If None, it will ask
+        for it.
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    orienting_refl = sample.reflections.order
+    if not h and not k and not l:
+        if len(orienting_refl) > 1:
+            for key, ref in sample.reflections.items():
+                if key == orienting_refl[1]:
+                    hr, kr, lr = list(ref.pseudos.values())
+        else:
+            hr = 0
+            kr = 2
+            lr = 0
+        h = (input("H ({})? ".format(hr)) if not h else h) or hr
+        k = (input("K ({})? ".format(kr)) if not k else k) or kr
+        l = (input("L ({})? ".format(lr)) if not l else l) or lr
+    _geom_.add_reflection((float(h), float(k), float(l)), _geom_.real_position)
+
+    if len(orienting_refl) > 2:
+        sample.reflections.order.pop(1)
+        # sample.reflections.order.pop(-1)
+        sample.reflections.order.insert(1, list(sample.reflections.keys())[-1])
+
+    if len(orienting_refl) > 1:
+        compute_UB()
+
+
+def set_orienting():
+    """
+    Change the primary and secondary orienting reflections
+    to existing reflections in the reflection list (hklpy2).
+
+    WARNING: Works only with six-circle geometry (fix in progress).
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    orienting_refl = sample.reflections.order
+
+    # Column widths for alignment
+    idx_width = 3
+    pseudo_width = 9
+    real_width = 10
+
+    # Print header
+    ordered_reals = ("gamma", "mu", "chi", "phi", "delta", "tau")
+    real_headers = (
+        ["Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"]
+        if len(_geom_.real_positioners) == 6
+        else list(_geom_.real_positioners._fields)
+    )
+    header = (
+        f"\n{'#':>{idx_width}}"
+        + "".join(
+            f"{m:>{pseudo_width}}" for m in _geom_.pseudo_positioners._fields
+        ).upper()
+        + "".join(f"{k:>{real_width}}" for k in real_headers)
+        + "   orienting"
+    )
+    print(header)
+
+    # Find current orienting reflection indices (defaults: 0,1)
+    or0_old, or1_old = 0, 1
+    if len(orienting_refl) > 0:
+        or0_old = list(sample.reflections.keys()).index(orienting_refl[0])
+    if len(orienting_refl) > 1:
+        or1_old = list(sample.reflections.keys()).index(orienting_refl[1])
+
+    # Print reflection list
+    for i, (key, ref) in enumerate(sample.reflections.items()):
+        h, k, l = list(ref.pseudos.values())
+        pos = (
+            [ref.reals[k] for k in ordered_reals]
+            if len(_geom_.real_positioners) == 6
+            else list(ref.reals.values())
+        )
+
+        tag = ""
+        if len(orienting_refl) > 0 and key == orienting_refl[0]:
+            tag = "first"
+        elif len(orienting_refl) > 1 and key == orienting_refl[1]:
+            tag = "second"
+
+        row = (
+            f"{i:>{idx_width}}"
+            f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}{l:{pseudo_width}.3f}"
+            + "".join(f"{v:{real_width}.3f}" for v in pos)
+            + (f"   {tag}" if tag else "")
+        )
+        print(row)
+
+    # Prompt user for orienting reflections
+    try:
+        or0 = int(input(f"\nFirst orienting ({or0_old})? ") or or0_old)
+        or1 = int(input(f"Second orienting ({or1_old})? ") or or1_old)
+    except ValueError:
+        print("Invalid input, keeping old orienting reflections.")
+        or0, or1 = or0_old, or1_old
+
+    keys = list(sample.reflections.keys())
+
+    # Safely update orienting reflections
+    if 0 <= or0 < len(keys):
+        sample.reflections.order[0:1] = [keys[or0]]
+    if 0 <= or1 < len(keys):
+        if len(sample.reflections.order) > 1:
+            sample.reflections.order[1:2] = [keys[or1]]
+        else:
+            sample.reflections.order.append(keys[or1])
+
+    # Recompute UB matrix
+    compute_UB()
+
+
+def del_reflection():
+    """
+    Delete a reflection from the current sample's reflection list.
+
+    - Displays reflections like set_orienting()
+    - User inputs index number of reflection to delete
+    - Orienting reflections (first/second) cannot be deleted
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    orienting_refl = sample.reflections.order
+
+    # Column widths for alignment
+    idx_width = 3
+    pseudo_width = 9
+    real_width = 10
+
+    # Print header
+    ordered_reals = ("gamma", "mu", "chi", "phi", "delta", "tau")
+    real_headers = (
+        ["Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"]
+        if len(_geom_.real_positioners) == 6
+        else list(_geom_.real_positioners._fields)
+    )
+    header = (
+        f"\n{'#':>{idx_width}}"
+        + "".join(
+            f"{m:>{pseudo_width}}" for m in _geom_.pseudo_positioners._fields
+        ).upper()
+        + "".join(f"{k:>{real_width}}" for k in real_headers)
+        + "   orienting"
+    )
+    print(header)
+
+    # Print reflection list
+    keys = list(sample.reflections.keys())
+    for i, (key, ref) in enumerate(sample.reflections.items()):
+        h, k, l = list(ref.pseudos.values())
+        pos = (
+            [ref.reals[k] for k in ordered_reals]
+            if len(_geom_.real_positioners) == 6
+            else list(ref.reals.values())
+        )
+
+        tag = ""
+        if len(orienting_refl) > 0 and key == orienting_refl[0]:
+            tag = "first"
+        elif len(orienting_refl) > 1 and key == orienting_refl[1]:
+            tag = "second"
+
+        row = (
+            f"{i:>{idx_width}}"
+            f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}{l:{pseudo_width}.3f}"
+            + "".join(f"{v:{real_width}.3f}" for v in pos)
+            + (f"   {tag}" if tag else "")
+        )
+        print(row)
+
+    # Prompt for index to delete
+    try:
+        idx = int(input("\nEnter reflection number to delete: "))
+    except ValueError:
+        print("Invalid input. Aborting delete.")
+        return
+
+    # Safety checks
+    if idx < 0 or idx >= len(keys):
+        print("Invalid index. Aborting delete.")
+        return
+    if keys[idx] in orienting_refl[:2]:
+        print(
+            "Cannot delete orienting reflections (first/second). Aborting delete."
+        )
+        return
+
+    # Delete reflection
+    ref_key = keys[idx]
+    del sample.reflections[ref_key]
+    print(f"Deleted reflection '{ref_key}'.")
+
+
+def list_orienting():
+    """
+    List the first and second orienting reflections only
+    from the current sample's reflection list.
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    orienting_refl = sample.reflections.order
+
+    if len(orienting_refl) < 2:
+        print("Not enough orienting reflections defined.")
+        return
+
+    # Column widths for alignment
+    idx_width = 3
+    pseudo_width = 9
+    real_width = 10
+
+    # Print header
+    custom_positioners = ("gamma", "mu", "chi", "phi", "delta", "tau")
+    header = (
+        f"\n{'#':>{idx_width}}"
+        + "".join(
+            f"{m:>{pseudo_width}}" for m in _geom_.pseudo_positioners._fields
+        ).upper()
+        + "".join(f"{k.capitalize():>{real_width}}" for k in custom_positioners)
+        + "   orienting"
+    )
+    print(header)
+
+    # Print only orienting reflections
+    keys = list(sample.reflections.keys())
+    for tag, key in zip(["first", "second"], orienting_refl[:2], strict=False):
+        if key not in sample.reflections:
+            continue
+        idx = keys.index(key)
+        ref = sample.reflections[key]
+        h, k, l = list(ref.pseudos.values())
+        pos = [ref.reals[k] for k in custom_positioners]
+
+        row = (
+            f"{idx:>{idx_width}}"
+            f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}{l:{pseudo_width}.3f}"
+            + "".join(f"{v:{real_width}.3f}" for v in pos)
+            + f"   {tag}"
+        )
+        print(row)
 
 
 def setmode(mode=None):
     """
     Set the mode of the currently selected diffractometer.
 
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-
     Parameters
     ----------
     mode : string, optional
         Mode to be selected. If None, it will ask.
     """
-    _geom_ = current_diffractometer()
-    current_mode = _geom_.calc.engine.mode
-    for index, item in enumerate(_geom_.calc.engine.modes):
+    _geom_ = get_diffractometer()
+    current_mode = _geom_.core.mode
+    for index, item in enumerate(_geom_.core.modes):
         print("{:2d}. {}".format(index + 1, item))
         if current_mode == item:
             current_index = index
     if mode:
-        _geom_.calc.engine.mode = _geom_.calc.engine.modes[int(mode) - 1]
+        _geom_.core.mode = _geom_.core.modes[int(mode) - 1]
         print("\nSet mode to {}".format(mode))
     else:
         mode = input("\nMode ({})? ".format(current_index + 1)) or (
             current_index + 1
         )
-        _geom_.calc.engine.mode = _geom_.calc.engine.modes[int(mode) - 1]
+        _geom_.core.mode = _geom_.core.modes[int(mode) - 1]
+
+    # Freeze the appropriate detector angle at 0 based on mode geometry.
+    # Local axis names are derived from the solver→local axis name mapping
+    # (E6C solver: 'gamma' = horizontal detector, 'delta' = vertical detector).
+    selected_mode = _geom_.core.mode
+    if "vertical" in selected_mode:
+        solver_det = "gamma"  # horizontal detector angle frozen at 0
+    elif "horizontal" in selected_mode:
+        solver_det = "delta"  # vertical detector angle frozen at 0
+    else:
+        solver_det = None
+
+    if solver_det is not None:
+        solver_reals = _geom_.core.solver_real_axis_names
+        local_reals = list(_geom_.real_positioners._fields)
+        solver_to_local = dict(zip(solver_reals, local_reals, strict=False))
+        det_angle = solver_to_local.get(solver_det)
+        if det_angle is not None:
+            _geom_.core.presets = {det_angle: 0}
+            print(f"Preset {det_angle}=0 for mode '{selected_mode}'")
+        else:
+            _geom_.core.presets = {}
+    else:
+        _geom_.core.presets = {}
 
 
-def ca(h, k, l, energy=None):
+def freeze(*args):
+    """
+    Set preset values for the constant axes of the current mode.
+
+    - For psi constant modes: freezes psi. Uses args[0] if given, otherwise
+      computes the current psi from the psi-engine counterpart diffractometer.
+    - For '4-circles constant phi/mu/chi horizontal': freezes that axis.
+      Uses args[0] if given, otherwise uses the current motor position.
+    - For other modes: prompts interactively for each constant axis,
+      showing the current preset as the default.
+    Updates ``_geom_.core.presets`` or ``_geom_.core.extras`` as appropriate.
+    """
+    _geom_ = get_diffractometer()
+    current_mode = _geom_.core.mode
+
+    if current_mode in (
+        "psi constant",
+        "psi constant vertical",
+        "psi constant horizontal",
+    ):
+        _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
+        if len(args) == 0:
+            psi = _geom_for_psi_.inverse(0).psi
+        elif len(args) == 1:
+            psi = args[0]
+        else:
+            raise ValueError(
+                "either no argument or a psi value needs to be provided."
+            )
+        _geom_.core.extras = {"psi": psi}
+        print(f"Psi = {psi}")
+        return
+
+    _single_axis_modes = {
+        "4-circles constant phi horizontal": "phi",
+        "4-circles constant mu horizontal": "mu",
+        "4-circles constant chi horizontal": "chi",
+    }
+    if current_mode in _single_axis_modes:
+        axis = _single_axis_modes[current_mode]
+        if len(args) == 0:
+            value = getattr(_geom_.real_positioners, axis).position
+        elif len(args) == 1:
+            value = args[0]
+        else:
+            raise ValueError(
+                f"either no argument or a {axis} value needs to be provided."
+            )
+        _geom_.core.presets = {**_geom_.core.presets, axis: value}
+        print(f"{axis.capitalize()} = {value}")
+        return
+
+    constant_axes = _geom_.core.constant_axis_names
+
+    if not constant_axes:
+        print(f"Mode '{current_mode}' has no constant (frozen) axes.")
+        return
+
+    print(f"Mode: {current_mode}")
+    current_presets = _geom_.core.presets
+    new_presets = {}
+
+    for axis in constant_axes:
+        current_val = current_presets.get(axis, 0.0)
+        raw = input(f"  {axis} ({current_val})? ") or current_val
+        try:
+            new_presets[axis] = float(raw)
+        except ValueError:
+            print(f"  Invalid value for '{axis}', keeping {current_val}")
+            new_presets[axis] = float(current_val)
+
+    _geom_.core.presets = new_presets
+    print("Frozen angles:")
+    for axis, val in new_presets.items():
+        print(f"  {axis} = {val}")
+
+
+def freeze_general():
+    """
+    Interactively set preset values for the constant axes of the current mode.
+
+    For each angle held constant in the current mode, prompts for a value
+    (showing the current preset as default). Updates ``_geom_.core.presets``.
+    """
+    _geom_ = get_diffractometer()
+    current_mode = _geom_.core.mode
+    constant_axes = _geom_.core.constant_axis_names
+
+    if not constant_axes:
+        print(f"Mode '{current_mode}' has no constant (frozen) axes.")
+        return
+
+    print(f"Mode: {current_mode}")
+    current_presets = _geom_.core.presets
+    new_presets = {}
+    for axis in constant_axes:
+        current_val = current_presets.get(axis, 0.0)
+        raw = input(f"  {axis} ({current_val})? ") or current_val
+        try:
+            new_presets[axis] = float(raw)
+        except ValueError:
+            print(f"  Invalid value for '{axis}', keeping {current_val}")
+            new_presets[axis] = float(current_val)
+
+    _geom_.core.presets = new_presets
+    print("Frozen angles:")
+    for axis, val in new_presets.items():
+        print(f"  {axis} = {val}")
+
+
+def ca(h, k, l):
     """
     Calculate the motors position of a reflection.
 
@@ -1575,57 +1145,104 @@ def ca(h, k, l, energy=None):
     ----------
     h, k, l : float
         H, K, and L values.
-    energy: float
-        energy (Optional)
     """
-    _geom_ = current_diffractometer()
-    print("\n   Calculated Positions:")
-    print(
-        "\n   H K L = {:5f} {:5f} {:5f}".format(
-            h,
-            k,
-            l,
-        )
-    )
-    if energy:
-        _geom_.calc.energy = energy
-        wavelength = 12.4 / energy
-    else:
-        energy = _geom_.calc.energy
-        wavelength = _geom_.calc.wavelength
-
+    _geom_ = get_diffractometer()
     pos = cahkl(h, k, l)
-
-    print(
-        f"\n   Lambda (Energy) = {wavelength:6.4f} \u212b ({energy:6.4f}) keV"
-    )
-    if POLAR_DIFFRACTOMETER in _geom_.name:
+    if "No solutions" in pos:
+        print(pos)
+    else:
+        # print(pos)
+        print("\n   Calculated Positions:")
         print(
-            "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
+            "\n   H K L = {:5f} {:5f} {:5f}".format(
+                h,
+                k,
+                l,
+            )
+        )
+        print(
+            f"\n   Lambda (Energy) = {_geom_.beam.wavelength.get():6.4f} \u212b"
+            f" ({_geom_.beam.energy.get():6.4f}) keV"
+        )
+        if len(_geom_.real_positioners) == 6:
+            pos_dict = dict(
+                zip(_geom_.real_positioners._fields, pos, strict=False)
+            )
+            print(
+                "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
+                    "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
+                )
+            )
+            print(
+                "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
+                    pos_dict["gamma"],
+                    pos_dict["mu"],
+                    pos_dict["chi"],
+                    pos_dict["phi"],
+                    pos_dict["delta"],
+                    pos_dict["tau"],
+                )
+            )
+        else:
+            print(
+                f"\n{''.join(f'{k:>10}' for k in _geom_.real_positioners._fields)}"
+                f"\n{''.join(f'{v:>10.3f}' for v in pos)}"
+            )
+
+
+def _wh():
+    """
+    Retrieve information on the current reciprocal space position.
+
+    WARNING: This function will only work with six circles. This will be fixed
+    in future releases.
+    """
+    _geom_ = get_diffractometer()
+    _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
+    _geom_for_psi_.sample.UB = _geom_.sample.UB
+    print(
+        f"\n   {' '.join(_geom_.pseudo_positioners._fields).upper()}"
+        f" = {', '.join([f'{v.position:5f}' for v in _geom_.pseudo_positioners])}"
+    )
+    print(
+        f"\n   Lambda (Energy) = {_geom_.beam.wavelength.get():6.4f} \u212b"
+        f" ({_geom_.beam.energy.get():6.4f}) keV"
+    )
+    _rp_ = _geom_.real_positioners
+    if len(_rp_) == 6:
+        print(
+            "\n{:>10}{:>10}{:>10}{:>10}{:>10}{:>10}".format(
                 "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
             )
         )
         print(
-            "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
-                pos[4],
-                pos[1],
-                pos[2],
-                pos[3],
-                pos[5],
-                pos[0],
+            "{:>10.3f}{:>10.3f}{:>10.3f}{:>10.3f}{:>10.3f}{:>10.3f}".format(
+                _rp_.gamma.position,
+                _rp_.mu.position,
+                _rp_.chi.position,
+                _rp_.phi.position,
+                _rp_.delta.position,
+                _rp_.tau.position,
             )
         )
-    if _geom_.name == "fourc":
-        print("\n{:>9}{:>9}{:>9}{:>9}".format("Delta", "Theta", "Chi", "Phi"))
+    else:
         print(
-            "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
-                pos[3],
-                pos[0],
-                pos[1],
-                pos[2],
-            )
+            f"\n{''.join(f'{k:>10}' for k in _rp_._fields)}"
+            f"\n{''.join(f'{v.position:>10.3f}' for v in _rp_)}"
         )
-    _geom_._update_calc_energy()
+    print(
+        "\n   PSI = {:5.4f} ".format(
+            _geom_for_psi_.inverse(0).psi,
+        )
+    )
+    _h2, _k2, _l2 = _geom_for_psi_.core.extras.values()
+    print(
+        "   PSI reference vector = {:3.3f} {:3.3f} {:3.3f}".format(
+            _h2,
+            _k2,
+            _l2,
+        )
+    )
 
 
 def _ensure_idle():
@@ -1647,16 +1264,11 @@ def ubr(h, k, l):
     Returns
     -------
     """
-    _geom_ = current_diffractometer()
-
-    def _plan():
-        yield from mv(
-            _geom_.h, float(h), _geom_.k, float(k), _geom_.l, float(l)
-        )
-
-    RE.waiting_hook = ProgressBarManager()
+    _geom_ = get_diffractometer()
+    plan = mv(_geom_.h, float(h), _geom_.k, float(k), _geom_.l, float(l))
+    RE.waiting_hook = pbar_manager
     try:
-        RE(_plan())
+        RE(plan)
     except RunEngineInterrupted:
         ...
     RE.waiting_hook = None
@@ -1676,37 +1288,42 @@ def br(h, k, l):
     Returns
     -------
     Generator for the bluesky Run Engine.
+
+    Example
+    -------
+    RE(br(2, 2, 0))
     """
-    _geom_ = current_diffractometer()
+    _geom_ = get_diffractometer()
     yield from mv(_geom_.h, float(h), _geom_.k, float(k), _geom_.l, float(l))
 
 
 def uan(*args):
     """
-    Moves the delta and theta motors.
+    Moves the delta and eta motors.
 
     WARNING: This function will only work with six circles. This will be fixed
     in future releases.
 
     Parameters
     ----------
-    gamma, mu: float, optional??
-        Delta and th motor angles to be moved to.
+    delta, eta: float, optional??
+        Delta and eta motor angles to be moved to.
 
     Returns
     -------
     """
-    _geom_ = current_diffractometer()
+    _geom_ = get_diffractometer()
     if len(args) != 2:
-        raise ValueError("Usage: uan(gamma/tth,mu/th)")
+        tth, th = args
+        raise ValueError("Usage: uan(gamma,mu))")
     else:
-        delta, th = args
-        if len(_geom_.calc.physical_axes) == 6:
-            print("Moving to (gamma,mu)=({},{})".format(delta, th))
-            plan = mv(_geom_.gamma, delta, _geom_.mu, th)
-        elif len(_geom_.calc.physical_axes) == 4:
-            print("Moving to (tth,th)=({},{})".format(delta, th))
-            plan = mv(_geom_.tth, delta, _geom_.omega, th)
+        tth, th = args
+        if len(_geom_.real_position) == 6:
+            print("Moving to (gamma,mu)=({},{})".format(tth, th))
+            plan = mv(_geom_.gamma, tth, _geom_.mu, th)
+        elif len(_geom_.real_position) == 4:
+            print("Moving to (tth,th)=({},{})".format(tth, th))
+            plan = mv(_geom_.tth, tth, _geom_.th, th)
     RE.waiting_hook = pbar_manager
     try:
         RE(plan)
@@ -1717,359 +1334,226 @@ def uan(*args):
     return None
 
 
-def an(*args):
-    """
-    Moves the delta and theta motors.
-
-    WARNING: This function will only work with six circles. This will be fixed
-    in future releases.
-
-    Parameters
-    ----------
-    delta, th: float, optional??
-        Delta and th motor angles to be moved to.
-
-    Returns
-    -------
-    Generator for the bluesky Run Engine.
-    """
-    _geom_ = current_diffractometer()
-    if len(args) != 2:
-        raise ValueError("Usage: uan(delta/tth,eta/th)")
-    else:
-        delta, th = args
-        if len(_geom_.calc.physical_axes) == 6:
-            print("Moving to (delta,eta)=({},{})".format(delta, th))
-            yield from mv(_geom_.gamma, delta, _geom_.mu, th)
-        elif len(_geom_.calc.physical_axes) == 4:
-            print("Moving to (tth,th)=({},{})".format(delta, th))
-            yield from mv(_geom_.tth, delta, _geom_.omega, th)
-
-
-def _wh():
-    """
-    Retrieve information on the current reciprocal space position.
-
-    """
-    _geom_ = current_diffractometer()
-    _geom_for_psi_ = engine_for_psi()
-    _geom_for_psi_.calc.sample.UB = _geom_.calc._sample.UB
-    print(
-        "\n   H K L = {:5f} {:5f} {:5f}".format(
-            _geom_.calc.engine.pseudo_axes["h"],
-            _geom_.calc.engine.pseudo_axes["k"],
-            _geom_.calc.engine.pseudo_axes["l"],
-        )
-    )
-    if _geom_.name == "polar":
-        print(
-            "   Azimuth = {:6.4f}".format(
-                _geom_for_psi_.inverse(0).psi,
-            )
-        )
-    print(
-        "   Lambda (Energy) = {:6.4f} \u212b ({:6.4f} keV)".format(
-            _geom_.calc.wavelength, _geom_.calc.energy
-        )
-    )
-    if len(_geom_.calc.physical_axes) == 6:
-        print(
-            "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
-                "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
-            )
-        )
-        print(
-            "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
-                _geom_.gamma.position,
-                _geom_.mu.position,
-                _geom_.chi.position,
-                _geom_.phi.position,
-                _geom_.delta.position,
-                _geom_.tau.position,
-            )
-        )
-    else:
-        print("\n{:>9}{:>9}{:>9}{:>9}".format("tth", "th", "Chi", "Phi"))
-        print(
-            "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
-                _geom_.tth.position,
-                _geom_.omega.position,
-                _geom_.chi.position,
-                _geom_.phi.position,
-            )
-        )
-
-
-def pa_new():
-    """
-    Retrieve information on the current reciprocal space position.
-
-    """
-    _geom_ = current_diffractometer()
-    _geom_for_psi_ = engine_for_psi()
-    _geom_for_psi_.calc.sample.UB = _geom_.calc._sample.UB
-    sample = _geom_.calc._sample
-    geometry = _geom_.calc._geometry.name_get()
-    orienting_refl = sample._orientation_reflections
-    current_mode = _geom_.calc.engine.mode
-
-    print(
-        "{},  {} geometry, {} diffractometer".format(
-            _geom_.__class__.__name__, geometry, _geom_.name
-        )
-    )
-    print("{} mode".format(get_huber_euler().calc.engine.mode))
-
-    print("Sample = {}".format(sample.name))
-    for _, ref in enumerate(sample._sample.reflections_get()):
-        if orienting_refl[0] == ref:
-            print(
-                "\nPrimary reflection at (lambda = {:.3f})".format(
-                    orienting_refl[0].geometry_get().wavelength_get(0)
-                )
-            )
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if len(_geom_.calc.physical_axes) == 6:
-                print(
-                    "     gamma, mu, chi, phi, delta, tau = {:>3.3f}, {:>3.3f}, {:>3.3f}, {:>3.3f}, {:>3.3f}, {:>3.3f}".format(
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                    )
-                )
-                print(
-                    "                               H K L = {:>2}{:>2}{:>2}".format(
-                        int(h),
-                        int(k),
-                        int(l),
-                    )
-                )
-            else:
-                print(
-                    "     tth, th, chi, phi  = {:>3.3f}, {:>3.3f}, {:>3.3f}, {:>3.3f}".format(
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                    )
-                )
-                print(
-                    "                   H K L = {:>2}{:>2}{:>2}".format(
-                        int(h),
-                        int(k),
-                        int(l),
-                    )
-                )
-
-    for _, ref in enumerate(sample._sample.reflections_get()):
-        if orienting_refl[1] == ref:
-            print(
-                "\nSecondary reflection at (lambda = {:.3f})".format(
-                    orienting_refl[1].geometry_get().wavelength_get(0)
-                )
-            )
-            h, k, l = ref.hkl_get()
-            pos = ref.geometry_get().axis_values_get(_geom_.calc._units)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                print(
-                    "     gamma, mu, chi, phi, delta, tau = {:>3.3f}, {:>3.3f}, {:>3.3f}, {:>3.3f}, {:>3.3f}, {:>3.3f}".format(
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                        pos[5],
-                        pos[0],
-                    )
-                )
-                print(
-                    "                               H K L = {:>2}{:>2}{:>2}".format(
-                        int(h),
-                        int(k),
-                        int(l),
-                    )
-                )
-            else:
-                print(
-                    "     tth, th, chi, phi = {:>3.3f}, {:>3.3f}, {:>3.3f}, {:>3.3f}".format(
-                        pos[4],
-                        pos[1],
-                        pos[2],
-                        pos[3],
-                    )
-                )
-                print(
-                    "                 H K L = {:>2}{:>2}{:>2}".format(
-                        int(h),
-                        int(k),
-                        int(l),
-                    )
-                )
-
-    print("\nLattice constants:")
-    print("                          real space =", end=" ")
-    print(*sample.lattice, sep=", ")
-    print("                    reciprocal space =", end=" ")
-    print(
-        "{:>3.3f}, {:3.3f}, {:>3.3f}, {:3.3f}, {:>3.3f}, {:3.3f} ".format(
-            sample.reciprocal[0],
-            sample.reciprocal[1],
-            sample.reciprocal[2],
-            sample.reciprocal[3],
-            sample.reciprocal[4],
-            sample.reciprocal[5],
-        )
-    )
-    if (
-        current_mode == "psi constant horizontal"
-        or current_mode == "psi constant vertical"
-    ):
-        _h2, _k2, _l2, psi = _geom_.calc._engine.engine.parameters_values_get(1)
-        print("\nAzimuthal reference:")
-        print(
-            "                               H K L = {:2.0f}{:2.0f}{:2.0f}".format(
-                _h2, _k2, _l2
-            )
-        )
-        # print("                               Psi frozen to {}".format(psi))
-
-    print("\nMonochromator:")
-    print(
-        "                 Energy (wavelength) = {:3.3f} ({:3.3f})".format(
-            _geom_.calc.energy, _geom_.calc.wavelength
-        )
-    )
-
-
 def setlat(*args):
     """
-    Set the lattice constants.
+    Set the lattice constants for the current sample.
 
     Parameters
     ----------
     a, b, c, alpha, beta, gamma : float, optional
-        Lattice constants. If None, it will ask for input.
+        Lattice constants.
+        - If all 6 are provided as arguments, they are used directly.
+        - If none are provided, the user will be prompted interactively.
+
+    Notes
+    -----
+    If two orienting reflections are defined, UB will be recomputed automatically.
     """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
 
-    _geom_ = current_diffractometer()
-    current_sample = _geom_.calc.sample_name
-    sample = _geom_.calc._samples[current_sample]
-    lattice = [getattr(sample.lattice, parm) for parm in sample.lattice._fields]
+    # Current lattice values
+    param_names = sample.lattice.system_parameter_names(0)
+    current_values = [getattr(sample.lattice, p) for p in param_names]
 
+    # Case 1: direct arguments
     if len(args) == 6:
-        a, b, c, alpha, beta, gamma = args
+        new_values = args
+
+    # Case 2: interactive input
     elif len(args) == 0:
-        a = (input("Lattice a ({})? ".format(lattice[0]))) or lattice[0]
-        b = (input("Lattice b ({})? ".format(lattice[1]))) or lattice[1]
-        c = (input("Lattice c ({})? ".format(lattice[2]))) or lattice[2]
-        alpha = (input("Lattice alpha ({})? ".format(lattice[3]))) or lattice[3]
-        beta = (input("Lattice beta ({})? ".format(lattice[4]))) or lattice[4]
-        gamma = (input("Lattice gamma ({})? ".format(lattice[5]))) or lattice[5]
+        new_values = []
+        for name, current in zip(param_names, current_values, strict=False):
+            try:
+                val = input(f"Lattice {name} ({current})? ") or current
+                new_values.append(float(val))
+            except ValueError:
+                print(f"Invalid input for {name}, keeping old value {current}.")
+                new_values.append(current)
+
     else:
         raise ValueError(
-            "either no arguments or a, b, c, alpha, beta, gamma need to be provided."
+            "Provide either 0 or 6 arguments: a, b, c, alpha, beta, gamma."
         )
 
-    _geom_.calc.sample.lattice = (
-        float(a),
-        float(b),
-        float(c),
-        float(alpha),
-        float(beta),
-        float(gamma),
-    )
-    orienting_refl = sample._orientation_reflections
-    if len(orienting_refl) > 1:
-        print("Compute UB!")
-        sample.compute_UB(
-            sample._orientation_reflections[0],
-            sample._orientation_reflections[1],
+    # Apply new lattice parameters
+    for name, val in zip(param_names, new_values, strict=False):
+        setattr(sample.lattice, name, float(val))
+
+    # Recompute UB if orienting reflections exist
+    if len(sample.reflections.order) > 1:
+        print("Computing UB...")
+        sample.core.calc_UB(
+            sample.reflections.order[0], sample.reflections.order[1]
         )
         _geom_.forward(1, 0, 0)
 
+    # Final confirmation
+    print("\nUpdated lattice parameters:")
+    for name in param_names:
+        print(f"  {name} = {getattr(sample.lattice, name):.4f}")
+
 
 def setaz(*args):
-    """Set the azimuthal reference vector (h k l) for psi-constant mode."""
-    _geom_ = current_diffractometer()
-    _geom_for_psi_ = engine_for_psi()
-    _check_geom_selected()
-    if len(_geom_.calc.physical_axes) == 4:
-        mode_temp = _geom_.calc.engine.mode
-        _geom_.calc.engine.mode = "psi_constant"
-        _h2, _k2, _l2, psi = _geom_.calc._engine.engine.parameters_values_get(1)
-        if len(args) == 3:
-            h2, k2, l2 = args
-        elif len(args) == 0:
-            h2 = int((input("H = ({})? ".format(_h2))) or _h2)
-            k2 = int((input("K = ({})? ".format(_k2))) or _k2)
-            l2 = int((input("L = ({})? ".format(_l2))) or _l2)
+    """
+    Set the azimuthal reference reflection (h2, k2, l2).
 
-        else:
-            raise ValueError(
-                "either no arguments or h, k, l need to be provided."
-            )
-        _geom_.calc._engine.engine.parameters_values_set([h2, k2, l2], 1)
-        _geom_for_psi_.calc._engine.engine.parameters_values_set(
-            [h2, k2, l2], 1
-        )
-        print("Azimuth = {} {} {} with Psi fixed at {}".format(h2, k2, l2, psi))
-        _geom_.calc.engine.mode = mode_temp
-    elif len(_geom_.calc.physical_axes) == 6:
-        mode_temp = _geom_.calc.engine.mode
-        _geom_.calc.engine.mode = "psi constant horizontal"
-        _h2, _k2, _l2, psi = _geom_.calc._engine.engine.parameters_values_get(1)
-        if len(args) == 3:
-            h2, k2, l2 = args
-        elif len(args) == 0:
-            h2 = int((input("H = ({})? ".format(_h2))) or _h2)
-            k2 = int((input("K = ({})? ".format(_k2))) or _k2)
-            l2 = int((input("L = ({})? ".format(_l2))) or _l2)
-            # _geom_.calc._engine.engine.parameters_values_set([h2, k2, l2], 1)
-            # _geom_.calc.engine.mode = mode_temp
-        else:
-            raise ValueError(
-                "either no arguments or h, k, l need to be provided."
-            )
-        _geom_.calc._engine.engine.parameters_values_set([h2, k2, l2], 1)
-        _geom_for_psi_.calc._engine.engine.parameters_values_set(
-            [h2, k2, l2], 1
-        )
-        print("Azimuth = {} {} {} with Psi fixed at {}".format(h2, k2, l2, psi))
-        _geom_.calc.engine.mode = mode_temp
+    Always updates the psi counterpart of the active diffractometer (which uses the psi engine).
+    If the main diffractometer is currently in a psi constant mode,
+    its h2/k2/l2 extras are also updated while preserving the psi value.
+    Works regardless of the current mode.
+
+    Parameters
+    ----------
+    h2, k2, l2 : int or float, optional
+        Miller indices of the azimuthal reference reflection.
+        If not provided, the user will be prompted interactively.
+    """
+    _geom_ = get_diffractometer()
+    _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
+
+    # Current reference values from the psi diffractometer
+    _h2, _k2, _l2 = list(_geom_for_psi_.core.extras.values())
+
+    # Parse input
+    if len(args) == 3:
+        h2, k2, l2 = args
+    elif len(args) == 0:
+
+        def ask(name, current):
+            val = input(f"{name} = ({current})? ") or current
+            try:
+                return float(val)
+            except ValueError:
+                print(f"Invalid {name}, keeping {current}")
+                return float(current)
+
+        h2 = ask("H", _h2)
+        k2 = ask("K", _k2)
+        l2 = ask("L", _l2)
     else:
         raise ValueError(
-            "Function not available in mode '{}'".format(
-                _geom_.calc.engine.mode
-            )
+            "Either no arguments or exactly 3 arguments (h, k, l) must be provided."
         )
 
+    extras = {"h2": h2, "k2": k2, "l2": l2}
 
-def freeze(*args):
+    # Always set on the psi diffractometer
+    _geom_for_psi_.core.extras = extras
+
+    # Always store h2/k2/l2 on the main diffractometer by temporarily
+    # switching to psi constant horizontal (the only mode that accepts these
+    # extras), preserving any existing psi value, then restoring the mode.
+    psi_modes = (
+        "psi constant",
+        "psi constant vertical",
+        "psi constant horizontal",
+    )
+    current_psi = (
+        _geom_.core.extras.get("psi", 0.0)
+        if _geom_.core.mode in psi_modes
+        else 0.0
+    )
+    _saved_mode = _geom_.core.mode
+    _geom_.core.mode = "psi constant horizontal"
+    _geom_.core.extras = {**extras, "psi": current_psi}
+    _geom_.core.mode = _saved_mode
+
+    psi = _geom_for_psi_.inverse(0).psi
+    print(f"Reference vector = {h2} {k2} {l2} with Psi = {psi:3.2f}")
+
+
+def show_constraints():
     """
-    Freeze the psi angle for psi-constant scans on the current diffractometer.
+    Show constraints and freeze angles (value)
     """
-    _geom_ = current_diffractometer()
-    _check_geom_selected()
-    if (
-        _geom_.calc.engine.mode == "psi constant horizontal"
-        or _geom_.calc.engine.mode == "psi_constant"
-    ):
-        h2, k2, l2, psi = _geom_.calc._engine.engine.parameters_values_get(1)
-        if len(args) == 1:
-            psi = args[0]
-        _geom_.calc._engine.engine.parameters_values_set([h2, k2, l2, psi], 1)
-        print("Psi = {}".format(psi))
-    elif _geom_.calc.engine.mode == "4-circles constant phi horizontal":
-        print("freeze phi not yet implemented")
-    else:
-        raise ValueError(
-            "Function not available in mode '{}'".format(
-                _geom_.calc.engine.mode
+    _geom_ = get_diffractometer()
+    axes = _geom_.real_axis_names
+    for axis in axes:
+        low = _geom_.core.constraints[axis].low_limit
+        high = _geom_.core.constraints[axis].high_limit
+        print("{:>10} - [{:>6}, {:>6}]".format(axis, low, high))
+
+
+def reset_constraints():
+    """
+    Reset all constraints
+    """
+    _geom_ = get_diffractometer()
+    _geom_.reset_constraints()
+    _geom_.show_constraints()
+
+
+def set_constraints(*args):
+    """
+    Change constraint values for specific axis
+    """
+    _geom_ = get_diffractometer()
+    axes = _geom_.real_axis_names
+
+    if len(args) == 12:
+        i = -1
+        for axis in axes:
+            i += 2
+            low = args[i - 1]
+            high = args[i]
+            _geom_.core.constraints[axis].limits = low, high
+
+    elif len(args) == 3:
+        axis, low, high = args
+        _geom_.core.constraints[axis].limits = low, high
+
+    elif len(args) == 1:
+        axis = args[0]
+        low = _geom_.core.constraints[axis].low_limit
+        high = _geom_.core.constraints[axis].high_limit
+        value = (
+            input(
+                "{} constraints low, high = [{:3.3f}, {:3.3f}]: ".format(
+                    axis, low, high
+                )
             )
-        )
+        ) or [low, high]
+        if isinstance(value, str):
+            if "," in value:
+                value = value.replace(",", " ").split(" ")
+        _geom_.core.constraints[axis].limits = value[0], value[1]
+    elif len(args) == 0:
+        for axis in axes:
+            low = _geom_.core.constraints[axis].low_limit
+            high = _geom_.core.constraints[axis].high_limit
+            # angle = _geom_.get_axis_constraints(axis).value
+            value = (
+                input("{:>10} - [{:>6}, {:>6}]: ".format(axis, low, high))
+            ) or [low, high]
+            if isinstance(value, str):
+                value = value.replace(",", " ").split(" ")
+            _geom_.core.constraints[axis].limits = value[0], value[1]
+
+
+def analyzer_configuration(energy=None):
+    """
+    Configure analyzer
+        - Select analyzer crystal and determine d-spacing
+
+    Parameters
+    ----------
+
+    """
+    _geom_ = get_diffractometer()
+    _geom_.ana.setup(energy)
+
+
+def analyzer_set():
+    """
+    Set analyzer
+
+    Parameters
+    ----------
+
+    """
+    _geom_ = get_diffractometer()
+    _geom_.ana.calc()
 
 
 def update_lattice(lattice_constant=None):
@@ -2081,19 +1565,17 @@ def update_lattice(lattice_constant=None):
     lattice_constant: string, optional
         a, b or c or auto (default)
     """
-    _geom_ = current_diffractometer()
-    current_sample = _geom_.calc.sample_name
-    sample = _geom_.calc._samples[current_sample]
-    lattice = [getattr(sample.lattice, parm) for parm in sample.lattice._fields]
-    a = lattice[0]
-    b = lattice[1]
-    c = lattice[2]
-    alpha = lattice[3]
-    beta = lattice[4]
-    gamma = lattice[5]
-    hh = _geom_.calc.engine.pseudo_axes["h"]
-    kk = _geom_.calc.engine.pseudo_axes["k"]
-    ll = _geom_.calc.engine.pseudo_axes["l"]
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    a = sample.lattice.a
+    b = sample.lattice.b
+    c = sample.lattice.c
+    alpha = sample.lattice.alpha
+    beta = sample.lattice.beta
+    gamma = sample.lattice.gamma
+    hh = _geom_.h.position
+    kk = _geom_.k.position
+    ll = _geom_.l.position
 
     if round(hh) == 0 and round(kk) == 0:
         lattice_auto = "c"
@@ -2116,288 +1598,148 @@ def update_lattice(lattice_constant=None):
     elif lattice_constant == "c" and abs(round(ll)) > 0:
         c = c / ll * round(ll)
     else:
-        raise ValueError("Auto calc not possible.")
+        if lattice_constant:
+            print(
+                f"Updating lattice parameter {lattice_constant} not possible. "
+            )
+        else:
+            print(
+                "Auto calc not possible. Specify lattice parameter to refine."
+            )
+
+        return
     print("Refining lattice parameter {}".format(lattice_constant))
-    _geom_.calc.sample.lattice = (
-        float(a),
-        float(b),
-        float(c),
-        float(alpha),
-        float(beta),
-        float(gamma),
-    )
-    orienting_refl = sample._orientation_reflections
-    if len(orienting_refl) > 1:
-        print("Compute UB!")
-        sample.compute_UB(
-            sample._orientation_reflections[0],
-            sample._orientation_reflections[1],
+    sample.lattice.a = float(a)
+    sample.lattice.b = float(b)
+    sample.lattice.c = float(c)
+    sample.lattice.alpha = float(alpha)
+    sample.lattice.beta = float(beta)
+    sample.lattice.gamma = float(gamma)
+    if len(sample.reflections.order) > 1:
+        print("Computing UB!")
+        sample.core.calc_UB(
+            sample.reflections.order[0],
+            sample.reflections.order[1],
         )
         _geom_.forward(1, 0, 0)
     print(
         "\n   H K L = {:5.4f} {:5.4f} {:5.4f}".format(
-            _geom_.calc.engine.pseudo_axes["h"],
-            _geom_.calc.engine.pseudo_axes["k"],
-            _geom_.calc.engine.pseudo_axes["l"],
+            _geom_.h.position,
+            _geom_.k.position,
+            _geom_.l.position,
         )
     )
-    lattice = [getattr(sample.lattice, parm) for parm in sample.lattice._fields]
     print(
         "   a, b, c, alpha, beta, gamma = {:5.4f} {:5.4f} {:5.4f} {:5.4f} {:5.4f} {:5.4f}".format(
-            lattice[0],
-            lattice[1],
-            lattice[2],
-            lattice[3],
-            lattice[4],
-            lattice[5],
+            sample.lattice.a,
+            sample.lattice.b,
+            sample.lattice.c,
+            sample.lattice.alpha,
+            sample.lattice.beta,
+            sample.lattice.gamma,
         )
     )
 
 
-def write_config(method="File", overwrite=False):
+def write_config(filename="default", overwrite=False):
     """
-    Write configuration from file in current directory.
+    Write diffractometer configuration to file in current directory.
 
     Parameters
     ----------
-    method: string, optional
-        right now only "File" possible, but later PV or other
-    overwrite: Boolean, optional
-        asks if existing file hould be overwritten
+    method : string, optional
+        Only "File" is currently supported.
+    overwrite : bool, optional
+        If False, asks for confirmation before overwriting an existing file.
     """
-    _geom_ = current_diffractometer()
-    config = DiffractometerConfiguration(_geom_)
-    settings = config.export("json")
-    if POLAR_DIFFRACTOMETER in _geom_.name and polar_config.exists():
-        if not overwrite:
-            value = input("Overwrite existing configuration file (y/[n])? ")
-            if value == "y":
-                overwrite = True
-        if overwrite:
-            if method == "File":
-                print("Writing configuration file.")
-                with open(polar_config.name, "w") as f:
-                    f.write(settings)
-    elif _geom_.name == "fourc" and fourc_config.exists():
-        if not overwrite:
-            value = input("Overwrite existing configuration file (y/[n])? ")
-            if value == "y":
-                overwrite = True
-        if overwrite:
-            if method == "File":
-                print("Writing configuration file.")
-                with open(fourc_config.name, "w") as f:
-                    f.write(settings)
+    _geom_ = get_diffractometer()
+    file = pathlib.Path(f"{filename}_polar_config.yml")
+    if file.exists() and not overwrite:
+        answer = input(f"File '{file}' already exists. Overwrite? ([y]/n): ")
+        if answer.strip().lower() == "n":
+            print("Configuration file not written.")
+            return
+    _geom_.export(str(file), comment="4-ID-G POLAR beamline")
+    print(f"Configuration written to '{file}'.")
+
+
+def read_config():
+    """
+    Read diffractometer configuration from file in current directory.
+
+    Lists all files matching *_polar_config.yml, prompts the user to select
+    one, and loads it. Defaults to default_polar_config.yml if it exists.
+    """
+    _geom_ = get_diffractometer()
+    files = sorted(pathlib.Path(".").glob("*_polar_config.yml"))
+    if not files:
+        print("No *_polar_config.yml files found in current directory.")
+        return
+    default_file = pathlib.Path("default_polar_config.yml")
+    default_idx = next((i for i, f in enumerate(files) if f == default_file), 0)
+    print("\nAvailable configuration files:")
+    for i, f in enumerate(files):
+        marker = " (default)" if f == default_file else ""
+        print(f"  {i}: {f}{marker}")
+    answer = input(f"\nSelect file to load [{default_idx}]: ").strip()
+    try:
+        idx = int(answer) if answer else default_idx
+        file = files[idx]
+    except (ValueError, IndexError):
+        print("Invalid selection. Configuration not loaded.")
+        return
+    with open(file) as f:
+        config = yaml.safe_load(f)
+    file_samples = [k for k in config.get("samples", {}) if k != "sample"]
+    if file_samples:
+        print("\nSamples in this file:")
+        for s in file_samples:
+            print(f"  {s}")
     else:
-        if method == "File":
-            print("Writing configuration file.")
-            print(_geom_.name)
-            if POLAR_DIFFRACTOMETER in _geom_.name:
-                with open(polar_config.name, "w") as f:
-                    f.write(settings)
-            if _geom_.name == "fourc":
-                with open(polar_config.name, "w") as f:
-                    f.write(settings)
-            else:
-                print("Only available for 'polar' and 'fourc' geometries.")
-
-
-def read_config(method="File"):
-    """
-    Read configuration from file in current directory.
-
-    Parameters
-    ----------
-    method: string, optional
-        right now only "File" possible, but later PV or other
-    """
-    _geom_ = current_diffractometer()
-    config = DiffractometerConfiguration(_geom_)
-    if POLAR_DIFFRACTOMETER in _geom_.name and polar_config.exists():
-        if method == "File":
-            print("Read configuration file '{}'.".format(polar_config.name))
-            method = input("Method ([o]verwrite/[a]ppend)? ")
-            if method == "a":
-                config.restore(polar_config, clear=False)
-                compute_UB()
-            elif method == "o":
-                config.restore(polar_config, clear=True)
-                compute_UB()
-            else:
-                print("Config file not read!")
-    elif _geom_.name == "fourc" and fourc_config.exists():
-        if method == "File":
-            print("Read configuration file '{}'.".format(fourc_config.name))
-            method = input("Method ([o]verwrite/[a]ppend)? ")
-            if method == "a":
-                config.restore(fourc_config, clear=False)
-                compute_UB()
-            elif method == "o":
-                config.restore(fourc_config, clear=True)
-                compute_UB()
-            else:
-                print("Config file not read!")
-
-
-def show_constraints():
-    """
-    Show constraints and freeze angles (value)
-    """
-    _geom_ = current_diffractometer()
-    _geom_.show_constraints()
-
-
-def reset_constraints():
-    """
-    Reset all constraints
-    """
-    _geom_ = current_diffractometer()
-    _geom_.reset_constraints()
-    _geom_.show_constraints()
-
-
-def set_constraints(*args):
-    """
-    Change constraint values for specific axis
-    """
-    _geom_ = current_diffractometer()
-    axes = _geom_.calc._engine.engine.axis_names_get(0)
-
-    if len(args) == 12:
-        i = -1
-        for axis in axes:
-            i += 2
-            low = args[i - 1]
-            high = args[i]
-            angle = _geom_.get_axis_constraints(axis).value
-            _geom_.apply_constraints({axis: Constraint(low, high, angle, True)})
-
-    elif len(args) == 3:
-        axis, low, high = args
-        angle = _geom_.get_axis_constraints(axis).value
-        _geom_.apply_constraints({axis: Constraint(low, high, angle, True)})
-    elif len(args) == 1:
-        axis = args[0]
-        print(axis)
-        low = _geom_.get_axis_constraints(axis).low_limit
-        high = _geom_.get_axis_constraints(axis).high_limit
-        angle = _geom_.get_axis_constraints(axis).value
-        value = (
-            input(
-                "{} constraints low, high = [{:3.3f}, {:3.3f}]: ".format(
-                    axis, low, high
-                )
-            )
-        ) or [low, high]
-        if isinstance(value, str):
-            value = value.replace(",", " ").split(" ")
-        _geom_.apply_constraints(
-            {axis: Constraint(value[0], value[1], angle, True)}
+        print("\nNo user-defined samples found in this file.")
+    mode = (
+        input(
+            "\nOverwrite current configuration or append? ([o]verwrite/[a]ppend): "
         )
-    elif len(args) == 0:
-        for axis in axes:
-            low = _geom_.get_axis_constraints(axis).low_limit
-            high = _geom_.get_axis_constraints(axis).high_limit
-            angle = _geom_.get_axis_constraints(axis).value
-            value = (
-                input(
-                    "{} constraints low, high = [{:3.3f}, {:3.3f}]: ".format(
-                        axis, low, high
-                    )
-                )
-            ) or [low, high]
-            if isinstance(value, str):
-                value = value.replace(",", " ").split(" ")
-            _geom_.apply_constraints(
-                {axis: Constraint(value[0], value[1], angle, True)}
-            )
-
-
-class whClass:
-    """
-    _wh function used without parenthesis
-    """
-
-    def __repr__(self):
-        """
-        Print the current diffractometer positions and return an empty string.
-        """
-        print("")
-        _wh()
-        return ""
-
-
-wh = whClass()
-
-
-class sampleListClass:
-    """
-    _sampleList function used without parenthesis
-    """
-
-    def __repr__(self):
-        """Print the list of defined samples and return an empty string."""
-        print("")
-        _sampleList()
-        return ""
-
-
-sampleList = sampleListClass()
-
-
-class Sync_UB_Matrix:
-    """Copy the UB matrix from source to target diffractometers."""
-
-    _geom_ = current_diffractometer()
-    _geom_for_psi_ = engine_for_psi()
-
-    def __init__(self, source: Diffractometer, target: Diffractometer):
-        """Initialize the UB matrix sync, subscribing to changes on source."""
-        self.source = source
-        self.target = target
-        self.source.UB.subscribe(self.sync_callback)
-
-        # initialize
-        self.sync_callback(self.source.UB.get())
-
-    def cleanup(self, *args, **kwargs):
-        """Remove all our subscriptions to ophyd objects."""
-        self.source.UB.clear_sub(self.sync_callback)
-
-    def sync_callback(self, value=None, **kwargs):
-        """
-        Copy the UB matrix from source to target when a change is received.
-        """
-        if value is None:
-            raise RuntimeError(f"sync_callback: {value=!r}  {kwargs=!r}")
-        ub_source = value
-        # print(f"Copy UB={ub_source=} from {self.source.name} to {self.target.name}")
-        print(f"Copy UB from {self.source.name} to {self.target.name}")
-        self.target.UB.put(ub_source)
-
-        for axis in self.source.real_positioners._fields:
-            ptarget = getattr(self.target, axis)
-            if isinstance(ptarget, SoftPositioner):
-                # If the target is a simulated motor, sync it with the source.
-                psource = getattr(self.source, axis)
-                ptarget.move(psource.position)
-                print(f"Sync {self.target.name}.{axis}={ptarget.position}")
+        .strip()
+        .lower()
+    )
+    if mode == "a":
+        clear = False
+    elif mode == "o":
+        clear = True
+    else:
+        print("Configuration not loaded.")
+        return
+    print(f"Loading '{file}'...")
+    _geom_.restore(str(file), clear=clear)
 
 
 def restore_huber_from_scan(
     scan_id, diffractometer=None, sample_name=None, force=False
 ):
     """
-    Restore diffractometer orientation (sample, constraints, reflections) from a
-    saved scan.
+    Restore diffractometer orientation from a previous scan.
+
+    Parameters
+    ----------
+    scan_id : int or string
+        Scan ID to restore orientation from.
+    diffractometer : diffractometer object, optional
+        Diffractometer to restore. Defaults to the current diffractometer.
+    sample_name : string, optional
+        Override the sample name stored in the scan.
+    force : bool, optional
+        If True, use the first available diffractometer info even if the
+        name does not match. Defaults to False.
     """
     info = run_orientation_info(cat[scan_id])
 
     if diffractometer is None:
-        diffractometer = current_diffractometer()
+        diffractometer = get_diffractometer()
 
     if diffractometer.name not in info.keys():
-        if force is True:
+        if force:
             print(
                 "WARNING: could not find information on the "
                 f"{diffractometer.name} in the scan {scan_id}. "
@@ -2423,4 +1765,46 @@ def restore_huber_from_scan(
         ) from exc
     restore_constraints(inp, diffractometer)
     restore_reflections(inp, diffractometer)
-    print(pa())
+
+
+def set_detector():
+    """
+    Interactively select detector on Huber detectorarm to be used.
+    Detectors are mounted 25 degrees apart from each other in delta
+
+    Prompts the user for:
+      - Detector: (E)iger or (P)oint Detector/Analyzer
+
+    Uses defaults if the user just presses Enter.
+    """
+    offset = caget("4idgSoft:m20.OFF")
+    if offset == 0:
+        dets = "Eiger"
+    elif offset == -25:
+        dets = "Point detector/Analyzer"
+    else:
+        dets = "undefined"
+    det = input(f"(E)iger or (P)oint Detector/Analyzer [{dets}]: ") or dets
+    if det in ("Point detector/Analyzer", "Point detector", "p", "P"):
+        caput("4idgSoft:m20.OFF", -25)
+        print("Current detector: Point detector/Aanalyzer")
+    elif det in ("Eiger", "e", "E"):
+        caput("4idgSoft:m20.OFF", 0)
+        print("Current detector: Eiger")
+    else:
+        print("Select Eiger or Point Detector")
+        print(f"Current detector: {dets}")
+
+
+class whClass:
+    """
+    _wh function used without parenthesis
+    """
+
+    def __repr__(self):
+        print("")
+        _wh()
+        return ""
+
+
+wh = whClass()

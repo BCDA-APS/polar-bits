@@ -15,6 +15,7 @@ from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import EpicsSignal
 from ophyd import FormattedComponent
+from ophyd import Kind
 from ophyd import PseudoPositioner
 from ophyd import PseudoSingle
 from ophyd import Signal
@@ -35,6 +36,29 @@ PTTH_MAX_DEGREES = 101
 PTH_MIN_DEGREES = 39
 PTH_MAX_DEGREES = 51
 ANALYZER_LIST_PATH = Path(__file__).parent / "analyzerlist.dat"
+
+
+class UBMatrixSignal(Signal):
+    """
+    In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
+
+    Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
+    other components can subscribe to UB matrix changes via .subscribe().
+    """
+
+    def __init__(self, pv_name, *, parent=None, name=None, **kwargs):
+        """Initialize, ignoring the PV name (Component-required, unused here)."""
+        super().__init__(name=name, parent=parent, **kwargs)
+
+    def get(self, **kwargs):
+        """Return the parent diffractometer's current UB matrix."""
+        self._readback = self.parent.sample.UB
+        return self._readback
+
+    def put(self, value, *, timestamp=None, force=False, **kwargs):
+        """Write the UB matrix back to the parent and notify subscribers."""
+        self.parent.sample.UB = value
+        super().put(value, timestamp=timestamp, force=force, **kwargs)
 
 
 class AnalyzerDevice(PseudoPositioner):
@@ -142,9 +166,9 @@ class AnalyzerDevice(PseudoPositioner):
         """
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
-        self.th.set_current_position(theta)
+        self.th_motor.set_current_position(theta)
 
-    def calc(self):
+    def calc(self, acal="No"):
         """
         Print analyzer Bragg angles for the current crystal at the current
         beamline energy.
@@ -154,12 +178,22 @@ class AnalyzerDevice(PseudoPositioner):
             self.setup()
             d_ana = self.d_spacing.get()
         wavelength = self.beamline_wavelength
+        energy = self.beamline_energy
         cryst = self.crystal.get()
         th_angle = math.degrees(math.asin(wavelength / (2 * d_ana)))
         tth_angle = 2 * th_angle
         print(
-            f"[ath, atth] = [{th_angle:6.2f}, {tth_angle:6.2f}] for {cryst} analyzer"
+            f"[ath, atth] = [{th_angle:.2f}, {tth_angle:.2f}] for {cryst} "
+            f"analyzer at {energy:.2f} keV"
         )
+        if acal == "No":
+            acal = input(f"Calibrate ath position (y/n/r)? [{acal}]: ") or acal
+        if acal in ["Yes", "yes", "Y", "y"]:
+            print(f"Calibrating ath to {th_angle:.2f}")
+            self.set_energy(energy)
+        elif acal == "r":
+            print("Releasing calibration for ath!")
+            self.th_motor.user_offset.put(45)
 
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
@@ -282,6 +316,9 @@ class DiffractometerMixin(Device):
     a diffractometer.
     """
 
+    # Subscribable signal wrapping sample.UB for UB-matrix sync
+    _ub_sync = Component(UBMatrixSignal, "", kind="omitted")
+
     # Table vertical/horizontal
     tablex = Component(EpicsMotor, "m3", labels=("motor",))
     tabley = Component(EpicsMotor, "m1", labels=("motor",))
@@ -308,16 +345,40 @@ class DiffractometerMixin(Device):
     # Analyzer
     ana = Component(AnalyzerDevice, "", labels=("track_energy",))
 
-    # TODO: This is needed to prevent busy plotting.
-    # TODO: Still needed?
-    # @property
-    # def hints(self):
-    #     fields = []
-    #     for _, component in self._get_components_of_kind(Kind.hinted):
-    #         if (~Kind.normal & Kind.hinted) & component.kind:
-    #             c_hints = component.hints
-    #             fields.extend(c_hints.get("fields", []))
-    #     return {"fields": fields}
+    @property
+    def hints(self):
+        """Return only explicitly-hinted sub-components to avoid busy plotting.
+
+        ``Kind`` is a bitfield: ``Kind.hinted`` (0b101) shares the
+        ``Kind.normal`` bit (0b001). ``_get_components_of_kind(Kind.hinted)``
+        therefore yields *both* normal and hinted components. The mask
+        ``(~Kind.normal & Kind.hinted)`` isolates the "hinted-only" bit so
+        only components explicitly tagged ``Kind.hinted`` contribute fields.
+        """
+        fields = []
+        for _, component in self._get_components_of_kind(Kind.hinted):
+            if (~Kind.normal & Kind.hinted) & component.kind:
+                c_hints = component.hints
+                fields.extend(c_hints.get("fields", []))
+        return {"fields": fields}
+
+    @property
+    def auxiliary_axis_names(self):
+        """Drop nested PseudoPositioner sub-devices from auxiliaries.
+
+        hklpy2's ``wh(full=True)``/``pa()`` formats each auxiliary axis with
+        ``round(component.position, ndigits=...)``. ``PseudoPositioner``
+        sub-devices (e.g. ``ana``) return a ``PseudoPosition`` namedtuple,
+        which has no ``__round__`` and crashes the print step. Filter them
+        out here; scalar single-axis auxiliaries (the case hklpy2 was
+        designed for) still pass through.
+        """
+        names = super().auxiliary_axis_names
+        return [
+            n
+            for n in names
+            if not isinstance(getattr(self, n), PseudoPositioner)
+        ]
 
     def default_settings(self):
         """
@@ -348,11 +409,17 @@ CradleDiffractometerBase = diffractometer_class_factory(
     reals=dict(
         tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"
     ),
+    _real="tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy(),
 )
 
+# Changes the positioners kind to config or normal. This will prevent busy
+# plotting.
+for pos in CradleDiffractometerBase._real + CradleDiffractometerBase._pseudo:
+    getattr(CradleDiffractometerBase, pos).kind = Kind.config | Kind.normal
 
-class CradleDiffractometer(CradleDiffractometerBase, DiffractometerMixin):
+
+class CradleDiffractometer(DiffractometerMixin, CradleDiffractometerBase):
     """hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation."""
 
     x = Component(EpicsMotor, "m40", labels=("motor",))
@@ -367,14 +434,23 @@ HPDiffractometerBase = diffractometer_class_factory(
     reals=dict(
         tau="m73", mu="m4", gamma="m19", delta="m20", chi="m5", phi="m6"
     ),
+    _real="tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy(),
 )
 
+# Changes the positioners kind to config or normal. This will prevent busy
+# plotting.
+for pos in HPDiffractometerBase._real + HPDiffractometerBase._pseudo:
+    getattr(HPDiffractometerBase, pos).kind = Kind.config | Kind.normal
 
-class HPDiffractometer(CradleDiffractometerBase, DiffractometerMixin):
+
+class HPDiffractometer(DiffractometerMixin, HPDiffractometerBase):
     """
     hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
     """
+
+    chi = Component(EpicsMotor, "m5", labels=("motor",))
+    phi = Component(EpicsMotor, "m6", labels=("motor",))
 
     basex = Component(EpicsMotor, "m7", labels=("motor",))
     basey = Component(EpicsMotor, "SMBaseY", labels=("motor",))
@@ -407,6 +483,7 @@ CradleDiffractometerPSI = diffractometer_class_factory(
     reals=dict(
         tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"
     ),
+    _real="tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy(),
 )
 
@@ -419,5 +496,6 @@ HPDiffractometerPSI = diffractometer_class_factory(
     reals=dict(
         tau="m73", mu="m4", gamma="m19", delta="m20", chi="m5", phi="m6"
     ),
+    _real="tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy(),
 )

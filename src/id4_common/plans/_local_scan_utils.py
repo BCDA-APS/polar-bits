@@ -10,11 +10,11 @@ from bluesky.plan_stubs import mv as bps_mv
 from bluesky.plan_stubs import rd
 from bluesky.plan_stubs import trigger_and_read
 from bluesky.preprocessors import finalize_wrapper
+from hklpy2.user import get_diffractometer
 
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..utils.counters_class import counters
 from ..utils.experiment_utils import experiment
-from ..utils.hkl_utils import current_diffractometer
 from ..utils.run_engine import RE
 
 try:
@@ -79,10 +79,10 @@ def _collect_extras(args):
                 if pr_track:
                     extras.append(pr.th)
 
-    diff = current_diffractometer()
+    diff = get_diffractometer()
     huber_flag = False if diff is None or diff.name not in str(args) else True
     if huber_flag:
-        extras.append(current_diffractometer())
+        extras.append(get_diffractometer())
 
     return extras
 
@@ -130,7 +130,7 @@ def one_local_step(detectors, step, pos_cache, take_reading=trigger_and_read):
     yield from move_per_step(step, pos_cache)
 
     if flag.fixq:
-        huber = current_diffractometer()
+        huber = get_diffractometer()
         devices_to_read += [huber]
         args = (
             huber.h,
@@ -290,7 +290,7 @@ def _configure_fixq(fixq):
     """Set flag.fixq and snapshot current HKL position into flag.hkl_pos."""
     flag.fixq = fixq
     if fixq:
-        huber = current_diffractometer()
+        huber = get_diffractometer()
         flag.hkl_pos = {
             huber.h: huber.h.get().setpoint,
             huber.k: huber.k.get().setpoint,
@@ -308,7 +308,7 @@ def _hkl_motors(fixq):
     """
     if not fixq:
         return []
-    huber = current_diffractometer()
+    huber = get_diffractometer()
     return list(huber.real_positioners) if huber is not None else []
 
 

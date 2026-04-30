@@ -100,10 +100,16 @@ def load_vortex(
         oregistry.register(device)
         logger.info("Adding %r to the main namespace.", name)
         setattr(sys.modules["__main__"], name, device)
+        if "dante" in electronic.lower():
+            message = (
+                "\n To prime, hdf, Acq.Mode needs to be in MCA mapping mode."
+            )
+            message += "\n with IOC with dpuser, vortex._local_folder = /local/home/dpuser/sector4/"
+            message += "\n with IOC with polar, vortex._local_folder = /net/s4data/export/sector4/4idd/bluesky_images/vortex"
+        logger.warning(message)
     except TimeoutError:
         message = f"Device {device.name} is disconnected."
         if baseline:
             message += " This device was not added to the baseline."
-        logger.warning(message)
 
     return device

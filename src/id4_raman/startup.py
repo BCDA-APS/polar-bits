@@ -125,7 +125,7 @@ else:
     from id4_common.utils.counters_class import counters
     from id4_common.utils.dm_utils import *  # noqa: F403
     from id4_common.utils.experiment_utils import *  # noqa: F403
-    from id4_common.utils.hkl_utils import *  # noqa: F403
+    from id4_common.utils.hkl_utils_hklpy2 import *  # noqa: F403
     from id4_common.utils.pr_setup import pr_setup  # noqa: F401
     from id4_common.utils.wax import wa_new  # noqa: F401
     from id4_common.utils.wax import wax  # noqa: F401

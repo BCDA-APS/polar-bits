@@ -41,11 +41,10 @@ make_devices(  # noqa: F405
 for device in oregistry.findall(["core", "4idg"]):  # noqa: F405
     connect_device(device, raise_error=False)  # noqa: F405
 
-counters.plotselect(11, 0)  # noqa: F405
+counters.plotselect(14, 5)  # noqa: F405
 
 # Diffractometer
-select_diffractometer(get_huber_euler())  # noqa: F405
-select_engine_for_psi(get_huber_euler_psi())  # noqa: F405
+set_diffractometer(geometries.huber_euler)  # noqa: F405
 
 # Select catalog of this instrument
 cat = db_query(  # noqa: F405

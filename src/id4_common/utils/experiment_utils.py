@@ -42,8 +42,8 @@ iconfig = get_config()
 
 
 SERVERS = {
-    "dserv": Path(iconfig["DSERV_ROOT_PATH"]),
     "data management": Path(iconfig["DM_ROOT_PATH"]),
+    "dserv": Path(iconfig["DSERV_ROOT_PATH"]),
 }
 
 path_startup = Path("startup_experiment.py")
@@ -249,7 +249,7 @@ class ExperimentClass:
             while True:
                 _reuse = (
                     input(
-                        "This experiment name already exist. Do you want to "
+                        f"The experiment name '{_exp['name']}' already exist. Do you want to "
                         "re-use this experiment? [no]: "
                     )
                     .lower()
@@ -310,6 +310,9 @@ class ExperimentClass:
 
         # data_directory = f"@sojourner:{self.base_experiment_path}"
         data_directory = f"@sojourner:{self.base_experiment_path}"
+
+        # Ensure DM environment is initialised before any DM API call.
+        dm_setup(iconfig["DM_SETUP_FILE"])
 
         # Check DM DAQ is running for this experiment, if not then start it.
         if (
@@ -553,4 +556,4 @@ def experiment_load_from_bluesky(
     reset_scan_id: int = -1,
     skip_DM: bool = False,
 ):
-    experiment.load_from_bluesky(reset_scan_id, skip_DM)
+    experiment.load_from_bluesky(reset_scan_id=reset_scan_id, skip_DM=skip_DM)
