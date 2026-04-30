@@ -215,6 +215,64 @@ def test_setup_initializes_scan_id_to_zero(monkeypatch, fresh_experiment):
     assert isinstance(RE.md["scan_id"], int)
 
 
+def test_setup_warns_when_scan_id_missing(
+    monkeypatch, fresh_experiment, caplog
+):
+    """setup() warns when it has to default RE.md['scan_id']."""
+    import logging
+
+    exp, prompts, _ = fresh_experiment
+    from id4_common.utils import experiment_utils
+    from id4_common.utils.run_engine import RE
+
+    assert "scan_id" not in RE.md
+    monkeypatch.setattr(experiment_utils, "_dm_available", lambda: False)
+    monkeypatch.setattr(exp, "setup_path", lambda: None)
+    monkeypatch.setattr(exp, "start_specwriter", lambda: None)
+    monkeypatch.setattr(exp, "save_params_to_yaml", lambda: None)
+    monkeypatch.setattr(
+        exp,
+        "_resolve_base_path",
+        lambda: setattr(exp, "base_experiment_path", Path("/tmp/test")),
+    )
+    prompts.extend(["polar-fallback", "MySample", "scan"])
+
+    with caplog.at_level(logging.WARNING):
+        exp.setup()
+
+    assert "RE.md['scan_id'] was not set" in caplog.text
+    assert RE.md["scan_id"] == 0
+
+
+def test_setup_no_warning_when_scan_id_present(
+    monkeypatch, fresh_experiment, caplog
+):
+    """setup() does not warn (or overwrite) when scan_id is already set."""
+    import logging
+
+    exp, prompts, _ = fresh_experiment
+    from id4_common.utils import experiment_utils
+    from id4_common.utils.run_engine import RE
+
+    RE.md["scan_id"] = 7
+    monkeypatch.setattr(experiment_utils, "_dm_available", lambda: False)
+    monkeypatch.setattr(exp, "setup_path", lambda: None)
+    monkeypatch.setattr(exp, "start_specwriter", lambda: None)
+    monkeypatch.setattr(exp, "save_params_to_yaml", lambda: None)
+    monkeypatch.setattr(
+        exp,
+        "_resolve_base_path",
+        lambda: setattr(exp, "base_experiment_path", Path("/tmp/test")),
+    )
+    prompts.extend(["polar-fallback", "MySample", "scan"])
+
+    with caplog.at_level(logging.WARNING):
+        exp.setup()
+
+    assert "RE.md['scan_id'] was not set" not in caplog.text
+    assert RE.md["scan_id"] == 7
+
+
 # Repr -------------------------------------------------------------------
 
 

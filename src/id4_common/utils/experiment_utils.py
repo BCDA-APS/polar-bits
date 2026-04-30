@@ -831,8 +831,17 @@ class ExperimentClass:
         self.base_name_input(base_name)
         self.scan_number_input(reset_scan_id)
 
-        # Always make sure scan_id is at least defined (1.1).
-        RE.md.setdefault("scan_id", 0)
+        # Always make sure scan_id is at least defined (1.1). Warn loudly
+        # if we had to invent one — silently inventing a scan_id is the
+        # original Issue #27 footgun.
+        if "scan_id" not in RE.md:
+            logger.warning(
+                "RE.md['scan_id'] was not set after experiment_setup; "
+                "defaulting to 0 (next scan will be 1). Use "
+                "experiment.scan_number_input(N) or experiment.resume() "
+                "to restore an explicit value."
+            )
+            RE.md["scan_id"] = 0
 
         self.start_specwriter()
         self.save_params_to_yaml()
