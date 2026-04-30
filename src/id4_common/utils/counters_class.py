@@ -312,28 +312,46 @@ class CountersClass:
     def _apply_extra_read(self, extra_read_indices, options):
         """Apply extra-read channel selections to devices.
 
-        Devices added via extra-read have their hinted attributes cleared
-        (via ``select_plot([])``) so that stale hints from previous
-        ``plotselect`` calls do not get plotted. If the same device was
-        also picked for plotting, those hints were already (re)applied by
-        ``select_plot_channels`` and are preserved.
+        If the device is already in ``self._dets`` (because
+        ``select_plot_channels`` or ``_ensure_monitor_scaler`` already
+        added it), warn the user and drop the entry from
+        ``self._selected_extra_read`` — its named channels are already
+        being read. Otherwise clear any stale hints with
+        ``select_plot([])`` and mark the requested channels as readable
+        with ``select_read(...)`` before appending the device to
+        ``self._dets``.
         """
         if not extra_read_indices:
             return
-        plot_dev_names = {dev_name for dev_name, _ in self._selected_dets}
         extra = options.iloc[list(extra_read_indices)]
+        dropped = set()
         for name, group in extra.groupby("detectors"):
             if name == "scalers":
                 continue
             det = oregistry.find(name, allow_none=True)
             if det is None:
                 continue
-            if name not in plot_dev_names and hasattr(det, "select_plot"):
+            if det in self._dets:
+                logger.warning(
+                    "%s is already being read; ignoring extra-read "
+                    "channels %s.",
+                    det.name,
+                    list(group["channels"].values),
+                )
+                dropped.add(name)
+                continue
+            if hasattr(det, "select_plot"):
                 det.select_plot([])
             if hasattr(det, "select_read"):
                 det.select_read(list(group["channels"].values))
-            if det not in self._dets:
-                self._dets.append(det)
+            self._dets.append(det)
+
+        if dropped:
+            self._selected_extra_read = [
+                (dev, chan)
+                for dev, chan in self._selected_extra_read
+                if dev not in dropped
+            ]
 
     # ------------------------------------------------------------------
     # Interactive selection

@@ -132,11 +132,16 @@ class LocalScalerCH(CountersMixin, ScalerCH):
         """
         Set the Kind of each channel to hinted (in chan_names) or normal
         (others).
+
+        Pass ``chan_names=None`` (the default) to hint every named channel.
+        Pass an empty list to hint *no* channel (all named channels are
+        demoted to ``Kind.normal``); used by
+        ``CountersClass._apply_extra_read`` to clear stale hints.
         """
         self.match_names()
         name_map = self.channels_name_map
 
-        if not chan_names:
+        if chan_names is None:
             chan_names = name_map.keys()
 
         for ch in name_map.keys():
@@ -247,6 +252,24 @@ class LocalScalerCH(CountersMixin, ScalerCH):
         select_plot_channels.
         """
         self.select_plot_channels(chan_names=channels)
+
+    def select_read(self, channels: list) -> None:
+        """Mark the named channels as Kind.normal (read, not plotted).
+
+        Leaves other channels' kinds untouched. Use ``select_plot_channels``
+        or ``select_read_channels`` for full configuration; this is the
+        minimal hook used by ``CountersClass._apply_extra_read`` so a
+        scaler channel can be added to the read list without becoming
+        hinted.
+        """
+        self.match_names()
+        name_map = self.channels_name_map
+        for ch in channels:
+            if ch not in name_map:
+                continue
+            channel = getattr(self.channels, name_map[ch])
+            if channel.s.kind != Kind.hinted:
+                channel.s.kind = Kind.normal
 
     @property
     def label_option_map(self) -> dict:
