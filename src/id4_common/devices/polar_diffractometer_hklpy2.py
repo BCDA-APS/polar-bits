@@ -362,6 +362,24 @@ class DiffractometerMixin(Device):
                 fields.extend(c_hints.get("fields", []))
         return {"fields": fields}
 
+    @property
+    def auxiliary_axis_names(self):
+        """Drop nested PseudoPositioner sub-devices from auxiliaries.
+
+        hklpy2's ``wh(full=True)``/``pa()`` formats each auxiliary axis with
+        ``round(component.position, ndigits=...)``. ``PseudoPositioner``
+        sub-devices (e.g. ``ana``) return a ``PseudoPosition`` namedtuple,
+        which has no ``__round__`` and crashes the print step. Filter them
+        out here; scalar single-axis auxiliaries (the case hklpy2 was
+        designed for) still pass through.
+        """
+        names = super().auxiliary_axis_names
+        return [
+            n
+            for n in names
+            if not isinstance(getattr(self, n), PseudoPositioner)
+        ]
+
     def default_settings(self):
         """
         Apply default settings for the diffractometer mixin (no-op; subclasses
