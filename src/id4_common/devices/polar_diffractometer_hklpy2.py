@@ -419,7 +419,7 @@ for pos in CradleDiffractometerBase._real + CradleDiffractometerBase._pseudo:
     getattr(CradleDiffractometerBase, pos).kind = Kind.config | Kind.normal
 
 
-class CradleDiffractometer(CradleDiffractometerBase, DiffractometerMixin):
+class CradleDiffractometer(DiffractometerMixin, CradleDiffractometerBase):
     """hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation."""
 
     x = Component(EpicsMotor, "m40", labels=("motor",))
