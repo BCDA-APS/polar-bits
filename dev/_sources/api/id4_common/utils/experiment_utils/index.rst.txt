@@ -306,9 +306,15 @@ Module Contents
 
 
 
-   .. py:method:: resume(path: str | pathlib.Path) -> None
+   .. py:method:: resume(path: str | pathlib.Path | None = None) -> None
 
       Restore an experiment from a saved YAML snapshot.
+
+      With no ``path``, discovers the snapshot automatically: prefers
+      ``Path.cwd() / .polar_experiment.yml`` and falls back to the
+      ``base_experiment_path`` stored in ``cat[-1]``'s start
+      document. Prompts the user only when both exist and point at
+      different files.
 
       Does NOT contact DM. Use this when DM is down or you want to
       pick up a previous session quickly. The next scan continues
@@ -357,8 +363,11 @@ Module Contents
    Restore experiment state from a previous Bluesky run.
 
 
-.. py:function:: experiment_resume(path: str | pathlib.Path) -> None
+.. py:function:: experiment_resume(path: str | pathlib.Path | None = None) -> None
 
    Restore experiment state from a saved YAML snapshot.
+
+   With no argument, the snapshot path is auto-discovered (current
+   working directory, then last-scan ``base_experiment_path``).
 
 
