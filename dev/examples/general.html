@@ -545,6 +545,10 @@
 correct folders and associate it with an APS proposal and ESAF. It can be run
 <strong>interactively</strong> (prompts at the command line) or <strong>non-interactively</strong> by
 passing all arguments as keyword parameters.</p>
+<p>After every successful setup, the resulting state is also saved to a small
+YAML snapshot at <code class="docutils literal notranslate"><span class="pre">&lt;base_experiment_path&gt;/.polar_experiment.yml</span></code>, so a later
+session can pick up where you left off — see Resuming
+below.</p>
 <section id="interactive-mode">
 <h3>Interactive mode<a class="headerlink" href="#interactive-mode" title="Link to this heading">#</a></h3>
 <p>Call with no arguments — the function prompts for each field in sequence:</p>
@@ -555,7 +559,7 @@ passing all arguments as keyword parameters.</p>
 <ol class="arabic simple">
 <li><p><strong>ESAF ID</strong> — enter the APS ESAF number (or <code class="docutils literal notranslate"><span class="pre">dev</span></code> to skip for development sessions)</p></li>
 <li><p><strong>Proposal ID</strong> — the APS proposal number (or <code class="docutils literal notranslate"><span class="pre">dev</span></code>)</p></li>
-<li><p><strong>Server</strong> — choose between <code class="docutils literal notranslate"><span class="pre">dserv</span></code> (local storage) and data management (<code class="docutils literal notranslate"><span class="pre">dm</span></code>)</p></li>
+<li><p><strong>Server</strong> — choose between <code class="docutils literal notranslate"><span class="pre">dserv</span></code> (local storage) and data management (<code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">management</span></code>)</p></li>
 <li><p><strong>Experiment name</strong> — must match an existing experiment in the DM system if using DM</p></li>
 <li><p><strong>Sample name</strong> — free text; creates a sub-folder under the experiment path</p></li>
 <li><p><strong>Scan ID reset</strong> — optionally reset the Bluesky <code class="docutils literal notranslate"><span class="pre">scan_id</span></code> counter</p></li>
@@ -563,6 +567,22 @@ passing all arguments as keyword parameters.</p>
 </ol>
 <p>After completing setup, the SPEC writer is configured, <code class="docutils literal notranslate"><span class="pre">RE.md</span></code> is populated,
 and data will be written to the correct experiment path automatically.</p>
+</section>
+<section id="data-management-auto-detect">
+<h3>Data Management auto-detect<a class="headerlink" href="#data-management-auto-detect" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">experiment_setup()</span></code> probes the DM system at the start of every call. If DM
+is unreachable (server down, bad config, missing env file), it logs a single
+warning and falls back to <code class="docutils literal notranslate"><span class="pre">server=&quot;dserv&quot;</span></code> automatically — ESAF / proposal
+prompts are skipped and metadata is stamped as <code class="docutils literal notranslate"><span class="pre">dev</span></code>. <strong>You no longer need a
+<code class="docutils literal notranslate"><span class="pre">skip_DM</span></code> flag.</strong> To force the bypass even when DM is reachable, use any of:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">experiment_setup(server=&quot;dserv&quot;,</span> <span class="pre">...)</span></code> — pick the dserv path explicitly</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">experiment_setup(esaf_id=&quot;dev&quot;,</span> <span class="pre">proposal_id=&quot;dev&quot;,</span> <span class="pre">...)</span></code> — record-only bypass</p></li>
+<li><p>Type <code class="docutils literal notranslate"><span class="pre">dev</span></code> at any prompt during interactive setup</p></li>
+</ul>
+<p>The DM voyager DAQ start (which can change file permissions) is now
+<strong>off by default</strong>. Set <code class="docutils literal notranslate"><span class="pre">experiment.start_daq</span> <span class="pre">=</span> <span class="pre">True</span></code> in your startup
+script if you need it.</p>
 </section>
 <section id="non-interactive-mode">
 <h3>Non-interactive mode<a class="headerlink" href="#non-interactive-mode" title="Link to this heading">#</a></h3>
@@ -579,11 +599,60 @@ and data will be written to the correct experiment path automatically.</p>
 </pre></div>
 </div>
 </section>
-<section id="resuming-from-the-last-run">
-<h3>Resuming from the last run<a class="headerlink" href="#resuming-from-the-last-run" title="Link to this heading">#</a></h3>
-<p>If the session was interrupted, reload the experiment state from the most
-recent Bluesky run rather than re-entering all values:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_load_from_bluesky</span><span class="p">()</span>    <span class="c1"># reads metadata from cat[-1]</span>
+<section id="reset-scan-id-semantics">
+<h3><code class="docutils literal notranslate"><span class="pre">reset_scan_id</span></code> semantics<a class="headerlink" href="#reset-scan-id-semantics" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">RE.md[&quot;scan_id&quot;]</span></code> stores the <strong>last completed</strong> scan number; the next
+scan is <code class="docutils literal notranslate"><span class="pre">scan_id</span> <span class="pre">+</span> <span class="pre">1</span></code>. So:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Effect</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-1</span></code> (default)</p></td>
+<td><p>Leave <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;scan_id&quot;]</span></code> untouched. Used by <code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> and <code class="docutils literal notranslate"><span class="pre">experiment_load_from_bluesky()</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+<td><p>Fresh start: next scan will be <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">47</span></code></p></td>
+<td><p>Continue numbering: next scan will be <code class="docutils literal notranslate"><span class="pre">48</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p>Interactive prompt (“Reset last scan_id to 0? [no]”).</p></td>
+</tr>
+<tr class="row-even"><td><p>any other negative int</p></td>
+<td><p>Logs a warning, leaves <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;scan_id&quot;]</span></code> untouched.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;scan_id&quot;]</span></code> is still missing after <code class="docutils literal notranslate"><span class="pre">experiment_setup()</span></code> runs
+(e.g. fresh session and <code class="docutils literal notranslate"><span class="pre">reset_scan_id=-1</span></code>), <code class="docutils literal notranslate"><span class="pre">setup()</span></code> defaults it to <code class="docutils literal notranslate"><span class="pre">0</span></code>
+and emits a visible warning so you know the value was invented rather
+than inherited.</p>
+</section>
+<section id="resuming-an-experiment">
+<span id="id1"></span><h3>Resuming an experiment<a class="headerlink" href="#resuming-an-experiment" title="Link to this heading">#</a></h3>
+<p>Two complementary ways to pick up where you left off:</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code></strong> — restore everything from the YAML snapshot saved
+during the previous <code class="docutils literal notranslate"><span class="pre">experiment_setup()</span></code>. Does <strong>not</strong> contact DM, so it
+works even when DM is down.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_resume</span><span class="p">()</span>              <span class="c1"># auto-discover the snapshot</span>
+<span class="n">experiment_resume</span><span class="p">(</span><span class="s2">&quot;/path/to/dir&quot;</span><span class="p">)</span> <span class="c1"># explicit base path or .yml file</span>
+</pre></div>
+</div>
+<p>With no arguments, <code class="docutils literal notranslate"><span class="pre">resume()</span></code> looks first in the current working
+directory (<code class="docutils literal notranslate"><span class="pre">setup_path()</span></code> <code class="docutils literal notranslate"><span class="pre">chdir</span></code>s into the experiment dir during normal
+setup, so this almost always succeeds), then falls back to the
+<code class="docutils literal notranslate"><span class="pre">base_experiment_path</span></code> recorded in the last scan in <code class="docutils literal notranslate"><span class="pre">cat[-1]</span></code>. If both
+snapshots exist and point at <em>different</em> experiments, you’ll be asked
+which one to use.</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">experiment_load_from_bluesky()</span></code></strong> — re-derive the metadata from a
+specific Bluesky run document. Restores <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;scan_id&quot;]</span></code> so numbering
+continues from the loaded run.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_load_from_bluesky</span><span class="p">()</span>    <span class="c1"># uses cat[-1]</span>
 </pre></div>
 </div>
 </section>
@@ -592,11 +661,12 @@ recent Bluesky run rather than re-entering all values:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_change_sample</span><span class="p">(</span><span class="n">sample_name</span><span class="o">=</span><span class="s2">&quot;Fe3O4&quot;</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="s2">&quot;scan&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>This rotates the SPEC file and writes a fresh snapshot to disk.</p>
 <hr class="docutils" />
 </section>
 </section>
 <section id="detector-selection">
-<span id="id1"></span><h2>Detector Selection<a class="headerlink" href="#detector-selection" title="Link to this heading">#</a></h2>
+<span id="id2"></span><h2>Detector Selection<a class="headerlink" href="#detector-selection" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">counters.plotselect()</span></code> configures which scaler channels are used as
 detectors and monitor in all scan plans. Called without arguments, it prints
 a table of available channels and prompts interactively:</p>
@@ -833,8 +903,10 @@ data loading and inspection utilities available in the session namespace:</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-setup">Experiment Setup</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-mode">Interactive mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-management-auto-detect">Data Management auto-detect</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#non-interactive-mode">Non-interactive mode</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resuming-from-the-last-run">Resuming from the last run</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reset-scan-id-semantics"><code class="docutils literal notranslate"><span class="pre">reset_scan_id</span></code> semantics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resuming-an-experiment">Resuming an experiment</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-sample-mid-experiment">Changing sample mid-experiment</a></li>
 </ul>
 </li>

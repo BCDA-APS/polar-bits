@@ -11,6 +11,11 @@ correct folders and associate it with an APS proposal and ESAF. It can be run
 **interactively** (prompts at the command line) or **non-interactively** by
 passing all arguments as keyword parameters.
 
+After every successful setup, the resulting state is also saved to a small
+YAML snapshot at `<base_experiment_path>/.polar_experiment.yml`, so a later
+session can pick up where you left off — see [Resuming](#resuming-an-experiment)
+below.
+
 ### Interactive mode
 
 Call with no arguments — the function prompts for each field in sequence:
@@ -23,7 +28,7 @@ The prompts walk through:
 
 1. **ESAF ID** — enter the APS ESAF number (or `dev` to skip for development sessions)
 2. **Proposal ID** — the APS proposal number (or `dev`)
-3. **Server** — choose between `dserv` (local storage) and data management (`dm`)
+3. **Server** — choose between `dserv` (local storage) and data management (`data management`)
 4. **Experiment name** — must match an existing experiment in the DM system if using DM
 5. **Sample name** — free text; creates a sub-folder under the experiment path
 6. **Scan ID reset** — optionally reset the Bluesky `scan_id` counter
@@ -31,6 +36,22 @@ The prompts walk through:
 
 After completing setup, the SPEC writer is configured, `RE.md` is populated,
 and data will be written to the correct experiment path automatically.
+
+### Data Management auto-detect
+
+`experiment_setup()` probes the DM system at the start of every call. If DM
+is unreachable (server down, bad config, missing env file), it logs a single
+warning and falls back to `server="dserv"` automatically — ESAF / proposal
+prompts are skipped and metadata is stamped as `dev`. **You no longer need a
+`skip_DM` flag.** To force the bypass even when DM is reachable, use any of:
+
+- `experiment_setup(server="dserv", ...)` — pick the dserv path explicitly
+- `experiment_setup(esaf_id="dev", proposal_id="dev", ...)` — record-only bypass
+- Type `dev` at any prompt during interactive setup
+
+The DM voyager DAQ start (which can change file permissions) is now
+**off by default**. Set `experiment.start_daq = True` in your startup
+script if you need it.
 
 ### Non-interactive mode
 
@@ -48,13 +69,51 @@ experiment_setup(
 )
 ```
 
-### Resuming from the last run
+### `reset_scan_id` semantics
 
-If the session was interrupted, reload the experiment state from the most
-recent Bluesky run rather than re-entering all values:
+`RE.md["scan_id"]` stores the **last completed** scan number; the next
+scan is `scan_id + 1`. So:
+
+| Value | Effect |
+|-------|--------|
+| `-1` (default) | Leave `RE.md["scan_id"]` untouched. Used by `experiment_resume()` and `experiment_load_from_bluesky()`. |
+| `0` | Fresh start: next scan will be `1`. |
+| `47` | Continue numbering: next scan will be `48`. |
+| `None` | Interactive prompt ("Reset last scan_id to 0? [no]"). |
+| any other negative int | Logs a warning, leaves `RE.md["scan_id"]` untouched. |
+
+If `RE.md["scan_id"]` is still missing after `experiment_setup()` runs
+(e.g. fresh session and `reset_scan_id=-1`), `setup()` defaults it to `0`
+and emits a visible warning so you know the value was invented rather
+than inherited.
+
+(resuming-an-experiment)=
+### Resuming an experiment
+
+Two complementary ways to pick up where you left off:
+
+**`experiment_resume()`** — restore everything from the YAML snapshot saved
+during the previous `experiment_setup()`. Does **not** contact DM, so it
+works even when DM is down.
 
 ```python
-experiment_load_from_bluesky()    # reads metadata from cat[-1]
+experiment_resume()              # auto-discover the snapshot
+experiment_resume("/path/to/dir") # explicit base path or .yml file
+```
+
+With no arguments, `resume()` looks first in the current working
+directory (`setup_path()` `chdir`s into the experiment dir during normal
+setup, so this almost always succeeds), then falls back to the
+`base_experiment_path` recorded in the last scan in `cat[-1]`. If both
+snapshots exist and point at *different* experiments, you'll be asked
+which one to use.
+
+**`experiment_load_from_bluesky()`** — re-derive the metadata from a
+specific Bluesky run document. Restores `RE.md["scan_id"]` so numbering
+continues from the loaded run.
+
+```python
+experiment_load_from_bluesky()    # uses cat[-1]
 ```
 
 ### Changing sample mid-experiment
@@ -62,6 +121,8 @@ experiment_load_from_bluesky()    # reads metadata from cat[-1]
 ```python
 experiment_change_sample(sample_name="Fe3O4", base_name="scan")
 ```
+
+This rotates the SPEC file and writes a fresh snapshot to disk.
 
 ---
 
