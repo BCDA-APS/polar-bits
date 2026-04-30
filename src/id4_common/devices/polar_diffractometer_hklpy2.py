@@ -444,7 +444,7 @@ for pos in HPDiffractometerBase._real + HPDiffractometerBase._pseudo:
     getattr(HPDiffractometerBase, pos).kind = Kind.config | Kind.normal
 
 
-class HPDiffractometer(HPDiffractometerBase, DiffractometerMixin):
+class HPDiffractometer(DiffractometerMixin. HPDiffractometerBase):
     """
     hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
     """
