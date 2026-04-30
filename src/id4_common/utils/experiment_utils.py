@@ -599,13 +599,73 @@ class ExperimentClass:
             logger.warning("Could not load %s: %s", path, exc)
             return None
 
-    def resume(self, path: str | Path) -> None:
+    def _discover_resume_path(self) -> Path | None:
+        """Find a snapshot to resume from.
+
+        Probes the current working directory and the last scan's
+        recorded ``base_experiment_path``. Returns the snapshot file if
+        exactly one is found, prompts the user when both exist and
+        differ, returns ``None`` (with a warning logged) when neither
+        is available.
+        """
+        cwd_candidate = Path.cwd() / PERSIST_FILENAME
+
+        cat_candidate: Path | None = None
+        try:
+            cat_base = cat[-1].metadata["start"]["base_experiment_path"]
+            cat_candidate = Path(cat_base) / PERSIST_FILENAME
+        except Exception as exc:  # noqa: BLE001 — anything goes for cat lookup
+            logger.debug(
+                "Could not read base_experiment_path from cat[-1]: %s", exc
+            )
+
+        cwd_ok = cwd_candidate.is_file()
+        cat_ok = cat_candidate is not None and cat_candidate.is_file()
+
+        if (
+            cwd_ok
+            and cat_ok
+            and cwd_candidate.resolve() != cat_candidate.resolve()
+        ):
+            choice = (
+                self._prompt(
+                    "Two experiment snapshots found:\n"
+                    f"  1: {cwd_candidate} (current directory)\n"
+                    f"  2: {cat_candidate} (last scan)\n"
+                    "Which one to resume? [1]: "
+                )
+                or "1"
+            ).strip()
+            return cat_candidate if choice == "2" else cwd_candidate
+
+        if cwd_ok:
+            return cwd_candidate
+        if cat_ok:
+            return cat_candidate
+
+        logger.warning(
+            "No experiment snapshot found (looked in %s and via cat[-1]).",
+            cwd_candidate,
+        )
+        return None
+
+    def resume(self, path: str | Path | None = None) -> None:
         """Restore an experiment from a saved YAML snapshot.
+
+        With no ``path``, discovers the snapshot automatically: prefers
+        ``Path.cwd() / .polar_experiment.yml`` and falls back to the
+        ``base_experiment_path`` stored in ``cat[-1]``'s start
+        document. Prompts the user only when both exist and point at
+        different files.
 
         Does NOT contact DM. Use this when DM is down or you want to
         pick up a previous session quickly. The next scan continues
         numbering from ``last_scan_id``.
         """
+        if path is None:
+            path = self._discover_resume_path()
+            if path is None:
+                return
         snapshot = self.load_params_from_yaml(path)
         if snapshot is None:
             return
@@ -859,6 +919,10 @@ def experiment_load_from_bluesky(
     experiment.load_from_bluesky(reset_scan_id=reset_scan_id)
 
 
-def experiment_resume(path: str | Path) -> None:
-    """Restore experiment state from a saved YAML snapshot."""
+def experiment_resume(path: str | Path | None = None) -> None:
+    """Restore experiment state from a saved YAML snapshot.
+
+    With no argument, the snapshot path is auto-discovered (current
+    working directory, then last-scan ``base_experiment_path``).
+    """
     experiment.resume(path)

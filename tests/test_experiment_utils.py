@@ -321,6 +321,121 @@ def test_resume_missing_file_no_raise(tmp_path, fresh_experiment, caplog):
     assert "No saved experiment state" in caplog.text
 
 
+# resume() default path discovery --------------------------------------
+
+
+def _write_snapshot(directory, sample="DiscoveredSample"):
+    """Drop a minimal valid snapshot in ``directory`` and return the path."""
+    import yaml as _yaml
+    from id4_common.utils.experiment_utils import PERSIST_FILENAME
+
+    path = directory / PERSIST_FILENAME
+    path.write_text(
+        _yaml.safe_dump(
+            {
+                "esaf_id": 1,
+                "proposal_id": 2,
+                "server": "dserv",
+                "experiment_name": "polar-discovery",
+                "sample": sample,
+                "file_base_name": "scan",
+                "base_experiment_path": str(directory),
+                "last_scan_id": 3,
+            }
+        )
+    )
+    return path
+
+
+def test_resume_discovers_cwd_snapshot(monkeypatch, tmp_path, fresh_experiment):
+    """resume() with no args picks up a snapshot sitting in cwd."""
+    exp, _, _ = fresh_experiment
+    _write_snapshot(tmp_path, sample="FromCwd")
+
+    monkeypatch.setattr(
+        "id4_common.utils.experiment_utils.Path.cwd", lambda: tmp_path
+    )
+    monkeypatch.setattr(exp, "setup_path", lambda: None)
+    monkeypatch.setattr(exp, "start_specwriter", lambda: None)
+
+    exp.resume()
+    assert exp.sample == "FromCwd"
+
+
+def test_resume_discovers_via_cat_when_cwd_empty(
+    monkeypatch, tmp_path, fresh_experiment
+):
+    """When cwd has no snapshot, fall back to cat[-1]'s base_experiment_path."""
+    exp, _, _ = fresh_experiment
+    cwd_dir = tmp_path / "empty_cwd"
+    cwd_dir.mkdir()
+    cat_dir = tmp_path / "experiment_dir"
+    cat_dir.mkdir()
+    _write_snapshot(cat_dir, sample="FromCat")
+
+    monkeypatch.setattr(
+        "id4_common.utils.experiment_utils.Path.cwd", lambda: cwd_dir
+    )
+
+    fake_run = MagicMock()
+    fake_run.metadata = {"start": {"base_experiment_path": str(cat_dir)}}
+    from id4_common.utils.run_engine import cat as cat_stub
+
+    cat_stub.__getitem__ = MagicMock(return_value=fake_run)
+
+    monkeypatch.setattr(exp, "setup_path", lambda: None)
+    monkeypatch.setattr(exp, "start_specwriter", lambda: None)
+
+    exp.resume()
+    assert exp.sample == "FromCat"
+
+
+def test_resume_prompts_when_both_exist_and_differ(
+    monkeypatch, tmp_path, fresh_experiment
+):
+    """When both candidates exist and differ, ask the user which to use."""
+    exp, prompts, _ = fresh_experiment
+    cwd_dir = tmp_path / "cwd"
+    cwd_dir.mkdir()
+    cat_dir = tmp_path / "cat"
+    cat_dir.mkdir()
+    _write_snapshot(cwd_dir, sample="FromCwd")
+    _write_snapshot(cat_dir, sample="FromCat")
+
+    monkeypatch.setattr(
+        "id4_common.utils.experiment_utils.Path.cwd", lambda: cwd_dir
+    )
+
+    fake_run = MagicMock()
+    fake_run.metadata = {"start": {"base_experiment_path": str(cat_dir)}}
+    from id4_common.utils.run_engine import cat as cat_stub
+
+    cat_stub.__getitem__ = MagicMock(return_value=fake_run)
+
+    monkeypatch.setattr(exp, "setup_path", lambda: None)
+    monkeypatch.setattr(exp, "start_specwriter", lambda: None)
+
+    prompts.append("2")  # pick the cat candidate
+    exp.resume()
+    assert exp.sample == "FromCat"
+
+
+def test_resume_no_args_no_snapshot_anywhere(
+    monkeypatch, tmp_path, fresh_experiment, caplog
+):
+    """resume() with nothing to load logs a warning, doesn't raise."""
+    exp, _, _ = fresh_experiment
+    monkeypatch.setattr(
+        "id4_common.utils.experiment_utils.Path.cwd", lambda: tmp_path
+    )
+    from id4_common.utils.run_engine import cat as cat_stub
+
+    cat_stub.__getitem__ = MagicMock(side_effect=IndexError)
+
+    exp.resume()
+    assert "No experiment snapshot found" in caplog.text
+
+
 # experiment_path properties --------------------------------------------
 
 
