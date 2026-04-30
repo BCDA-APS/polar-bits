@@ -933,6 +933,18 @@ therefore yields <em>both</em> normal and hinted components. The mask
 only components explicitly tagged <code class="docutils literal notranslate"><span class="pre">Kind.hinted</span></code> contribute fields.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.auxiliary_axis_names">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">auxiliary_axis_names</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.auxiliary_axis_names" title="Link to this definition">#</a></dt>
+<dd><p>Drop nested PseudoPositioner sub-devices from auxiliaries.</p>
+<p>hklpy2’s <code class="docutils literal notranslate"><span class="pre">wh(full=True)</span></code>/<code class="docutils literal notranslate"><span class="pre">pa()</span></code> formats each auxiliary axis with
+<code class="docutils literal notranslate"><span class="pre">round(component.position,</span> <span class="pre">ndigits=...)</span></code>. <code class="docutils literal notranslate"><span class="pre">PseudoPositioner</span></code>
+sub-devices (e.g. <code class="docutils literal notranslate"><span class="pre">ana</span></code>) return a <code class="docutils literal notranslate"><span class="pre">PseudoPosition</span></code> namedtuple,
+which has no <code class="docutils literal notranslate"><span class="pre">__round__</span></code> and crashes the print step. Filter them
+out here; scalar single-axis auxiliaries (the case hklpy2 was
+designed for) still pass through.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.default_settings">
 <span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.default_settings" title="Link to this definition">#</a></dt>
@@ -1162,6 +1174,7 @@ override).</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.detslt"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.detslt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.ana"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.ana</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.hints"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.hints</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.auxiliary_axis_names"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.auxiliary_axis_names</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer_hklpy2.DiffractometerMixin.default_settings"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.default_settings()</span></code></a></li>
 </ul>
 </li>

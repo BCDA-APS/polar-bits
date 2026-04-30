@@ -214,6 +214,18 @@ Module Contents
       only components explicitly tagged ``Kind.hinted`` contribute fields.
 
 
+   .. py:property:: auxiliary_axis_names
+
+      Drop nested PseudoPositioner sub-devices from auxiliaries.
+
+      hklpy2's ``wh(full=True)``/``pa()`` formats each auxiliary axis with
+      ``round(component.position, ndigits=...)``. ``PseudoPositioner``
+      sub-devices (e.g. ``ana``) return a ``PseudoPosition`` namedtuple,
+      which has no ``__round__`` and crashes the print step. Filter them
+      out here; scalar single-axis auxiliaries (the case hklpy2 was
+      designed for) still pass through.
+
+
    .. py:method:: default_settings()
 
       Apply default settings for the diffractometer mixin (no-op; subclasses
