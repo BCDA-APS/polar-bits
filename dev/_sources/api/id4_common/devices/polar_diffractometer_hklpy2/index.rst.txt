@@ -258,7 +258,7 @@ Module Contents
 
 .. py:class:: HPDiffractometer
 
-   Bases: :py:obj:`DiffractometerMixin`
+   Bases: :py:obj:`DiffractometerMixin`, :py:obj:`HPDiffractometerBase`
 
 
    hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
