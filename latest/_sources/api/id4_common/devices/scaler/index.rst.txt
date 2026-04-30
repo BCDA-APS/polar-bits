@@ -84,6 +84,11 @@ Module Contents
       Set the Kind of each channel to hinted (in chan_names) or normal
       (others).
 
+      Pass ``chan_names=None`` (the default) to hint every named channel.
+      Pass an empty list to hint *no* channel (all named channels are
+      demoted to ``Kind.normal``); used by
+      ``CountersClass._apply_extra_read`` to clear stale hints.
+
 
 
    .. py:method:: select_read_channels(chan_names=None)
@@ -111,6 +116,18 @@ Module Contents
 
       Set the hinted kind for the given channels by delegating to
       select_plot_channels.
+
+
+
+   .. py:method:: select_read(channels: list) -> None
+
+      Mark the named channels as Kind.normal (read, not plotted).
+
+      Leaves other channels' kinds untouched. Use ``select_plot_channels``
+      or ``select_read_channels`` for full configuration; this is the
+      minimal hook used by ``CountersClass._apply_extra_read`` so a
+      scaler channel can be added to the read list without becoming
+      hinted.
 
 
 

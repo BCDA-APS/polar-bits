@@ -38,6 +38,29 @@ Module Contents
 
 .. py:data:: ANALYZER_LIST_PATH
 
+.. py:class:: UBMatrixSignal(pv_name, *, parent=None, name=None, **kwargs)
+
+   Bases: :py:obj:`ophyd.Signal`
+
+
+   In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
+
+   Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
+   other components can subscribe to UB matrix changes via .subscribe().
+
+
+   .. py:method:: get(**kwargs)
+
+      Return the parent diffractometer's current UB matrix.
+
+
+
+   .. py:method:: put(value, *, timestamp=None, force=False, **kwargs)
+
+      Write the UB matrix back to the parent and notify subscribers.
+
+
+
 .. py:class:: AnalyzerDevice
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
@@ -136,7 +159,7 @@ Module Contents
 
 
 
-   .. py:method:: calc()
+   .. py:method:: calc(acal='No')
 
       Print analyzer Bragg angles for the current crystal at the current
       beamline energy.
@@ -180,6 +203,29 @@ Module Contents
    .. py:attribute:: ana
 
 
+   .. py:property:: hints
+
+      Return only explicitly-hinted sub-components to avoid busy plotting.
+
+      ``Kind`` is a bitfield: ``Kind.hinted`` (0b101) shares the
+      ``Kind.normal`` bit (0b001). ``_get_components_of_kind(Kind.hinted)``
+      therefore yields *both* normal and hinted components. The mask
+      ``(~Kind.normal & Kind.hinted)`` isolates the "hinted-only" bit so
+      only components explicitly tagged ``Kind.hinted`` contribute fields.
+
+
+   .. py:property:: auxiliary_axis_names
+
+      Drop nested PseudoPositioner sub-devices from auxiliaries.
+
+      hklpy2's ``wh(full=True)``/``pa()`` formats each auxiliary axis with
+      ``round(component.position, ndigits=...)``. ``PseudoPositioner``
+      sub-devices (e.g. ``ana``) return a ``PseudoPosition`` namedtuple,
+      which has no ``__round__`` and crashes the print step. Filter them
+      out here; scalar single-axis auxiliaries (the case hklpy2 was
+      designed for) still pass through.
+
+
    .. py:method:: default_settings()
 
       Apply default settings for the diffractometer mixin (no-op; subclasses
@@ -193,7 +239,7 @@ Module Contents
 
 .. py:class:: CradleDiffractometer
 
-   Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+   Bases: :py:obj:`DiffractometerMixin`, :py:obj:`CradleDiffractometerBase`
 
 
    hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation.
@@ -212,10 +258,16 @@ Module Contents
 
 .. py:class:: HPDiffractometer
 
-   Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+   Bases: :py:obj:`DiffractometerMixin`, :py:obj:`HPDiffractometerBase`
 
 
    hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
+
+
+   .. py:attribute:: chi
+
+
+   .. py:attribute:: phi
 
 
    .. py:attribute:: basex
