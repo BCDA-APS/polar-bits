@@ -574,15 +574,20 @@ with <code class="docutils literal notranslate"><span class="pre">%run</span></c
 <p>A typical session startup file looks like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># startup_4idh.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">apsbits.core.instrument_init</span><span class="w"> </span><span class="kn">import</span> <span class="n">oregistry</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.experiment_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">experiment_load_from_bluesky</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.experiment_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">experiment_resume</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.counters_class</span><span class="w"> </span><span class="kn">import</span> <span class="n">counters</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.pr_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">pr_setup</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>    <span class="c1"># enable interactive plots</span>
 
-<span class="c1"># Restore experiment from last Bluesky run</span>
-<span class="n">experiment_load_from_bluesky</span><span class="p">()</span>
+<span class="c1"># Restore the previous session from its YAML snapshot.</span>
+<span class="c1"># experiment_resume() auto-discovers the snapshot in the current working</span>
+<span class="c1"># directory or via cat[-1] (whichever it finds first). If neither is</span>
+<span class="c1"># available — first run of an experiment — fall back to the full</span>
+<span class="c1"># experiment_setup() prompt, or to experiment_load_from_bluesky() to</span>
+<span class="c1"># re-derive from a Bluesky run document.</span>
+<span class="n">experiment_resume</span><span class="p">()</span>
 
 <span class="c1"># Energy tracking</span>
 <span class="n">energy</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
@@ -727,7 +732,7 @@ time instead:</p>
 <h2>Non-Interactive Experiment Setup in Scripts<a class="headerlink" href="#non-interactive-experiment-setup-in-scripts" title="Link to this heading">#</a></h2>
 <p>When running from a script (not interactive), pass all arguments to
 <code class="docutils literal notranslate"><span class="pre">experiment_setup()</span></code> as keywords so it does not prompt:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.experiment_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">experiment_setup</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.experiment_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">experiment_setup</span><span class="p">,</span> <span class="n">experiment</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">apsbits.utils.config_loaders</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_config</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
@@ -738,7 +743,7 @@ time instead:</p>
     <span class="n">sample</span>          <span class="o">=</span> <span class="s2">&quot;EuAl4&quot;</span><span class="p">,</span>
     <span class="n">server</span>          <span class="o">=</span> <span class="s2">&quot;dserv&quot;</span><span class="p">,</span>
     <span class="n">experiment_name</span> <span class="o">=</span> <span class="s2">&quot;Frontini_26-1&quot;</span><span class="p">,</span>
-    <span class="n">reset_scan_id</span>   <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">reset_scan_id</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>        <span class="c1"># last scan_id = 0 → next scan = 1</span>
 <span class="p">)</span>
 
 <span class="c1"># Override the data path if needed</span>
@@ -748,6 +753,15 @@ time instead:</p>
 <span class="p">)</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">reset_scan_id</span></code> is the <strong>last completed</strong> scan number, not the next one
+— <code class="docutils literal notranslate"><span class="pre">0</span></code> means “fresh start, next scan will be <code class="docutils literal notranslate"><span class="pre">1</span></code>”; <code class="docutils literal notranslate"><span class="pre">47</span></code> means “continue
+from where we left off, next scan will be <code class="docutils literal notranslate"><span class="pre">48</span></code>”. <code class="docutils literal notranslate"><span class="pre">-1</span></code> is the no-op
+sentinel.</p>
+<p>If you do not want <code class="docutils literal notranslate"><span class="pre">experiment_setup()</span></code> to talk to Data Management at
+all (e.g. DM is down), nothing special is needed: the function probes
+DM at the start and falls back to <code class="docutils literal notranslate"><span class="pre">dserv</span></code> automatically with a single
+warning. To force the bypass even when DM is up, pass
+<code class="docutils literal notranslate"><span class="pre">server=&quot;dserv&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">esaf_id=&quot;dev&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">proposal_id=&quot;dev&quot;</span></code>.</p>
 </section>
 <hr class="docutils" />
 <section id="logging-notes-within-a-session">
