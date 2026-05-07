@@ -70,6 +70,24 @@ SPEC_TIME_FORMAT = "%a %b %d %H:%M:%S %Y"
 SCAN_ID_RESET_VALUE = 0
 
 
+def _one_line(value):
+    """
+    Render *value* as a single line so SPEC's `#`-tagged structure stays intact.
+
+    Long lists / numpy arrays get a line-wrapped repr by default which produces
+    bare lines without a leading SPEC tag, breaking parsers like pymca.
+    Collapsing all whitespace (including newlines) into single spaces keeps the
+    metadata on one line and lets pymca read the file.
+    """
+    if isinstance(value, np.ndarray):
+        text = np.array2string(
+            value, separator=", ", max_line_width=10**9, threshold=10**9
+        )
+    else:
+        text = str(value)
+    return " ".join(text.split())
+
+
 def _rebuild_scan_command(doc):
     """
     reconstruct the scan command for SPEC data file #S line
@@ -96,6 +114,16 @@ def _rebuild_scan_command(doc):
                     'user_offset', 'user_offset_dir'])
         return: "m1"
         """
+        # Compact representation for non-ophyd, list-like arguments — e.g.
+        # the long energy / time arrays threaded through `qxscan` via
+        # `list_scan`.  Inlining the whole array would blow up the `#S` line
+        # into something pymca and other SPEC parsers reject as the scan
+        # command.  The full values still live in the `#MD plan_args` line.
+        if isinstance(src, np.ndarray):
+            return f"<array len={src.size}>"
+        if isinstance(src, (list, tuple)) and len(src) > 4:
+            return f"<{type(src).__name__} len={len(src)}>"
+
         s = str(src)
         p = s.find("(")
         if p > 0:  # only if an open parenthesis is found
@@ -1061,7 +1089,9 @@ class SpecWriterCallback2(FileWriterCallbackBase):
                 # Scan data is expected to be numbers. This is not.  Substitute
                 # the row number and report after this line in a #U line.
                 line.append(str(doc["seq_num"]))
-                remarks.append(f"#U {label} = {value}")
+                # Single-line so newlines/multi-line reprs cannot leak bare
+                # lines without a leading SPEC tag.
+                remarks.append(f"#U {label} = {_one_line(value)}")
 
         lines = [" ".join(line)]
         self._write_lines_(lines + remarks, mode="a+")
@@ -1082,7 +1112,7 @@ class SpecWriterCallback2(FileWriterCallbackBase):
         else:
             lines.append(self._cmt("exit_status = not available"))
 
-        self._write_lines_(lines, mode="a+")
+        self._write_lines_([_one_line(line) for line in lines], mode="a+")
 
     def write_scan_header(self):
         """Write scan header to file."""
@@ -1114,8 +1144,11 @@ class SpecWriterCallback2(FileWriterCallbackBase):
                 r += 1
 
         for k, v in self.metadata.items():
-            # "#MD" is our ad hoc SPEC data tag
-            lines.append(f"#MD {k} = {v}")
+            # "#MD" is our ad hoc SPEC data tag.  Force value to a single
+            # line so multi-line reprs (numpy arrays, line-wrapped lists,
+            # newline-containing strings) cannot emit bare lines without a
+            # leading SPEC tag — pymca rejects files that contain such lines.
+            lines.append(f"#MD {k} = {_one_line(v)}")
 
         lines.append("#N " + str(len(self.data_labels)))
         if len(self.data_labels) > 0:
@@ -1123,7 +1156,7 @@ class SpecWriterCallback2(FileWriterCallbackBase):
         else:
             lines.append("#C no data column labels identified")
 
-        self._write_lines_(lines, mode="a+")
+        self._write_lines_([_one_line(line) for line in lines], mode="a+")
 
         self.write_new_scan_header = False
 
