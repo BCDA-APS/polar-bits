@@ -12,9 +12,7 @@ logger = logging.getLogger(__name__)
 
 # iconfig.yml is the single source of truth — including the LOGGING block.
 _ICONFIG = (
-    pathlib.Path(__file__).resolve().parent.parent
-    / "configs"
-    / "iconfig.yml"
+    pathlib.Path(__file__).resolve().parent.parent / "configs" / "iconfig.yml"
 )
 
 # Translation from POLAR-friendly keys (uppercase, in iconfig.yml's LOGGING
