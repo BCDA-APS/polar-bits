@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>id4_common.utils.polartools_hklpy2_imports &#8212; polar-bits</title>
+    <title>id4_common.utils.logging_helper &#8212; polar-bits</title>
   
   
   
@@ -46,12 +46,12 @@
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/utils/polartools_hklpy2_imports/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/utils/logging_helper/index';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="id4_common.utils.pr_setup" href="../pr_setup/index.html" />
-    <link rel="prev" title="id4_common.utils.oregistry_auxiliar" href="../oregistry_auxiliar/index.html" />
+    <link rel="next" title="id4_common.utils.make_devices" href="../make_devices/index.html" />
+    <link rel="prev" title="id4_common.utils.logbook_mcr" href="../logbook_mcr/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -587,10 +587,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../logging_helper/index.html">id4_common.utils.logging_helper</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.utils.logging_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.utils.polartools_hklpy2_imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
@@ -674,7 +674,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">id4_common.utils</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.utils.polartools_hklpy2_imports</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.utils.logging_helper</span></li>
   </ul>
 </nav>
 </div>
@@ -691,9 +691,30 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-id4_common.utils.polartools_hklpy2_imports">
-<span id="id4-common-utils-polartools-hklpy2-imports"></span><h1>id4_common.utils.polartools_hklpy2_imports<a class="headerlink" href="#module-id4_common.utils.polartools_hklpy2_imports" title="Link to this heading">#</a></h1>
-<p>Re-exports of hkl/polartools user-facing symbols for hklpy2-based sessions.</p>
+  <section id="module-id4_common.utils.logging_helper">
+<span id="id4-common-utils-logging-helper"></span><h1>id4_common.utils.logging_helper<a class="headerlink" href="#module-id4_common.utils.logging_helper" title="Link to this heading">#</a></h1>
+<p>Centralized bluesky-session logging configuration for POLAR beamlines.</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.utils.logging_helper.logger">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.logging_helper.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.utils.logging_helper.logger" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.logging_helper.setup_logging">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.logging_helper.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.logging_helper.setup_logging" title="Link to this definition">#</a></dt>
+<dd><p>Configure bluesky logging from the LOGGING block of iconfig.yml.</p>
+<p>The block is translated to the apsbits <cite>file_logs</cite>/<cite>ipython_logs</cite> schema
+on the fly (via a temporary YAML file passed to apsbits’
+<code class="docutils literal notranslate"><span class="pre">configure_logging(extra_logging_configs_path=...)</span></code>) so polar-bits keeps
+a single config file.</p>
+<p>Falls back to the apsbits default (<code class="docutils literal notranslate"><span class="pre">&lt;cwd&gt;/.logs/</span></code>) when no LOG_PATH is
+configured or when the centralized directory cannot be created — typically
+a developer machine without access to the beamline filesystem.</p>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -707,20 +728,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../oregistry_auxiliar/index.html"
+       href="../logbook_mcr/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">id4_common.utils.oregistry_auxiliar</p>
+        <p class="prev-next-title">id4_common.utils.logbook_mcr</p>
       </div>
     </a>
     <a class="right-next"
-       href="../pr_setup/index.html"
+       href="../make_devices/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">id4_common.utils.pr_setup</p>
+        <p class="prev-next-title">id4_common.utils.make_devices</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -736,10 +757,26 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.logging_helper.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.logging_helper.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/utils/polartools_hklpy2_imports/index.rst">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/utils/logging_helper/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -754,7 +791,7 @@
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../../../_sources/api/id4_common/utils/polartools_hklpy2_imports/index.rst.txt">
+    <a href="../../../../_sources/api/id4_common/utils/logging_helper/index.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
