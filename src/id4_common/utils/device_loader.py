@@ -256,18 +256,20 @@ def load_device(name, file=None):
 
     Notes
     -----
-    The function checks if the device already exists in the registry.
-    If not, it loads the device configuration, dynamically imports the
-    device class, and connects the device. The device is then added to
-    the main namespace and optionally to the baseline if specified in
-    the configuration.
+    If the device is already registered, this function attempts to (re)connect
+    it via :func:`connect_device` instead of skipping. Otherwise, it loads the
+    device configuration, dynamically imports the device class, instantiates
+    the device, connects it, and adds it to the main namespace (and to the
+    baseline if specified in the configuration).
     """
 
-    if oregistry.find(name, allow_none=True) is not None:
-        logger.warning(
-            "The device already exists in the registry. If was not connected, "
-            "see `connect_device` function"
+    existing = oregistry.find(name, allow_none=True)
+    if existing is not None:
+        logger.info(
+            "Device %r already in the registry — attempting to (re)connect.",
+            name,
         )
+        connect_device(existing, raise_error=False)
         return
 
     # Load devices from specified file or default file
