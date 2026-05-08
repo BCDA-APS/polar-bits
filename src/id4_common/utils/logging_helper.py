@@ -36,6 +36,16 @@ def setup_logging():
     configured or when the centralized directory cannot be created — typically
     a developer machine without access to the beamline filesystem.
     """
+    # `apsbits/__init__.py` calls `configure_logging()` itself at import
+    # time (transitively triggered by the `from apsbits.utils.logging_setup
+    # import configure_logging` above), which fires `%logstart` against the
+    # apsbits default `<cwd>/.logs/ipython_log.py`.  IPython's `%logstart`
+    # is idempotent, so when our own `configure_logging` re-runs with the
+    # centralized override the second `%logstart` no-ops and the IPython
+    # log stays on the wrong path.  Stop the existing logger first so the
+    # next `%logstart` actually lands on the override.
+    _stop_active_ipython_log()
+
     overrides = _build_overrides()
     if not overrides:
         configure_logging()
@@ -57,6 +67,19 @@ def setup_logging():
         configure_logging()
     finally:
         os.unlink(tmp_path)
+
+
+def _stop_active_ipython_log():
+    """Stop any active IPython `%logstart` so the next one takes effect."""
+    try:
+        from IPython import get_ipython
+    except ImportError:
+        return
+    ip = get_ipython()
+    if ip is None:
+        return
+    if getattr(ip.logger, "log_active", False):
+        ip.run_line_magic("logstop", "")
 
 
 def _build_overrides():
