@@ -862,6 +862,8 @@ class SpecWriterCallback2(FileWriterCallbackBase):
             for k in self.motors.keys():
                 self.motors[k] = doc["data"][k]  # get motor values
             return
+        if descriptor["name"] != "primary":
+            return
 
         self.write_file_header()
         self.write_scan_header()
