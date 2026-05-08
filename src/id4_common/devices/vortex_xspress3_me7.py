@@ -7,7 +7,6 @@ from pathlib import Path
 from time import sleep
 from time import time as ttime
 
-import numpy as np
 from apsbits.core.instrument_init import oregistry
 from bluesky.plan_stubs import wait_for
 from ophyd import ADComponent
@@ -401,28 +400,6 @@ class VortexXspress37(Trigger, ROICountersMixin, DetectorBase):
         super().__init__(*args, **kwargs)
 
     _preset_monitor_attr = "cam.acquire_time"
-
-    def make_data_key(self):
-        """Override DetectorBase.make_data_key for the Xspress3 cam.
-
-        Upstream `Xspress3DetectorCam` lacks a `data_type` Component (unlike
-        `EigerDetectorCam` and `DanteCAM1`), so the base implementation
-        crashes with `AttributeError: 'NoneType' object has no attribute
-        'get'` whenever the HDF1 plugin is asked to describe itself — i.e.
-        on every scan after `auto_save_on()`.  Hardcode the spectrum dtype
-        to `uint32`, which is what the Xspress3 IOC writes to HDF5.
-        """
-        return dict(
-            external="FILESTORE:",
-            dtype="array",
-            shape=[
-                self.cam.num_images.get(),
-                self.cam.array_size.array_size_y.get(),
-                self.cam.array_size.array_size_x.get(),
-            ],
-            source=f"PV:{self.prefix}",
-            dtype_numpy=np.dtype("uint32").str,
-        )
 
     @property
     def num_channels(self):
