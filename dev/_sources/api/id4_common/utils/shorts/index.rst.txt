@@ -25,36 +25,3 @@ Module Contents
 
 
 
-.. py:function:: crl_setup()
-
-   Set the CRL sample-position offset for the active instrument.
-
-   Prompts for the instrument (Diffractometer or Magnet) and writes
-   the corresponding offset to ``4idPyCRL:CRL4ID:samplePositionOffset_RBV``:
-
-   - Diffractometer  → 0
-   - Magnet    → 6.5
-
-
-.. py:function:: crl(focal_size)
-
-   Set the CRL focus size on the transfocator.
-
-   :param focal_size: Target focal size in microns. If < 5 µm, the transfocator's
-                      ``minimize_button`` is triggered instead of writing a setpoint.
-                      Otherwise the value is converted to meters and written to
-                      ``transfocator.focal_size_setpoint``.
-   :type focal_size: float
-
-
-.. py:function:: te(temperature)
-
-   Set the temperature setpoint on ``temp_336_4idg`` (loop 1).
-
-   Writes the setpoint and returns immediately; the controller continues
-   ramping toward the target on its own.
-
-   :param temperature: Target temperature setpoint.
-   :type temperature: float
-
-

@@ -43,7 +43,6 @@ id4_common.utils.hkl_utils_hklpy2
        ~read_config
        ~restore_huber_from_scan
        ~set_detector
-       ~theta0
 
 
    Provide a simplified UI for hklpy2 diffractometer users.
@@ -108,8 +107,7 @@ Module Contents
    1. Selects the diffractometer (interactive prompt or argument).
    2. Applies the appropriate axis constraints.
    3. Creates aliases for all real diffractometer axes in the calling
-      namespace (mu, gamma, delta, chi, phi, tau) and the reciprocal-space
-      pseudo axes (h, k, l).
+      namespace (mu, gamma, delta, chi, phi, tau).
 
    :param diffractometer: Name or device instance to activate. If not provided, prompts
                           interactively with the current diffractometer as the default.
@@ -436,7 +434,7 @@ Module Contents
 
 .. py:function:: show_constraints()
 
-   Show constraints (low, high) and cut point for each real axis.
+   Show constraints and freeze angles (value)
 
 
 .. py:function:: reset_constraints()
@@ -446,22 +444,7 @@ Module Contents
 
 .. py:function:: set_constraints(*args)
 
-   Change constraint values (low/high limits and optional cut point).
-
-   Call patterns
-   -------------
-   - ``set_constraints()``: prompt interactively for every axis.
-   - ``set_constraints(axis)``: prompt interactively for one axis.
-   - ``set_constraints(axis, low, high)``: set limits only.
-   - ``set_constraints(axis, low, high, cut)``: set limits and cut point.
-   - ``set_constraints(low1, high1, ..., low6, high6)``: 12 args, set
-     limits for all axes (cut points unchanged).
-   - ``set_constraints(low1, high1, cut1, ..., low6, high6, cut6)``: 18
-     args, set limits and cut points for all axes.
-
-   Interactive input may supply 2 numbers (low, high) or 3 numbers
-   (low, high, cut), separated by spaces or commas. Press Enter to keep
-   the current values.
+   Change constraint values for specific axis
 
 
 .. py:function:: analyzer_configuration(energy=None)
@@ -535,17 +518,4 @@ Module Contents
 
 
 .. py:data:: wh
-
-.. py:function:: theta0()
-
-   Calculate 2-theta zero-offset and lattice parameter ``a0`` for a cubic sample.
-
-   Reads the current wavelength from the diffractometer beam object,
-   displays the saved reflection list, asks the user to choose two
-   reflections by index, then computes the zero-shift and ``a0`` from
-   those two reflections (Brueckel 1994).
-
-   Assumes horizontal scattering geometry (``gamma = 2*theta``,
-   ``delta = 0``).
-
 
