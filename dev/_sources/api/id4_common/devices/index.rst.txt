@@ -50,6 +50,7 @@ Submodules
    /api/id4_common/devices/monochromator/index
    /api/id4_common/devices/nanopositioner/index
    /api/id4_common/devices/phaseplates/index
+   /api/id4_common/devices/piezo_jena/index
    /api/id4_common/devices/polar_diffractometer/index
    /api/id4_common/devices/polar_diffractometer_hklpy2/index
    /api/id4_common/devices/polar_status/index
@@ -57,6 +58,7 @@ Submodules
    /api/id4_common/devices/preamps/index
    /api/id4_common/devices/quadems/index
    /api/id4_common/devices/qxscan_device/index
+   /api/id4_common/devices/ringlight/index
    /api/id4_common/devices/scaler/index
    /api/id4_common/devices/scaler_dual_ctr8/index
    /api/id4_common/devices/shutters/index

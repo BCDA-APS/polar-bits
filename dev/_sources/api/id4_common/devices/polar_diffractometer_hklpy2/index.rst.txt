@@ -306,6 +306,9 @@ Module Contents
    .. py:attribute:: nanoz
 
 
+   .. py:attribute:: xeryon
+
+
 .. py:data:: CradleDiffractometerPSI
 
 .. py:data:: HPDiffractometerPSI

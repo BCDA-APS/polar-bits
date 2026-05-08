@@ -32,6 +32,24 @@ constraint management, and configuration save/restore.
 | `RE(br(h, k, l))` | Move to HKL as a Bluesky plan |
 | `uan(gamma, mu)` | Move gamma and mu together |
 
+### Reciprocal-space scans
+
+| Command | Description |
+|---------|-------------|
+| `hscan(start, stop, num, time, …)` | Sweep `h` only (k, l held fixed by the engine) |
+| `kscan(start, stop, num, time, …)` | Sweep `k` only |
+| `lscan(start, stop, num, time, …)` | Sweep `l` only |
+| `hklscan(h1, h2, k1, k2, l1, l2, num, time, …)` | Linear (h, k, l) trajectory |
+
+### Peak finding from a previous scan
+
+| Command | Description |
+|---------|-------------|
+| `peak_pos(scan_id=-1)` | Print peak statistics (com, max, min, fwhm) for the scan's detectors |
+| `RE(peak())` | Move scan motor to peak centroid of the last scan |
+| `RE(pmax())` | Move scan motor to x at peak maximum |
+| `RE(pmin())` | Move scan motor to x at peak minimum |
+
 ### Sample management
 
 | Command | Description |
@@ -42,6 +60,7 @@ constraint management, and configuration save/restore.
 | `sampleRemove(name)` | Remove a sample |
 | `setlat(a,b,c,α,β,γ)` | Set lattice constants (no args = interactive) |
 | `update_lattice(par)` | Refine one lattice constant from current HKL position |
+| `theta0()` | Cubic-sample 2θ zero-shift and `a0` from two reflections |
 
 ### Orientation / UB matrix
 
@@ -65,8 +84,8 @@ constraint management, and configuration save/restore.
 | `setaz(h, k, l)` | Set azimuthal reference vector |
 | `freeze(val)` | Freeze constant axis for current mode (no args = use current position) |
 | `freeze_general()` | Interactively freeze all constant axes |
-| `show_constraints()` | Show angle limits for each axis |
-| `set_constraints(…)` | Set angle limits (no args = interactive per axis) |
+| `show_constraints()` | Show angle limits and cut point for each axis |
+| `set_constraints(…)` | Set angle limits and optional cut point (no args = interactive per axis) |
 | `reset_constraints()` | Reset all limits to defaults |
 
 ### Analyzer
@@ -127,13 +146,17 @@ After `change_diffractometer("huber_hp")`:
 | Alias | Motor |
 |-------|-------|
 | `mu`, `gamma`, `delta`, `chi`, `phi`, `tau` | Diffractometer circles (angular space) |
+| `xeryon` | Xeryon piezo rotation |
 | `x`, `y`, `z` | Sample stage |
 | `nanox`, `nanoy`, `nanoz` | Nano-focusing stage |
 | `basex`, `basey`, `basez` | Base stage |
 | `ath`, `atth`, `eta`, `achi` | Analyzer arm |
 
 The reciprocal-space pseudo-axes `h`, `k`, `l` are also injected automatically
-into the session namespace by `change_diffractometer()`.
+into the session namespace by `change_diffractometer()`. They behave like
+ophyd positioners — anywhere a real motor is accepted you can pass `h`, `k`,
+or `l` instead, e.g. `mv(l, 2.0)`, `lup(l, -0.05, 0.05, 21, 0.5)`,
+`ascan(k, -0.1, 0.1, 40, 0.5)`, or `cen(l)` after a scan.
 
 ---
 
@@ -208,6 +231,14 @@ ca(1, 0, 0)     # calculate motor angles for (1 0 0) without moving
 ca(1, 1, 0)     # calculate motor angles for (1 1 0) without moving
 ```
 
+`wh` also snapshots the current reciprocal-space position into uppercase
+globals `H`, `K`, `L` so you can reuse them at the prompt:
+
+```python
+wh
+ubr(H, K, L + 0.01)     # step L by +0.01 from the position just printed
+```
+
 ---
 
 ## Orientation (UB Matrix)
@@ -254,6 +285,31 @@ del_reflection()           # interactively delete a non-orienting reflection
 
 ---
 
+## Cubic 2θ Zero-Shift and Lattice Constant
+
+For a cubic sample, `theta0()` computes the 2θ zero-shift and the lattice
+constant `a0` from any two stored reflections (Brueckel 1994). It assumes
+horizontal scattering geometry (`gamma = 2θ`, `delta = 0`).
+
+```python
+theta0()
+```
+
+Workflow:
+
+1. Measure two reflections (e.g. with `or0()` / `or1()` after centering on
+   each Bragg peak).
+2. Run `theta0()` — it lists all stored reflections, marks the two
+   orienting ones as `first` / `second`, and prompts for the indices of the
+   two reflections to use (defaults to the orienting pair).
+3. The function prints the 2θ zero-shift, two estimates of `a0` (one from
+   each reflection), and the corrected 2θ values.
+
+Use the printed zero-shift to update the `gamma` motor offset, and the
+`a0` value with `setlat()` or `update_lattice()`.
+
+---
+
 ## Moving in Reciprocal Space
 
 Move to an HKL position (executes as a Bluesky plan):
@@ -283,6 +339,20 @@ Move individual real-space axes with the `%mov` magic:
 %mov chi 0
 %mov delta 30
 ```
+
+The `h`, `k`, `l` pseudo-axes also work with `mv`, `mvr`, `lup`, `ascan`,
+`cen`, etc. — anywhere a real motor is accepted:
+
+```python
+RE(mv(l, 2.0))                         # move l to 2.0 (h, k held fixed)
+RE(mvr(l, 0.01))                       # step l by +0.01
+RE(lup(l, -0.05, 0.05, 21, 0.5))       # relative L-scan
+RE(ascan(k, -0.1, 0.1, 40, 0.5))       # absolute K-scan
+RE(cen(l))                             # center l on the last scan's COM
+```
+
+See [Scans in reciprocal space](#scans-in-reciprocal-space) for the
+dedicated `hscan` / `kscan` / `lscan` / `hklscan` plans.
 
 ---
 
@@ -336,15 +406,35 @@ freeze(5)       # freeze axis at 5 (mode-dependent)
 freeze_general()  # always prompts interactively for all constant axes
 ```
 
-Show and manage axis constraints (angle limits):
+Show and manage axis constraints (angle limits and cut point). The cut point
+defines the wrap-around for the axis: solutions are reported in the interval
+`[cut, cut + 360)`.
 
 ```python
-show_constraints()          # print low/high limits for each axis
+show_constraints()          # print low/high limits and cut point for each axis
 reset_constraints()         # reset all limits to defaults
-set_constraints()           # interactive: set limits for each axis
-set_constraints("phi", -180, 180)   # set limits for one axis
-set_constraints(-1,1, 0,90, -20,200, -180,180, -2,140, -5,50)  # set all 6 axes
+set_constraints()           # interactive: set limits/cut for each axis
+set_constraints("phi")      # interactive: set limits/cut for one axis
+set_constraints("phi", -180, 180)         # set limits only
+set_constraints("phi", -180, 180, -180)   # set limits and cut point
+
+# Set all 6 axes at once (limits only — 12 args):
+set_constraints(-1,1, 0,90, -20,200, -180,180, -2,140, -5,50)
+
+# Set all 6 axes with cut points (limits + cut — 18 args):
+set_constraints(
+    -1, 1, 0,
+    0, 90, 0,
+    -20, 200, -180,
+    -180, 180, -180,
+    -2, 140, 0,
+    -5, 50, 0,
+)
 ```
+
+Interactive prompts accept either two numbers (`low high`) or three numbers
+(`low high cut`), separated by spaces or commas. Press Enter to keep the
+current values.
 
 ---
 
@@ -399,20 +489,55 @@ RE(th2th(-2, 2, 100, 0.5))   # ±2° in 2θ, 100 pts
 
 ### Scans in reciprocal space
 
-Scan directly along a reciprocal-space direction using the `h`, `k`, `l` aliases
-set by `change_diffractometer()`. The diffractometer moves all
-required angular axes simultaneously to follow the path:
+Two equivalent ways to scan a reciprocal-space axis:
+
+1. **Generic plans with the `h`, `k`, `l` aliases** (set by
+   `change_diffractometer()`) — `lup`, `ascan`, etc. work on the pseudo
+   axes the same way they work on real motors:
+
+   ```python
+   RE(lup(l, 1.8, 2.2, 40, 0.5))      # relative L-scan through (0 0 2)
+   RE(ascan(k, -0.1, 0.1, 40, 0.5))   # absolute K-scan
+   ```
+
+2. **Dedicated single-axis plans** `hscan` / `kscan` / `lscan` — thin
+   wrappers around `ascan` on the matching pseudo axis. They take only
+   `(start, stop, num, time)` and tag the run with their own `plan_name`,
+   which makes them easier to identify in the catalog and works
+   automatically with `peak()`'s positioner detection:
+
+   ```python
+   RE(lscan(1.8, 2.2, 40, 0.5))        # absolute L-scan
+   RE(hscan(1.95, 2.05, 21, 0.5))      # absolute H-scan
+   RE(kscan(-0.05, 0.05, 21, 0.5))     # absolute K-scan
+   ```
+
+   They forward `detectors`, `lockin`, `dichro`, `fixq`, `vortex_sgz`,
+   `g_sgz`, `per_step`, and `md` to `ascan`:
+
+   ```python
+   RE(lscan(1.8, 2.2, 40, 0.5, dichro=True))
+   ```
+
+#### Linear (h, k, l) trajectory — `hklscan`
+
+`hklscan` sweeps a straight line in reciprocal space from
+`(h1, k1, l1)` to `(h2, k2, l2)` in `num` points. All three pseudo axes
+move together; the diffractometer solves the angles at each point.
 
 ```python
-# L-scan through (0 0 2)
-RE(lup(l, 1.8, 2.2, 40, 0.5))
+RE(hklscan(h1, h2, k1, k2, l1, l2, num, time))
 
-# H-scan through (2 0 0)
-RE(lup(h, 1.8, 2.2, 40, 0.5))
+# Diagonal scan from (1, 0, 0) to (1, 0, 0.2):
+RE(hklscan(1, 1, 0, 0, 0, 0.2, 21, 0.5))
 
-# Absolute scan along K
-RE(ascan(k, -0.1, 0.1, 40, 0.5))
+# Off-axis cut crossing (2, 0, 0):
+RE(hklscan(1.95, 2.05, -0.02, 0.02, 0, 0, 21, 0.5))
 ```
+
+The `dichro`, `lockin`, `vortex_sgz`, `g_sgz`, `per_step`, and `md`
+kwargs are forwarded to `ascan`. `fixq` is forced off (the scan *is* the
+trajectory).
 
 Center on a peak after a scan:
 
@@ -420,6 +545,48 @@ Center on a peak after a scan:
 RE(lup(l, 1.8, 2.2, 40, 0.5))
 RE(cen(l))     # moves to the center-of-mass of the last scan
 ```
+
+#### Peak position from a previous scan
+
+`peak_pos`, `peak`, `pmax`, and `pmin` use `apstools.utils.xy_statistics`
+(the same machinery as `apstools.lineup2`) on a stored scan. They work on
+any past run from the `4id_polar` catalog — useful for revisiting a peak
+later in the session or for picking a specific detector channel.
+
+Print statistics for the last scan (com, max, min, fwhm) for every
+detector hinted in the scan:
+
+```python
+peak_pos()                          # last scan, all hinted detectors
+peak_pos(-3)                        # 3 scans back
+peak_pos(1234, y="scaler1_ch14")    # specific scan, single detector
+```
+
+Move the scan motor to a peak feature. The default `peak()` moves to the
+centroid; `pmax`/`pmin` move to the x at peak max/min. Plans, so wrap in
+`RE()`:
+
+```python
+RE(lup(delta, -0.5, 0.5, 50, 0.5))
+RE(peak())                          # move delta to centroid of last scan
+RE(pmax())                          # move to x at peak maximum
+RE(pmin())                          # move to x at peak minimum
+
+# Pick a specific detector channel:
+RE(peak(detector="scaler1_ch14"))
+
+# Operate on an older scan:
+RE(peak(scan_id=1234))
+
+# Move a different positioner than the scan axis:
+RE(peak(positioner=phi))
+```
+
+For multi-motor scans (`hklscan`, ...) `peak()` defaults to the
+fastest-changing axis and prompts to confirm; pass `confirm=False` to
+skip every interactive prompt. `th2th` always uses 2θ (`gamma`) — no
+prompt. `psiscan` is rejected because the scan axis is a virtual extra,
+not a movable positioner.
 
 For the HP diffractometer sample stage:
 
@@ -480,6 +647,29 @@ set_detector()    # interactive: (E)iger or (P)oint Detector/Analyzer
 
 ---
 
+## Sample-Area Ringlight
+
+The sample illuminator is exposed as `ringlight` and is read into the
+baseline stream every scan. The IOC enum has six choices controlled
+through convenience methods or `set_state`:
+
+```python
+ringlight.off()         # OFF
+ringlight.full()        # 100%
+ringlight.half()        # 50%
+ringlight.quarter()     # 25%
+ringlight.eighth()      # 12.5%
+ringlight.rainbow()     # RAINBOW
+
+ringlight.set_state(0)        # by index (0-5)
+ringlight.set_state("half")   # by short name
+ringlight.set_state("100%")   # by raw IOC label
+
+ringlight.state.get()         # read current state ("OFF", "100", "50", ...)
+```
+
+---
+
 ## Saving and Restoring Configuration
 
 ### Write to file
@@ -496,7 +686,11 @@ write_config("EuAl4_run1", overwrite=True)  # skip confirmation prompt
 ### Read from file
 
 Lists all `*_polar_config.yml` files in the current directory and prompts
-to overwrite or append the current configuration:
+to overwrite or append the current configuration. Restores samples,
+azimuthal-reference extras (`h2`, `k2`, `l2` for psi-constant modes), and
+constraints, then recomputes the UB matrix from the orienting reflections.
+Wavelength and current mode are intentionally left untouched to avoid
+silently retargeting motors.
 
 ```python
 read_config()    # interactive file selection; choose overwrite or append
