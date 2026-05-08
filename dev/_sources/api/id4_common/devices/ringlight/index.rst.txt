@@ -1,0 +1,116 @@
+id4_common.devices.ringlight
+============================
+
+.. py:module:: id4_common.devices.ringlight
+
+.. autoapi-nested-parse::
+
+   Ringlight illuminator (PVA NTEnum, e.g. RINGLIGHT:STATE).
+
+   The IOC exposes a single NTEnum control PV with these choices:
+
+       index   choice    convenience method
+       -----   -------   -------------------
+       0       OFF       off()
+       1       100%      full()
+       2       50%       half()
+       3       25%       quarter()
+       4       12.5%     eighth()
+       5       RAINBOW   rainbow()
+
+   Implemented with classic ophyd ``Device`` + a small ``Signal`` subclass
+   wrapping ``pvapy.Channel`` (same pattern this beamline uses for the
+   PositionerStream PVA controls). pvapy is the working PVA client in this
+   environment; ``p4p``/``ophyd_async`` PVA backends time out on this IOC.
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: PVANTEnumSignal(*args, pv_name, **kwargs)
+
+   Bases: :py:obj:`ophyd.Signal`
+
+
+   Read/write an NTEnum PV via pvapy.
+
+   The PV's value is a struct ``{index: int, choices: [str]}``. ``get()``
+   returns the human-readable choice string; ``put()`` accepts either an
+   integer index or a choice string.
+
+
+   .. py:method:: get(**kwargs)
+
+
+   .. py:method:: put(value, **kwargs)
+
+
+   .. py:method:: set(value, **kwargs)
+
+
+   .. py:method:: wait_for_connection(timeout=5.0)
+
+
+.. py:class:: Ringlight(prefix, *, name='', labels=None, **kwargs)
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   Sample-area ringlight controlled via a single NTEnum state PV (PVA).
+
+
+   .. py:attribute:: STATES
+
+
+   .. py:attribute:: state
+
+
+   .. py:method:: set_state(value)
+
+      Write a state.
+
+      Accepts an integer index (0-5), a short name
+      (``off``/``full``/``half``/``quarter``/``eighth``/``rainbow``),
+      or the raw NTEnum choice string (e.g. ``"100%"``, ``"OFF"``).
+
+
+
+   .. py:method:: off()
+
+      Turn the ringlight off.
+
+
+
+   .. py:method:: full()
+
+      100% intensity.
+
+
+
+   .. py:method:: half()
+
+      50% intensity.
+
+
+
+   .. py:method:: quarter()
+
+      25% intensity.
+
+
+
+   .. py:method:: eighth()
+
+      12.5% intensity.
+
+
+
+   .. py:method:: rainbow()
+
+      Rainbow color cycle.
+
+
+
