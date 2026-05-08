@@ -100,6 +100,10 @@ else:
     from id4_common.utils.dm_utils import *  # noqa: F403
     from id4_common.utils.experiment_utils import *  # noqa: F403
     from id4_common.utils.pr_setup import pr_setup  # noqa: F401
+    from id4_common.plans.peak_position import peak  # noqa: F401
+    from id4_common.plans.peak_position import peak_pos  # noqa: F401
+    from id4_common.plans.peak_position import pmax  # noqa: F401
+    from id4_common.plans.peak_position import pmin  # noqa: F401
     from id4_common.utils.shorts import crl  # noqa: F401
     from id4_common.utils.shorts import crl_setup  # noqa: F401
     from id4_common.utils.shorts import opt  # noqa: F401
