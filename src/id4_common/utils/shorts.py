@@ -54,9 +54,12 @@ def crl_setup():
     - Diffractometer  → 0
     - Magnet    → 6.5
     """
-    answer = input(
-        "Instrument (Diffractometer / Magnet) [Diffractometer]: "
-    ).strip().lower() or "diffractometer"
+    answer = (
+        input("Instrument (Diffractometer / Magnet) [Diffractometer]: ")
+        .strip()
+        .lower()
+        or "diffractometer"
+    )
 
     if answer.startswith("d"):
         offset = _CRL_OFFSETS["diffractometer"]

@@ -33,16 +33,21 @@ class PVANTEnumSignal(Signal):
     """
 
     def __init__(self, *args, pv_name, **kwargs):
-        # Declare dtype="string" so Signal initializes _readback to
-        # UNSET_VALUE (instead of a _DefaultFloat sentinel) and describe()
-        # reports dtype="string". Without this, bluesky writes the
-        # descriptor as "number" and the NeXus writer turns the readings
-        # into a numpy <U3 array, which h5py rejects.
+        """Open a pvapy ``Channel`` to ``pv_name`` and force string dtype.
+
+        ``dtype="string"`` is set explicitly so Signal initializes
+        ``_readback`` to ``UNSET_VALUE`` (instead of a ``_DefaultFloat``
+        sentinel) and ``describe()`` reports ``dtype="string"``. Without
+        this, bluesky writes the descriptor as ``"number"`` and the NeXus
+        writer turns the readings into a numpy ``<U3`` array, which h5py
+        rejects.
+        """
         super().__init__(*args, dtype="string", **kwargs)
         self._pva = Channel(pv_name)
         self._pv_name = pv_name
 
     def get(self, **kwargs):
+        """Return the current NTEnum choice string (with trailing ``%`` stripped)."""
         v = self._pva.get().toDict()["value"]
         # The IOC's percent labels (e.g. "100%", "12.5%") trip up
         # downstream consumers; strip the trailing '%' so "OFF" /
@@ -54,6 +59,7 @@ class PVANTEnumSignal(Signal):
         return val
 
     def put(self, value, **kwargs):
+        """Write a new NTEnum value (int index or choice-label string)."""
         if isinstance(value, bool):
             # bool is a subclass of int — reject explicitly to avoid
             # accidentally writing 0/1 from True/False.
@@ -72,6 +78,7 @@ class PVANTEnumSignal(Signal):
             )
 
     def set(self, value, **kwargs):
+        """Synchronous put + already-finished Status, matching PositionerStream."""
         # pvapy puts are synchronous and raise on failure; mirror the
         # PVASignal/PositionerStream convention by returning an
         # already-finished Status.
@@ -81,6 +88,7 @@ class PVANTEnumSignal(Signal):
         return st
 
     def wait_for_connection(self, timeout=5.0):
+        """Raise if the PV cannot be reached within ``timeout`` seconds."""
         # pvapy.Channel.get(timeout=...) raises if the PV is unreachable;
         # Channel.get(<float>) treats the float as a request timeout in
         # seconds. Discard the value — we only care that it returns.
@@ -109,6 +117,7 @@ class Ringlight(Device):
     )
 
     def __init__(self, prefix, *, name="", labels=None, **kwargs):
+        """Initialize Ringlight and stash labels for ``oregistry.findall``."""
         super().__init__(prefix, name=name, **kwargs)
         # Mirror the classic ophyd labels= convention so the project's
         # oregistry findall(label=...) keeps working.

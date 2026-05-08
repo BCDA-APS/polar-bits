@@ -92,9 +92,7 @@ def peak_pos(scan_id=-1, x=None, y=None):
     if y is None:
         det_fields = start.get("hints", {}).get("detectors") or []
         if not det_fields:
-            raise ValueError(
-                "No detector hints in scan; pass y= explicitly."
-            )
+            raise ValueError("No detector hints in scan; pass y= explicitly.")
     elif isinstance(y, str):
         det_fields = [y]
     else:
@@ -226,8 +224,7 @@ def peak(
             )
             if answer not in scan_motors:
                 print(
-                    f"Unknown positioner '{answer}'. "
-                    f"Using {default_motor}."
+                    f"Unknown positioner '{answer}'. " f"Using {default_motor}."
                 )
                 answer = default_motor
             motor_name = answer

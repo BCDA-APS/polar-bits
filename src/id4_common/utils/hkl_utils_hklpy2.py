@@ -1805,7 +1805,9 @@ def read_config():
         restore_constraints=True,
     )
 
-    _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
+    # Touch the psi-mode geometry so a missing entry surfaces here rather
+    # than later inside compute_UB() / a scan plan.
+    _ = oregistry.find(_geom_.name + "_psi")
     compute_UB()
 
 
@@ -1937,8 +1939,7 @@ def theta0():
     header = (
         f"\n{'#':>{idx_width}}"
         + "".join(
-            f"{m:>{pseudo_width}}"
-            for m in _geom_.pseudo_positioners._fields
+            f"{m:>{pseudo_width}}" for m in _geom_.pseudo_positioners._fields
         ).upper()
         + "".join(f"{k:>{real_width}}" for k in real_headers)
         + "   orienting"
@@ -1951,8 +1952,12 @@ def theta0():
         if len(_geom_.real_positioners) == 6:
             reals = ref.reals
             pos_vals = [
-                reals["gamma"], reals["mu"], reals["chi"],
-                reals["phi"], reals["delta"], reals["tau"],
+                reals["gamma"],
+                reals["mu"],
+                reals["chi"],
+                reals["phi"],
+                reals["delta"],
+                reals["tau"],
             ]
         else:
             pos_vals = list(ref.reals.values())
