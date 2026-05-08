@@ -278,6 +278,7 @@ class VortexDante1(Trigger, ROICountersMixin, DetectorBase):
         self.hdf1.stage_sigs["num_capture"] = 0
         self.hdf1.stage_sigs["capture"] = 1
 
+        self.cam.mca_more.put("MCA Mapping")
         self.setup_manual_trigger()
         self.save_images_off()
         self.read_rois = [0]
