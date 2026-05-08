@@ -855,8 +855,8 @@ def hklscan(
 
     Sweeps the active diffractometer's (h, k, l) pseudo axes along a straight
     line in reciprocal space from (h1, k1, l1) to (h2, k2, l2) in
-    ``number_of_points`` points. Delegates to :func:`ascan` so all the usual
-    flags (dichro, lockin, vortex_sgz, g_sgz, per_step) are supported.
+    ``number_of_points`` points. Delegates to :func:`ascan`; ``fixq`` is
+    forced off because the scan *is* the trajectory.
 
     Parameters
     ----------
@@ -869,9 +869,27 @@ def hklscan(
     number_of_points : int
         Number of points (inclusive of endpoints).
     time : float
-        Count time per point.
-    detectors, lockin, dichro, vortex_sgz, g_sgz, per_step, md :
-        See :func:`ascan`.
+        Count time per point (seconds).
+    detectors : list, optional
+        Detectors to read. If None, uses ``counters.detectors``.
+    lockin : bool, optional
+        Run as a lock-in scan. Requires ``pr_setup.config()`` to have
+        been run beforehand.
+    dichro : bool, optional
+        Run as a dichro scan. Requires ``pr_setup.config()`` beforehand.
+        Switches the x-ray polarization at every point using the
+        ``+ - - +`` sequence, multiplying the point count by 4.
+    vortex_sgz : bool, optional
+        Trigger the Vortex detector via softgluezynq.  Requires both
+        the ``vortex`` and ``sgz_vortex`` devices to exist.
+    g_sgz : bool, optional
+        Add the ``pos_stream`` position-stream device to the scan so
+        motor positions are captured through the softgluezynq pipeline.
+    per_step : callable, optional
+        Hook for customizing the inner-loop messages.  See
+        :func:`bluesky.plan_stubs.one_nd_step` (the default).
+    md : dict, optional
+        Metadata to add to the run start.
 
     See Also
     --------
@@ -963,9 +981,30 @@ def hscan(
     number_of_points : int
         Number of points (inclusive of endpoints).
     time : float
-        Count time per point.
-    detectors, lockin, dichro, fixq, vortex_sgz, g_sgz, per_step, md :
-        See :func:`ascan`.
+        Count time per point (seconds).
+    detectors : list, optional
+        Detectors to read. If None, uses ``counters.detectors``.
+    lockin : bool, optional
+        Run as a lock-in scan. Requires ``pr_setup.config()`` to have
+        been run beforehand.
+    dichro : bool, optional
+        Run as a dichro scan. Requires ``pr_setup.config()`` beforehand.
+        Switches the x-ray polarization at every point using the
+        ``+ - - +`` sequence, multiplying the point count by 4.
+    fixq : bool, optional
+        Fix the diffractometer hkl during the scan.  Note: hkl is moved
+        *after* the other motors.
+    vortex_sgz : bool, optional
+        Trigger the Vortex detector via softgluezynq.  Requires both
+        the ``vortex`` and ``sgz_vortex`` devices to exist.
+    g_sgz : bool, optional
+        Add the ``pos_stream`` position-stream device to the scan so
+        motor positions are captured through the softgluezynq pipeline.
+    per_step : callable, optional
+        Hook for customizing the inner-loop messages.  See
+        :func:`bluesky.plan_stubs.one_nd_step` (the default).
+    md : dict, optional
+        Metadata to add to the run start.
 
     See Also
     --------
@@ -1020,9 +1059,30 @@ def kscan(
     number_of_points : int
         Number of points (inclusive of endpoints).
     time : float
-        Count time per point.
-    detectors, lockin, dichro, fixq, vortex_sgz, g_sgz, per_step, md :
-        See :func:`ascan`.
+        Count time per point (seconds).
+    detectors : list, optional
+        Detectors to read. If None, uses ``counters.detectors``.
+    lockin : bool, optional
+        Run as a lock-in scan. Requires ``pr_setup.config()`` to have
+        been run beforehand.
+    dichro : bool, optional
+        Run as a dichro scan. Requires ``pr_setup.config()`` beforehand.
+        Switches the x-ray polarization at every point using the
+        ``+ - - +`` sequence, multiplying the point count by 4.
+    fixq : bool, optional
+        Fix the diffractometer hkl during the scan.  Note: hkl is moved
+        *after* the other motors.
+    vortex_sgz : bool, optional
+        Trigger the Vortex detector via softgluezynq.  Requires both
+        the ``vortex`` and ``sgz_vortex`` devices to exist.
+    g_sgz : bool, optional
+        Add the ``pos_stream`` position-stream device to the scan so
+        motor positions are captured through the softgluezynq pipeline.
+    per_step : callable, optional
+        Hook for customizing the inner-loop messages.  See
+        :func:`bluesky.plan_stubs.one_nd_step` (the default).
+    md : dict, optional
+        Metadata to add to the run start.
 
     See Also
     --------
@@ -1077,9 +1137,30 @@ def lscan(
     number_of_points : int
         Number of points (inclusive of endpoints).
     time : float
-        Count time per point.
-    detectors, lockin, dichro, fixq, vortex_sgz, g_sgz, per_step, md :
-        See :func:`ascan`.
+        Count time per point (seconds).
+    detectors : list, optional
+        Detectors to read. If None, uses ``counters.detectors``.
+    lockin : bool, optional
+        Run as a lock-in scan. Requires ``pr_setup.config()`` to have
+        been run beforehand.
+    dichro : bool, optional
+        Run as a dichro scan. Requires ``pr_setup.config()`` beforehand.
+        Switches the x-ray polarization at every point using the
+        ``+ - - +`` sequence, multiplying the point count by 4.
+    fixq : bool, optional
+        Fix the diffractometer hkl during the scan.  Note: hkl is moved
+        *after* the other motors.
+    vortex_sgz : bool, optional
+        Trigger the Vortex detector via softgluezynq.  Requires both
+        the ``vortex`` and ``sgz_vortex`` devices to exist.
+    g_sgz : bool, optional
+        Add the ``pos_stream`` position-stream device to the scan so
+        motor positions are captured through the softgluezynq pipeline.
+    per_step : callable, optional
+        Hook for customizing the inner-loop messages.  See
+        :func:`bluesky.plan_stubs.one_nd_step` (the default).
+    md : dict, optional
+        Metadata to add to the run start.
 
     See Also
     --------
