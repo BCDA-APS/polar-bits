@@ -291,8 +291,8 @@ Module Contents
 
    Sweeps the active diffractometer's (h, k, l) pseudo axes along a straight
    line in reciprocal space from (h1, k1, l1) to (h2, k2, l2) in
-   ``number_of_points`` points. Delegates to :func:`ascan` so all the usual
-   flags (dichro, lockin, vortex_sgz, g_sgz, per_step) are supported.
+   ``number_of_points`` points. Delegates to :func:`ascan`; ``fixq`` is
+   forced off because the scan *is* the trajectory.
 
    :param h1: Initial and final ``h`` of the trajectory.
    :type h1: float
@@ -308,15 +308,28 @@ Module Contents
    :type l2: float
    :param number_of_points: Number of points (inclusive of endpoints).
    :type number_of_points: int
-   :param time: Count time per point.
+   :param time: Count time per point (seconds).
    :type time: float
-   :param detectors: See :func:`ascan`.
-   :param lockin: See :func:`ascan`.
-   :param dichro: See :func:`ascan`.
-   :param vortex_sgz: See :func:`ascan`.
-   :param g_sgz: See :func:`ascan`.
-   :param per_step: See :func:`ascan`.
-   :param md: See :func:`ascan`.
+   :param detectors: Detectors to read. If None, uses ``counters.detectors``.
+   :type detectors: list, optional
+   :param lockin: Run as a lock-in scan. Requires ``pr_setup.config()`` to have
+                  been run beforehand.
+   :type lockin: bool, optional
+   :param dichro: Run as a dichro scan. Requires ``pr_setup.config()`` beforehand.
+                  Switches the x-ray polarization at every point using the
+                  ``+ - - +`` sequence, multiplying the point count by 4.
+   :type dichro: bool, optional
+   :param vortex_sgz: Trigger the Vortex detector via softgluezynq.  Requires both
+                      the ``vortex`` and ``sgz_vortex`` devices to exist.
+   :type vortex_sgz: bool, optional
+   :param g_sgz: Add the ``pos_stream`` position-stream device to the scan so
+                 motor positions are captured through the softgluezynq pipeline.
+   :type g_sgz: bool, optional
+   :param per_step: Hook for customizing the inner-loop messages.  See
+                    :func:`bluesky.plan_stubs.one_nd_step` (the default).
+   :type per_step: callable, optional
+   :param md: Metadata to add to the run start.
+   :type md: dict, optional
 
    .. seealso:: :func:`ascan`, :func:`psiscan`
 
@@ -335,16 +348,31 @@ Module Contents
    :type stop: float
    :param number_of_points: Number of points (inclusive of endpoints).
    :type number_of_points: int
-   :param time: Count time per point.
+   :param time: Count time per point (seconds).
    :type time: float
-   :param detectors: See :func:`ascan`.
-   :param lockin: See :func:`ascan`.
-   :param dichro: See :func:`ascan`.
-   :param fixq: See :func:`ascan`.
-   :param vortex_sgz: See :func:`ascan`.
-   :param g_sgz: See :func:`ascan`.
-   :param per_step: See :func:`ascan`.
-   :param md: See :func:`ascan`.
+   :param detectors: Detectors to read. If None, uses ``counters.detectors``.
+   :type detectors: list, optional
+   :param lockin: Run as a lock-in scan. Requires ``pr_setup.config()`` to have
+                  been run beforehand.
+   :type lockin: bool, optional
+   :param dichro: Run as a dichro scan. Requires ``pr_setup.config()`` beforehand.
+                  Switches the x-ray polarization at every point using the
+                  ``+ - - +`` sequence, multiplying the point count by 4.
+   :type dichro: bool, optional
+   :param fixq: Fix the diffractometer hkl during the scan.  Note: hkl is moved
+                *after* the other motors.
+   :type fixq: bool, optional
+   :param vortex_sgz: Trigger the Vortex detector via softgluezynq.  Requires both
+                      the ``vortex`` and ``sgz_vortex`` devices to exist.
+   :type vortex_sgz: bool, optional
+   :param g_sgz: Add the ``pos_stream`` position-stream device to the scan so
+                 motor positions are captured through the softgluezynq pipeline.
+   :type g_sgz: bool, optional
+   :param per_step: Hook for customizing the inner-loop messages.  See
+                    :func:`bluesky.plan_stubs.one_nd_step` (the default).
+   :type per_step: callable, optional
+   :param md: Metadata to add to the run start.
+   :type md: dict, optional
 
    .. seealso:: :func:`ascan`, :func:`hklscan`, :func:`kscan`, :func:`lscan`
 
@@ -363,16 +391,31 @@ Module Contents
    :type stop: float
    :param number_of_points: Number of points (inclusive of endpoints).
    :type number_of_points: int
-   :param time: Count time per point.
+   :param time: Count time per point (seconds).
    :type time: float
-   :param detectors: See :func:`ascan`.
-   :param lockin: See :func:`ascan`.
-   :param dichro: See :func:`ascan`.
-   :param fixq: See :func:`ascan`.
-   :param vortex_sgz: See :func:`ascan`.
-   :param g_sgz: See :func:`ascan`.
-   :param per_step: See :func:`ascan`.
-   :param md: See :func:`ascan`.
+   :param detectors: Detectors to read. If None, uses ``counters.detectors``.
+   :type detectors: list, optional
+   :param lockin: Run as a lock-in scan. Requires ``pr_setup.config()`` to have
+                  been run beforehand.
+   :type lockin: bool, optional
+   :param dichro: Run as a dichro scan. Requires ``pr_setup.config()`` beforehand.
+                  Switches the x-ray polarization at every point using the
+                  ``+ - - +`` sequence, multiplying the point count by 4.
+   :type dichro: bool, optional
+   :param fixq: Fix the diffractometer hkl during the scan.  Note: hkl is moved
+                *after* the other motors.
+   :type fixq: bool, optional
+   :param vortex_sgz: Trigger the Vortex detector via softgluezynq.  Requires both
+                      the ``vortex`` and ``sgz_vortex`` devices to exist.
+   :type vortex_sgz: bool, optional
+   :param g_sgz: Add the ``pos_stream`` position-stream device to the scan so
+                 motor positions are captured through the softgluezynq pipeline.
+   :type g_sgz: bool, optional
+   :param per_step: Hook for customizing the inner-loop messages.  See
+                    :func:`bluesky.plan_stubs.one_nd_step` (the default).
+   :type per_step: callable, optional
+   :param md: Metadata to add to the run start.
+   :type md: dict, optional
 
    .. seealso:: :func:`ascan`, :func:`hklscan`, :func:`hscan`, :func:`lscan`
 
@@ -391,16 +434,31 @@ Module Contents
    :type stop: float
    :param number_of_points: Number of points (inclusive of endpoints).
    :type number_of_points: int
-   :param time: Count time per point.
+   :param time: Count time per point (seconds).
    :type time: float
-   :param detectors: See :func:`ascan`.
-   :param lockin: See :func:`ascan`.
-   :param dichro: See :func:`ascan`.
-   :param fixq: See :func:`ascan`.
-   :param vortex_sgz: See :func:`ascan`.
-   :param g_sgz: See :func:`ascan`.
-   :param per_step: See :func:`ascan`.
-   :param md: See :func:`ascan`.
+   :param detectors: Detectors to read. If None, uses ``counters.detectors``.
+   :type detectors: list, optional
+   :param lockin: Run as a lock-in scan. Requires ``pr_setup.config()`` to have
+                  been run beforehand.
+   :type lockin: bool, optional
+   :param dichro: Run as a dichro scan. Requires ``pr_setup.config()`` beforehand.
+                  Switches the x-ray polarization at every point using the
+                  ``+ - - +`` sequence, multiplying the point count by 4.
+   :type dichro: bool, optional
+   :param fixq: Fix the diffractometer hkl during the scan.  Note: hkl is moved
+                *after* the other motors.
+   :type fixq: bool, optional
+   :param vortex_sgz: Trigger the Vortex detector via softgluezynq.  Requires both
+                      the ``vortex`` and ``sgz_vortex`` devices to exist.
+   :type vortex_sgz: bool, optional
+   :param g_sgz: Add the ``pos_stream`` position-stream device to the scan so
+                 motor positions are captured through the softgluezynq pipeline.
+   :type g_sgz: bool, optional
+   :param per_step: Hook for customizing the inner-loop messages.  See
+                    :func:`bluesky.plan_stubs.one_nd_step` (the default).
+   :type per_step: callable, optional
+   :param md: Metadata to add to the run start.
+   :type md: dict, optional
 
    .. seealso:: :func:`ascan`, :func:`hklscan`, :func:`hscan`, :func:`kscan`
 

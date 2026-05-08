@@ -977,8 +977,8 @@ motors!</p></li>
 <dd><p>Linear hkl trajectory scan.</p>
 <p>Sweeps the active diffractometer’s (h, k, l) pseudo axes along a straight
 line in reciprocal space from (h1, k1, l1) to (h2, k2, l2) in
-<code class="docutils literal notranslate"><span class="pre">number_of_points</span></code> points. Delegates to <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a> so all the usual
-flags (dichro, lockin, vortex_sgz, g_sgz, per_step) are supported.</p>
+<code class="docutils literal notranslate"><span class="pre">number_of_points</span></code> points. Delegates to <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>; <code class="docutils literal notranslate"><span class="pre">fixq</span></code> is
+forced off because the scan <em>is</em> the trajectory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -989,14 +989,20 @@ flags (dichro, lockin, vortex_sgz, g_sgz, per_step) are supported.</p>
 <li><p><strong>l1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">l</span></code> of the trajectory.</p></li>
 <li><p><strong>l2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">l</span></code> of the trajectory.</p></li>
 <li><p><strong>number_of_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points (inclusive of endpoints).</p></li>
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point.</p></li>
-<li><p><strong>detectors</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>lockin</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>dichro</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>vortex_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>g_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>per_step</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>md</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point (seconds).</p></li>
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Detectors to read. If None, uses <code class="docutils literal notranslate"><span class="pre">counters.detectors</span></code>.</p></li>
+<li><p><strong>lockin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Run as a lock-in scan. Requires <code class="docutils literal notranslate"><span class="pre">pr_setup.config()</span></code> to have
+been run beforehand.</p></li>
+<li><p><strong>dichro</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Run as a dichro scan. Requires <code class="docutils literal notranslate"><span class="pre">pr_setup.config()</span></code> beforehand.
+Switches the x-ray polarization at every point using the
+<code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">+</span></code> sequence, multiplying the point count by 4.</p></li>
+<li><p><strong>vortex_sgz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Trigger the Vortex detector via softgluezynq.  Requires both
+the <code class="docutils literal notranslate"><span class="pre">vortex</span></code> and <code class="docutils literal notranslate"><span class="pre">sgz_vortex</span></code> devices to exist.</p></li>
+<li><p><strong>g_sgz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Add the <code class="docutils literal notranslate"><span class="pre">pos_stream</span></code> position-stream device to the scan so
+motor positions are captured through the softgluezynq pipeline.</p></li>
+<li><p><strong>per_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – Hook for customizing the inner-loop messages.  See
+<code class="xref py py-func docutils literal notranslate"><span class="pre">bluesky.plan_stubs.one_nd_step()</span></code> (the default).</p></li>
+<li><p><strong>md</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>optional</em>) – Metadata to add to the run start.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1019,15 +1025,22 @@ flags (dichro, lockin, vortex_sgz, g_sgz, per_step) are supported.</p>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">h</span></code> value.</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">h</span></code> value.</p></li>
 <li><p><strong>number_of_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points (inclusive of endpoints).</p></li>
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point.</p></li>
-<li><p><strong>detectors</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>lockin</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>dichro</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>fixq</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>vortex_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>g_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>per_step</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>md</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point (seconds).</p></li>
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Detectors to read. If None, uses <code class="docutils literal notranslate"><span class="pre">counters.detectors</span></code>.</p></li>
+<li><p><strong>lockin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Run as a lock-in scan. Requires <code class="docutils literal notranslate"><span class="pre">pr_setup.config()</span></code> to have
+been run beforehand.</p></li>
+<li><p><strong>dichro</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Run as a dichro scan. Requires <code class="docutils literal notranslate"><span class="pre">pr_setup.config()</span></code> beforehand.
+Switches the x-ray polarization at every point using the
+<code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">+</span></code> sequence, multiplying the point count by 4.</p></li>
+<li><p><strong>fixq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Fix the diffractometer hkl during the scan.  Note: hkl is moved
+<em>after</em> the other motors.</p></li>
+<li><p><strong>vortex_sgz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Trigger the Vortex detector via softgluezynq.  Requires both
+the <code class="docutils literal notranslate"><span class="pre">vortex</span></code> and <code class="docutils literal notranslate"><span class="pre">sgz_vortex</span></code> devices to exist.</p></li>
+<li><p><strong>g_sgz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Add the <code class="docutils literal notranslate"><span class="pre">pos_stream</span></code> position-stream device to the scan so
+motor positions are captured through the softgluezynq pipeline.</p></li>
+<li><p><strong>per_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – Hook for customizing the inner-loop messages.  See
+<code class="xref py py-func docutils literal notranslate"><span class="pre">bluesky.plan_stubs.one_nd_step()</span></code> (the default).</p></li>
+<li><p><strong>md</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>optional</em>) – Metadata to add to the run start.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1050,15 +1063,22 @@ flags (dichro, lockin, vortex_sgz, g_sgz, per_step) are supported.</p>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">k</span></code> value.</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">k</span></code> value.</p></li>
 <li><p><strong>number_of_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points (inclusive of endpoints).</p></li>
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point.</p></li>
-<li><p><strong>detectors</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>lockin</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>dichro</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>fixq</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>vortex_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>g_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>per_step</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>md</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point (seconds).</p></li>
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Detectors to read. If None, uses <code class="docutils literal notranslate"><span class="pre">counters.detectors</span></code>.</p></li>
+<li><p><strong>lockin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Run as a lock-in scan. Requires <code class="docutils literal notranslate"><span class="pre">pr_setup.config()</span></code> to have
+been run beforehand.</p></li>
+<li><p><strong>dichro</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Run as a dichro scan. Requires <code class="docutils literal notranslate"><span class="pre">pr_setup.config()</span></code> beforehand.
+Switches the x-ray polarization at every point using the
+<code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">+</span></code> sequence, multiplying the point count by 4.</p></li>
+<li><p><strong>fixq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Fix the diffractometer hkl during the scan.  Note: hkl is moved
+<em>after</em> the other motors.</p></li>
+<li><p><strong>vortex_sgz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Trigger the Vortex detector via softgluezynq.  Requires both
+the <code class="docutils literal notranslate"><span class="pre">vortex</span></code> and <code class="docutils literal notranslate"><span class="pre">sgz_vortex</span></code> devices to exist.</p></li>
+<li><p><strong>g_sgz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Add the <code class="docutils literal notranslate"><span class="pre">pos_stream</span></code> position-stream device to the scan so
+motor positions are captured through the softgluezynq pipeline.</p></li>
+<li><p><strong>per_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – Hook for customizing the inner-loop messages.  See
+<code class="xref py py-func docutils literal notranslate"><span class="pre">bluesky.plan_stubs.one_nd_step()</span></code> (the default).</p></li>
+<li><p><strong>md</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>optional</em>) – Metadata to add to the run start.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1081,15 +1101,22 @@ flags (dichro, lockin, vortex_sgz, g_sgz, per_step) are supported.</p>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">l</span></code> value.</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">l</span></code> value.</p></li>
 <li><p><strong>number_of_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points (inclusive of endpoints).</p></li>
-<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point.</p></li>
-<li><p><strong>detectors</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>lockin</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>dichro</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>fixq</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>vortex_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>g_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>per_step</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
-<li><p><strong>md</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point (seconds).</p></li>
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Detectors to read. If None, uses <code class="docutils literal notranslate"><span class="pre">counters.detectors</span></code>.</p></li>
+<li><p><strong>lockin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Run as a lock-in scan. Requires <code class="docutils literal notranslate"><span class="pre">pr_setup.config()</span></code> to have
+been run beforehand.</p></li>
+<li><p><strong>dichro</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Run as a dichro scan. Requires <code class="docutils literal notranslate"><span class="pre">pr_setup.config()</span></code> beforehand.
+Switches the x-ray polarization at every point using the
+<code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">+</span></code> sequence, multiplying the point count by 4.</p></li>
+<li><p><strong>fixq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Fix the diffractometer hkl during the scan.  Note: hkl is moved
+<em>after</em> the other motors.</p></li>
+<li><p><strong>vortex_sgz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Trigger the Vortex detector via softgluezynq.  Requires both
+the <code class="docutils literal notranslate"><span class="pre">vortex</span></code> and <code class="docutils literal notranslate"><span class="pre">sgz_vortex</span></code> devices to exist.</p></li>
+<li><p><strong>g_sgz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Add the <code class="docutils literal notranslate"><span class="pre">pos_stream</span></code> position-stream device to the scan so
+motor positions are captured through the softgluezynq pipeline.</p></li>
+<li><p><strong>per_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – Hook for customizing the inner-loop messages.  See
+<code class="xref py py-func docutils literal notranslate"><span class="pre">bluesky.plan_stubs.one_nd_step()</span></code> (the default).</p></li>
+<li><p><strong>md</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>optional</em>) – Metadata to add to the run start.</p></li>
 </ul>
 </dd>
 </dl>
