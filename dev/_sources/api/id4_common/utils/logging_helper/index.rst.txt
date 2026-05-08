@@ -27,8 +27,14 @@ Module Contents
    ``configure_logging(extra_logging_configs_path=...)``) so polar-bits keeps
    a single config file.
 
-   Falls back to the apsbits default (``<cwd>/.logs/``) when no LOG_PATH is
-   configured or when the centralized directory cannot be created — typically
-   a developer machine without access to the beamline filesystem.
+   Falls back to the apsbits default directory (``<cwd>/.logs/``) when no
+   LOG_PATH is configured or when the centralized directory cannot be
+   created — typically a developer machine without access to the beamline
+   filesystem.  The IPython log file always uses our filename
+   (``ipython_logs.log``), regardless of which directory wins.
+
+   Idempotent: subsequent calls are no-ops so importing several beamline
+   packages (or importing one whose ``__init__.py`` chains through
+   id4_common) doesn't re-run `%logstart` and re-print the settings block.
 
 

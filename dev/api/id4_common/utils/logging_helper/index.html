@@ -709,9 +709,14 @@
 on the fly (via a temporary YAML file passed to apsbits’
 <code class="docutils literal notranslate"><span class="pre">configure_logging(extra_logging_configs_path=...)</span></code>) so polar-bits keeps
 a single config file.</p>
-<p>Falls back to the apsbits default (<code class="docutils literal notranslate"><span class="pre">&lt;cwd&gt;/.logs/</span></code>) when no LOG_PATH is
-configured or when the centralized directory cannot be created — typically
-a developer machine without access to the beamline filesystem.</p>
+<p>Falls back to the apsbits default directory (<code class="docutils literal notranslate"><span class="pre">&lt;cwd&gt;/.logs/</span></code>) when no
+LOG_PATH is configured or when the centralized directory cannot be
+created — typically a developer machine without access to the beamline
+filesystem.  The IPython log file always uses our filename
+(<code class="docutils literal notranslate"><span class="pre">ipython_logs.log</span></code>), regardless of which directory wins.</p>
+<p>Idempotent: subsequent calls are no-ops so importing several beamline
+packages (or importing one whose <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> chains through
+id4_common) doesn’t re-run <cite>%logstart</cite> and re-print the settings block.</p>
 </dd></dl>
 
 </section>
