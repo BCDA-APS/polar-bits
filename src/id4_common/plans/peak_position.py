@@ -8,8 +8,8 @@ import numpy as np
 from apsbits.core.instrument_init import oregistry
 from apstools.utils import xy_statistics
 from bluesky.plan_stubs import null
-from polartools.load_data import load_catalog
 
+from ..utils.run_engine import cat
 from .local_scans import mv
 
 # Short aliases for xy_statistics features (mirrors apstools.lineup2).
@@ -57,9 +57,10 @@ def peak_pos(scan_id=-1, x=None, y=None):
     """
     Compute peak statistics for one or more detectors of a previous scan.
 
-    Loads scan data from the ``"4id_polar"`` catalog and computes
-    statistics with :func:`apstools.utils.xy_statistics` — the same
-    numpy-based machinery used by ``apstools.plans.alignment.lineup2``.
+    Loads scan data from the shared session catalog
+    (``id4_common.utils.run_engine.cat``) and computes statistics with
+    :func:`apstools.utils.xy_statistics` — the same numpy-based machinery
+    used by ``apstools.plans.alignment.lineup2``.
 
     Parameters
     ----------
@@ -85,7 +86,6 @@ def peak_pos(scan_id=-1, x=None, y=None):
                 "fwhm": {detector: fwhm, ...},
             }
     """
-    cat = load_catalog("4id_polar")
     run = cat[scan_id]
     start = run.metadata["start"]
 
@@ -184,7 +184,6 @@ def peak(
         >5-min move confirmation). If False, all such prompts are
         skipped.
     """
-    cat = load_catalog("4id_polar")
     run = cat[scan_id]
     start = run.metadata["start"]
 
@@ -299,8 +298,28 @@ def pmax(scan_id=-1, positioner=None, detector=None, confirm=True):
     """
     Plan that moves a positioner to the x value at peak maximum.
 
-    Convenience wrapper for ``peak(scan_id, feature="x_at_max_y", ...)``.
-    See :func:`peak` for parameters.
+    Convenience wrapper for :func:`peak` with ``feature="x_at_max_y"``.
+
+    Parameters
+    ----------
+    scan_id : int, optional
+        Catalog index of the scan to analyse. Default ``-1`` (last scan);
+        negative indices count from the end.
+    positioner : ophyd object, optional
+        Device to move. If None, the scan's fastest-changing motor is
+        used (with an interactive override for multi-motor scans).
+    detector : str, optional
+        Detector field name passed through to :func:`peak_pos` as ``y``.
+    confirm : bool, optional
+        If True (default), interactive prompts are shown when appropriate
+        (positioner selection for multi-motor scans and the >5-min move
+        confirmation). If False, all such prompts are skipped.
+
+    See Also
+    --------
+    :func:`peak`
+    :func:`pmin`
+    :func:`peak_pos`
     """
     yield from peak(
         scan_id=scan_id,
@@ -315,8 +334,28 @@ def pmin(scan_id=-1, positioner=None, detector=None, confirm=True):
     """
     Plan that moves a positioner to the x value at peak minimum.
 
-    Convenience wrapper for ``peak(scan_id, feature="x_at_min_y", ...)``.
-    See :func:`peak` for parameters.
+    Convenience wrapper for :func:`peak` with ``feature="x_at_min_y"``.
+
+    Parameters
+    ----------
+    scan_id : int, optional
+        Catalog index of the scan to analyse. Default ``-1`` (last scan);
+        negative indices count from the end.
+    positioner : ophyd object, optional
+        Device to move. If None, the scan's fastest-changing motor is
+        used (with an interactive override for multi-motor scans).
+    detector : str, optional
+        Detector field name passed through to :func:`peak_pos` as ``y``.
+    confirm : bool, optional
+        If True (default), interactive prompts are shown when appropriate
+        (positioner selection for multi-motor scans and the >5-min move
+        confirmation). If False, all such prompts are skipped.
+
+    See Also
+    --------
+    :func:`peak`
+    :func:`pmax`
+    :func:`peak_pos`
     """
     yield from peak(
         scan_id=scan_id,
