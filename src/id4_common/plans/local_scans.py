@@ -840,7 +840,7 @@ def hklscan(
     k2,
     l1,
     l2,
-    num,
+    number_of_points,
     time,
     detectors=None,
     lockin=False,
@@ -854,9 +854,9 @@ def hklscan(
     Linear hkl trajectory scan.
 
     Sweeps the active diffractometer's (h, k, l) pseudo axes along a straight
-    line in reciprocal space from (h1, k1, l1) to (h2, k2, l2) in `num`
-    points. Delegates to :func:`ascan` so all the usual flags (dichro,
-    lockin, vortex_sgz, g_sgz, per_step) are supported.
+    line in reciprocal space from (h1, k1, l1) to (h2, k2, l2) in
+    ``number_of_points`` points. Delegates to :func:`ascan` so all the usual
+    flags (dichro, lockin, vortex_sgz, g_sgz, per_step) are supported.
 
     Parameters
     ----------
@@ -866,7 +866,7 @@ def hklscan(
         Initial and final ``k`` of the trajectory.
     l1, l2 : float
         Initial and final ``l`` of the trajectory.
-    num : int
+    number_of_points : int
         Number of points (inclusive of endpoints).
     time : float
         Count time per point.
@@ -899,7 +899,7 @@ def hklscan(
         diff.l,
         l1,
         l2,
-        num,
+        number_of_points,
         time,
         detectors=detectors,
         lockin=lockin,
@@ -912,7 +912,9 @@ def hklscan(
     )
 
 
-def _single_axis_scan(axis_name, plan_label, start, stop, num, time, **kwargs):
+def _single_axis_scan(
+    axis_name, plan_label, start, stop, number_of_points, time, **kwargs
+):
     """Helper: ascan over a single (h/k/l) pseudo axis of the active diffractometer."""
     diff = get_diffractometer()
     if diff is None:
@@ -926,19 +928,19 @@ def _single_axis_scan(axis_name, plan_label, start, stop, num, time, **kwargs):
         getattr(diff, axis_name),
         start,
         stop,
-        num,
+        number_of_points,
         time,
         md=md,
         **kwargs,
     )
 
 
-def hscan(start, stop, num, time, **kwargs):
+def hscan(start, stop, number_of_points, time, **kwargs):
     """
     Sweep the active diffractometer's ``h`` pseudo axis.
 
-    Wraps :func:`ascan(diff.h, start, stop, num, time, ...)`. Forwards
-    ``detectors``, ``lockin``, ``dichro``, ``fixq``, ``vortex_sgz``,
+    Wraps :func:`ascan(diff.h, start, stop, number_of_points, time, ...)`.
+    Forwards ``detectors``, ``lockin``, ``dichro``, ``fixq``, ``vortex_sgz``,
     ``g_sgz``, ``per_step``, and ``md`` kwargs to ``ascan``.
 
     See Also
@@ -946,27 +948,33 @@ def hscan(start, stop, num, time, **kwargs):
     :func:`ascan`
     :func:`hklscan`
     """
-    yield from _single_axis_scan("h", "hscan", start, stop, num, time, **kwargs)
+    yield from _single_axis_scan(
+        "h", "hscan", start, stop, number_of_points, time, **kwargs
+    )
 
 
-def kscan(start, stop, num, time, **kwargs):
+def kscan(start, stop, number_of_points, time, **kwargs):
     """
     Sweep the active diffractometer's ``k`` pseudo axis.
 
-    Wraps :func:`ascan(diff.k, start, stop, num, time, ...)`. See
-    :func:`hscan` for forwarded kwargs.
+    Wraps :func:`ascan(diff.k, start, stop, number_of_points, time, ...)`.
+    See :func:`hscan` for forwarded kwargs.
     """
-    yield from _single_axis_scan("k", "kscan", start, stop, num, time, **kwargs)
+    yield from _single_axis_scan(
+        "k", "kscan", start, stop, number_of_points, time, **kwargs
+    )
 
 
-def lscan(start, stop, num, time, **kwargs):
+def lscan(start, stop, number_of_points, time, **kwargs):
     """
     Sweep the active diffractometer's ``l`` pseudo axis.
 
-    Wraps :func:`ascan(diff.l, start, stop, num, time, ...)`. See
-    :func:`hscan` for forwarded kwargs.
+    Wraps :func:`ascan(diff.l, start, stop, number_of_points, time, ...)`.
+    See :func:`hscan` for forwarded kwargs.
     """
-    yield from _single_axis_scan("l", "lscan", start, stop, num, time, **kwargs)
+    yield from _single_axis_scan(
+        "l", "lscan", start, stop, number_of_points, time, **kwargs
+    )
 
 
 _PSI_MODES = {
@@ -978,7 +986,7 @@ _PSI_MODES = {
 def psiscan(
     psi_start,
     psi_stop,
-    num,
+    number_of_points,
     time,
     hkl=None,
     hkl2=None,
@@ -992,16 +1000,16 @@ def psiscan(
     Azimuthal psi scan at fixed (h, k, l).
 
     Wraps `hklpy2.scan_psi`, holding (h, k, l) fixed while sweeping the
-    azimuthal extra parameter from `psi_start` to `psi_stop` in `num` points.
-    Runs on the active diffractometer (e.g. ``huber_euler``) — its hkl
-    engine exposes the ``psi constant horizontal`` / ``psi constant
-    vertical`` modes used here.
+    azimuthal extra parameter from ``psi_start`` to ``psi_stop`` in
+    ``number_of_points`` points. Runs on the active diffractometer (e.g.
+    ``huber_euler``) — its hkl engine exposes the ``psi constant
+    horizontal`` / ``psi constant vertical`` modes used here.
 
     Parameters
     ----------
     psi_start, psi_stop : float
         Azimuthal angle range (degrees).
-    num : int
+    number_of_points : int
         Number of points (inclusive of endpoints).
     time : float
         Count time per point. Must be > 0.
@@ -1119,7 +1127,7 @@ def psiscan(
             hkl2=hkl2,
             psi_start=psi_start,
             psi_stop=psi_stop,
-            num=num,
+            num=number_of_points,
             mode=mode,
             psi_axis=psi_axis,
             fail_on_exception=fail_on_exception,
