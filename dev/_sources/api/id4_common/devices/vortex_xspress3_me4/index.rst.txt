@@ -303,19 +303,6 @@ Module Contents
 
 
 
-   .. py:method:: make_data_key()
-
-      Override DetectorBase.make_data_key for the Xspress3 cam.
-
-      Upstream `Xspress3DetectorCam` lacks a `data_type` Component (unlike
-      `EigerDetectorCam` and `DanteCAM1`), so the base implementation
-      crashes with `AttributeError: 'NoneType' object has no attribute
-      'get'` whenever the HDF1 plugin is asked to describe itself — i.e.
-      on every scan after `auto_save_on()`.  Hardcode the spectrum dtype
-      to `uint32`, which is what the Xspress3 IOC writes to HDF5.
-
-
-
    .. py:method:: align_on(time=0.1)
 
       Start detector in alignment mode
