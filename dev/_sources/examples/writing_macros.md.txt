@@ -47,15 +47,20 @@ A typical session startup file looks like this:
 ```python
 # startup_4idh.py
 from apsbits.core.instrument_init import oregistry
-from id4_common.utils.experiment_utils import experiment_load_from_bluesky
+from id4_common.utils.experiment_utils import experiment_resume
 from id4_common.utils.counters_class import counters
 from id4_common.utils.pr_setup import pr_setup
 import matplotlib.pyplot as plt
 
 plt.ion()    # enable interactive plots
 
-# Restore experiment from last Bluesky run
-experiment_load_from_bluesky()
+# Restore the previous session from its YAML snapshot.
+# experiment_resume() auto-discovers the snapshot in the current working
+# directory or via cat[-1] (whichever it finds first). If neither is
+# available — first run of an experiment — fall back to the full
+# experiment_setup() prompt, or to experiment_load_from_bluesky() to
+# re-derive from a Bluesky run document.
+experiment_resume()
 
 # Energy tracking
 energy = oregistry.find("energy")
@@ -217,7 +222,7 @@ When running from a script (not interactive), pass all arguments to
 `experiment_setup()` as keywords so it does not prompt:
 
 ```python
-from id4_common.utils.experiment_utils import experiment_setup
+from id4_common.utils.experiment_utils import experiment_setup, experiment
 from apsbits.utils.config_loaders import get_config
 from pathlib import Path
 
@@ -228,7 +233,7 @@ experiment_setup(
     sample          = "EuAl4",
     server          = "dserv",
     experiment_name = "Frontini_26-1",
-    reset_scan_id   = 1,
+    reset_scan_id   = 0,        # last scan_id = 0 → next scan = 1
 )
 
 # Override the data path if needed
@@ -237,6 +242,17 @@ experiment.base_experiment_path = (
     Path(iconfig["DM_ROOT_PATH"]) / "2026-1/Frontini_26-1/data"
 )
 ```
+
+`reset_scan_id` is the **last completed** scan number, not the next one
+— `0` means "fresh start, next scan will be `1`"; `47` means "continue
+from where we left off, next scan will be `48`". `-1` is the no-op
+sentinel.
+
+If you do not want `experiment_setup()` to talk to Data Management at
+all (e.g. DM is down), nothing special is needed: the function probes
+DM at the start and falls back to `dserv` automatically with a single
+warning. To force the bypass even when DM is up, pass
+`server="dserv"` or `esaf_id="dev"`/`proposal_id="dev"`.
 
 ---
 

@@ -235,6 +235,9 @@ Module Contents
    .. py:attribute:: erase_on_start
 
 
+   .. py:attribute:: data_type
+
+
    .. py:attribute:: offset
       :value: None
 

@@ -525,7 +525,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/monochromator/index.html">id4_common.devices.monochromator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/nanopositioner/index.html">id4_common.devices.nanopositioner</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/phaseplates/index.html">id4_common.devices.phaseplates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../devices/piezo_jena/index.html">id4_common.devices.piezo_jena</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_diffractometer/index.html">id4_common.devices.polar_diffractometer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_diffractometer_hklpy2/index.html">id4_common.devices.polar_diffractometer_hklpy2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_status/index.html">id4_common.devices.polar_status</a></li>
@@ -533,7 +532,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/preamps/index.html">id4_common.devices.preamps</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/quadems/index.html">id4_common.devices.quadems</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/qxscan_device/index.html">id4_common.devices.qxscan_device</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../devices/ringlight/index.html">id4_common.devices.ringlight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/scaler/index.html">id4_common.devices.scaler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/scaler_dual_ctr8/index.html">id4_common.devices.scaler_dual_ctr8</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/shutters/index.html">id4_common.devices.shutters</a></li>
@@ -564,7 +562,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../plans/flyscan_demo/index.html">id4_common.plans.flyscan_demo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/local_preprocessors/index.html">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/local_scans/index.html">id4_common.plans.local_scans</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../plans/peak_position/index.html">id4_common.plans.peak_position</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/sim_plans/index.html">id4_common.plans.sim_plans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/workflow_plan/index.html">id4_common.plans.workflow_plan</a></li>
 </ul>
@@ -590,6 +587,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logging_helper/index.html">id4_common.utils.logging_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
@@ -695,9 +693,14 @@
                   
   <section id="module-id4_common.utils.run_engine_init">
 <span id="id4-common-utils-run-engine-init"></span><h1>id4_common.utils.run_engine_init<a class="headerlink" href="#module-id4_common.utils.run_engine_init" title="Link to this heading">#</a></h1>
-<p>This module provides the function init_RE to create and configure a
-Bluesky RunEngine with metadata storage, subscriptions, and various
-settings based on a configuration dictionary.</p>
+<p>Local copy of <code class="docutils literal notranslate"><span class="pre">apsbits.core.run_engine_init.init_RE</span></code> that fixes the
+broken <code class="docutils literal notranslate"><span class="pre">handler_name</span></code> selector. Upstream apsbits 2.0.1 hard-codes
+<code class="docutils literal notranslate"><span class="pre">handler_name</span> <span class="pre">=</span> <span class="pre">StoredDict</span></code> (the class object) and then compares it to
+the string <code class="docutils literal notranslate"><span class="pre">&quot;PersistentDict&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;StoredDict&quot;</span></code> — both branches are
+always False, so <code class="docutils literal notranslate"><span class="pre">RE.md</span></code> is never wired up to the on-disk
+PersistentDict and <cite>scan_id</cite> (etc.) never restore on startup.</p>
+<p>Drop this shim once apsbits ships a release that picks the handler from
+the path layout instead of pinning it to a class.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 </tbody>
@@ -712,47 +715,13 @@ settings based on a configuration dictionary.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.run_engine_init.init_RE">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.run_engine_init.</span></span><span class="sig-name descname"><span class="pre">init_RE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iconfig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bec_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cat_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">bluesky.RunEngine</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bluesky.SupplementalData</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#id4_common.utils.run_engine_init.init_RE" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.run_engine_init.</span></span><span class="sig-name descname"><span class="pre">init_RE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iconfig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.14)"><span class="pre">collections.abc.Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subscribers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">bluesky.RunEngine</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bluesky.SupplementalData</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#id4_common.utils.run_engine_init.init_RE" title="Link to this definition">#</a></dt>
 <dd><p>Initialize and configure a Bluesky RunEngine instance.</p>
-<p>This function creates a Bluesky RunEngine, sets up metadata storage,
-subscriptions, and various preprocessors based on the provided
-configuration dictionary. It configures the control layer and timeouts,
-attaches supplemental data for baselines and monitors, and optionally
-adds a progress bar and metadata updates from a catalog or
-BestEffortCallback.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>iconfig</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – Configuration dictionary with keys:
-- “RUN_ENGINE”: A dict with RunEngine-specific settings.
-- “DEFAULT_METADATA”: (Optional) Default metadata.
-- “USE_PROGRESS_BAR”: (Optional) Boolean to enable progress bar.
-- “OPHYD”: A dict for control layer settings
-(e.g., “CONTROL_LAYER” and “TIMEOUTS”).</p></li>
-<li><p><strong>bec_instance</strong> (<em>Optional</em><em>[</em><em>Any</em><em>]</em>) – Instance of BestEffortCallback
-for subscribing to the RunEngine. Defaults to None.</p></li>
-<li><p><strong>cat_instance</strong> (<em>Optional</em><em>[</em><em>Any</em><em>]</em>) – Instance of a databroker catalog
-for subscribing to the RunEngine. Defaults to None.</p></li>
-<li><p><strong>**kwargs</strong> – Additional keyword arguments passed to the RunEngine
-constructor. For example, run_returns_result=True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple
-containing the configured RunEngine and its SupplementalData.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[bluesky.RunEngine, bluesky.SupplementalData]</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>The function attempts to set up persistent metadata storage in
-the RE.md attr. If an error occurs during creation of the
-metadata storage handler, the error is logged and the function
-proceeds without persistent metadata. Subscriptions are added
-for the catalog and BestEffortCallback if provided, and
-additional configurations such as control layer, timeouts, and
-progress bar integration are applied.</p>
+<p>Mirrors <code class="xref py py-func docutils literal notranslate"><span class="pre">apsbits.core.run_engine_init.init_RE()</span></code>. The only
+behavioural difference is <code class="xref py py-data docutils literal notranslate"><span class="pre">handler_name</span></code>, which here selects
+<code class="docutils literal notranslate"><span class="pre">&quot;StoredDict&quot;</span></code> for a file <code class="docutils literal notranslate"><span class="pre">MD_PATH</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;PersistentDict&quot;</span></code>
+otherwise — the upstream version hard-codes the class and never
+actually restores from disk.</p>
 </dd></dl>
 
 </section>
