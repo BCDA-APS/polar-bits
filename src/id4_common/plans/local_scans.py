@@ -935,45 +935,174 @@ def _single_axis_scan(
     )
 
 
-def hscan(start, stop, number_of_points, time, **kwargs):
+def hscan(
+    start,
+    stop,
+    number_of_points,
+    time,
+    detectors=None,
+    lockin=False,
+    dichro=False,
+    fixq=False,
+    vortex_sgz=False,
+    g_sgz=False,
+    per_step=None,
+    md=None,
+):
     """
     Sweep the active diffractometer's ``h`` pseudo axis.
 
-    Wraps :func:`ascan(diff.h, start, stop, number_of_points, time, ...)`.
-    Forwards ``detectors``, ``lockin``, ``dichro``, ``fixq``, ``vortex_sgz``,
-    ``g_sgz``, ``per_step``, and ``md`` kwargs to ``ascan``.
+    Thin wrapper around :func:`ascan(diff.h, start, stop, number_of_points,
+    time, ...)` that tags the run with ``plan_name="hscan"`` so
+    :func:`peak` can identify the scan axis.
+
+    Parameters
+    ----------
+    start, stop : float
+        Initial and final ``h`` value.
+    number_of_points : int
+        Number of points (inclusive of endpoints).
+    time : float
+        Count time per point.
+    detectors, lockin, dichro, fixq, vortex_sgz, g_sgz, per_step, md :
+        See :func:`ascan`.
 
     See Also
     --------
     :func:`ascan`
     :func:`hklscan`
+    :func:`kscan`
+    :func:`lscan`
     """
     yield from _single_axis_scan(
-        "h", "hscan", start, stop, number_of_points, time, **kwargs
+        "h",
+        "hscan",
+        start,
+        stop,
+        number_of_points,
+        time,
+        detectors=detectors,
+        lockin=lockin,
+        dichro=dichro,
+        fixq=fixq,
+        vortex_sgz=vortex_sgz,
+        g_sgz=g_sgz,
+        per_step=per_step,
+        md=md,
     )
 
 
-def kscan(start, stop, number_of_points, time, **kwargs):
+def kscan(
+    start,
+    stop,
+    number_of_points,
+    time,
+    detectors=None,
+    lockin=False,
+    dichro=False,
+    fixq=False,
+    vortex_sgz=False,
+    g_sgz=False,
+    per_step=None,
+    md=None,
+):
     """
     Sweep the active diffractometer's ``k`` pseudo axis.
 
-    Wraps :func:`ascan(diff.k, start, stop, number_of_points, time, ...)`.
-    See :func:`hscan` for forwarded kwargs.
+    Thin wrapper around :func:`ascan(diff.k, start, stop, number_of_points,
+    time, ...)` that tags the run with ``plan_name="kscan"`` so
+    :func:`peak` can identify the scan axis.
+
+    Parameters
+    ----------
+    start, stop : float
+        Initial and final ``k`` value.
+    number_of_points : int
+        Number of points (inclusive of endpoints).
+    time : float
+        Count time per point.
+    detectors, lockin, dichro, fixq, vortex_sgz, g_sgz, per_step, md :
+        See :func:`ascan`.
+
+    See Also
+    --------
+    :func:`ascan`
+    :func:`hklscan`
+    :func:`hscan`
+    :func:`lscan`
     """
     yield from _single_axis_scan(
-        "k", "kscan", start, stop, number_of_points, time, **kwargs
+        "k",
+        "kscan",
+        start,
+        stop,
+        number_of_points,
+        time,
+        detectors=detectors,
+        lockin=lockin,
+        dichro=dichro,
+        fixq=fixq,
+        vortex_sgz=vortex_sgz,
+        g_sgz=g_sgz,
+        per_step=per_step,
+        md=md,
     )
 
 
-def lscan(start, stop, number_of_points, time, **kwargs):
+def lscan(
+    start,
+    stop,
+    number_of_points,
+    time,
+    detectors=None,
+    lockin=False,
+    dichro=False,
+    fixq=False,
+    vortex_sgz=False,
+    g_sgz=False,
+    per_step=None,
+    md=None,
+):
     """
     Sweep the active diffractometer's ``l`` pseudo axis.
 
-    Wraps :func:`ascan(diff.l, start, stop, number_of_points, time, ...)`.
-    See :func:`hscan` for forwarded kwargs.
+    Thin wrapper around :func:`ascan(diff.l, start, stop, number_of_points,
+    time, ...)` that tags the run with ``plan_name="lscan"`` so
+    :func:`peak` can identify the scan axis.
+
+    Parameters
+    ----------
+    start, stop : float
+        Initial and final ``l`` value.
+    number_of_points : int
+        Number of points (inclusive of endpoints).
+    time : float
+        Count time per point.
+    detectors, lockin, dichro, fixq, vortex_sgz, g_sgz, per_step, md :
+        See :func:`ascan`.
+
+    See Also
+    --------
+    :func:`ascan`
+    :func:`hklscan`
+    :func:`hscan`
+    :func:`kscan`
     """
     yield from _single_axis_scan(
-        "l", "lscan", start, stop, number_of_points, time, **kwargs
+        "l",
+        "lscan",
+        start,
+        stop,
+        number_of_points,
+        time,
+        detectors=detectors,
+        lockin=lockin,
+        dichro=dichro,
+        fixq=fixq,
+        vortex_sgz=vortex_sgz,
+        g_sgz=g_sgz,
+        per_step=per_step,
+        md=md,
     )
 
 
