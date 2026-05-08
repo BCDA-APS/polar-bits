@@ -1130,6 +1130,18 @@ file saving.</p>
 <span class="sig-name descname"><span class="pre">hdf1_file_format</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%s/%s_%6.6d.h5'</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.hdf1_file_format" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexXspress37.make_data_key">
+<span class="sig-name descname"><span class="pre">make_data_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.make_data_key" title="Link to this definition">#</a></dt>
+<dd><p>Override DetectorBase.make_data_key for the Xspress3 cam.</p>
+<p>Upstream <cite>Xspress3DetectorCam</cite> lacks a <cite>data_type</cite> Component (unlike
+<cite>EigerDetectorCam</cite> and <cite>DanteCAM1</cite>), so the base implementation
+crashes with <cite>AttributeError: ‘NoneType’ object has no attribute
+‘get’</cite> whenever the HDF1 plugin is asked to describe itself — i.e.
+on every scan after <cite>auto_save_on()</cite>.  Hardcode the spectrum dtype
+to <cite>uint32</cite>, which is what the Xspress3 IOC writes to HDF5.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me7.VortexXspress37.num_channels">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">num_channels</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.num_channels" title="Link to this definition">#</a></dt>
@@ -1388,6 +1400,7 @@ upcoming scan.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.hdf1"><code class="docutils literal notranslate"><span class="pre">VortexXspress37.hdf1</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.default_folder"><code class="docutils literal notranslate"><span class="pre">VortexXspress37.default_folder</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.hdf1_file_format"><code class="docutils literal notranslate"><span class="pre">VortexXspress37.hdf1_file_format</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.make_data_key"><code class="docutils literal notranslate"><span class="pre">VortexXspress37.make_data_key()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.num_channels"><code class="docutils literal notranslate"><span class="pre">VortexXspress37.num_channels</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.align_on"><code class="docutils literal notranslate"><span class="pre">VortexXspress37.align_on()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me7.VortexXspress37.align_off"><code class="docutils literal notranslate"><span class="pre">VortexXspress37.align_off()</span></code></a></li>
