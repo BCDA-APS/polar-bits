@@ -922,10 +922,10 @@ def experiment_change_sample(
 
 
 def experiment_load_from_bluesky(
-    reset_scan_id: int = RESET_SCAN_ID_NOOP,
+    scan_id: int =-1, reset_scan_id: int = RESET_SCAN_ID_NOOP,
 ) -> None:
     """Restore experiment state from a previous Bluesky run."""
-    experiment.load_from_bluesky(reset_scan_id=reset_scan_id)
+    experiment.load_from_bluesky(scan_id=scan_id, reset_scan_id=reset_scan_id)
 
 
 def experiment_resume(path: str | Path | None = None) -> None:
