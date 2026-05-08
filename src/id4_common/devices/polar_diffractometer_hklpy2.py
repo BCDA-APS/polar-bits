@@ -473,6 +473,9 @@ class HPDiffractometer(DiffractometerMixin, HPDiffractometerBase):
     nanoz = FormattedComponent(
         EpicsMotor, "4idgSoftX:jena:m3", labels=("motor",)
     )
+    xeryon = FormattedComponent(
+        EpicsMotor, "4idgSoftX:xeryon:m1", labels=("motor",)
+    )
 
 
 CradleDiffractometerPSI = diffractometer_class_factory(

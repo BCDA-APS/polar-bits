@@ -37,6 +37,7 @@ Auxilary HKL functions.
     ~read_config
     ~restore_huber_from_scan
     ~set_detector
+    ~theta0
 
 
 Provide a simplified UI for hklpy2 diffractometer users.
@@ -47,6 +48,7 @@ register that instance here calling `set_diffractometer(instance)`.
 
 import asyncio
 import logging
+import math
 import pathlib
 
 import yaml
@@ -110,6 +112,7 @@ __all__ = """
     read_config
     restore_huber_from_scan
     set_detector
+    theta0
     geometries
     set_diffractometer
 """.split()
@@ -205,7 +208,8 @@ def change_diffractometer(diffractometer=None):
     1. Selects the diffractometer (interactive prompt or argument).
     2. Applies the appropriate axis constraints.
     3. Creates aliases for all real diffractometer axes in the calling
-       namespace (mu, gamma, delta, chi, phi, tau).
+       namespace (mu, gamma, delta, chi, phi, tau) and the reciprocal-space
+       pseudo axes (h, k, l).
 
     Parameters
     ----------
@@ -243,13 +247,16 @@ def change_diffractometer(diffractometer=None):
     if new_geom.name == "huber_euler":
         set_constraints(-1, 1, 0, 90, -20, 200, -180, 180, -2, 140, -5, 50)
     elif new_geom.name == "huber_hp":
-        set_constraints(-1, 1, 0, 90, -7, 7, -7, 7, -2, 140, -5, 50)
+        set_constraints(-1, 1, 0, 90, 80, 100, -7, 7, -2, 140, -5, 50)
 
     aliases = {
         axis: getattr(new_geom, axis) for axis in new_geom.real_axis_names
     }
     aliases.update(
         {
+            "h": new_geom.h,
+            "k": new_geom.k,
+            "l": new_geom.l,
             "ath": new_geom.ana.th,
             "atth": new_geom.ana.tth,
             "eta": new_geom.ana.eta,
@@ -267,6 +274,7 @@ def change_diffractometer(diffractometer=None):
     elif new_geom.name == "huber_hp":
         aliases.update(
             {
+                "xeryon": new_geom.xeryon,
                 "x": new_geom.x,
                 "y": new_geom.y,
                 "z": new_geom.z,
@@ -389,7 +397,7 @@ def sampleChange(sample_key=None):
         print("Sample keys:", list(d))
         sample_key = (
             input("\nEnter sample key [{}]: ".format(_geom_.sample.name))
-            or _geom_.calc.sample.name
+            or _geom_.sample.name
         )
     try:
         _geom_.sample = sample_key  # define the current sample
@@ -528,7 +536,7 @@ def compute_UB():
     _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
 
     sample = _geom_.sample
-    print("Computing UB!")
+    print("Computing UB...")
     sample.core.calc_UB(
         sample.reflections.order[0], sample.reflections.order[1]
     )
@@ -571,6 +579,31 @@ class Sync_UB_Matrix:
             if ptarget is not None and hasattr(ptarget, "move"):
                 psource = getattr(self.source, axis_name)
                 ptarget.move(psource.position)
+
+        # Sync the azimuthal reference reflection (h2, k2, l2) extras of
+        # the psi constant mode. Read from source.core.all_extras so it
+        # works regardless of source's current mode, then push to target
+        # by temporarily switching to a psi-capable mode if needed.
+        src_extras = self.source.core.all_extras
+        h2k2l2 = {
+            k: src_extras[k] for k in ("h2", "k2", "l2") if k in src_extras
+        }
+        if len(h2k2l2) == 3:
+            psi_modes = [
+                m for m in self.target.core.modes if "psi" in m.lower()
+            ]
+            if psi_modes:
+                saved_mode = self.target.core.mode
+                if "psi" not in saved_mode.lower():
+                    self.target.core.mode = psi_modes[0]
+                try:
+                    current_extras = self.target.core.extras
+                    merged = {**h2k2l2}
+                    if "psi" in current_extras:
+                        merged["psi"] = current_extras.get("psi", 0.0)
+                    self.target.core.extras = merged
+                finally:
+                    self.target.core.mode = saved_mode
 
 
 def setor0():
@@ -1154,7 +1187,7 @@ def ca(h, k, l):
         # print(pos)
         print("\n   Calculated Positions:")
         print(
-            "\n   H K L = {:5f} {:5f} {:5f}".format(
+            "\n   H K L = {:5f}, {:5f}, {:5f}".format(
                 h,
                 k,
                 l,
@@ -1204,6 +1237,19 @@ def _wh():
         f"\n   {' '.join(_geom_.pseudo_positioners._fields).upper()}"
         f" = {', '.join([f'{v.position:5f}' for v in _geom_.pseudo_positioners])}"
     )
+
+    # Snapshot the current (h, k, l) into uppercase H/K/L globals so the
+    # user can reuse them at the prompt (e.g. `mv(diff.h, H+0.01, ...)`).
+    hkl_globals = {
+        "H": _geom_.h.position,
+        "K": _geom_.k.position,
+        "L": _geom_.l.position,
+    }
+    try:
+        ip = get_ipython()  # — available in IPython / Bluesky sessions
+        ip.push(hkl_globals)
+    except NameError:
+        globals().update(hkl_globals)
     print(
         f"\n   Lambda (Energy) = {_geom_.beam.wavelength.get():6.4f} \u212b"
         f" ({_geom_.beam.energy.get():6.4f}) keV"
@@ -1465,14 +1511,17 @@ def setaz(*args):
 
 def show_constraints():
     """
-    Show constraints and freeze angles (value)
+    Show constraints (low, high) and cut point for each real axis.
     """
     _geom_ = get_diffractometer()
     axes = _geom_.real_axis_names
     for axis in axes:
-        low = _geom_.core.constraints[axis].low_limit
-        high = _geom_.core.constraints[axis].high_limit
-        print("{:>10} - [{:>6}, {:>6}]".format(axis, low, high))
+        c = _geom_.core.constraints[axis]
+        print(
+            "{:>10} - [{:>6}, {:>6}] cut={:>6}".format(
+                axis, c.low_limit, c.high_limit, c.cut_point
+            )
+        )
 
 
 def reset_constraints():
@@ -1486,49 +1535,80 @@ def reset_constraints():
 
 def set_constraints(*args):
     """
-    Change constraint values for specific axis
+    Change constraint values (low/high limits and optional cut point).
+
+    Call patterns
+    -------------
+    - ``set_constraints()``: prompt interactively for every axis.
+    - ``set_constraints(axis)``: prompt interactively for one axis.
+    - ``set_constraints(axis, low, high)``: set limits only.
+    - ``set_constraints(axis, low, high, cut)``: set limits and cut point.
+    - ``set_constraints(low1, high1, ..., low6, high6)``: 12 args, set
+      limits for all axes (cut points unchanged).
+    - ``set_constraints(low1, high1, cut1, ..., low6, high6, cut6)``: 18
+      args, set limits and cut points for all axes.
+
+    Interactive input may supply 2 numbers (low, high) or 3 numbers
+    (low, high, cut), separated by spaces or commas. Press Enter to keep
+    the current values.
     """
     _geom_ = get_diffractometer()
     axes = _geom_.real_axis_names
 
-    if len(args) == 12:
-        i = -1
-        for axis in axes:
-            i += 2
-            low = args[i - 1]
-            high = args[i]
-            _geom_.core.constraints[axis].limits = low, high
+    def _apply(axis, tokens):
+        """Set limits (and optionally cut) on `axis` from a 2- or 3-token list."""
+        c = _geom_.core.constraints[axis]
+        c.limits = tokens[0], tokens[1]
+        if len(tokens) >= 3:
+            c.cut_point = float(tokens[2])
+
+    if len(args) == 18:
+        for n, axis in enumerate(axes):
+            _apply(axis, args[3 * n : 3 * n + 3])
+
+    elif len(args) == 12:
+        for n, axis in enumerate(axes):
+            _apply(axis, args[2 * n : 2 * n + 2])
+
+    elif len(args) == 4:
+        axis, low, high, cut = args
+        _apply(axis, (low, high, cut))
 
     elif len(args) == 3:
         axis, low, high = args
-        _geom_.core.constraints[axis].limits = low, high
+        _apply(axis, (low, high))
 
     elif len(args) == 1:
         axis = args[0]
-        low = _geom_.core.constraints[axis].low_limit
-        high = _geom_.core.constraints[axis].high_limit
+        c = _geom_.core.constraints[axis]
+        low, high, cut = c.low_limit, c.high_limit, c.cut_point
         value = (
             input(
-                "{} constraints low, high = [{:3.3f}, {:3.3f}]: ".format(
-                    axis, low, high
-                )
+                "{} constraints low, high, cut = "
+                "[{:3.3f}, {:3.3f}, {:3.3f}]: ".format(axis, low, high, cut)
             )
-        ) or [low, high]
+        ) or [low, high, cut]
         if isinstance(value, str):
-            if "," in value:
-                value = value.replace(",", " ").split(" ")
-        _geom_.core.constraints[axis].limits = value[0], value[1]
+            value = value.replace(",", " ").split()
+        _apply(axis, value)
+
     elif len(args) == 0:
         for axis in axes:
-            low = _geom_.core.constraints[axis].low_limit
-            high = _geom_.core.constraints[axis].high_limit
-            # angle = _geom_.get_axis_constraints(axis).value
+            c = _geom_.core.constraints[axis]
+            low, high, cut = c.low_limit, c.high_limit, c.cut_point
             value = (
-                input("{:>10} - [{:>6}, {:>6}]: ".format(axis, low, high))
-            ) or [low, high]
+                input(
+                    "{:>10} - [{:>6}, {:>6}] cut={:>6}: ".format(
+                        axis, low, high, cut
+                    )
+                )
+            ) or [low, high, cut]
             if isinstance(value, str):
-                value = value.replace(",", " ").split(" ")
-            _geom_.core.constraints[axis].limits = value[0], value[1]
+                value = value.replace(",", " ").split()
+            _apply(axis, value)
+
+    print("New constraints:")
+    show_constraints()
 
 
 def analyzer_configuration(energy=None):
@@ -1616,7 +1696,7 @@ def update_lattice(lattice_constant=None):
     sample.lattice.beta = float(beta)
     sample.lattice.gamma = float(gamma)
     if len(sample.reflections.order) > 1:
-        print("Computing UB!")
+        print("Computing UB...")
         sample.core.calc_UB(
             sample.reflections.order[0],
             sample.reflections.order[1],
@@ -1712,7 +1792,21 @@ def read_config():
         print("Configuration not loaded.")
         return
     print(f"Loading '{file}'...")
-    _geom_.restore(str(file), clear=clear)
+    # hklpy2 changed restore() defaults: on hardware-backed diffractometers
+    # `restore_samples` / `restore_extras` default to False. Pass them
+    # explicitly so the YAML's samples and azimuthal-reference extras are
+    # actually applied. Wavelength and mode are intentionally left at the
+    # current values to avoid silently retargeting motors.
+    _geom_.restore(
+        str(file),
+        clear=clear,
+        restore_samples=True,
+        restore_extras=True,
+        restore_constraints=True,
+    )
+
+    _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
+    compute_UB()
 
 
 def restore_huber_from_scan(
@@ -1778,18 +1872,18 @@ def set_detector():
     Uses defaults if the user just presses Enter.
     """
     offset = caget("4idgSoft:m20.OFF")
-    if offset == 0:
+    if offset == 25:
         dets = "Eiger"
-    elif offset == -25:
+    elif offset == 0:
         dets = "Point detector/Analyzer"
     else:
         dets = "undefined"
     det = input(f"(E)iger or (P)oint Detector/Analyzer [{dets}]: ") or dets
     if det in ("Point detector/Analyzer", "Point detector", "p", "P"):
-        caput("4idgSoft:m20.OFF", -25)
+        caput("4idgSoft:m20.OFF", 0)
         print("Current detector: Point detector/Aanalyzer")
     elif det in ("Eiger", "e", "E"):
-        caput("4idgSoft:m20.OFF", 0)
+        caput("4idgSoft:m20.OFF", 25)
         print("Current detector: Eiger")
     else:
         print("Select Eiger or Point Detector")
@@ -1808,3 +1902,131 @@ class whClass:
 
 
 wh = whClass()
+
+
+def theta0():
+    """
+    Calculate 2-theta zero-offset and lattice parameter ``a0`` for a cubic sample.
+
+    Reads the current wavelength from the diffractometer beam object,
+    displays the saved reflection list, asks the user to choose two
+    reflections by index, then computes the zero-shift and ``a0`` from
+    those two reflections (Brueckel 1994).
+
+    Assumes horizontal scattering geometry (``gamma = 2*theta``,
+    ``delta = 0``).
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+
+    wavelength = _geom_.beam.wavelength.get()
+    energy = _geom_.beam.energy.get()
+    print(f"\n   Lambda = {wavelength:.4f} Å  ({energy:.4f} keV)")
+    print("   CALCULATES ZERO-SHIFT AND A0 FOR CUBIC SYSTEMS\n")
+
+    orienting_refl = sample.reflections.order
+    idx_width = 3
+    pseudo_width = 9
+    real_width = 10
+
+    if len(_geom_.real_positioners) == 6:
+        real_headers = ["Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"]
+    else:
+        real_headers = list(_geom_.real_positioners._fields)
+
+    header = (
+        f"\n{'#':>{idx_width}}"
+        + "".join(
+            f"{m:>{pseudo_width}}"
+            for m in _geom_.pseudo_positioners._fields
+        ).upper()
+        + "".join(f"{k:>{real_width}}" for k in real_headers)
+        + "   orienting"
+    )
+    print(header)
+
+    keys = list(sample.reflections.keys())
+    for i, (key, ref) in enumerate(sample.reflections.items()):
+        h, k, l = list(ref.pseudos.values())  # noqa: E741
+        if len(_geom_.real_positioners) == 6:
+            reals = ref.reals
+            pos_vals = [
+                reals["gamma"], reals["mu"], reals["chi"],
+                reals["phi"], reals["delta"], reals["tau"],
+            ]
+        else:
+            pos_vals = list(ref.reals.values())
+
+        tag = ""
+        if orienting_refl and key == orienting_refl[0]:
+            tag = "first"
+        elif len(orienting_refl) > 1 and key == orienting_refl[1]:
+            tag = "second"
+
+        row = (
+            f"{i:>{idx_width}}"
+            f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}"
+            f"{l:{pseudo_width}.3f}"
+            + "".join(f"{v:{real_width}.3f}" for v in pos_vals)
+            + (f"   {tag}" if tag else "")
+        )
+        print(row)
+
+    i1_old, i2_old = 0, 1
+    if len(orienting_refl) > 0:
+        i1_old = keys.index(orienting_refl[0])
+    if len(orienting_refl) > 1:
+        i2_old = keys.index(orienting_refl[1])
+
+    try:
+        i1 = int(input(f"\nFirst reflection ({i1_old})? ") or i1_old)
+        i2 = int(input(f"Second reflection ({i2_old})? ") or i2_old)
+    except ValueError:
+        print("Invalid input. Aborting.")
+        return
+
+    if not (0 <= i1 < len(keys) and 0 <= i2 < len(keys)):
+        print("Index out of range. Aborting.")
+        return
+    if i1 == i2:
+        print("Both reflections are the same. Aborting.")
+        return
+
+    ref1 = sample.reflections[keys[i1]]
+    ref2 = sample.reflections[keys[i2]]
+
+    xh1, xk1, xl1 = list(ref1.pseudos.values())
+    xh2, xk2, xl2 = list(ref2.pseudos.values())
+
+    if len(_geom_.real_positioners) == 6:
+        zt1 = ref1.reals["gamma"]
+        zt2 = ref2.reals["gamma"]
+    else:
+        pos1 = list(ref1.reals.values())
+        pos2 = list(ref2.reals.values())
+        zt1 = pos1[0]
+        zt2 = pos2[0]
+
+    xla = wavelength
+
+    PI180 = math.pi / 180
+    xt1 = zt1 / 2.0
+    xt2 = zt2 / 2.0
+    xb1 = xh1**2 + xk1**2 + xl1**2
+    xb2 = xh2**2 + xk2**2 + xl2**2
+    xb = math.sqrt(xb2 / xb1)
+    xttttz = xb * math.sin(xt1 * PI180) - math.sin(xt2 * PI180)
+    xttttN = xb * math.cos(xt1 * PI180) - math.cos(xt2 * PI180)
+    xtet0 = math.atan(xttttz / xttttN) / PI180
+    xlah = xla / 2.0
+    a01 = xlah * math.sqrt(xb1) / math.sin(PI180 * (xt1 - xtet0))
+    a02 = xlah * math.sqrt(xb2) / math.sin(PI180 * (xt2 - xtet0))
+    zt1_corr = zt1 - 2 * xtet0
+    zt2_corr = zt2 - 2 * xtet0
+
+    print(f"\n   2*THETA ZERO-SHIFT      = {2 * xtet0:10.4f} deg")
+    print(f"   A0 (from refl {i1}, {i2})  = {a01:10.5f}  {a02:10.5f} Å")
+    print(
+        f"   CORRECTED 2*THETA       = {zt1_corr:10.4f}  "
+        f"{zt2_corr:10.4f} deg"
+    )
