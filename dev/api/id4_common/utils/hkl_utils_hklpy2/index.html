@@ -525,6 +525,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/monochromator/index.html">id4_common.devices.monochromator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/nanopositioner/index.html">id4_common.devices.nanopositioner</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/phaseplates/index.html">id4_common.devices.phaseplates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../devices/piezo_jena/index.html">id4_common.devices.piezo_jena</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_diffractometer/index.html">id4_common.devices.polar_diffractometer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_diffractometer_hklpy2/index.html">id4_common.devices.polar_diffractometer_hklpy2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_status/index.html">id4_common.devices.polar_status</a></li>
@@ -532,6 +533,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/preamps/index.html">id4_common.devices.preamps</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/quadems/index.html">id4_common.devices.quadems</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/qxscan_device/index.html">id4_common.devices.qxscan_device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../devices/ringlight/index.html">id4_common.devices.ringlight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/scaler/index.html">id4_common.devices.scaler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/scaler_dual_ctr8/index.html">id4_common.devices.scaler_dual_ctr8</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/shutters/index.html">id4_common.devices.shutters</a></li>
@@ -562,6 +564,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../plans/flyscan_demo/index.html">id4_common.plans.flyscan_demo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/local_preprocessors/index.html">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/local_scans/index.html">id4_common.plans.local_scans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plans/peak_position/index.html">id4_common.plans.peak_position</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/sim_plans/index.html">id4_common.plans.sim_plans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/workflow_plan/index.html">id4_common.plans.workflow_plan</a></li>
 </ul>
@@ -587,7 +590,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../logging_helper/index.html">id4_common.utils.logging_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
@@ -775,7 +777,8 @@ configuration wrapper to the RunEngine preprocessors.</p>
 <li><p>Selects the diffractometer (interactive prompt or argument).</p></li>
 <li><p>Applies the appropriate axis constraints.</p></li>
 <li><p>Creates aliases for all real diffractometer axes in the calling
-namespace (mu, gamma, delta, chi, phi, tau).</p></li>
+namespace (mu, gamma, delta, chi, phi, tau) and the reciprocal-space
+pseudo axes (h, k, l).</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1157,7 +1160,7 @@ If not provided, the user will be prompted interactively.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils_hklpy2.show_constraints">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils_hklpy2.</span></span><span class="sig-name descname"><span class="pre">show_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils_hklpy2.show_constraints" title="Link to this definition">#</a></dt>
-<dd><p>Show constraints and freeze angles (value)</p>
+<dd><p>Show constraints (low, high) and cut point for each real axis.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1169,7 +1172,23 @@ If not provided, the user will be prompted interactively.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils_hklpy2.set_constraints">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils_hklpy2.</span></span><span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils_hklpy2.set_constraints" title="Link to this definition">#</a></dt>
-<dd><p>Change constraint values for specific axis</p>
+<dd><p>Change constraint values (low/high limits and optional cut point).</p>
+<section id="call-patterns">
+<h3>Call patterns<a class="headerlink" href="#call-patterns" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints()</span></code>: prompt interactively for every axis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(axis)</span></code>: prompt interactively for one axis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(axis,</span> <span class="pre">low,</span> <span class="pre">high)</span></code>: set limits only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(axis,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">cut)</span></code>: set limits and cut point.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(low1,</span> <span class="pre">high1,</span> <span class="pre">...,</span> <span class="pre">low6,</span> <span class="pre">high6)</span></code>: 12 args, set
+limits for all axes (cut points unchanged).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(low1,</span> <span class="pre">high1,</span> <span class="pre">cut1,</span> <span class="pre">...,</span> <span class="pre">low6,</span> <span class="pre">high6,</span> <span class="pre">cut6)</span></code>: 18
+args, set limits and cut points for all axes.</p></li>
+</ul>
+<p>Interactive input may supply 2 numbers (low, high) or 3 numbers
+(low, high, cut), separated by spaces or commas. Press Enter to keep
+the current values.</p>
+</section>
 </dd></dl>
 
 <dl class="py function">
@@ -1263,6 +1282,18 @@ Detectors are mounted 25 degrees apart from each other in delta</p>
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils_hklpy2.wh">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils_hklpy2.</span></span><span class="sig-name descname"><span class="pre">wh</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils_hklpy2.wh" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils_hklpy2.theta0">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils_hklpy2.</span></span><span class="sig-name descname"><span class="pre">theta0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils_hklpy2.theta0" title="Link to this definition">#</a></dt>
+<dd><p>Calculate 2-theta zero-offset and lattice parameter <code class="docutils literal notranslate"><span class="pre">a0</span></code> for a cubic sample.</p>
+<p>Reads the current wavelength from the diffractometer beam object,
+displays the saved reflection list, asks the user to choose two
+reflections by index, then computes the zero-shift and <code class="docutils literal notranslate"><span class="pre">a0</span></code> from
+those two reflections (Brueckel 1994).</p>
+<p>Assumes horizontal scattering geometry (<code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">2*theta</span></code>,
+<code class="docutils literal notranslate"><span class="pre">delta</span> <span class="pre">=</span> <span class="pre">0</span></code>).</p>
+</dd></dl>
 
 </section>
 </section>
@@ -1371,6 +1402,7 @@ Detectors are mounted 25 degrees apart from each other in delta</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils_hklpy2.set_detector"><code class="docutils literal notranslate"><span class="pre">set_detector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils_hklpy2.whClass"><code class="docutils literal notranslate"><span class="pre">whClass</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils_hklpy2.wh"><code class="docutils literal notranslate"><span class="pre">wh</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils_hklpy2.theta0"><code class="docutils literal notranslate"><span class="pre">theta0()</span></code></a></li>
 </ul>
 </li>
 </ul>

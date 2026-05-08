@@ -285,6 +285,117 @@ Module Contents
    .. seealso:: :func:`bluesky.plans.scan`, :func:`lup`
 
 
+.. py:function:: hklscan(h1, h2, k1, k2, l1, l2, num, time, detectors=None, lockin=False, dichro=False, vortex_sgz=False, g_sgz=False, per_step=None, md=None)
+
+   Linear hkl trajectory scan.
+
+   Sweeps the active diffractometer's (h, k, l) pseudo axes along a straight
+   line in reciprocal space from (h1, k1, l1) to (h2, k2, l2) in `num`
+   points. Delegates to :func:`ascan` so all the usual flags (dichro,
+   lockin, vortex_sgz, g_sgz, per_step) are supported.
+
+   :param h1: Initial and final ``h`` of the trajectory.
+   :type h1: float
+   :param h2: Initial and final ``h`` of the trajectory.
+   :type h2: float
+   :param k1: Initial and final ``k`` of the trajectory.
+   :type k1: float
+   :param k2: Initial and final ``k`` of the trajectory.
+   :type k2: float
+   :param l1: Initial and final ``l`` of the trajectory.
+   :type l1: float
+   :param l2: Initial and final ``l`` of the trajectory.
+   :type l2: float
+   :param num: Number of points (inclusive of endpoints).
+   :type num: int
+   :param time: Count time per point.
+   :type time: float
+   :param detectors: See :func:`ascan`.
+   :param lockin: See :func:`ascan`.
+   :param dichro: See :func:`ascan`.
+   :param vortex_sgz: See :func:`ascan`.
+   :param g_sgz: See :func:`ascan`.
+   :param per_step: See :func:`ascan`.
+   :param md: See :func:`ascan`.
+
+   .. seealso:: :func:`ascan`, :func:`psiscan`
+
+
+.. py:function:: hscan(start, stop, num, time, **kwargs)
+
+   Sweep the active diffractometer's ``h`` pseudo axis.
+
+   Wraps :func:`ascan(diff.h, start, stop, num, time, ...)`. Forwards
+   ``detectors``, ``lockin``, ``dichro``, ``fixq``, ``vortex_sgz``,
+   ``g_sgz``, ``per_step``, and ``md`` kwargs to ``ascan``.
+
+   .. seealso:: :func:`ascan`, :func:`hklscan`
+
+
+.. py:function:: kscan(start, stop, num, time, **kwargs)
+
+   Sweep the active diffractometer's ``k`` pseudo axis.
+
+   Wraps :func:`ascan(diff.k, start, stop, num, time, ...)`. See
+   :func:`hscan` for forwarded kwargs.
+
+
+.. py:function:: lscan(start, stop, num, time, **kwargs)
+
+   Sweep the active diffractometer's ``l`` pseudo axis.
+
+   Wraps :func:`ascan(diff.l, start, stop, num, time, ...)`. See
+   :func:`hscan` for forwarded kwargs.
+
+
+.. py:function:: psiscan(psi_start, psi_stop, num, time, hkl=None, hkl2=None, orientation='horizontal', detectors=None, psi_axis=None, fail_on_exception=False, md=None)
+
+   Azimuthal psi scan at fixed (h, k, l).
+
+   Wraps `hklpy2.scan_psi`, holding (h, k, l) fixed while sweeping the
+   azimuthal extra parameter from `psi_start` to `psi_stop` in `num` points.
+   Runs on the active diffractometer (e.g. ``huber_euler``) — its hkl
+   engine exposes the ``psi constant horizontal`` / ``psi constant
+   vertical`` modes used here.
+
+   :param psi_start: Azimuthal angle range (degrees).
+   :type psi_start: float
+   :param psi_stop: Azimuthal angle range (degrees).
+   :type psi_stop: float
+   :param num: Number of points (inclusive of endpoints).
+   :type num: int
+   :param time: Count time per point. Must be > 0.
+   :type time: float
+   :param hkl: Fixed reflection (h, k, l). If None (default), use the current
+               diffractometer position.
+   :type hkl: sequence of float, optional
+   :param hkl2: Reference reflection (h2, k2, l2) defining psi=0. If None (default),
+                read from the active diffractometer's ``core.all_extras`` (the
+                non-psi entries, in order). Must not be parallel to (h, k, l).
+   :type hkl2: sequence of float, optional
+   :param orientation: Scattering plane. Selects the psi mode passed to
+                       ``hklpy2.scan_psi``: ``"psi constant horizontal"`` (default) or
+                       ``"psi constant vertical"``.
+   :type orientation: {'horizontal', 'vertical'}, optional
+   :param detectors: Detectors to read. If None, uses ``counters.detectors``.
+   :type detectors: list, optional
+   :param psi_axis: Name of the psi extra axis. Auto-detected when None.
+   :type psi_axis: str, optional
+   :param fail_on_exception: Forwarded to `hklpy2.scan_psi`. When False (default), per-point
+                             forward-calculation failures are printed and the scan continues.
+   :type fail_on_exception: bool, optional
+   :param md: Metadata to add to the run start.
+   :type md: dict, optional
+
+   .. rubric:: Notes
+
+   Unlike `ascan`/`grid_scan`, this plan does not support `dichro`,
+   `lockin`, `fixq`, or `vortex_sgz` because `hklpy2.scan_psi` runs its own
+   inner loop and does not accept a `per_step` hook.
+
+   .. seealso:: :func:`hklpy2.scan_psi`
+
+
 .. py:function:: mv(*args, **kwargs)
 
    Move one or more devices to a setpoint, and wait for all to complete.

@@ -44,14 +44,26 @@ Module Contents
 
    .. py:method:: get(**kwargs)
 
+      Return the current NTEnum choice string (with trailing ``%`` stripped).
+
+
 
    .. py:method:: put(value, **kwargs)
+
+      Write a new NTEnum value (int index or choice-label string).
+
 
 
    .. py:method:: set(value, **kwargs)
 
+      Synchronous put + already-finished Status, matching PositionerStream.
+
+
 
    .. py:method:: wait_for_connection(timeout=5.0)
+
+      Raise if the PV cannot be reached within ``timeout`` seconds.
+
 
 
 .. py:class:: Ringlight(prefix, *, name='', labels=None, **kwargs)

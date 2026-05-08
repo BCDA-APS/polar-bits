@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="id4_common.plans.sim_plans" href="../sim_plans/index.html" />
+    <link rel="next" title="id4_common.plans.peak_position" href="../peak_position/index.html" />
     <link rel="prev" title="id4_common.plans.local_preprocessors" href="../local_preprocessors/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -525,6 +525,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/monochromator/index.html">id4_common.devices.monochromator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/nanopositioner/index.html">id4_common.devices.nanopositioner</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/phaseplates/index.html">id4_common.devices.phaseplates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../devices/piezo_jena/index.html">id4_common.devices.piezo_jena</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_diffractometer/index.html">id4_common.devices.polar_diffractometer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_diffractometer_hklpy2/index.html">id4_common.devices.polar_diffractometer_hklpy2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/polar_status/index.html">id4_common.devices.polar_status</a></li>
@@ -532,6 +533,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/preamps/index.html">id4_common.devices.preamps</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/quadems/index.html">id4_common.devices.quadems</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/qxscan_device/index.html">id4_common.devices.qxscan_device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../devices/ringlight/index.html">id4_common.devices.ringlight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/scaler/index.html">id4_common.devices.scaler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/scaler_dual_ctr8/index.html">id4_common.devices.scaler_dual_ctr8</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/shutters/index.html">id4_common.devices.shutters</a></li>
@@ -562,6 +564,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../flyscan_demo/index.html">id4_common.plans.flyscan_demo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../local_preprocessors/index.html">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.plans.local_scans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../peak_position/index.html">id4_common.plans.peak_position</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../sim_plans/index.html">id4_common.plans.sim_plans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../workflow_plan/index.html">id4_common.plans.workflow_plan</a></li>
 </ul>
@@ -587,7 +590,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/logging_helper/index.html">id4_common.utils.logging_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
@@ -970,6 +972,112 @@ motors!</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="id4_common.plans.local_scans.hklscan">
+<span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">hklscan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lockin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dichro</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vortex_sgz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_sgz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">md</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.hklscan" title="Link to this definition">#</a></dt>
+<dd><p>Linear hkl trajectory scan.</p>
+<p>Sweeps the active diffractometer’s (h, k, l) pseudo axes along a straight
+line in reciprocal space from (h1, k1, l1) to (h2, k2, l2) in <cite>num</cite>
+points. Delegates to <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a> so all the usual flags (dichro,
+lockin, vortex_sgz, g_sgz, per_step) are supported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">h</span></code> of the trajectory.</p></li>
+<li><p><strong>h2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">h</span></code> of the trajectory.</p></li>
+<li><p><strong>k1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">k</span></code> of the trajectory.</p></li>
+<li><p><strong>k2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">k</span></code> of the trajectory.</p></li>
+<li><p><strong>l1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">l</span></code> of the trajectory.</p></li>
+<li><p><strong>l2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial and final <code class="docutils literal notranslate"><span class="pre">l</span></code> of the trajectory.</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points (inclusive of endpoints).</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point.</p></li>
+<li><p><strong>detectors</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>lockin</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>dichro</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>vortex_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>g_sgz</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>per_step</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+<li><p><strong>md</strong> – See <a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>, <a class="reference internal" href="#id4_common.plans.local_scans.psiscan" title="id4_common.plans.local_scans.psiscan"><code class="xref py py-func docutils literal notranslate"><span class="pre">psiscan()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.plans.local_scans.hscan">
+<span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">hscan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.hscan" title="Link to this definition">#</a></dt>
+<dd><p>Sweep the active diffractometer’s <code class="docutils literal notranslate"><span class="pre">h</span></code> pseudo axis.</p>
+<p>Wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ascan(diff.h,</span> <span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">num,</span> <span class="pre">time,</span> <span class="pre">...)()</span></code>. Forwards
+<code class="docutils literal notranslate"><span class="pre">detectors</span></code>, <code class="docutils literal notranslate"><span class="pre">lockin</span></code>, <code class="docutils literal notranslate"><span class="pre">dichro</span></code>, <code class="docutils literal notranslate"><span class="pre">fixq</span></code>, <code class="docutils literal notranslate"><span class="pre">vortex_sgz</span></code>,
+<code class="docutils literal notranslate"><span class="pre">g_sgz</span></code>, <code class="docutils literal notranslate"><span class="pre">per_step</span></code>, and <code class="docutils literal notranslate"><span class="pre">md</span></code> kwargs to <code class="docutils literal notranslate"><span class="pre">ascan</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#id4_common.plans.local_scans.ascan" title="id4_common.plans.local_scans.ascan"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascan()</span></code></a>, <a class="reference internal" href="#id4_common.plans.local_scans.hklscan" title="id4_common.plans.local_scans.hklscan"><code class="xref py py-func docutils literal notranslate"><span class="pre">hklscan()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.plans.local_scans.kscan">
+<span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">kscan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.kscan" title="Link to this definition">#</a></dt>
+<dd><p>Sweep the active diffractometer’s <code class="docutils literal notranslate"><span class="pre">k</span></code> pseudo axis.</p>
+<p>Wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ascan(diff.k,</span> <span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">num,</span> <span class="pre">time,</span> <span class="pre">...)()</span></code>. See
+<a class="reference internal" href="#id4_common.plans.local_scans.hscan" title="id4_common.plans.local_scans.hscan"><code class="xref py py-func docutils literal notranslate"><span class="pre">hscan()</span></code></a> for forwarded kwargs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.plans.local_scans.lscan">
+<span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">lscan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.lscan" title="Link to this definition">#</a></dt>
+<dd><p>Sweep the active diffractometer’s <code class="docutils literal notranslate"><span class="pre">l</span></code> pseudo axis.</p>
+<p>Wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ascan(diff.l,</span> <span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">num,</span> <span class="pre">time,</span> <span class="pre">...)()</span></code>. See
+<a class="reference internal" href="#id4_common.plans.local_scans.hscan" title="id4_common.plans.local_scans.hscan"><code class="xref py py-func docutils literal notranslate"><span class="pre">hscan()</span></code></a> for forwarded kwargs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.plans.local_scans.psiscan">
+<span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">psiscan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psi_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psi_stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hkl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hkl2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'horizontal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psi_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_on_exception</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">md</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.psiscan" title="Link to this definition">#</a></dt>
+<dd><p>Azimuthal psi scan at fixed (h, k, l).</p>
+<p>Wraps <cite>hklpy2.scan_psi</cite>, holding (h, k, l) fixed while sweeping the
+azimuthal extra parameter from <cite>psi_start</cite> to <cite>psi_stop</cite> in <cite>num</cite> points.
+Runs on the active diffractometer (e.g. <code class="docutils literal notranslate"><span class="pre">huber_euler</span></code>) — its hkl
+engine exposes the <code class="docutils literal notranslate"><span class="pre">psi</span> <span class="pre">constant</span> <span class="pre">horizontal</span></code> / <code class="docutils literal notranslate"><span class="pre">psi</span> <span class="pre">constant</span>
+<span class="pre">vertical</span></code> modes used here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>psi_start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Azimuthal angle range (degrees).</p></li>
+<li><p><strong>psi_stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Azimuthal angle range (degrees).</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points (inclusive of endpoints).</p></li>
+<li><p><strong>time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Count time per point. Must be &gt; 0.</p></li>
+<li><p><strong>hkl</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Fixed reflection (h, k, l). If None (default), use the current
+diffractometer position.</p></li>
+<li><p><strong>hkl2</strong> (<em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Reference reflection (h2, k2, l2) defining psi=0. If None (default),
+read from the active diffractometer’s <code class="docutils literal notranslate"><span class="pre">core.all_extras</span></code> (the
+non-psi entries, in order). Must not be parallel to (h, k, l).</p></li>
+<li><p><strong>orientation</strong> (<em>{'horizontal'</em><em>, </em><em>'vertical'}</em><em>, </em><em>optional</em>) – Scattering plane. Selects the psi mode passed to
+<code class="docutils literal notranslate"><span class="pre">hklpy2.scan_psi</span></code>: <code class="docutils literal notranslate"><span class="pre">&quot;psi</span> <span class="pre">constant</span> <span class="pre">horizontal&quot;</span></code> (default) or
+<code class="docutils literal notranslate"><span class="pre">&quot;psi</span> <span class="pre">constant</span> <span class="pre">vertical&quot;</span></code>.</p></li>
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Detectors to read. If None, uses <code class="docutils literal notranslate"><span class="pre">counters.detectors</span></code>.</p></li>
+<li><p><strong>psi_axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Name of the psi extra axis. Auto-detected when None.</p></li>
+<li><p><strong>fail_on_exception</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Forwarded to <cite>hklpy2.scan_psi</cite>. When False (default), per-point
+forward-calculation failures are printed and the scan continues.</p></li>
+<li><p><strong>md</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>optional</em>) – Metadata to add to the run start.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Unlike <cite>ascan</cite>/<cite>grid_scan</cite>, this plan does not support <cite>dichro</cite>,
+<cite>lockin</cite>, <cite>fixq</cite>, or <cite>vortex_sgz</cite> because <cite>hklpy2.scan_psi</cite> runs its own
+inner loop and does not accept a <cite>per_step</cite> hook.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.scan_psi()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="id4_common.plans.local_scans.mv">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_scans.</span></span><span class="sig-name descname"><span class="pre">mv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_scans.mv" title="Link to this definition">#</a></dt>
 <dd><p>Move one or more devices to a setpoint, and wait for all to complete.</p>
@@ -1065,11 +1173,11 @@ False by default.</p></li>
       </div>
     </a>
     <a class="right-next"
-       href="../sim_plans/index.html"
+       href="../peak_position/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">id4_common.plans.sim_plans</p>
+        <p class="prev-next-title">id4_common.plans.peak_position</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1099,6 +1207,11 @@ False by default.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.grid_scan"><code class="docutils literal notranslate"><span class="pre">grid_scan()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.rel_grid_scan"><code class="docutils literal notranslate"><span class="pre">rel_grid_scan()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.qxscan"><code class="docutils literal notranslate"><span class="pre">qxscan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.hklscan"><code class="docutils literal notranslate"><span class="pre">hklscan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.hscan"><code class="docutils literal notranslate"><span class="pre">hscan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.kscan"><code class="docutils literal notranslate"><span class="pre">kscan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.lscan"><code class="docutils literal notranslate"><span class="pre">lscan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.psiscan"><code class="docutils literal notranslate"><span class="pre">psiscan()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.mv"><code class="docutils literal notranslate"><span class="pre">mv()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.mvr"><code class="docutils literal notranslate"><span class="pre">mvr()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.local_scans.abs_set"><code class="docutils literal notranslate"><span class="pre">abs_set()</span></code></a></li>
