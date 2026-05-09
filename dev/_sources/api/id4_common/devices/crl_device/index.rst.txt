@@ -117,10 +117,7 @@ Module Contents
    .. py:attribute:: slit_vert_pv
 
 
-   .. py:attribute:: focal_size_setpoint
-
-
-   .. py:attribute:: focal_size_readback
+   .. py:attribute:: beamsize
 
 
    .. py:attribute:: focal_power_index
