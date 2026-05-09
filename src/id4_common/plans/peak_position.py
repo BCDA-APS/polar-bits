@@ -116,9 +116,7 @@ def _detector_fields(start, y):
     if y is None:
         det_fields = start.get("hints", {}).get("detectors") or []
         if not det_fields:
-            raise ValueError(
-                "No detector hints in scan; pass y= explicitly."
-            )
+            raise ValueError("No detector hints in scan; pass y= explicitly.")
         return list(det_fields)
     if isinstance(y, str):
         return [y]
@@ -276,9 +274,7 @@ def _confirm_old_scan(stop, confirm, positioner_name, current, target):
     if elapsed.seconds <= 300 or not confirm:
         return True
     answer = (
-        input(
-            f"Move {positioner_name} from {current} to {target}? (Y/[N]) "
-        )
+        input(f"Move {positioner_name} from {current} to {target}? (Y/[N]) ")
         or "N"
     )
     return answer in ("Y", "y", "yes")
@@ -434,9 +430,7 @@ def _move_to_feature(feature, scan_id, positioner, detector, confirm):
             for p, t in zip(positioners, target, strict=False):
                 mv_args.extend([p, t])
                 current_for_msg.append((p.name, _current_position(p), t))
-            label = " / ".join(
-                f"{n}: {c}->{t}" for n, c, t in current_for_msg
-            )
+            label = " / ".join(f"{n}: {c}->{t}" for n, c, t in current_for_msg)
             if not _confirm_old_scan(
                 stop, confirm, "(2D)", "(see above)", label
             ):
@@ -460,17 +454,13 @@ def _move_to_feature(feature, scan_id, positioner, detector, confirm):
 
         if len(positioners) == 1:
             p = positioners[0]
-            axis_idx = (
-                motors.index(p.name) if p.name in motors else 0
-            )
+            axis_idx = motors.index(p.name) if p.name in motors else 0
             proj = img.sum(
                 axis=tuple(i for i in range(img.ndim) if i != axis_idx)
             )
             stats = _compute_1d_stats(motor_axes[axis_idx], proj)
             new_pos = _select_target(feature, stats)
-            yield from _do_single_move(
-                p, new_pos, stop, confirm
-            )
+            yield from _do_single_move(p, new_pos, stop, confirm)
             return
 
         # Two or more explicit positioners — move each to its 2-D coord.
@@ -531,9 +521,7 @@ def _select_target(feature, stats):
 def _do_single_move(positioner, new_pos, stop, confirm):
     """Confirm + emit a single-axis ``mv`` plan."""
     current = _current_position(positioner)
-    if not _confirm_old_scan(
-        stop, confirm, positioner.name, current, new_pos
-    ):
+    if not _confirm_old_scan(stop, confirm, positioner.name, current, new_pos):
         print("No motion will be done.")
         yield from null()
         return

@@ -270,7 +270,9 @@ def test_cen_1d_emits_single_mv(fresh_module, monkeypatch):
     fake_motor = MagicMock(name="m1")
     fake_motor.name = "m1"
     fake_motor.position = 0.0
-    monkeypatch.setattr(ppm, "oregistry", MagicMock(find=lambda n, **k: fake_motor))
+    monkeypatch.setattr(
+        ppm, "oregistry", MagicMock(find=lambda n, **k: fake_motor)
+    )
 
     list(ppm.cen(positioner=fake_motor, confirm=False))
 
@@ -329,7 +331,9 @@ def test_cen_grid_with_single_positioner_projects_to_1d(
     fake_m1 = MagicMock(name="m1")
     fake_m1.name = "m1"
     fake_m1.position = 0.0
-    monkeypatch.setattr(ppm, "oregistry", MagicMock(find=lambda n, **k: fake_m1))
+    monkeypatch.setattr(
+        ppm, "oregistry", MagicMock(find=lambda n, **k: fake_m1)
+    )
 
     list(ppm.cen(positioner=fake_m1, confirm=False))
 
@@ -369,7 +373,9 @@ def test_old_scan_prompt(fresh_module, monkeypatch):
     fake_motor = MagicMock(name="m1")
     fake_motor.name = "m1"
     fake_motor.position = 0.0
-    monkeypatch.setattr(ppm, "oregistry", MagicMock(find=lambda n, **k: fake_motor))
+    monkeypatch.setattr(
+        ppm, "oregistry", MagicMock(find=lambda n, **k: fake_motor)
+    )
 
     # User answers N -> no motion.
     with patch("builtins.input", return_value="N"):
