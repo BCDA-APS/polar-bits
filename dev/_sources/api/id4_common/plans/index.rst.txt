@@ -15,17 +15,12 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
-   /api/id4_common/plans/base_scans/index
    /api/id4_common/plans/center_maximum/index
    /api/id4_common/plans/dm_plans/index
    /api/id4_common/plans/flyscan_demo/index
-   /api/id4_common/plans/grid_scans/index
-   /api/id4_common/plans/hkl_scans/index
    /api/id4_common/plans/local_preprocessors/index
    /api/id4_common/plans/local_scans/index
-   /api/id4_common/plans/move_plans/index
    /api/id4_common/plans/peak_position/index
-   /api/id4_common/plans/peak_position_legacy/index
    /api/id4_common/plans/sim_plans/index
    /api/id4_common/plans/workflow_plan/index
 

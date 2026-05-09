@@ -108,7 +108,7 @@ These are shared across the three downstream hutches.
 | `huber_hp` | `HPDiffractometer` | `4idgSoft:` | HP (high-pressure) diffractometer | `diffractometer`, `baseline` |
 | `huber_hp_psi` | `HPPSI` | `4idgSoft:` | HP diffractometer — psi engine | `diffractometer`, `baseline` |
 | `gkb` | `GKBDevice` | `4idgKB:` | KB mirror pair (4IDG) | `optics`, `kb`, `baseline` |
-| `crl` | `CRLClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens / transfocator (shared 4IDG/4IDH) | `optics`, `track_energy`, `baseline` |
+| `transfocator` | `TransfocatorClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens (shared 4IDG/4IDH) | `optics`, `track_energy`, `baseline` |
 | `gfilter` | `APSFilter` | `4idPyFilter:FL1:` | Attenuator filter bank (4IDG) | `filter`, `baseline` |
 | `gxbpm` | `XBPM` | `4idgSoft:` | XBPM with positioning motors (`x=m48, y=m47`) | `baseline` |
 | `gsydor` | `SydorEMRO` | `4idgSydor:T4U_BPM:` | Sydor EM T4U beam position monitor | `detector`, `xbpm`, `baseline` |
@@ -127,7 +127,7 @@ These are shared across the three downstream hutches.
 |------|-------|-------------|-------------|--------|
 | `magnet911` | `Magnet911` | `4idhSoft:` | 9T-1T-1T superconducting vector magnet | `magnet`, `baseline` |
 | `hkb` | `HKBDevice` | `4idhKB:` | KB mirror pair (4IDH) | `optics`, `kb`, `baseline` |
-| `crl` | `CRLClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens / transfocator (shared 4IDG/4IDH) | `optics`, `track_energy`, `baseline` |
+| `transfocator` | `TransfocatorClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens (shared 4IDG/4IDH) | `optics`, `track_energy`, `baseline` |
 | `hfilter` | `APSFilter` | `4idPyFilter:FL2:` | Attenuator filter bank (4IDH) | `filter`, `baseline` |
 | `hxbpm` | `XBPM` | `4idhSoft:` | XBPM with positioning motors (`x=m6, y=m5`) | `baseline` |
 | `hsydor` | `SydorEMRO` | `4idhSydor:T4U_BPM:` | Sydor EM T4U beam position monitor | `detector`, `xbpm`, `baseline` |

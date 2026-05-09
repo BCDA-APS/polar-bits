@@ -25,50 +25,36 @@ Module Contents
 
 
 
-.. py:function:: crl_setup(hutch=None)
+.. py:function:: crl_setup()
 
-   Switch the CRL sample-position offset to the active hutch.
+   Set the CRL sample-position offset for the active instrument.
 
-   Delegates to :meth:`CRLClass.select_g` / ``select_h``, which
-   write to the IOC's ``ZOffsetToggle`` PV.  The per-hutch offset values
-   themselves live on the device as ``crl.offset_g`` / ``offset_h`` and
-   are not changed here.
+   Prompts for the instrument (Diffractometer or Magnet) and writes
+   the corresponding offset to ``4idPyCRL:CRL4ID:samplePositionOffset_RBV``:
 
-   :param hutch: Hutch to switch to.  Case-insensitive, accepts ``"G"`` / ``"H"``
-                 and the longer aliases ``"diffractometer"`` (= G) /
-                 ``"magnet"`` (= H) for backwards compatibility.  When ``None``
-                 (default), prompt interactively.
-   :type hutch: {'g', 'h'}, optional
+   - Diffractometer  → 0
+   - Magnet    → 6.5
 
 
-.. py:function:: crl_size(focal_size)
+.. py:function:: crl(focal_size)
 
-   Set the CRL focal size.
+   Set the CRL focus size on the transfocator.
 
-   Renamed from ``crl`` so the function does not shadow the ``crl``
-   device that ``load_device("crl")`` injects into the session
-   namespace.
-
-   :param focal_size: Target focal size in microns. If < 5 µm, the device's
+   :param focal_size: Target focal size in microns. If < 5 µm, the transfocator's
                       ``minimize_button`` is triggered instead of writing a setpoint.
                       Otherwise the value is converted to meters and written to
-                      ``crl.focal_size_setpoint``.
+                      ``transfocator.focal_size_setpoint``.
    :type focal_size: float
 
 
 .. py:function:: te(temperature)
 
-   Set the active temperature controller's setpoint.
+   Set the temperature setpoint on ``temp_336_4idg`` (loop 1).
 
-   Thin shortcut over the ``tc`` signal installed by
-   :func:`id4_common.utils.temperature_setup.temperature_setup`.  Writes
-   the setpoint and returns immediately; the controller continues ramping
-   toward the target on its own.
+   Writes the setpoint and returns immediately; the controller continues
+   ramping toward the target on its own.
 
    :param temperature: Target temperature setpoint.
    :type temperature: float
-
-   :raises RuntimeError: ``temperature_setup()`` has not been run, so there is no active
-       controller to talk to.
 
 

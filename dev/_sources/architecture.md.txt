@@ -122,7 +122,7 @@ succeeds.
 
 - Area detectors: `ad_eiger1M`, `ad_lambda`, `ad_lightfield`, `ad_vimba`
 - X-ray diagnostics: `aps_xbpm`, `aps_undulator`, `aps_status`
-- Optics: `kb_generic` (KB mirror factory), `crl_device` (CRL / transfocator factory)
+- Optics: `kb_generic` (KB mirror factory), `transfocator_device` (transfocator factory)
 - Monochromator / energy: `monochromator`, `energy_device`
 - Diffractometer: `polar_diffractometer`
 - Detectors: `scaler`, `vortex_xmap`, `vortex_xspress3_*`

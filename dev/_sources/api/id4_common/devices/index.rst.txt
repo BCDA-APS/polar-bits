@@ -26,7 +26,6 @@ Submodules
    /api/id4_common/devices/aps_xbpm/index
    /api/id4_common/devices/chopper_device/index
    /api/id4_common/devices/counters_mixin/index
-   /api/id4_common/devices/crl_device/index
    /api/id4_common/devices/diamond_window_table/index
    /api/id4_common/devices/electromagnet/index
    /api/id4_common/devices/energy_device/index
@@ -71,6 +70,7 @@ Submodules
    /api/id4_common/devices/sydor_device/index
    /api/id4_common/devices/table_4idb/index
    /api/id4_common/devices/table_4idh/index
+   /api/id4_common/devices/transfocator_device/index
    /api/id4_common/devices/usb_ctr8/index
    /api/id4_common/devices/ventus_laser/index
    /api/id4_common/devices/vortex_dante_me1/index
