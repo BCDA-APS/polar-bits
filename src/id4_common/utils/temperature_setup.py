@@ -45,19 +45,10 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 TEMPERATURE_CONTROLLERS = {
     # 4-ID-G LakeShore controllers (already in devices.yml)
-    "g-336-loop1": ("temp_336_4idg", "loop1.setpoint", "loop1.readback"),
-    "g-336-loop2": ("temp_336_4idg", "loop2.setpoint", "loop2.readback"),
-    "g-340-loop1": ("temp_340_4idg", "loop1.setpoint", "loop1.readback"),
+    "g": ("temp_336_4idg", "loop1", "loop2"),
+    "g-340": ("temp_340_4idg", "control", "sample"),
     # 4-ID-H 9-Tesla magnet (sub-components of `magnet911`)
-    "h-9T-vti-a": ("magnet911", "temps.setpoint_1", "temps.sensor_a"),
-    "h-9T-vti-b": ("magnet911", "temps.setpoint_2", "temps.sensor_b"),
-    "h-9T-vti-c": ("magnet911", "temps.setpoint_3", "temps.sensor_c"),
-    "h-9T-vti-d": ("magnet911", "temps.setpoint_4", "temps.sensor_d"),
-    "h-9T-nv": (
-        "magnet911",
-        "needle_valve.temp.setpoint",
-        "needle_valve.temp.readback",
-    ),
+    "h-9T": ("magnet911", "temps.setpoint1", "temps.setpoint2",),
 }
 
 
