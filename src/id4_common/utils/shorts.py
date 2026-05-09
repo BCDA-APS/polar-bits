@@ -102,7 +102,7 @@ def crl_size(focal_size):
     if focal_size < 5:
         crl_dev.minimize_button.put(1)
     else:
-        crl_dev.focal_size_setpoint.put(focal_size * 1e-6)
+        crl_dev.beamsize.put(focal_size * 1e-6)
 
 
 def te(temperature):
