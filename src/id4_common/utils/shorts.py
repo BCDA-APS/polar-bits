@@ -44,10 +44,10 @@ def crl_setup(hutch=None):
     """
     Switch the CRL sample-position offset to the active hutch.
 
-    Delegates to :meth:`TransfocatorClass.select_g` / ``select_h``, which
+    Delegates to :meth:`CRLClass.select_g` / ``select_h``, which
     write to the IOC's ``ZOffsetToggle`` PV.  The per-hutch offset values
-    themselves live on the device as ``transfocator.offset_g`` /
-    ``offset_h`` and are not changed here.
+    themselves live on the device as ``crl.offset_g`` / ``offset_h`` and
+    are not changed here.
 
     Parameters
     ----------
@@ -62,17 +62,17 @@ def crl_setup(hutch=None):
     else:
         hutch = str(hutch).strip().lower()
 
-    transfocator = oregistry.find("transfocator")
+    crl_dev = oregistry.find("crl")
 
     if hutch in ("g", "diffractometer") or hutch.startswith("d"):
-        transfocator.select_g()
+        crl_dev.select_g()
         label = "G (diffractometer)"
     elif (
         hutch in ("h", "magnet")
         or hutch.startswith("m")
         or hutch.startswith("9")
     ):
-        transfocator.select_h()
+        crl_dev.select_h()
         label = "H (magnet)"
     else:
         print(f"Unknown hutch '{hutch}'.  Choose 'G' or 'H'.")
@@ -83,22 +83,22 @@ def crl_setup(hutch=None):
 
 def crl(focal_size):
     """
-    Set the CRL focus size on the transfocator.
+    Set the CRL focal size.
 
     Parameters
     ----------
     focal_size : float
-        Target focal size in microns. If < 5 µm, the transfocator's
+        Target focal size in microns. If < 5 µm, the device's
         ``minimize_button`` is triggered instead of writing a setpoint.
         Otherwise the value is converted to meters and written to
-        ``transfocator.focal_size_setpoint``.
+        ``crl.focal_size_setpoint``.
     """
     focal_size = float(focal_size)
-    transfocator = oregistry.find("transfocator")
+    crl_dev = oregistry.find("crl")
     if focal_size < 5:
-        transfocator.minimize_button.put(1)
+        crl_dev.minimize_button.put(1)
     else:
-        transfocator.focal_size_setpoint.put(focal_size * 1e-6)
+        crl_dev.focal_size_setpoint.put(focal_size * 1e-6)
 
 
 def te(temperature):

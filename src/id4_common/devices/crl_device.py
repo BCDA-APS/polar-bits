@@ -1,4 +1,4 @@
-"""Transfocator."""
+"""CRL."""
 
 from logging import getLogger
 from time import sleep as tsleep
@@ -188,7 +188,7 @@ class PyCRL(Device):
 
 
 class EnergySignal(Signal):
-    """Signal that moves the transfocator to a new energy."""
+    """Signal that moves the crl to a new energy."""
 
     _epics_sleep = EPICS_ENERGY_SLEEP
 
@@ -197,7 +197,7 @@ class EnergySignal(Signal):
         raise NotImplementedError("put operation not setup in this signal.")
 
     def set(self, value, **kwargs):
-        """Move transfocator to the specified energy."""
+        """Move crl to the specified energy."""
         self._readback = value
 
         if self.parent.energy_select.get() != 1:
@@ -205,7 +205,7 @@ class EnergySignal(Signal):
 
         self.parent.energy_local.set(value).wait(1)
         tsleep(self._epics_sleep)
-        # this is needed because the scan of the transfocator is 0.1 s
+        # this is needed because the scan of the crl is 0.1 s
 
         zpos = self.parent.z.user_readback.get() - self.parent.dq.get() * 1000.0
         # dq in meters
@@ -258,18 +258,18 @@ class ZMotor(EpicsMotor):
             self.parent.y.stop(success=success)
 
 
-def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
-    """Return a TransfocatorClass with lens motors bound to motors_ioc.
+def make_crl_class(motors_ioc=DEFAULT_MOTORS_IOC):
+    """Return a CRLClass with lens motors bound to motors_ioc.
 
     Parameters
     ----------
     motors_ioc : str
-        IOC prefix for the transfocator stage motors, e.g. ``"4idgSoft:"``.
+        IOC prefix for the crl stage motors, e.g. ``"4idgSoft:"``.
     """
     lens_list = [f"{motors_ioc}m{n}" for n in [69, 68, 67, 66, 65, 64, 63, 62]]
 
-    class TransfocatorClass(PyCRL):
-        """Transfocator with parametric motor IOC prefix."""
+    class CRLClass(PyCRL):
+        """CRL with parametric motor IOC prefix."""
 
         energy = Component(EnergySignal)
         tracking = Component(TrackingSignal, value=False, kind="config")
@@ -308,7 +308,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
             default_distance=2591,
             **kwargs,
         ):
-            """Initialize TransfocatorClass with motor IOC prefix."""
+            """Initialize CRLClass with motor IOC prefix."""
             self._motors_IOC = motors_ioc
             PyCRL.__init__(self, *args, **kwargs)
             self._lens_pos = lens_pos
@@ -397,7 +397,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
 
         def _setup_optimize_distance(self):
             if self.energy_select.get() in (1, "Local"):
-                logger.info("WARNING: transfocator in 'Local' energy mode")
+                logger.info("WARNING: crl in 'Local' energy mode")
 
             distance = self.z.user_readback.get() - self.dq.get() * 1000
 
@@ -438,7 +438,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
             return (yield from mv(self.z, self._setup_optimize_distance()))
 
         def default_settings(self):
-            """Apply default stage signals for transfocator."""
+            """Apply default stage signals for crl."""
             self.stage_sigs["energy_select"] = 1
 
         def select_g(self):
@@ -449,10 +449,10 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
             """Send the CRL sample-position offset to the 4-ID-H hutch value."""
             self.select_station.put("H")
 
-    TransfocatorClass.__name__ = "TransfocatorClass"
-    TransfocatorClass.__qualname__ = "TransfocatorClass"
-    return TransfocatorClass
+    CRLClass.__name__ = "CRLClass"
+    CRLClass.__qualname__ = "CRLClass"
+    return CRLClass
 
 
 # Module-level default — backward-compatible; used by devices.yml as-is.
-TransfocatorClass = make_transfocator_class()
+CRLClass = make_crl_class()

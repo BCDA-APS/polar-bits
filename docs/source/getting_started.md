@@ -75,10 +75,10 @@ find_loadable_devices()
 find_loadable_devices(label="4idg")
 
 # Connect a specific device
-load_device("transfocator")
+load_device("crl")
 
 # Disconnect and remove from baseline
-remove_device("transfocator")
+remove_device("crl")
 
 # Reload all devices (useful after devices.yml changes)
 reload_all_devices()

@@ -10,14 +10,14 @@ find_loadable_devices()
 
 # Filter by label
 find_loadable_devices(label="4idg")
-find_loadable_devices(name="transfocator")   # substring match
+find_loadable_devices(name="crl")            # substring match
 find_loadable_devices(name="kb", exact_name=False)
 
 # Connect a device
-load_device("transfocator")
+load_device("crl")
 
 # Disconnect and remove from baseline
-remove_device("transfocator")
+remove_device("crl")
 
 # Reload everything from YAML (useful after devices.yml edits)
 reload_all_devices()
@@ -73,14 +73,14 @@ Where a `DynamicDeviceComponent` must be assembled at class-definition time
 new class:
 
 ```python
-def make_transfocator_class(ioc="4idgSoft:"):
-    class Transfocator(Device):
+def make_crl_class(ioc="4idgSoft:"):
+    class CRLClass(Device):
         lenses = DynamicDeviceComponent(_build_lens_dict(ioc))
         ...
-    return Transfocator
+    return CRLClass
 
 # Module-level default (what devices.yml points to)
-Transfocator = make_transfocator_class()
+CRLClass = make_crl_class()
 ```
 
 Real examples in the codebase:
@@ -88,7 +88,7 @@ Real examples in the codebase:
 | Factory | Module |
 |---------|--------|
 | `make_kb_class()` | `id4_common.devices.kb_generic` |
-| `make_transfocator_class()` | `id4_common.devices.transfocator_device` |
+| `make_crl_class()` | `id4_common.devices.crl_device` |
 
 ---
 
@@ -116,7 +116,7 @@ Real examples in the codebase:
 | Class | Module | Notes |
 |-------|--------|-------|
 | `GKBDevice` / `HKBDevice` | `kb_generic` | KB mirror pair (factory-built) |
-| `Transfocator` | `transfocator_device` | Compound refractive lens (factory-built) |
+| `CRLClass` | `crl_device` | Compound refractive lens (factory-built) |
 | `Monochromator` | `monochromator` | Si(111) DCM |
 | `EnergySignal` | `energy_device` | Tracks mono energy; other devices can subscribe |
 | `PolarUndulatorPair` | `aps_undulator` | Upstream/downstream undulators |
