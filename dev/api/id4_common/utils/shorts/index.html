@@ -736,9 +736,12 @@ and the longer aliases <code class="docutils literal notranslate"><span class="p
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.shorts.crl">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.shorts.</span></span><span class="sig-name descname"><span class="pre">crl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">focal_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.shorts.crl" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.utils.shorts.crl_size">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.shorts.</span></span><span class="sig-name descname"><span class="pre">crl_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">focal_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.shorts.crl_size" title="Link to this definition">#</a></dt>
 <dd><p>Set the CRL focal size.</p>
+<p>Renamed from <code class="docutils literal notranslate"><span class="pre">crl</span></code> so the function does not shadow the <code class="docutils literal notranslate"><span class="pre">crl</span></code>
+device that <code class="docutils literal notranslate"><span class="pre">load_device(&quot;crl&quot;)</span></code> injects into the session
+namespace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>focal_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target focal size in microns. If &lt; 5 µm, the device’s
@@ -821,7 +824,7 @@ controller to talk to.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.shorts.opt"><code class="docutils literal notranslate"><span class="pre">opt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.shorts.crl_setup"><code class="docutils literal notranslate"><span class="pre">crl_setup()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.shorts.crl"><code class="docutils literal notranslate"><span class="pre">crl()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.shorts.crl_size"><code class="docutils literal notranslate"><span class="pre">crl_size()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.shorts.te"><code class="docutils literal notranslate"><span class="pre">te()</span></code></a></li>
 </ul>
 </li>

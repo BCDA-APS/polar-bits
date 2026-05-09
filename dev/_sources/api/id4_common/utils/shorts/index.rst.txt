@@ -41,9 +41,13 @@ Module Contents
    :type hutch: {'g', 'h'}, optional
 
 
-.. py:function:: crl(focal_size)
+.. py:function:: crl_size(focal_size)
 
    Set the CRL focal size.
+
+   Renamed from ``crl`` so the function does not shadow the ``crl``
+   device that ``load_device("crl")`` injects into the session
+   namespace.
 
    :param focal_size: Target focal size in microns. If < 5 µm, the device's
                       ``minimize_button`` is triggered instead of writing a setpoint.
