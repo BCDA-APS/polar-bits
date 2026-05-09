@@ -442,9 +442,11 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
             self.stage_sigs["energy_select"] = 1
 
         def select_g(self):
+            """Send the CRL sample-position offset to the 4-ID-G hutch value."""
             self.select_station.put("G")
 
         def select_h(self):
+            """Send the CRL sample-position offset to the 4-ID-H hutch value."""
             self.select_station.put("H")
 
     TransfocatorClass.__name__ = "TransfocatorClass"

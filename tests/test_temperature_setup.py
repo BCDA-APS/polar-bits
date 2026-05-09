@@ -8,7 +8,6 @@ from unittest.mock import MagicMock
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -72,16 +71,16 @@ def test_seed_dict_paths_resolve_against_a_mock_device(fresh_module):
 
     # Group entries by device so we mirror the real registry shape.
     by_device = {}
-    for label, (device, sp, rb) in ts_mod.TEMPERATURE_CONTROLLERS.items():
+    for _label, (device, sp, rb) in ts_mod.TEMPERATURE_CONTROLLERS.items():
         by_device.setdefault(device, set()).update([sp, rb])
 
     for device_name, paths in by_device.items():
         device = _build_device(paths)
         for path in paths:
             resolved = ts_mod._resolve_path(device, path)
-            assert isinstance(resolved, MagicMock), (
-                f"path {device_name}.{path} did not resolve to a leaf"
-            )
+            assert isinstance(
+                resolved, MagicMock
+            ), f"path {device_name}.{path} did not resolve to a leaf"
 
 
 def test_unknown_label_raises_keyerror(fresh_module):
@@ -98,12 +97,12 @@ def test_missing_device_raises_lookuperror(fresh_module, monkeypatch):
     monkeypatch.setattr(ts_mod, "oregistry", fake_registry)
 
     with pytest.raises(LookupError, match="not in oregistry"):
-        ts_mod.temperature_setup("g-336-loop1")
+        ts_mod.temperature_setup("g")
 
 
 def test_setup_injects_tc_ts_and_label(fresh_module, monkeypatch):
     ts_mod, fake_sd, fake_main = fresh_module
-    label = "g-336-loop1"
+    label = "g"
     _, sp_path, rb_path = ts_mod.TEMPERATURE_CONTROLLERS[label]
     device = _build_device([sp_path, rb_path])
 
@@ -130,8 +129,8 @@ def test_resetup_swaps_baseline(fresh_module, monkeypatch):
     """Re-running with a different label removes the previous ts from baseline."""
     ts_mod, fake_sd, _ = fresh_module
 
-    label_a = "g-336-loop1"
-    label_b = "g-340-loop1"
+    label_a = "g"
+    label_b = "g-340"
     _, sp_a, rb_a = ts_mod.TEMPERATURE_CONTROLLERS[label_a]
     _, sp_b, rb_b = ts_mod.TEMPERATURE_CONTROLLERS[label_b]
 
@@ -155,7 +154,7 @@ def test_resetup_swaps_baseline(fresh_module, monkeypatch):
 
 def test_add_to_baseline_false_skips_membership(fresh_module, monkeypatch):
     ts_mod, fake_sd, _ = fresh_module
-    label = "h-9T-vti-a"
+    label = "h-9T"
     _, sp_path, rb_path = ts_mod.TEMPERATURE_CONTROLLERS[label]
     device = _build_device([sp_path, rb_path])
 

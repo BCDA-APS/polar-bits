@@ -3,14 +3,10 @@
 from datetime import datetime
 
 from apsbits.core.instrument_init import oregistry
-from epics import caput
 from polartools.load_data import load_catalog
 
 from id4_common.plans.center_maximum import cen
 from id4_common.plans.center_maximum import maxi
-
-_CRL_OFFSET_PV = "4idPyCRL:CRL4ID:1:oePosOffset.DOL"
-_CRL_OFFSETS = {"diffractometer": 0.0, "magnet": 6.5}
 
 
 def opt(method="cen"):
@@ -44,38 +40,45 @@ def opt(method="cen"):
                 yield from maxi(positioner)
 
 
-def crl_setup():
+def crl_setup(hutch=None):
     """
-    Set the CRL sample-position offset for the active instrument.
+    Switch the CRL sample-position offset to the active hutch.
 
-    Prompts for the instrument (Diffractometer or Magnet) and writes
-    the corresponding offset to ``4idPyCRL:CRL4ID:samplePositionOffset_RBV``:
+    Delegates to :meth:`TransfocatorClass.select_g` / ``select_h``, which
+    write to the IOC's ``ZOffsetToggle`` PV.  The per-hutch offset values
+    themselves live on the device as ``transfocator.offset_g`` /
+    ``offset_h`` and are not changed here.
 
-    - Diffractometer  → 0
-    - Magnet    → 6.5
+    Parameters
+    ----------
+    hutch : {'g', 'h'}, optional
+        Hutch to switch to.  Case-insensitive, accepts ``"G"`` / ``"H"``
+        and the longer aliases ``"diffractometer"`` (= G) /
+        ``"magnet"`` (= H) for backwards compatibility.  When ``None``
+        (default), prompt interactively.
     """
-    answer = (
-        input("Instrument (Diffractometer / Magnet) [Diffractometer]: ")
-        .strip()
-        .lower()
-        or "diffractometer"
-    )
-
-    if answer.startswith("d"):
-        offset = _CRL_OFFSETS["diffractometer"]
-        label = "Diffractometer"
-    elif answer.startswith("9") or "magnet" in answer or answer.startswith("m"):
-        offset = _CRL_OFFSETS["magnet"]
-        label = "Magnet"
+    if hutch is None:
+        hutch = input("Hutch (G / H) [G]: ").strip().lower() or "g"
     else:
-        print(
-            f"Unknown instrument '{answer}'. "
-            "Choose 'Diffractometer' or 'Magnet'."
-        )
+        hutch = str(hutch).strip().lower()
+
+    transfocator = oregistry.find("transfocator")
+
+    if hutch in ("g", "diffractometer") or hutch.startswith("d"):
+        transfocator.select_g()
+        label = "G (diffractometer)"
+    elif (
+        hutch in ("h", "magnet")
+        or hutch.startswith("m")
+        or hutch.startswith("9")
+    ):
+        transfocator.select_h()
+        label = "H (magnet)"
+    else:
+        print(f"Unknown hutch '{hutch}'.  Choose 'G' or 'H'.")
         return
 
-    caput(_CRL_OFFSET_PV, str(offset))
-    print(f"{label}: {_CRL_OFFSET_PV} = {offset}")
+    print(f"CRL sample-position offset set for {label}.")
 
 
 def crl(focal_size):

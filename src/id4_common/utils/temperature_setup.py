@@ -48,7 +48,11 @@ TEMPERATURE_CONTROLLERS = {
     "g": ("temp_336_4idg", "loop1", "loop2"),
     "g-340": ("temp_340_4idg", "control", "sample"),
     # 4-ID-H 9-Tesla magnet (sub-components of `magnet911`)
-    "h-9T": ("magnet911", "temps.setpoint1", "temps.setpoint2",),
+    "h-9T": (
+        "magnet911",
+        "temps.setpoint1",
+        "temps.setpoint2",
+    ),
 }
 
 
