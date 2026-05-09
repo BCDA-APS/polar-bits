@@ -159,6 +159,15 @@ Module Contents
    .. py:attribute:: sample
 
 
+   .. py:attribute:: select_station
+
+
+   .. py:attribute:: offset_g
+
+
+   .. py:attribute:: offset_h
+
+
    .. py:attribute:: binary
 
 

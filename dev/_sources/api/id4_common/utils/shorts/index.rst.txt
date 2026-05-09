@@ -25,15 +25,20 @@ Module Contents
 
 
 
-.. py:function:: crl_setup()
+.. py:function:: crl_setup(hutch=None)
 
-   Set the CRL sample-position offset for the active instrument.
+   Switch the CRL sample-position offset to the active hutch.
 
-   Prompts for the instrument (Diffractometer or Magnet) and writes
-   the corresponding offset to ``4idPyCRL:CRL4ID:samplePositionOffset_RBV``:
+   Delegates to :meth:`TransfocatorClass.select_g` / ``select_h``, which
+   write to the IOC's ``ZOffsetToggle`` PV.  The per-hutch offset values
+   themselves live on the device as ``transfocator.offset_g`` /
+   ``offset_h`` and are not changed here.
 
-   - Diffractometer  → 0
-   - Magnet    → 6.5
+   :param hutch: Hutch to switch to.  Case-insensitive, accepts ``"G"`` / ``"H"``
+                 and the longer aliases ``"diffractometer"`` (= G) /
+                 ``"magnet"`` (= H) for backwards compatibility.  When ``None``
+                 (default), prompt interactively.
+   :type hutch: {'g', 'h'}, optional
 
 
 .. py:function:: crl(focal_size)

@@ -719,14 +719,20 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.shorts.crl_setup">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.shorts.</span></span><span class="sig-name descname"><span class="pre">crl_setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.shorts.crl_setup" title="Link to this definition">#</a></dt>
-<dd><p>Set the CRL sample-position offset for the active instrument.</p>
-<p>Prompts for the instrument (Diffractometer or Magnet) and writes
-the corresponding offset to <code class="docutils literal notranslate"><span class="pre">4idPyCRL:CRL4ID:samplePositionOffset_RBV</span></code>:</p>
-<ul class="simple">
-<li><p>Diffractometer  → 0</p></li>
-<li><p>Magnet    → 6.5</p></li>
-</ul>
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.shorts.</span></span><span class="sig-name descname"><span class="pre">crl_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hutch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.shorts.crl_setup" title="Link to this definition">#</a></dt>
+<dd><p>Switch the CRL sample-position offset to the active hutch.</p>
+<p>Delegates to <code class="xref py py-meth docutils literal notranslate"><span class="pre">TransfocatorClass.select_g()</span></code> / <code class="docutils literal notranslate"><span class="pre">select_h</span></code>, which
+write to the IOC’s <code class="docutils literal notranslate"><span class="pre">ZOffsetToggle</span></code> PV.  The per-hutch offset values
+themselves live on the device as <code class="docutils literal notranslate"><span class="pre">transfocator.offset_g</span></code> /
+<code class="docutils literal notranslate"><span class="pre">offset_h</span></code> and are not changed here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hutch</strong> (<em>{'g'</em><em>, </em><em>'h'}</em><em>, </em><em>optional</em>) – Hutch to switch to.  Case-insensitive, accepts <code class="docutils literal notranslate"><span class="pre">&quot;G&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;H&quot;</span></code>
+and the longer aliases <code class="docutils literal notranslate"><span class="pre">&quot;diffractometer&quot;</span></code> (= G) /
+<code class="docutils literal notranslate"><span class="pre">&quot;magnet&quot;</span></code> (= H) for backwards compatibility.  When <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(default), prompt interactively.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
