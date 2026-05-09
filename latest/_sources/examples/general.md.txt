@@ -306,7 +306,8 @@ df = load_table(-1, cat)
 Configure which devices follow the monochromator when energy changes:
 
 ```python
-# Iterative. Displays the available devices and you enter their corresponding numbers
+# Iterative. Displays the available devices and you enter their corresponding
+# numbers.  Enter `0` to disable tracking on every device.
 energy.tracking_setup()
 # Or not interactive:
 energy.tracking_setup(["undulators_ds", "pr2"])

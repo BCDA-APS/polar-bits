@@ -29,6 +29,7 @@ Submodules
    /api/id4_common/utils/load_vortex/index
    /api/id4_common/utils/local_magics/index
    /api/id4_common/utils/logbook_mcr/index
+   /api/id4_common/utils/logging_helper/index
    /api/id4_common/utils/make_devices/index
    /api/id4_common/utils/oregistry_auxiliar/index
    /api/id4_common/utils/polartools_hklpy2_imports/index

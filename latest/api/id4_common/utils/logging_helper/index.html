@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>id4_common.utils.run_engine_init &#8212; polar-bits</title>
+    <title>id4_common.utils.logging_helper &#8212; polar-bits</title>
   
   
   
@@ -46,12 +46,12 @@
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/utils/run_engine_init/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/utils/logging_helper/index';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="id4_common.utils.shorts" href="../shorts/index.html" />
-    <link rel="prev" title="id4_common.utils.run_engine" href="../run_engine/index.html" />
+    <link rel="next" title="id4_common.utils.make_devices" href="../make_devices/index.html" />
+    <link rel="prev" title="id4_common.utils.logbook_mcr" href="../logbook_mcr/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -590,13 +590,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../logging_helper/index.html">id4_common.utils.logging_helper</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.utils.logging_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.utils.run_engine_init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../shorts/index.html">id4_common.utils.shorts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../spe_handler/index.html">id4_common.utils.spe_handler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../transfocator_calculation/index.html">id4_common.utils.transfocator_calculation</a></li>
@@ -677,7 +677,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">id4_common.utils</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.utils.run_engine_init</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.utils.logging_helper</span></li>
   </ul>
 </nav>
 </div>
@@ -694,37 +694,32 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-id4_common.utils.run_engine_init">
-<span id="id4-common-utils-run-engine-init"></span><h1>id4_common.utils.run_engine_init<a class="headerlink" href="#module-id4_common.utils.run_engine_init" title="Link to this heading">#</a></h1>
-<p>Local copy of <code class="docutils literal notranslate"><span class="pre">apsbits.core.run_engine_init.init_RE</span></code> that fixes the
-broken <code class="docutils literal notranslate"><span class="pre">handler_name</span></code> selector. Upstream apsbits 2.0.1 hard-codes
-<code class="docutils literal notranslate"><span class="pre">handler_name</span> <span class="pre">=</span> <span class="pre">StoredDict</span></code> (the class object) and then compares it to
-the string <code class="docutils literal notranslate"><span class="pre">&quot;PersistentDict&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;StoredDict&quot;</span></code> — both branches are
-always False, so <code class="docutils literal notranslate"><span class="pre">RE.md</span></code> is never wired up to the on-disk
-PersistentDict and <cite>scan_id</cite> (etc.) never restore on startup.</p>
-<p>Drop this shim once apsbits ships a release that picks the handler from
-the path layout instead of pinning it to a class.</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-</tbody>
-</table>
-</div>
+  <section id="module-id4_common.utils.logging_helper">
+<span id="id4-common-utils-logging-helper"></span><h1>id4_common.utils.logging_helper<a class="headerlink" href="#module-id4_common.utils.logging_helper" title="Link to this heading">#</a></h1>
+<p>Centralized bluesky-session logging configuration for POLAR beamlines.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
-<dt class="sig sig-object py" id="id4_common.utils.run_engine_init.logger">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.run_engine_init.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.utils.run_engine_init.logger" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.utils.logging_helper.logger">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.logging_helper.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.utils.logging_helper.logger" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.run_engine_init.init_RE">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.run_engine_init.</span></span><span class="sig-name descname"><span class="pre">init_RE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iconfig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.14)"><span class="pre">collections.abc.Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subscribers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">bluesky.RunEngine</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bluesky.SupplementalData</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#id4_common.utils.run_engine_init.init_RE" title="Link to this definition">#</a></dt>
-<dd><p>Initialize and configure a Bluesky RunEngine instance.</p>
-<p>Mirrors <code class="xref py py-func docutils literal notranslate"><span class="pre">apsbits.core.run_engine_init.init_RE()</span></code>. The only
-behavioural difference is <code class="xref py py-data docutils literal notranslate"><span class="pre">handler_name</span></code>, which here selects
-<code class="docutils literal notranslate"><span class="pre">&quot;StoredDict&quot;</span></code> for a file <code class="docutils literal notranslate"><span class="pre">MD_PATH</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;PersistentDict&quot;</span></code>
-otherwise — the upstream version hard-codes the class and never
-actually restores from disk.</p>
+<dt class="sig sig-object py" id="id4_common.utils.logging_helper.setup_logging">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.logging_helper.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.logging_helper.setup_logging" title="Link to this definition">#</a></dt>
+<dd><p>Configure bluesky logging from the LOGGING block of iconfig.yml.</p>
+<p>The block is translated to the apsbits <cite>file_logs</cite>/<cite>ipython_logs</cite> schema
+on the fly (via a temporary YAML file passed to apsbits’
+<code class="docutils literal notranslate"><span class="pre">configure_logging(extra_logging_configs_path=...)</span></code>) so polar-bits keeps
+a single config file.</p>
+<p>Falls back to the apsbits default directory (<code class="docutils literal notranslate"><span class="pre">&lt;cwd&gt;/.logs/</span></code>) when no
+LOG_PATH is configured or when the centralized directory cannot be
+created — typically a developer machine without access to the beamline
+filesystem.  The IPython log file always uses our filename
+(<code class="docutils literal notranslate"><span class="pre">ipython_logs.log</span></code>), regardless of which directory wins.</p>
+<p>Idempotent: subsequent calls are no-ops so importing several beamline
+packages (or importing one whose <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> chains through
+id4_common) doesn’t re-run <cite>%logstart</cite> and re-print the settings block.</p>
 </dd></dl>
 
 </section>
@@ -741,20 +736,20 @@ actually restores from disk.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../run_engine/index.html"
+       href="../logbook_mcr/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">id4_common.utils.run_engine</p>
+        <p class="prev-next-title">id4_common.utils.logbook_mcr</p>
       </div>
     </a>
     <a class="right-next"
-       href="../shorts/index.html"
+       href="../make_devices/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">id4_common.utils.shorts</p>
+        <p class="prev-next-title">id4_common.utils.make_devices</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -778,8 +773,8 @@ actually restores from disk.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.run_engine_init.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.run_engine_init.init_RE"><code class="docutils literal notranslate"><span class="pre">init_RE()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.logging_helper.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.logging_helper.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -789,7 +784,7 @@ actually restores from disk.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/utils/run_engine_init/index.rst">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/utils/logging_helper/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -804,7 +799,7 @@ actually restores from disk.</p>
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../../../_sources/api/id4_common/utils/run_engine_init/index.rst.txt">
+    <a href="../../../../_sources/api/id4_common/utils/logging_helper/index.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
