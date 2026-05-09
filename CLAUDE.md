@@ -64,7 +64,8 @@ Configuration is YAML-driven. The main file is `src/id4_common/configs/iconfig.y
 - Enabled output formats (SPEC `.dat` files enabled by default, NeXus `.hdf` optional)
 - APS Data Management (DM) integration paths
 - Area detector defaults (Eiger 1M, Lambda, Vortex, LightField, Vimba)
-- EPICS timeouts and logging paths
+- EPICS timeouts
+- Bluesky session logging (`LOGGING.LOG_PATH` and friends — see "Logging" below)
 
 Device definitions live in `src/id4_common/configs/devices.yml` — the single source of truth for all beamlines. Each device entry maps a Python class path to EPICS PV prefixes, labels, and any extra kwargs the class `__init__` requires.
 
@@ -173,6 +174,17 @@ reload_all_devices()                             # reload all from YAML (all sta
 reload_all_devices(stations=["core", "4idh"])  # reload for a specific beamline
 ```
 
+`load_device(name)` is also the canonical way to **reconnect** a device that
+is already in the registry — it routes existing entries through
+`connect_device(...)` rather than skipping. Users who want to retry a flaky
+IOC connection can just call `load_device("...")` again.
+
+The vortex-specific helper `load_vortex(electronic, ...)` (used because vortex
+electronics are picked at runtime rather than from `devices.yml`) follows the
+same contract as `load_device`: it delegates to `connect_device`, runs
+`_post_connect_setup`/`default_settings`/HDF1 priming, and adds the device to
+`__main__` regardless of whether the connection succeeded.
+
 The `oregistry` (from `apsbits`) is the central device registry.
 
 ### Deferred EPICS Connection Pattern
@@ -210,11 +222,33 @@ class MyDevice(Device):
 For sub-components (not top-level `devices.yml` entries), use `run=False` on all
 `subscribe()` calls in `__init__` to avoid fetching PV values before connection.
 
+**HDF1 plugin priming.** `connect_device()` automatically calls
+`AD_prime_plugin2(device.hdf1)` after `default_settings()` runs, which fires
+`hdf1.warmup()` when the plugin has never received an array. The contract is
+that each area-detector class wires `self.hdf1.warmup_signals` inside its
+`default_settings()` — a list of `(signal, value)` pairs that briefly trigger
+one acquisition. Reference patterns: `Eiger1MDetector`, `VimbaDetector` (ADCore
+`acquire`); `VortexDante1`/`VortexDante4` (MCA `acquire_start`/`mca_mode`).
+A camera with no warmup signals logs a warning and skips priming.
+
 ### Data Output
 
-- **SPEC files** (`.dat`): enabled by default in `iconfig.yml`; `newSpecFile()`, `spec_comment()` available in session
+- **SPEC files** (`.dat`): enabled by default in `iconfig.yml`; `newSpecFile()`, `spec_comment()` available in session. The local writer (`id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2`) collapses non-scalar metadata to one line via `_one_line()` and replaces array-valued scan args with a `<array len=N>` summary in the `#S` line so pymca can parse `qxscan` files.
 - **NeXus/HDF5** (`.hdf`): opt-in via `iconfig.yml`
 - **Dichro stream**: circular dichroism data processing, always loaded
+
+### Logging
+
+Bluesky session logs are configured by the `LOGGING` block of `iconfig.yml`,
+not by apsbits' default `logging.yml`. `id4_common.utils.logging_helper.
+setup_logging()` (called from each beamline's `__init__.py`) reads the block,
+translates `LOG_PATH`/`MAX_BYTES`/`NUMBER_OF_PREVIOUS_BACKUPS` to the apsbits
+`file_logs`/`ipython_logs` schema, writes a temp YAML, and passes it via
+`configure_logging(extra_logging_configs_path=...)`. If the centralized log
+directory cannot be created (developer machine without `/net/...` access)
+the helper falls back to apsbits' default `<cwd>/.logs/`. Add a new
+user-friendly key here by extending the `_FILE_LOGS_KEY_MAP` dict in
+`logging_helper.py`.
 
 ### QueueServer
 

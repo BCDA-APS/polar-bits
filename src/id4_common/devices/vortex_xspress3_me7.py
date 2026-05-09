@@ -499,6 +499,15 @@ class VortexXspress37(Trigger, ROICountersMixin, DetectorBase):
             if "blocking_callbacks" in dir(obj):  # is it a plugin?
                 obj.stage_sigs["blocking_callbacks"] = "No"
 
+        self.hdf1.warmup_signals = [
+            (self.hdf1.enable, 1),
+            (self.hdf1.parent.cam.array_callbacks, 1),
+            (self.hdf1.parent.cam.image_mode, 0),  # Single
+            (self.hdf1.parent.cam.trigger_mode, 1),  # Internal
+            (self.hdf1.parent.cam.acquire_time, 0.01),
+            (self.hdf1.parent.cam.acquire, 1),
+        ]
+
     @property
     def read_rois(self):
         """

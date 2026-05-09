@@ -229,3 +229,12 @@ class Lambda250kDetector(MySingleTrigger, DetectorBase):
     def default_settings(self):
         """Apply default stage signal settings for the Lambda detector."""
         self.stage_sigs["cam.num_images"] = 1
+
+        self.hdf1.warmup_signals = [
+            (self.hdf1.enable, 1),
+            (self.hdf1.parent.cam.array_callbacks, 1),  # set by number
+            (self.hdf1.parent.cam.image_mode, 0),  # Single, set by number
+            (self.hdf1.parent.cam.trigger_mode, 0),  # Internal
+            (self.hdf1.parent.cam.acquire_time, 0.01),
+            (self.hdf1.parent.cam.acquire, 1),
+        ]
