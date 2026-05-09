@@ -1,4 +1,17 @@
-"""Plans that compute peak statistics from a previous scan and move there."""
+"""DEPRECATED — kept temporarily for reference (issue #59).
+
+This is the pre-#59 ``peak_position.py`` (xy_statistics-based
+``peak`` / ``pmax`` / ``pmin`` / ``peak_pos``).  The new
+``peak_position.py`` alongside it provides scipy-backed ``cen`` /
+``com`` / ``maxi`` / ``mini`` with native 2D ``grid_scan`` support,
+plus backward-compatible ``peak`` / ``pmax`` / ``pmin`` aliases.
+
+This file is not imported by anything — verify with
+``grep -rn 'peak_position_legacy' src/`` before deleting.
+
+TODO(#59): remove after the new module has been validated at the
+beamline.
+"""
 
 import warnings
 from datetime import datetime
