@@ -27,10 +27,16 @@ class MyXBPM(Device):
     horizontal_position = Component(EpicsSignalRO, ":ID:SrcPt:HPositionM")
     horizontal_angle = Component(EpicsSignalRO, ":ID:SrcPt:HAngleM")
 
-    x_axis = Component(EpicsSignalRO, "IDFE-XBPM:P1ds:XAxisNorm_")
-    y_top = Component(EpicsSignalRO, "IDFE-XBPM:P1ds:YDataTopNorm_")
-    y_bot = Component(EpicsSignalRO, "IDFE-XBPM:P1ds:YDataBottomNorm_")
+    x_axis = Component(
+        EpicsSignalRO, "IDFE-XBPM:P1ds:XAxisNorm_", kind="omitted"
+    )
+    y_top = Component(
+        EpicsSignalRO, "IDFE-XBPM:P1ds:YDataTopNorm_", kind="omitted"
+    )
+    y_bot = Component(
+        EpicsSignalRO, "IDFE-XBPM:P1ds:YDataBottomNorm_", kind="omitted"
+    )
 
-    cm1 = Component(CMsDevice, "IDFE-XBPM:CM1ds:")
-    cm2 = Component(CMsDevice, "IDFE-XBPM:CM2ds:")
-    cm3 = Component(CMsDevice, "IDFE-XBPM:CM3ds:")
+    cm1 = Component(CMsDevice, "IDFE-XBPM:CM1ds:", kind="omitted")
+    cm2 = Component(CMsDevice, "IDFE-XBPM:CM2ds:", kind="omitted")
+    cm3 = Component(CMsDevice, "IDFE-XBPM:CM3ds:", kind="omitted")

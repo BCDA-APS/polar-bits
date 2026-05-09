@@ -51,9 +51,20 @@ class MonoFeedback(Device):
     Top-level monochromator feedback device with per-station feedback loops.
     """
 
-    station = Component(EpicsSignal, "MonoFBStation", string=True)
-    enable = Component(EpicsSignal, "MonoFBEnable", string=True)
+    station = Component(
+        EpicsSignal, "MonoFBStation", string=True, kind="config"
+    )
+    enable = Component(EpicsSignal, "MonoFBEnable", string=True, kind="config")
 
-    b = Component(FeedbackStation, "epidB", labels=("4idb",))
-    g = Component(FeedbackStation, "epidG", labels=("4idg",))
-    h = Component(FeedbackStation, "epidH", labels=("4idh",))
+    b = Component(FeedbackStation, "epidB", labels=("4idb",), kind="omitted")
+    g = Component(FeedbackStation, "epidG", labels=("4idg",), kind="omitted")
+    h = Component(FeedbackStation, "epidH", labels=("4idh",), kind="omitted")
+
+    def _kind_setup(self, value=None, **kwargs):
+        for item in "b g h".split():
+            kind = "config" if value.lower() == item else "omitted"
+            getattr(self, item).kind = kind
+
+    def default_settings(self):
+        """Subscribe to the station signal so per-station kinds track it."""
+        self.station.subscribe(self._kind_setup)

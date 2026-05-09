@@ -22,18 +22,18 @@ class MR3(Device):
     pitch = Component(EpicsMotor, "m14", labels=("motor",))
 
     # Individual motors
-    yu = Component(EpicsMotor, "m1", labels=("motor",))
-    yd = Component(EpicsMotor, "m2", labels=("motor",))
-    xu = Component(EpicsMotor, "m3", labels=("motor",))
-    xd = Component(EpicsMotor, "m4", labels=("motor",))
+    yu = Component(EpicsMotor, "m1", labels=("motor",), kind="config")
+    yd = Component(EpicsMotor, "m2", labels=("motor",), kind="config")
+    xu = Component(EpicsMotor, "m3", labels=("motor",), kind="config")
+    xd = Component(EpicsMotor, "m4", labels=("motor",), kind="config")
 
     # Stripe settings
     stripe_setpoint = Component(EpicsSignal, "MR3:Stripe", string=True)
     stripe_readback = Component(EpicsSignalRO, "MR3:StripeRBV", string=True)
 
-    pos_silicon = Component(EpicsSignal, "MR3:SiPosition")
-    pos_palladium = Component(EpicsSignal, "MR3:PdPosition")
-    pos_platinum = Component(EpicsSignal, "MR3:PtPosition")
+    pos_silicon = Component(EpicsSignal, "MR3:SiPosition", kind="config")
+    pos_palladium = Component(EpicsSignal, "MR3:PdPosition", kind="config")
+    pos_platinum = Component(EpicsSignal, "MR3:PtPosition", kind="config")
 
     # Bender motors and settings
     bender_avg = Component(EpicsMotor, "mr3:pm1", labels=("motor",))
@@ -60,18 +60,18 @@ class MR4(Device):
     pitch = Component(EpicsMotor, "m18", labels=("motor",))
 
     # Individual motors
-    yu = Component(EpicsMotor, "m7", labels=("motor",))
-    yd = Component(EpicsMotor, "m8", labels=("motor",))
-    xu = Component(EpicsMotor, "m9", labels=("motor",))
-    xd = Component(EpicsMotor, "m10", labels=("motor",))
+    yu = Component(EpicsMotor, "m7", labels=("motor",), kind="config")
+    yd = Component(EpicsMotor, "m8", labels=("motor",), kind="config")
+    xu = Component(EpicsMotor, "m9", labels=("motor",), kind="config")
+    xd = Component(EpicsMotor, "m10", labels=("motor",), kind="config")
 
     # Stripe settings
     stripe_setpoint = Component(EpicsSignal, "MR4:Stripe", string=True)
     stripe_readback = Component(EpicsSignalRO, "MR4:StripeRBV", string=True)
 
-    pos_silicon = Component(EpicsSignal, "MR4:SiPosition")
-    pos_palladium = Component(EpicsSignal, "MR4:PdPosition")
-    pos_platinum = Component(EpicsSignal, "MR4:PtPosition")
+    pos_silicon = Component(EpicsSignal, "MR4:SiPosition", kind="config")
+    pos_palladium = Component(EpicsSignal, "MR4:PdPosition", kind="config")
+    pos_platinum = Component(EpicsSignal, "MR4:PtPosition", kind="config")
 
 
 class ToroidalMirror(Device):

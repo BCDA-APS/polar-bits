@@ -44,7 +44,7 @@ id4_common.devices.wb_slit.SlitDevice:
   slitnum: 1
   labels: ["core", "slit", "baseline"]
 
-id4_common.devices.hhl_mirror.ToroidalMirror:
+id4_common.devices.hhl_mirror.HHLMirror:
 - name: hhl_mirror
   prefix: "4idHHLM:"
   labels: ["core", "mirror", "baseline"]
@@ -181,6 +181,7 @@ id4_common.devices.scaler.LocalScalerCH:
 id4_common.devices.usb_ctr8.CustomMeasCompCtr:
 - name: ctr8
   prefix: "4idCTR8_1:"
+  kind: "config"
   labels: ["detector", "4idb", "4idg", "4idh", "baseline"]
 
 ############
@@ -453,3 +454,16 @@ id4_common.devices.softgluezynq_vortex.SGZVortex:
 - name: sgz_vortex
   prefix: "4iddMZ0:"
   labels: ["detector"]
+
+id4_common.devices.ge_controller.GEController:
+- name: comp
+  prefix: "4idPace:PC1:"
+  readback_pv: "Setpoint_RBV"
+  setpoint_pv: "Setpoint"
+  labels: ["high pressure", "baseline"]
+
+- name: decomp
+  prefix: "4idPace:PC2:"
+  readback_pv: "Setpoint_RBV"
+  setpoint_pv: "Setpoint"
+  labels: ["high pressure", "baseline"]
