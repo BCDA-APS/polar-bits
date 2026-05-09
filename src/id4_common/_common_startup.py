@@ -108,6 +108,9 @@ else:
     from id4_common.utils.shorts import crl_setup  # noqa: F401
     from id4_common.utils.shorts import opt  # noqa: F401
     from id4_common.utils.shorts import te  # noqa: F401
+    from id4_common.utils.temperature_setup import (
+        temperature_setup,  # noqa: F401
+    )
     from id4_common.utils.undulator_setup import undulator_setup  # noqa: F401
     from id4_common.utils.wax import wa_new  # noqa: F401
     from id4_common.utils.wax import wax  # noqa: F401

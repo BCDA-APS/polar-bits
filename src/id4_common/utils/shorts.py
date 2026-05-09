@@ -100,15 +100,34 @@ def crl(focal_size):
 
 def te(temperature):
     """
-    Set the temperature setpoint on ``temp_336_4idg`` (loop 1).
+    Set the active temperature controller's setpoint.
 
-    Writes the setpoint and returns immediately; the controller continues
-    ramping toward the target on its own.
+    Thin shortcut over the ``tc`` signal installed by
+    :func:`id4_common.utils.temperature_setup.temperature_setup`.  Writes
+    the setpoint and returns immediately; the controller continues ramping
+    toward the target on its own.
 
     Parameters
     ----------
     temperature : float
         Target temperature setpoint.
+
+    Raises
+    ------
+    RuntimeError
+        ``temperature_setup()`` has not been run, so there is no active
+        controller to talk to.
     """
-    controller = oregistry.find("temp_336_4idg")
-    controller.loop1.setpoint.put(float(temperature))
+    from .temperature_setup import get_active_label
+    from .temperature_setup import get_active_tc
+
+    tc = get_active_tc()
+    if tc is None:
+        raise RuntimeError(
+            "No active temperature controller.  Run "
+            "`temperature_setup('<label>')` first (see "
+            "id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS "
+            "for the available labels)."
+        )
+    tc.put(float(temperature))
+    print(f"{get_active_label()}: setpoint -> {float(temperature)}")

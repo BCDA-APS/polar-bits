@@ -250,6 +250,28 @@ the helper falls back to apsbits' default `<cwd>/.logs/`. Add a new
 user-friendly key here by extending the `_FILE_LOGS_KEY_MAP` dict in
 `logging_helper.py`.
 
+### Temperature controllers
+
+There are several temperature controllers across the four 4-ID stations
+(LakeShore 336/340 at 4IDG, the 9-Tesla magnet's VTI sensors and needle
+valve at 4IDH, …).  `id4_common.utils.temperature_setup.temperature_setup
+(label)` picks one and binds three names into the session:
+
+- ``tc`` — the **control** signal (movable, the loop setpoint)
+- ``ts`` — the **sample** signal (readable, the readback)
+- ``TEMPERATURE_CONTROLLER`` — the active label string
+
+Once set, ``mv tc 295`` and ``RE(count(1, 1, detectors=[ts]))`` work; ``ts``
+is added to ``sd.baseline`` by default so the sample temperature lands in
+every scan.  ``te(temperature)`` in ``shorts.py`` is now a thin shortcut
+over the active ``tc``.
+
+Adding a new controller is a one-line edit to the ``TEMPERATURE_CONTROLLERS``
+dict in ``id4_common/utils/temperature_setup.py`` — each row is
+``label → (device_name, setpoint_attr_path, readback_attr_path)`` and the
+dotted paths are resolved against ``oregistry.find(device_name)``.  No
+device-class changes required.
+
 ### QueueServer
 
 Each beamline has a `qs-config.yml` and `qs_host.sh`. The QS uses Redis (localhost:6379) for communication and an IPython kernel backend. `startup.py` detects QueueServer context via `running_in_queueserver()` and adjusts imports accordingly (e.g., no interactive prompts, no shutter suspenders).
