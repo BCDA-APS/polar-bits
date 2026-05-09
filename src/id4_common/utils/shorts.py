@@ -81,9 +81,13 @@ def crl_setup(hutch=None):
     print(f"CRL sample-position offset set for {label}.")
 
 
-def crl(focal_size):
+def crl_size(focal_size):
     """
     Set the CRL focal size.
+
+    Renamed from ``crl`` so the function does not shadow the ``crl``
+    device that ``load_device("crl")`` injects into the session
+    namespace.
 
     Parameters
     ----------
