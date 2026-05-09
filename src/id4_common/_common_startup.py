@@ -85,6 +85,10 @@ else:
     from bluesky import plan_stubs as bps  # noqa: F401
     from bluesky import plans as bp  # noqa: F401
 
+    from id4_common.plans.peak_position import peak  # noqa: F401
+    from id4_common.plans.peak_position import peak_pos  # noqa: F401
+    from id4_common.plans.peak_position import pmax  # noqa: F401
+    from id4_common.plans.peak_position import pmin  # noqa: F401
     from id4_common.suspenders.shutters_suspenders import shutter_suspenders
     from id4_common.suspenders.suspender_utils import (  # noqa: F401
         suspender_change_sleep,
@@ -100,7 +104,10 @@ else:
     from id4_common.utils.dm_utils import *  # noqa: F403
     from id4_common.utils.experiment_utils import *  # noqa: F403
     from id4_common.utils.pr_setup import pr_setup  # noqa: F401
+    from id4_common.utils.shorts import crl  # noqa: F401
+    from id4_common.utils.shorts import crl_setup  # noqa: F401
     from id4_common.utils.shorts import opt  # noqa: F401
+    from id4_common.utils.shorts import te  # noqa: F401
     from id4_common.utils.undulator_setup import undulator_setup  # noqa: F401
     from id4_common.utils.wax import wa_new  # noqa: F401
     from id4_common.utils.wax import wax  # noqa: F401

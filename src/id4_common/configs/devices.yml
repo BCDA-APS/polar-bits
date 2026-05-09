@@ -334,6 +334,16 @@ id4_common.devices.gh_i0_motors.I04idg:
   prefix: "4idgSoft:"
   labels: ["4idg", "baseline"]
 
+id4_common.devices.ringlight.Ringlight:
+- name: ringlight
+  prefix: "RINGLIGHT:"
+  labels: ["4idg", "baseline"]
+
+id4_common.devices.piezo_jena.PiezoJena:
+- name: piezo_jena
+  prefix: "4idgSoftX:asyn_MOXA_G:2"
+  labels: ["4idg", "baseline"]
+
 ############
 ## 4-ID-H ##
 ############

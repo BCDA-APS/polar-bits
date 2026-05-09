@@ -8,6 +8,7 @@ import yaml
 from apsbits.core.instrument_init import oregistry
 from apstools.utils import dynamic_import
 from ophyd import OphydObject
+from ophyd_async.core import NotConnected
 from pyRestTable import Table
 
 from .make_devices import make_devices
@@ -225,7 +226,9 @@ def connect_device(device, baseline=None, raise_error=True):
                 if not AD_plugin_primed(hdf1):
                     AD_prime_plugin2(hdf1)
 
-    except TimeoutError:
+    except (TimeoutError, NotConnected):
+        # ophyd raises TimeoutError; ophyd_async raises NotConnected
+        # (does not subclass TimeoutError). Treat both the same way.
         message = (
             f"Device {device.name} is disconnected, removing it from baseline."
         )
