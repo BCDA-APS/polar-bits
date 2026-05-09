@@ -29,7 +29,7 @@ from ..utils.dm_utils import dm_get_experiment_data_path
 from ..utils.dm_utils import dm_upload
 from ..utils.dm_utils import dm_upload_wait
 from ..utils.run_engine import RE
-from .local_scans import mv
+from .move_plans import mv
 from .workflow_plan import run_workflow
 
 iconfig = get_config()

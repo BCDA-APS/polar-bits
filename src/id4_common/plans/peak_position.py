@@ -10,7 +10,7 @@ from apstools.utils import xy_statistics
 from bluesky.plan_stubs import null
 
 from ..utils.run_engine import cat
-from .local_scans import mv
+from .move_plans import mv
 
 # Short aliases for xy_statistics features (mirrors apstools.lineup2).
 _FEATURE_ALIASES = {

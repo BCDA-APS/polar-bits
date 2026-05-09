@@ -11,7 +11,7 @@ from bluesky.plan_stubs import null
 
 from ..utils.run_engine import cat
 from ..utils.run_engine import peaks
-from .local_scans import mv
+from .move_plans import mv
 
 logger = getLogger(__name__)
 logger.info(__file__)
