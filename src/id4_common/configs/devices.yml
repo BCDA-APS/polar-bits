@@ -123,6 +123,11 @@ id4_common.devices.labjacks.CustomLabJackT7:
   prefix: "4idbSoft:LJ:"
   labels: ["4idb", "baseline"]
 
+id4_common.devices.srs810.LockinDevice:
+- name: srs810
+  prefix: "4idbSoft:SRS810:"
+  labels: ["core", "baseline"]
+
 # All JJ slits share the same class — must be under one key
 id4_common.devices.jj_slits.SlitDevice:
 - name: monoslt
@@ -209,7 +214,7 @@ id4_common.devices.kb_mirrors.KBMirror:
   labels: ["4idb", "optics", "baseline"]
 
 id4_common.devices.electromagnet.Magnet2T:
-- name: emag
+- name: bmag
   prefix: ""
   motor_prefix: "4idb:"
   kepco_prefix: "4idbSoft:BOP:PS1:"
@@ -369,6 +374,11 @@ id4_common.devices.gh_i0_motors.I04idh:
   prefix: "4idhSoft:"
   labels: ["4idh", "baseline"]
 
+id4_common.devices.ventus_laser.VentusLaser:
+- name: laser
+  prefix: "4idhSoft:LQE1:"
+  labels: ["4idh", "baseline"]
+
 #####################################
 ## Shared Preamps (B, G, H)        ##
 ## All share LocalPreAmp — one key ##
@@ -467,3 +477,8 @@ id4_common.devices.ge_controller.GEController:
   readback_pv: "Setpoint_RBV"
   setpoint_pv: "Setpoint"
   labels: ["high pressure", "baseline"]
+
+id4_common.devices.magnet_kepco_4idg.KepcoDevice:
+- name: gmag
+  prefix: "4idkepco:"
+  labels: ["baseline"]
