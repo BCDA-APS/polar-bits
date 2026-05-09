@@ -49,12 +49,17 @@ Module Contents
 
 .. py:function:: te(temperature)
 
-   Set the temperature setpoint on ``temp_336_4idg`` (loop 1).
+   Set the active temperature controller's setpoint.
 
-   Writes the setpoint and returns immediately; the controller continues
-   ramping toward the target on its own.
+   Thin shortcut over the ``tc`` signal installed by
+   :func:`id4_common.utils.temperature_setup.temperature_setup`.  Writes
+   the setpoint and returns immediately; the controller continues ramping
+   toward the target on its own.
 
    :param temperature: Target temperature setpoint.
    :type temperature: float
+
+   :raises RuntimeError: ``temperature_setup()`` has not been run, so there is no active
+       controller to talk to.
 
 

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>id4_common.utils.logging_helper &#8212; polar-bits</title>
+    <title>id4_common.utils.temperature_setup &#8212; polar-bits</title>
   
   
   
@@ -46,12 +46,12 @@
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/utils/logging_helper/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/utils/temperature_setup/index';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="id4_common.utils.make_devices" href="../make_devices/index.html" />
-    <link rel="prev" title="id4_common.utils.logbook_mcr" href="../logbook_mcr/index.html" />
+    <link rel="next" title="id4_common.utils.transfocator_calculation" href="../transfocator_calculation/index.html" />
+    <link rel="prev" title="id4_common.utils.spe_handler" href="../spe_handler/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -594,7 +594,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.utils.logging_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logging_helper/index.html">id4_common.utils.logging_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
@@ -603,7 +603,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../shorts/index.html">id4_common.utils.shorts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../spe_handler/index.html">id4_common.utils.spe_handler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../temperature_setup/index.html">id4_common.utils.temperature_setup</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">id4_common.utils.temperature_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../transfocator_calculation/index.html">id4_common.utils.transfocator_calculation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../transfocator_calculation_new/index.html">id4_common.utils.transfocator_calculation_new</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../undulator_setup/index.html">id4_common.utils.undulator_setup</a></li>
@@ -682,7 +682,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">id4_common.utils</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.utils.logging_helper</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.utils.temperature_setup</span></li>
   </ul>
 </nav>
 </div>
@@ -699,32 +699,78 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-id4_common.utils.logging_helper">
-<span id="id4-common-utils-logging-helper"></span><h1>id4_common.utils.logging_helper<a class="headerlink" href="#module-id4_common.utils.logging_helper" title="Link to this heading">#</a></h1>
-<p>Centralized bluesky-session logging configuration for POLAR beamlines.</p>
+  <section id="module-id4_common.utils.temperature_setup">
+<span id="id4-common-utils-temperature-setup"></span><h1>id4_common.utils.temperature_setup<a class="headerlink" href="#module-id4_common.utils.temperature_setup" title="Link to this heading">#</a></h1>
+<p>Label-keyed setup helper for the active temperature controller (issue #57).</p>
+<p>Picks one entry from <a class="reference internal" href="#id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS" title="id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS"><code class="xref py py-data docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLERS</span></code></a>, resolves its setpoint
+and readback signals on the registered device, and injects the result into
+the interactive session as three names:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tc</span></code> — the temperature <strong>control</strong> signal (movable, the setpoint)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ts</span></code> — the temperature <strong>sample</strong> signal (readable, the readback)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLER</span></code> — the active label (or <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+<p>After <code class="docutils literal notranslate"><span class="pre">temperature_setup(&quot;g-336-loop1&quot;)</span></code> the user can <code class="docutils literal notranslate"><span class="pre">mv</span> <span class="pre">tc</span> <span class="pre">295</span></code> /
+<code class="docutils literal notranslate"><span class="pre">RE(count(1,</span> <span class="pre">1))</span></code> and the sample temperature will land in the data and
+(by default) the baseline stream every scan.</p>
+<p>Adding a new controller is a one-line edit to the <code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLERS</span></code>
+dict below — no class changes, no devices.yml edits.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
-<dt class="sig sig-object py" id="id4_common.utils.logging_helper.logger">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.logging_helper.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.utils.logging_helper.logger" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.temperature_setup.</span></span><span class="sig-name descname"><span class="pre">TEMPERATURE_CONTROLLERS</span></span><a class="headerlink" href="#id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.logging_helper.setup_logging">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.logging_helper.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.logging_helper.setup_logging" title="Link to this definition">#</a></dt>
-<dd><p>Configure bluesky logging from the LOGGING block of iconfig.yml.</p>
-<p>The block is translated to the apsbits <cite>file_logs</cite>/<cite>ipython_logs</cite> schema
-on the fly (via a temporary YAML file passed to apsbits’
-<code class="docutils literal notranslate"><span class="pre">configure_logging(extra_logging_configs_path=...)</span></code>) so polar-bits keeps
-a single config file.</p>
-<p>Falls back to the apsbits default directory (<code class="docutils literal notranslate"><span class="pre">&lt;cwd&gt;/.logs/</span></code>) when no
-LOG_PATH is configured or when the centralized directory cannot be
-created — typically a developer machine without access to the beamline
-filesystem.  The IPython log file always uses our filename
-(<code class="docutils literal notranslate"><span class="pre">ipython_logs.log</span></code>), regardless of which directory wins.</p>
-<p>Idempotent: subsequent calls are no-ops so importing several beamline
-packages (or importing one whose <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> chains through
-id4_common) doesn’t re-run <cite>%logstart</cite> and re-print the settings block.</p>
+<dt class="sig sig-object py" id="id4_common.utils.temperature_setup.get_active_label">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.temperature_setup.</span></span><span class="sig-name descname"><span class="pre">get_active_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.temperature_setup.get_active_label" title="Link to this definition">#</a></dt>
+<dd><p>Return the currently-active controller label, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.temperature_setup.get_active_tc">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.temperature_setup.</span></span><span class="sig-name descname"><span class="pre">get_active_tc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.temperature_setup.get_active_tc" title="Link to this definition">#</a></dt>
+<dd><p>Return the currently-active setpoint signal, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.temperature_setup.get_active_ts">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.temperature_setup.</span></span><span class="sig-name descname"><span class="pre">get_active_ts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.temperature_setup.get_active_ts" title="Link to this definition">#</a></dt>
+<dd><p>Return the currently-active readback signal, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.temperature_setup.temperature_setup">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.temperature_setup.</span></span><span class="sig-name descname"><span class="pre">temperature_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_to_baseline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.temperature_setup.temperature_setup" title="Link to this definition">#</a></dt>
+<dd><p>Bind <code class="docutils literal notranslate"><span class="pre">tc</span></code> (setpoint) and <code class="docutils literal notranslate"><span class="pre">ts</span></code> (readback) to the requested controller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Key into <a class="reference internal" href="#id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS" title="id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS"><code class="xref py py-data docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLERS</span></code></a>.  If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default),
+prompt interactively, defaulting to the previously-active label
+(or no default on the first call of the session).</p></li>
+<li><p><strong>add_to_baseline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), append <code class="docutils literal notranslate"><span class="pre">ts</span></code> to <code class="docutils literal notranslate"><span class="pre">sd.baseline</span></code> so the
+sample temperature is recorded in every scan’s baseline stream.
+Removes any previously-active <code class="docutils literal notranslate"><span class="pre">ts</span></code> from the baseline first so
+re-running <code class="docutils literal notranslate"><span class="pre">temperature_setup</span></code> swaps cleanly.</p></li>
+<li><p><strong>effects</strong> (<em>Side</em>)</p></li>
+<li><p><strong>------------</strong></p></li>
+<li><p><strong>success</strong> (<em>On</em>)</p></li>
+<li><p><strong>__main__</strong> (<em>sets the following attributes on</em>)</p></li>
+<li><p><strong>(</strong><strong>movable</strong><strong>)</strong><strong>.</strong> (<em>- tc — the resolved setpoint signal</em>)</p></li>
+<li><p><strong>(</strong><strong>readable</strong><strong>)</strong><strong>.</strong> (<em>- ts — the resolved readback signal</em>)</p></li>
+<li><p><strong>string.</strong> (<em>- TEMPERATURE_CONTROLLER — the active label</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.14)"><strong>KeyError</strong></a> – <code class="docutils literal notranslate"><span class="pre">label</span></code> is not in <a class="reference internal" href="#id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS" title="id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS"><code class="xref py py-data docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLERS</span></code></a>.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#LookupError" title="(in Python v3.14)"><strong>LookupError</strong></a> – The mapped device is not in <code class="docutils literal notranslate"><span class="pre">oregistry</span></code>.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.14)"><strong>AttributeError</strong></a> – One of the dotted attribute paths does not resolve on the device.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -741,20 +787,20 @@ id4_common) doesn’t re-run <cite>%logstart</cite> and re-print the settings bl
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../logbook_mcr/index.html"
+       href="../spe_handler/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">id4_common.utils.logbook_mcr</p>
+        <p class="prev-next-title">id4_common.utils.spe_handler</p>
       </div>
     </a>
     <a class="right-next"
-       href="../make_devices/index.html"
+       href="../transfocator_calculation/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">id4_common.utils.make_devices</p>
+        <p class="prev-next-title">id4_common.utils.transfocator_calculation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -778,8 +824,11 @@ id4_common) doesn’t re-run <cite>%logstart</cite> and re-print the settings bl
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.logging_helper.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.logging_helper.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS"><code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLERS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.temperature_setup.get_active_label"><code class="docutils literal notranslate"><span class="pre">get_active_label()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.temperature_setup.get_active_tc"><code class="docutils literal notranslate"><span class="pre">get_active_tc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.temperature_setup.get_active_ts"><code class="docutils literal notranslate"><span class="pre">get_active_ts()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.temperature_setup.temperature_setup"><code class="docutils literal notranslate"><span class="pre">temperature_setup()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -789,7 +838,7 @@ id4_common) doesn’t re-run <cite>%logstart</cite> and re-print the settings bl
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/utils/logging_helper/index.rst">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/utils/temperature_setup/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -804,7 +853,7 @@ id4_common) doesn’t re-run <cite>%logstart</cite> and re-print the settings bl
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../../../_sources/api/id4_common/utils/logging_helper/index.rst.txt">
+    <a href="../../../../_sources/api/id4_common/utils/temperature_setup/index.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

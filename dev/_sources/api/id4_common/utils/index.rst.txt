@@ -38,6 +38,7 @@ Submodules
    /api/id4_common/utils/run_engine_init/index
    /api/id4_common/utils/shorts/index
    /api/id4_common/utils/spe_handler/index
+   /api/id4_common/utils/temperature_setup/index
    /api/id4_common/utils/transfocator_calculation/index
    /api/id4_common/utils/transfocator_calculation_new/index
    /api/id4_common/utils/undulator_setup/index
