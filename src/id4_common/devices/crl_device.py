@@ -99,8 +99,7 @@ class PyCRL(Device):
     )
 
     # Focus info/control
-    focal_size_setpoint = Component(EpicsSignal, "focalSize")
-    focal_size_readback = Component(EpicsSignalRO, "fSize_actual")
+    beamsize = Component(EpicsSignal, "fSize_actual", write_pv="focalSize")
     focal_power_index = Component(EpicsSignalWithRBV, "1:sortedIndex")
     focal_sizes = Component(EpicsSignal, "fSizes", kind="omitted")
     minimize_button = Component(
