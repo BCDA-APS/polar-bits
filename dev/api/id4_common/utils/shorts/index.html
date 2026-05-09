@@ -501,6 +501,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/aps_xbpm/index.html">id4_common.devices.aps_xbpm</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/chopper_device/index.html">id4_common.devices.chopper_device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/counters_mixin/index.html">id4_common.devices.counters_mixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../devices/crl_device/index.html">id4_common.devices.crl_device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/diamond_window_table/index.html">id4_common.devices.diamond_window_table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/electromagnet/index.html">id4_common.devices.electromagnet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/energy_device/index.html">id4_common.devices.energy_device</a></li>
@@ -545,7 +546,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/sydor_device/index.html">id4_common.devices.sydor_device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/table_4idb/index.html">id4_common.devices.table_4idb</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/table_4idh/index.html">id4_common.devices.table_4idh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../devices/transfocator_device/index.html">id4_common.devices.transfocator_device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/usb_ctr8/index.html">id4_common.devices.usb_ctr8</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/ventus_laser/index.html">id4_common.devices.ventus_laser</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../devices/vortex_dante_me1/index.html">id4_common.devices.vortex_dante_me1</a></li>
@@ -721,10 +721,10 @@
 <dt class="sig sig-object py" id="id4_common.utils.shorts.crl_setup">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.shorts.</span></span><span class="sig-name descname"><span class="pre">crl_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hutch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.shorts.crl_setup" title="Link to this definition">#</a></dt>
 <dd><p>Switch the CRL sample-position offset to the active hutch.</p>
-<p>Delegates to <code class="xref py py-meth docutils literal notranslate"><span class="pre">TransfocatorClass.select_g()</span></code> / <code class="docutils literal notranslate"><span class="pre">select_h</span></code>, which
+<p>Delegates to <code class="xref py py-meth docutils literal notranslate"><span class="pre">CRLClass.select_g()</span></code> / <code class="docutils literal notranslate"><span class="pre">select_h</span></code>, which
 write to the IOC’s <code class="docutils literal notranslate"><span class="pre">ZOffsetToggle</span></code> PV.  The per-hutch offset values
-themselves live on the device as <code class="docutils literal notranslate"><span class="pre">transfocator.offset_g</span></code> /
-<code class="docutils literal notranslate"><span class="pre">offset_h</span></code> and are not changed here.</p>
+themselves live on the device as <code class="docutils literal notranslate"><span class="pre">crl.offset_g</span></code> / <code class="docutils literal notranslate"><span class="pre">offset_h</span></code> and
+are not changed here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>hutch</strong> (<em>{'g'</em><em>, </em><em>'h'}</em><em>, </em><em>optional</em>) – Hutch to switch to.  Case-insensitive, accepts <code class="docutils literal notranslate"><span class="pre">&quot;G&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;H&quot;</span></code>
@@ -738,13 +738,13 @@ and the longer aliases <code class="docutils literal notranslate"><span class="p
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.shorts.crl">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.shorts.</span></span><span class="sig-name descname"><span class="pre">crl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">focal_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.shorts.crl" title="Link to this definition">#</a></dt>
-<dd><p>Set the CRL focus size on the transfocator.</p>
+<dd><p>Set the CRL focal size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>focal_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target focal size in microns. If &lt; 5 µm, the transfocator’s
+<dd class="field-odd"><p><strong>focal_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target focal size in microns. If &lt; 5 µm, the device’s
 <code class="docutils literal notranslate"><span class="pre">minimize_button</span></code> is triggered instead of writing a setpoint.
 Otherwise the value is converted to meters and written to
-<code class="docutils literal notranslate"><span class="pre">transfocator.focal_size_setpoint</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">crl.focal_size_setpoint</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
