@@ -124,6 +124,12 @@ class PyCRL(Device):
     )
     sample = Component(PyCRLSignal, "samplePosition_RBV", kind="config")
 
+    select_station = Component(
+        EpicsSignal, "ZOffsetToggle.VAL", string=True, kind="config"
+    )
+    offset_g = Component(EpicsSignal, "ZOffsetG.VAL", kind="config")
+    offset_h = Component(EpicsSignal, "ZOffsetH.VAL", kind="config")
+
     # Lenses indices
     binary = Component(EpicsSignalRO, "1:lenses", kind="config")
     ind_control = Component(EpicsSignalRO, "1:lensConfig_BW", kind="config")
@@ -434,6 +440,12 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
         def default_settings(self):
             """Apply default stage signals for transfocator."""
             self.stage_sigs["energy_select"] = 1
+
+        def select_g(self):
+            self.select_station.put("G")
+
+        def select_h(self):
+            self.select_station.put("H")
 
     TransfocatorClass.__name__ = "TransfocatorClass"
     TransfocatorClass.__qualname__ = "TransfocatorClass"
