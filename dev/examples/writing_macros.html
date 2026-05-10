@@ -700,7 +700,7 @@ when modules move around inside <code class="docutils literal notranslate"><span
 <p><strong>Bluesky stubs are not re-exported</strong> from <code class="docutils literal notranslate"><span class="pre">macros_api</span></code> — keep
 <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">bluesky.plan_stubs</span> <span class="pre">import</span> <span class="pre">abs_set,</span> <span class="pre">rd,</span> <span class="pre">sleep,</span> <span class="pre">...</span></code> as a separate
 explicit import so the bluesky surface stays visible.</p>
-<p>Five real-world macro templates live under <code class="docutils literal notranslate"><span class="pre">docs/source/examples/macros/</span></code>
+<p>Six real-world macro templates live under <code class="docutils literal notranslate"><span class="pre">docs/source/examples/macros/</span></code>
 and follow this pattern:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -724,10 +724,32 @@ and follow this pattern:</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hkl_map.py</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">hklscan</span></code> + <code class="docutils literal notranslate"><span class="pre">cen</span></code> to refine a Bragg peak</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">startup.py</span></code></p></td>
+<td><p>recoverable session start — calls <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code></p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <p>Copy any of them into your experiment directory and edit to taste.</p>
+<section id="recoverable-session-state">
+<h3>Recoverable session state<a class="headerlink" href="#recoverable-session-state" title="Link to this heading">#</a></h3>
+<p>The setup helpers (<code class="docutils literal notranslate"><span class="pre">pr_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">energy.tracking_setup</span></code>,
+<code class="docutils literal notranslate"><span class="pre">counters.plotselect</span></code>, <code class="docutils literal notranslate"><span class="pre">undulator_setup</span></code>,
+<code class="docutils literal notranslate"><span class="pre">qxscan_setup.load_params_json</span></code>) auto-snapshot their current values into
+<code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> — apsbits’ <code class="docutils literal notranslate"><span class="pre">PersistentDict</span></code> backed by <code class="docutils literal notranslate"><span class="pre">MD_PATH</span></code>
+(<code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code>).  After a bluesky restart, call
+<code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> to re-apply every saved knob in one go.  See
+<code class="docutils literal notranslate"><span class="pre">docs/source/examples/macros/startup.py</span></code> for the canonical recoverable
+startup template.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.session_state</span><span class="w"> </span><span class="kn">import</span> <span class="n">restore_session_state</span>
+<span class="n">status</span> <span class="o">=</span> <span class="n">restore_session_state</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">knob</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">status</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">knob</span><span class="si">:</span><span class="s2">18</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">status</span></code> reports <code class="docutils literal notranslate"><span class="pre">applied</span></code> / <code class="docutils literal notranslate"><span class="pre">skipped:</span> <span class="pre">&lt;reason&gt;</span></code> / <code class="docutils literal notranslate"><span class="pre">failed:</span> <span class="pre">&lt;Exception&gt;</span></code>
+per knob group — restore never raises, a missing device or single
+failed <code class="docutils literal notranslate"><span class="pre">.put()</span></code> is logged and the rest of the restore continues.</p>
 <p>Run a plan:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">align_sample</span><span class="p">())</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">energy_map</span><span class="p">([</span><span class="mf">6.205</span><span class="p">,</span> <span class="mf">6.208</span><span class="p">,</span> <span class="mf">6.211</span><span class="p">]))</span>
@@ -747,6 +769,7 @@ and follow this pattern:</p>
 <span class="n">RE</span><span class="p">(</span><span class="n">overnight_run</span><span class="p">([</span><span class="mf">6.205</span><span class="p">,</span> <span class="mf">6.208</span><span class="p">,</span> <span class="mf">6.210</span><span class="p">,</span> <span class="mf">6.212</span><span class="p">]))</span>
 </pre></div>
 </div>
+</section>
 </section>
 <hr class="docutils" />
 <section id="accessing-devices-inside-plans">
@@ -888,7 +911,10 @@ in any SPEC data viewer.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#startup-scripts-shell">Startup Scripts (Shell)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#per-session-startup-files">Per-Session Startup Files</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motor-shortcuts">Motor Shortcuts</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-bluesky-plans">Writing Bluesky Plans</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-bluesky-plans">Writing Bluesky Plans</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recoverable-session-state">Recoverable session state</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-devices-inside-plans">Accessing Devices Inside Plans</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-interactive-experiment-setup-in-scripts">Non-Interactive Experiment Setup in Scripts</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging-notes-within-a-session">Logging Notes Within a Session</a></li>
