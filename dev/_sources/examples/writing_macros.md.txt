@@ -136,15 +136,21 @@ from motor_shortcuts import *
 
 Bluesky plans are Python generator functions. They use `yield from` to compose
 built-in plan stubs, which allows the RunEngine to track, pause, and replay
-them. Any sequence of moves and scans can be wrapped in a plan:
+them. Any sequence of moves and scans can be wrapped in a plan.
+
+**Use `id4_common.macros.macros_api`** as the single import line for every
+plan/peak/setting helper your macro needs (issue #18). It re-exports every
+public scan plan (`ascan`, `lup`, `mv`, `mvr`, `grid_scan`, `rel_grid_scan`,
+`hklscan`, `qxscan`, …), every peak-finding plan (`cen` / `com` / `maxi` /
+`mini` plus the legacy `cen2` / `maxi2` / `mini2`), and the session-level
+singletons (`oregistry`, `counters`, `peaks`, `atten`). The list is curated
+and kept stable across internal package reorgs — your macros stay working
+when modules move around inside `id4_common`.
 
 ```python
 # macros.py
 from bluesky.plan_stubs import abs_set, sleep
-from id4_common.plans.local_scans import lup, ascan, mv, grid_scan, rel_grid_scan
-from id4_common.plans.center_maximum import cen
-from id4_common.utils.counters_class import counters
-from apsbits.core.instrument_init import oregistry
+from id4_common.macros.macros_api import *
 
 huber_hp = oregistry.find("huber_hp")
 energy   = oregistry.find("energy")
@@ -171,6 +177,23 @@ def energy_map(energies, dwell=0.5):
             snake_axes=True,
         )
 ```
+
+**Bluesky stubs are not re-exported** from `macros_api` — keep
+`from bluesky.plan_stubs import abs_set, rd, sleep, ...` as a separate
+explicit import so the bluesky surface stays visible.
+
+Five real-world macro templates live under `docs/source/examples/macros/`
+and follow this pattern:
+
+| File | What it shows |
+|------|---------------|
+| `align_routine.py` | tab.x / tab.y alignment + `check_position` retry loop |
+| `xmcd_at_two_edges.py` | per-edge energy + PR2 + preamp swap, then averaged qxscans |
+| `field_sequence.py` | overnight field sweep that re-aligns after every ramp |
+| `qxscan_chain.py` | iterate `qxscan` over a list of edges |
+| `hkl_map.py` | `hklscan` + `cen` to refine a Bragg peak |
+
+Copy any of them into your experiment directory and edit to taste.
 
 Run a plan:
 

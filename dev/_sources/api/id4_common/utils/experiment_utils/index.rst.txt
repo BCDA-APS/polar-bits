@@ -15,7 +15,7 @@ id4_common.utils.experiment_utils
        ~experiment
        ~experiment_setup
        ~experiment_change_sample
-       ~experiment_load_from_bluesky
+       ~experiment_load_from_scan
        ~experiment_resume
 
 
@@ -308,17 +308,14 @@ Module Contents
 
    .. py:method:: resume(path: str | pathlib.Path | None = None) -> None
 
-      Restore an experiment from a saved YAML snapshot.
+      Restore an experiment after a Bluesky restart.
 
-      With no ``path``, discovers the snapshot automatically: prefers
-      ``Path.cwd() / .polar_experiment.yml`` and falls back to the
-      ``base_experiment_path`` stored in ``cat[-1]``'s start
-      document. Prompts the user only when both exist and point at
-      different files.
+      With no ``path``, restores singleton state from ``RE.md`` (the
+      PersistentDict bluesky already loaded at startup). With an
+      explicit ``path``, loads the snapshot YAML at that location and
+      populates both singleton state and ``RE.md`` from it.
 
-      Does NOT contact DM. Use this when DM is down or you want to
-      pick up a previous session quickly. The next scan continues
-      numbering from ``last_scan_id``.
+      Does NOT contact DM either way.
 
 
 
@@ -358,16 +355,17 @@ Module Contents
    Switch sample (delegates to ``experiment.change_sample``).
 
 
-.. py:function:: experiment_load_from_bluesky(reset_scan_id: int = RESET_SCAN_ID_NOOP) -> None
+.. py:function:: experiment_load_from_scan(scan_id: int = -1, reset_scan_id: int = RESET_SCAN_ID_NOOP) -> None
 
    Restore experiment state from a previous Bluesky run.
 
 
 .. py:function:: experiment_resume(path: str | pathlib.Path | None = None) -> None
 
-   Restore experiment state from a saved YAML snapshot.
+   Restore experiment state after a Bluesky restart.
 
-   With no argument, the snapshot path is auto-discovered (current
-   working directory, then last-scan ``base_experiment_path``).
+   With no argument, restores from ``RE.md`` (the PersistentDict
+   bluesky already loaded at startup). With an explicit ``path``,
+   loads the YAML snapshot at that location instead.
 
 

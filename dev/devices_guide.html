@@ -545,14 +545,14 @@
 
 <span class="c1"># Filter by label</span>
 <span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;4idg&quot;</span><span class="p">)</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;transfocator&quot;</span><span class="p">)</span>   <span class="c1"># substring match</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;crl&quot;</span><span class="p">)</span>            <span class="c1"># substring match</span>
 <span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;kb&quot;</span><span class="p">,</span> <span class="n">exact_name</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Connect a device</span>
-<span class="n">load_device</span><span class="p">(</span><span class="s2">&quot;transfocator&quot;</span><span class="p">)</span>
+<span class="n">load_device</span><span class="p">(</span><span class="s2">&quot;crl&quot;</span><span class="p">)</span>
 
 <span class="c1"># Disconnect and remove from baseline</span>
-<span class="n">remove_device</span><span class="p">(</span><span class="s2">&quot;transfocator&quot;</span><span class="p">)</span>
+<span class="n">remove_device</span><span class="p">(</span><span class="s2">&quot;crl&quot;</span><span class="p">)</span>
 
 <span class="c1"># Reload everything from YAML (useful after devices.yml edits)</span>
 <span class="n">reload_all_devices</span><span class="p">()</span>
@@ -601,14 +601,14 @@ inside <code class="docutils literal notranslate"><span class="pre">__init__</sp
 <p>Where a <code class="docutils literal notranslate"><span class="pre">DynamicDeviceComponent</span></code> must be assembled at class-definition time
 (e.g. a variable number of channels), use a factory function that returns a
 new class:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_transfocator_class</span><span class="p">(</span><span class="n">ioc</span><span class="o">=</span><span class="s2">&quot;4idgSoft:&quot;</span><span class="p">):</span>
-    <span class="k">class</span><span class="w"> </span><span class="nc">Transfocator</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_crl_class</span><span class="p">(</span><span class="n">ioc</span><span class="o">=</span><span class="s2">&quot;4idgSoft:&quot;</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">CRLClass</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
         <span class="n">lenses</span> <span class="o">=</span> <span class="n">DynamicDeviceComponent</span><span class="p">(</span><span class="n">_build_lens_dict</span><span class="p">(</span><span class="n">ioc</span><span class="p">))</span>
         <span class="o">...</span>
-    <span class="k">return</span> <span class="n">Transfocator</span>
+    <span class="k">return</span> <span class="n">CRLClass</span>
 
 <span class="c1"># Module-level default (what devices.yml points to)</span>
-<span class="n">Transfocator</span> <span class="o">=</span> <span class="n">make_transfocator_class</span><span class="p">()</span>
+<span class="n">CRLClass</span> <span class="o">=</span> <span class="n">make_crl_class</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Real examples in the codebase:</p>
@@ -622,8 +622,8 @@ new class:</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">make_kb_class()</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_common.devices.kb_generic</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">make_transfocator_class()</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">id4_common.devices.transfocator_device</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">make_crl_class()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">id4_common.devices.crl_device</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -698,8 +698,8 @@ new class:</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">kb_generic</span></code></p></td>
 <td><p>KB mirror pair (factory-built)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Transfocator</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">transfocator_device</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CRLClass</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">crl_device</span></code></p></td>
 <td><p>Compound refractive lens (factory-built)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Monochromator</span></code></p></td>

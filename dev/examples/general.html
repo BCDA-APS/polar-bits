@@ -824,7 +824,8 @@ data loading and inspection utilities available in the session namespace:</p>
 <section id="energy-tracking">
 <h2>Energy Tracking<a class="headerlink" href="#energy-tracking" title="Link to this heading">#</a></h2>
 <p>Configure which devices follow the monochromator when energy changes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Iterative. Displays the available devices and you enter their corresponding numbers</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Iterative. Displays the available devices and you enter their corresponding</span>
+<span class="c1"># numbers.  Enter `0` to disable tracking on every device.</span>
 <span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">()</span>
 <span class="c1"># Or not interactive:</span>
 <span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">&quot;undulators_ds&quot;</span><span class="p">,</span> <span class="s2">&quot;pr2&quot;</span><span class="p">])</span>

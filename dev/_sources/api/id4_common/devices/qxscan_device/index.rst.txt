@@ -71,9 +71,9 @@ Module Contents
    .. py:attribute:: TimeFactor
 
 
-.. py:class:: PreEdgeDevice(*args, **kwargs)
+.. py:class:: PreEdgeDevice
 
-   Bases: :py:obj:`_RegionedDevice`
+   Bases: :py:obj:`ophyd.Device`
 
 
    Device grouping up to five pre-edge scan regions and their count.
@@ -114,9 +114,9 @@ Module Contents
    .. py:attribute:: TimeFactor
 
 
-.. py:class:: PostEdgeDevice(*args, **kwargs)
+.. py:class:: PostEdgeDevice
 
-   Bases: :py:obj:`_RegionedDevice`
+   Bases: :py:obj:`ophyd.Device`
 
 
    Device grouping up to five post-edge k-space scan regions and their count.

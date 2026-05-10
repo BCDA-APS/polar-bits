@@ -631,16 +631,22 @@ constraint management, and configuration save/restore.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">peak_pos(scan_id=-1)</span></code></p></td>
-<td><p>Print peak statistics (com, max, min, fwhm) for the scan’s detectors</p></td>
+<td><p>Print peak statistics (com, cen, max, min, fwhm) for the scan’s detectors; supports 1D <strong>and</strong> 2D <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RE(peak())</span></code></p></td>
-<td><p>Move scan motor to peak centroid of the last scan</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RE(cen())</span></code></p></td>
+<td><p>Move scan motor(s) to the FWHM midpoint</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RE(pmax())</span></code></p></td>
-<td><p>Move scan motor to x at peak maximum</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RE(com())</span></code></p></td>
+<td><p>Move scan motor(s) to the centroid (center-of-mass)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RE(pmin())</span></code></p></td>
-<td><p>Move scan motor to x at peak minimum</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RE(maxi())</span></code></p></td>
+<td><p>Move scan motor(s) to the x at peak maximum</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RE(mini())</span></code></p></td>
+<td><p>Move scan motor(s) to the x at peak minimum</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RE(cen2())</span></code> / <code class="docutils literal notranslate"><span class="pre">RE(maxi2())</span></code> / <code class="docutils literal notranslate"><span class="pre">RE(mini2())</span></code></p></td>
+<td><p>Legacy fallback that reads from the live <code class="docutils literal notranslate"><span class="pre">BestEffortCallback().peaks</span></code> (1D only); use when the new plans can’t read your scan</p></td>
 </tr>
 </tbody>
 </table>
@@ -1215,40 +1221,60 @@ trajectory).</p>
 </section>
 <section id="peak-position-from-a-previous-scan">
 <h3>Peak position from a previous scan<a class="headerlink" href="#peak-position-from-a-previous-scan" title="Link to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">peak_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">peak</span></code>, <code class="docutils literal notranslate"><span class="pre">pmax</span></code>, and <code class="docutils literal notranslate"><span class="pre">pmin</span></code> use <code class="docutils literal notranslate"><span class="pre">apstools.utils.xy_statistics</span></code>
-(the same machinery as <code class="docutils literal notranslate"><span class="pre">apstools.lineup2</span></code>) on a stored scan. They work on
-any past run from the <code class="docutils literal notranslate"><span class="pre">4id_polar</span></code> catalog — useful for revisiting a peak
-later in the session or for picking a specific detector channel.</p>
-<p>Print statistics for the last scan (com, max, min, fwhm) for every
-detector hinted in the scan:</p>
+<p><code class="docutils literal notranslate"><span class="pre">peak_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">cen</span></code>, <code class="docutils literal notranslate"><span class="pre">com</span></code>, <code class="docutils literal notranslate"><span class="pre">maxi</span></code>, and <code class="docutils literal notranslate"><span class="pre">mini</span></code> (and the PR-#54 aliases
+<code class="docutils literal notranslate"><span class="pre">peak</span></code> / <code class="docutils literal notranslate"><span class="pre">pmax</span></code> / <code class="docutils literal notranslate"><span class="pre">pmin</span></code>) compute peak statistics from a stored scan.
+They work on any past run from the <code class="docutils literal notranslate"><span class="pre">4id_polar</span></code> catalog — useful for
+revisiting a peak later in the session or for picking a specific
+detector channel.</p>
+<p>Backend: <code class="docutils literal notranslate"><span class="pre">apstools.utils.xy_statistics</span></code> for the 1D <code class="docutils literal notranslate"><span class="pre">com</span></code> / <code class="docutils literal notranslate"><span class="pre">max</span></code> / <code class="docutils literal notranslate"><span class="pre">min</span></code>
+/ <code class="docutils literal notranslate"><span class="pre">fwhm</span></code>, <code class="docutils literal notranslate"><span class="pre">scipy.signal.find_peaks</span></code> for the FWHM-midpoint <code class="docutils literal notranslate"><span class="pre">cen</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">scipy.ndimage</span></code> for true 2D peak detection on <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> runs.</p>
+<p>Print statistics for the last scan for every detector hinted in the
+scan:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peak_pos</span><span class="p">()</span>                          <span class="c1"># last scan, all hinted detectors</span>
 <span class="n">peak_pos</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>                        <span class="c1"># 3 scans back</span>
 <span class="n">peak_pos</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>    <span class="c1"># specific scan, single detector</span>
 </pre></div>
 </div>
-<p>Move the scan motor to a peak feature. The default <code class="docutils literal notranslate"><span class="pre">peak()</span></code> moves to the
-centroid; <code class="docutils literal notranslate"><span class="pre">pmax</span></code>/<code class="docutils literal notranslate"><span class="pre">pmin</span></code> move to the x at peak max/min. Plans, so wrap in
-<code class="docutils literal notranslate"><span class="pre">RE()</span></code>:</p>
+<p>Move to a peak feature. Wrap in <code class="docutils literal notranslate"><span class="pre">RE()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">peak</span><span class="p">())</span>                          <span class="c1"># move delta to centroid of last scan</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">pmax</span><span class="p">())</span>                          <span class="c1"># move to x at peak maximum</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">pmin</span><span class="p">())</span>                          <span class="c1"># move to x at peak minimum</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">())</span>                           <span class="c1"># move delta to the FWHM midpoint</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">com</span><span class="p">())</span>                           <span class="c1"># move delta to the centroid</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">maxi</span><span class="p">())</span>                          <span class="c1"># move delta to x at peak maximum</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">mini</span><span class="p">())</span>                          <span class="c1"># move delta to x at peak minimum</span>
 
 <span class="c1"># Pick a specific detector channel:</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">peak</span><span class="p">(</span><span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">))</span>
 
 <span class="c1"># Operate on an older scan:</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">peak</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="mi">1234</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="mi">1234</span><span class="p">))</span>
 
 <span class="c1"># Move a different positioner than the scan axis:</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">peak</span><span class="p">(</span><span class="n">positioner</span><span class="o">=</span><span class="n">phi</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">positioner</span><span class="o">=</span><span class="n">phi</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>For multi-motor scans (<code class="docutils literal notranslate"><span class="pre">hklscan</span></code>, …) <code class="docutils literal notranslate"><span class="pre">peak()</span></code> defaults to the
-fastest-changing axis and prompts to confirm; pass <code class="docutils literal notranslate"><span class="pre">confirm=False</span></code> to
+<p><code class="docutils literal notranslate"><span class="pre">cen</span></code> and <code class="docutils literal notranslate"><span class="pre">com</span></code> differ only for asymmetric peaks: <code class="docutils literal notranslate"><span class="pre">cen</span></code> is the midpoint
+of the half-max crossings (matches bluesky’s <code class="docutils literal notranslate"><span class="pre">PeakStats.cen</span></code>), <code class="docutils literal notranslate"><span class="pre">com</span></code>
+is the moment-based centroid <code class="docutils literal notranslate"><span class="pre">Σx·y</span> <span class="pre">/</span> <span class="pre">Σy</span></code>.</p>
+<p>For multi-motor 1D scans (<code class="docutils literal notranslate"><span class="pre">hklscan</span></code>, …) the move plans default to the
+fastest-changing axis and prompt to confirm; pass <code class="docutils literal notranslate"><span class="pre">confirm=False</span></code> to
 skip every interactive prompt. <code class="docutils literal notranslate"><span class="pre">th2th</span></code> always uses 2θ (<code class="docutils literal notranslate"><span class="pre">gamma</span></code>) — no
 prompt. <code class="docutils literal notranslate"><span class="pre">psiscan</span></code> is rejected because the scan axis is a virtual extra,
 not a movable positioner.</p>
+<p>For 2D <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> runs the move plans default to moving <strong>both</strong> scan
+motors in parallel to the 2D feature (issue #59):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">grid_scan</span><span class="p">(</span><span class="n">cryox</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">cryoy</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">())</span>                           <span class="c1"># one mv() moves cryox + cryoy together</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">maxi</span><span class="p">(</span><span class="n">positioner</span><span class="o">=</span><span class="n">cryox</span><span class="p">))</span>          <span class="c1"># project to cryox, move only that axis</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">peak_pos()</span></code> on a <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> returns motor-coordinate tuples
+(<code class="docutils literal notranslate"><span class="pre">(cryox_val,</span> <span class="pre">cryoy_val)</span></code>) instead of scalars; per-axis <code class="docutils literal notranslate"><span class="pre">fwhm</span></code> is a
+two-element tuple computed from 1D projections along each motor.</p>
+<p>If the new plans can’t read a scan (e.g. catalog isn’t reachable),
+fall back to the legacy <code class="docutils literal notranslate"><span class="pre">cen2</span></code> / <code class="docutils literal notranslate"><span class="pre">maxi2</span></code> / <code class="docutils literal notranslate"><span class="pre">mini2</span></code>. They read from
+<code class="docutils literal notranslate"><span class="pre">BestEffortCallback().peaks</span></code> and only work on <code class="docutils literal notranslate"><span class="pre">cat[-1]</span></code> (the most
+recently plotted run) — but require no catalog access.</p>
 <p>For the HP diffractometer sample stage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>        <span class="c1"># sample X scan</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>        <span class="c1"># sample Y scan</span>
