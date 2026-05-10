@@ -9,7 +9,6 @@ from unittest.mock import MagicMock
 
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -56,8 +55,9 @@ def fresh_module(monkeypatch):
     return ss, devices, re_md
 
 
-def _stub_undulators(devices, *, ds_offset=0.0, ds_db=0.002, us_offset=0.0,
-                     us_db=0.002):
+def _stub_undulators(
+    devices, *, ds_offset=0.0, ds_db=0.002, us_offset=0.0, us_db=0.002
+):
     """Plant an `undulators` device with us/ds energy_offset + deadband."""
     dev = SimpleNamespace()
     for side, off, db in (("us", us_offset, us_db), ("ds", ds_offset, ds_db)):
@@ -98,8 +98,9 @@ def _stub_qxscan(devices, *, params=None):
 
 def test_save_undulator_writes_offsets_and_deadbands(fresh_module):
     ss, devices, re_md = fresh_module
-    _stub_undulators(devices, ds_offset=-0.072, ds_db=0.002,
-                     us_offset=0.0, us_db=0.001)
+    _stub_undulators(
+        devices, ds_offset=-0.072, ds_db=0.002, us_offset=0.0, us_db=0.001
+    )
 
     ss._save_undulator()
 
@@ -201,13 +202,16 @@ def test_save_session_state_calls_every_helper(fresh_module, monkeypatch):
 
     fake_pr = ModuleType("id4_common.utils.pr_setup")
     fake_pr.pr_setup = SimpleNamespace(
-        positioner=None, offset=None, oscillate_pzt=True,
+        positioner=None,
+        offset=None,
+        oscillate_pzt=True,
     )
     monkeypatch.setitem(sys.modules, "id4_common.utils.pr_setup", fake_pr)
 
     fake_c = ModuleType("id4_common.utils.counters_class")
     fake_c.counters = SimpleNamespace(
-        _selected_dets=[], _selected_mon=("scaler1", "Time"),
+        _selected_dets=[],
+        _selected_mon=("scaler1", "Time"),
         _selected_extra_read=[],
     )
     monkeypatch.setitem(sys.modules, "id4_common.utils.counters_class", fake_c)
@@ -263,36 +267,47 @@ def test_restore_pr_setup_resolves_devices(fresh_module, monkeypatch):
     )
 
     fake_pr_singleton = SimpleNamespace(
-        positioner=None, offset=None, oscillate_pzt=False,
+        positioner=None,
+        offset=None,
+        oscillate_pzt=False,
     )
     fake_pr = ModuleType("id4_common.utils.pr_setup")
     fake_pr.pr_setup = fake_pr_singleton
     monkeypatch.setitem(sys.modules, "id4_common.utils.pr_setup", fake_pr)
 
-    status = ss._restore_pr_setup({
-        "positioner": "pr2_pzt_localdc",
-        "offset": "pr2_pzt_offset_microns",
-        "oscillate_pzt": True,
-    })
+    status = ss._restore_pr_setup(
+        {
+            "positioner": "pr2_pzt_localdc",
+            "offset": "pr2_pzt_offset_microns",
+            "oscillate_pzt": True,
+        }
+    )
     assert status == "applied"
     assert fake_pr_singleton.positioner is devices["pr2_pzt_localdc"]
     assert fake_pr_singleton.offset is devices["pr2_pzt_offset_microns"]
     assert fake_pr_singleton.oscillate_pzt is True
 
 
-def test_restore_pr_setup_skips_when_positioner_unknown(fresh_module,
-                                                         monkeypatch):
+def test_restore_pr_setup_skips_when_positioner_unknown(
+    fresh_module, monkeypatch
+):
     ss, _, _ = fresh_module
 
     fake_pr = ModuleType("id4_common.utils.pr_setup")
     fake_pr.pr_setup = SimpleNamespace(
-        positioner=None, offset=None, oscillate_pzt=False,
+        positioner=None,
+        offset=None,
+        oscillate_pzt=False,
     )
     monkeypatch.setitem(sys.modules, "id4_common.utils.pr_setup", fake_pr)
 
-    status = ss._restore_pr_setup({
-        "positioner": "missing_pzt", "offset": None, "oscillate_pzt": True,
-    })
+    status = ss._restore_pr_setup(
+        {
+            "positioner": "missing_pzt",
+            "offset": None,
+            "oscillate_pzt": True,
+        }
+    )
     assert "skipped" in status
     assert "missing_pzt" in status
 

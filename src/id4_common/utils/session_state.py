@@ -116,9 +116,7 @@ def _save_energy_tracking() -> None:
     if energy is None:
         return
     try:
-        active = [
-            d.name for d in energy.trackable_devices if d.tracking.get()
-        ]
+        active = [d.name for d in energy.trackable_devices if d.tracking.get()]
     except Exception as exc:  # noqa: BLE001
         logger.info(
             "session_state: could not read energy tracking state: %s", exc
@@ -304,9 +302,7 @@ def _restore_counters(snapshot: dict) -> str:
             if not pair:
                 return None
             dev, chan = pair
-            mask = (options["detectors"] == dev) & (
-                options["channels"] == chan
-            )
+            mask = (options["detectors"] == dev) & (options["channels"] == chan)
             if not mask.any():
                 return None
             return int(options.index[mask][0])
