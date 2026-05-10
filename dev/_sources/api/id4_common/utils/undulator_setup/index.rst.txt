@@ -7,6 +7,36 @@ id4_common.utils.undulator_setup
 
    Utility for configuring upstream and downstream undulator setpoints.
 
+   The single public function, :func:`undulator_setup`, walks the user
+   through an interactive prompt for each undulator (DS = downstream, US =
+   upstream): whether to track the mono energy, what offset (in keV) to
+   apply between mono energy and undulator setpoint, and which harmonic to
+   use.  Any value passed as a kwarg short-circuits the matching prompt;
+   sentinel kwarg defaults mean "ask interactively, with the current
+   device state as the default answer".
+
+   Sentinel values used in the kwargs (legacy API; see the module-level
+   TODO at the bottom of this file for a proposed cleanup):
+
+   ==========  =============  ============================================
+   kwarg       sentinel       meaning
+   ==========  =============  ============================================
+   ``ds``      ``"N"``        ask, defaulting to "yes" if already tracking
+   ``us``      ``"N"``        same
+   ``ds_off``  ``999``        ask, defaulting to current offset (or
+                              calculated from mono if the offset is 0)
+   ``us_off``  ``999``        same
+   ``ds_harm`` ``0``          ask, defaulting to the device's current value
+   ``us_harm`` ``0``          same
+   ==========  =============  ============================================
+
+   A value of ``"c"`` for an offset (only valid when prompted) means
+   "calculate from ``undulator.energy.readback - energy``"; a value of
+   ``"c"`` for a harmonic picks 1 / 3 / 5 from the energy thresholds in
+   :data:`HARMONIC_BREAKPOINTS_KEV`.
+
+
+
 
 
 
@@ -14,15 +44,73 @@ id4_common.utils.undulator_setup
 Module Contents
 ---------------
 
+.. py:data:: HARMONIC_BREAKPOINTS_KEV
+   :value: ((8.6, 1), (18.0, 3))
+
+
 .. py:function:: undulator_setup(ds='N', ds_off=999, ds_harm=0, us='N', us_off=999, us_harm=0)
 
-   Select undulators used and turn energy tracking on/off
+   Configure each undulator's tracking, offset, and harmonic.
 
-   - Undulator offset denotes difference of undulator energy to
-     monochromator energy
-     - [c]alculate: calculates offset from monochromator and
-       undulator current energies
+   Walks DS then US, asking three questions per undulator:
+   "Use it?" → "Offset?" → "Harmonic?".  Any kwarg whose value differs
+   from its sentinel skips the matching prompt.
 
+   :param ds: Whether the undulator should track the mono energy.  ``"N"`` is
+              the sentinel that triggers an interactive prompt (default).
+              Default answer at the prompt: "yes" if the device is currently
+              tracking, else "no".
+   :type ds: {"Y", "y", "yes", "Yes", "N", "n", "no", "No"}, optional
+   :param us: Whether the undulator should track the mono energy.  ``"N"`` is
+              the sentinel that triggers an interactive prompt (default).
+              Default answer at the prompt: "yes" if the device is currently
+              tracking, else "no".
+   :type us: {"Y", "y", "yes", "Yes", "N", "n", "no", "No"}, optional
+   :param ds_off: Offset in keV applied between the mono energy and the undulator
+                  setpoint.  Sentinel ``999`` triggers an interactive prompt that
+                  also accepts the literal string ``"c"`` to calculate the offset
+                  from ``undulator.energy.readback - energy``.  When the
+                  device's current ``energy_offset`` is 0 the prompt's default
+                  is the calculated value (assumed-uninitialised); otherwise the
+                  prompt's default is the current offset.
+   :type ds_off: float, optional
+   :param us_off: Offset in keV applied between the mono energy and the undulator
+                  setpoint.  Sentinel ``999`` triggers an interactive prompt that
+                  also accepts the literal string ``"c"`` to calculate the offset
+                  from ``undulator.energy.readback - energy``.  When the
+                  device's current ``energy_offset`` is 0 the prompt's default
+                  is the calculated value (assumed-uninitialised); otherwise the
+                  prompt's default is the current offset.
+   :type us_off: float, optional
+   :param ds_harm: Undulator harmonic.  Must be an odd integer in {1, 3, 5, 7, 9}.
+                   Sentinel ``0`` triggers an interactive prompt that also accepts
+                   the literal string ``"c"`` to auto-pick from the mono energy
+                   via :data:`HARMONIC_BREAKPOINTS_KEV`.
+   :type ds_harm: int, optional
+   :param us_harm: Undulator harmonic.  Must be an odd integer in {1, 3, 5, 7, 9}.
+                   Sentinel ``0`` triggers an interactive prompt that also accepts
+                   the literal string ``"c"`` to auto-pick from the mono energy
+                   via :data:`HARMONIC_BREAKPOINTS_KEV`.
+   :type us_harm: int, optional
+   :param Side effects:
+   :param ------------:
+   :param Writes ``undulators.{ds:
+   :param us}.energy_offset``:
+   :param :
+   :param ``…tracking``:
+   :param and ``…harmonic_value`` for whichever undulators:
+   :param are turned on.  Prints a one-line summary per undulator.:
+   :param The auto-save hook at the end of the function mirrors the new:
+   :param offsets / deadbands into ``RE.md["session_state"]`` so a bluesky:
+   :param restart can re-apply them via:
+   :param :func:`id4_common.utils.session_state.restore_session_state`.:
 
+   .. seealso::
+
+      :func:`id4_common.devices.energy_device.EnergySignal.tracking_setup`
+          Higher-level "which devices follow energy" selector — typically called *with* this function (after this sets per-undulator offsets/harmonics, ``tracking_setup`` flips the tracking flags in one go).
+
+      :func:`id4_common.utils.session_state.restore_session_state`
+          Replays the saved offsets / harmonics / tracking flags after a bluesky restart.
 
 
