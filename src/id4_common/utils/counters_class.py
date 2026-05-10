@@ -544,6 +544,16 @@ class CountersClass:
         )
         self._apply_extra_read(stored_extra, options)
 
+        # Auto-save the new selection to RE.md['session_state'] so it
+        # survives a bluesky restart.  Lazy import avoids the
+        # session_state -> counters_class -> session_state cycle.
+        try:
+            from .session_state import _save_counters
+
+            _save_counters()
+        except Exception:  # noqa: BLE001
+            pass
+
         print()
         print(self)
 

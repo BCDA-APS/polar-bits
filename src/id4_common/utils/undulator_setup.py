@@ -151,3 +151,13 @@ def undulator_setup(
     else:
         undulators.us.tracking.put(False)
         print("US undulator tracking OFF")
+
+    # Auto-save the new offsets/deadbands so a bluesky restart can
+    # re-apply them via session_state.restore_session_state().  Lazy
+    # import keeps the module-load order safe.
+    try:
+        from .session_state import _save_undulator
+
+        _save_undulator()
+    except Exception:  # noqa: BLE001
+        pass

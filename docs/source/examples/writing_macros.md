@@ -182,7 +182,7 @@ def energy_map(energies, dwell=0.5):
 `from bluesky.plan_stubs import abs_set, rd, sleep, ...` as a separate
 explicit import so the bluesky surface stays visible.
 
-Five real-world macro templates live under `docs/source/examples/macros/`
+Six real-world macro templates live under `docs/source/examples/macros/`
 and follow this pattern:
 
 | File | What it shows |
@@ -192,8 +192,31 @@ and follow this pattern:
 | `field_sequence.py` | overnight field sweep that re-aligns after every ramp |
 | `qxscan_chain.py` | iterate `qxscan` over a list of edges |
 | `hkl_map.py` | `hklscan` + `cen` to refine a Bragg peak |
+| `startup.py` | recoverable session start — calls `restore_session_state()` |
 
 Copy any of them into your experiment directory and edit to taste.
+
+### Recoverable session state
+
+The setup helpers (`pr_setup`, `energy.tracking_setup`,
+`counters.plotselect`, `undulator_setup`,
+`qxscan_setup.load_params_json`) auto-snapshot their current values into
+`RE.md["session_state"]` — apsbits' `PersistentDict` backed by `MD_PATH`
+(`iconfig.yml`).  After a bluesky restart, call
+`restore_session_state()` to re-apply every saved knob in one go.  See
+`docs/source/examples/macros/startup.py` for the canonical recoverable
+startup template.
+
+```python
+from id4_common.utils.session_state import restore_session_state
+status = restore_session_state()
+for knob, msg in status.items():
+    print(f"  {knob:18}  {msg}")
+```
+
+`status` reports `applied` / `skipped: <reason>` / `failed: <Exception>`
+per knob group — restore never raises, a missing device or single
+failed `.put()` is logged and the rest of the restore continues.
 
 Run a plan:
 

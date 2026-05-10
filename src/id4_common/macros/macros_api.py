@@ -41,6 +41,12 @@ from ..plans.base_scans import ascan  # noqa: F401
 from ..plans.base_scans import count  # noqa: F401
 from ..plans.base_scans import lup  # noqa: F401
 from ..plans.base_scans import qxscan  # noqa: F401
+
+# Peak-finding plans (the new findpeaks-style cen/com/maxi/mini from #59
+# plus the BEC-driven cen2/maxi2/mini2 fallbacks).
+from ..plans.center_maximum import cen2  # noqa: F401
+from ..plans.center_maximum import maxi2  # noqa: F401
+from ..plans.center_maximum import mini2  # noqa: F401
 from ..plans.grid_scans import grid_scan  # noqa: F401
 from ..plans.grid_scans import rel_grid_scan  # noqa: F401
 from ..plans.hkl_scans import hklscan  # noqa: F401
@@ -51,12 +57,6 @@ from ..plans.hkl_scans import psiscan  # noqa: F401
 from ..plans.hkl_scans import th2th  # noqa: F401
 from ..plans.move_plans import mv  # noqa: F401
 from ..plans.move_plans import mvr  # noqa: F401
-
-# Peak-finding plans (the new findpeaks-style cen/com/maxi/mini from #59
-# plus the BEC-driven cen2/maxi2/mini2 fallbacks).
-from ..plans.center_maximum import cen2  # noqa: F401
-from ..plans.center_maximum import maxi2  # noqa: F401
-from ..plans.center_maximum import mini2  # noqa: F401
 from ..plans.peak_position import cen  # noqa: F401
 from ..plans.peak_position import com  # noqa: F401
 from ..plans.peak_position import maxi  # noqa: F401
