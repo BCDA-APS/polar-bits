@@ -54,6 +54,20 @@ def _stub_dm() -> None:
 
 def _stub_apsbits() -> None:
     """Provide minimal stubs for the ``apsbits`` namespace."""
+    # apsbits.utils.logging_setup adds a custom 'bsdev' level at import
+    # time; mirror that here so `logger.bsdev(...)` works without the
+    # real apsbits installed.
+    import logging as _logging
+
+    if not hasattr(_logging.Logger, "bsdev"):
+        _logging.addLevelName(_logging.INFO - 5, "BSDEV")
+
+        def _bsdev(self, message, *args, **kwargs):
+            if self.isEnabledFor(_logging.INFO - 5):
+                self._log(_logging.INFO - 5, message, args, **kwargs)
+
+        _logging.Logger.bsdev = _bsdev
+
     apsbits = _ensure_module("apsbits")
     core = _ensure_module("apsbits.core")
     instrument_init = _ensure_module("apsbits.core.instrument_init")
@@ -94,20 +108,45 @@ def _stub_apsbits() -> None:
 
 
 def _stub_apstools() -> None:
-    """Stub the apstools.utils symbols experiment_utils imports."""
-    apstools = _ensure_module("apstools")
-    utils = _ensure_module("apstools.utils")
-    apstools.utils = utils
+    """Stub the apstools.utils symbols experiment_utils imports.
+
+    Prefers the real apstools when it's importable (so peak_position
+    tests get a working ``xy_statistics``); falls back to an empty stub
+    when it isn't.  Either way, the dm_* mocks needed by experiment_utils
+    are attached to the resolved module.
+    """
+    try:
+        import apstools  # noqa: F401  (loads real package)
+        import apstools.utils as utils
+
+        apstools_mod = sys.modules["apstools"]
+    except ImportError:
+        apstools_mod = _ensure_module("apstools")
+        utils = _ensure_module("apstools.utils")
+        apstools_mod.utils = utils
+
+    # Attach the test-only dm_* mocks (these names don't collide with
+    # anything real on apstools.utils).
     utils.dm_get_experiment_datadir_active_daq = MagicMock(return_value=None)
     utils.dm_setup = MagicMock()
     utils.dm_start_daq = MagicMock()
-    # Also stubbed because dm_utils transitively imports them.
     utils.dm_api_daq = MagicMock()
     utils.dm_api_ds = MagicMock()
     utils.dm_api_proc = MagicMock()
+
     aps_dm = _ensure_module("apstools.utils.aps_data_management")
     aps_dm.DEFAULT_UPLOAD_POLL_PERIOD = 1
     aps_dm.DEFAULT_UPLOAD_TIMEOUT = 60
+
+    # Make sure xy_statistics is accessible from `apstools.utils` even if
+    # the real package only exposes it via the leaf statistics module.
+    if not hasattr(utils, "xy_statistics"):
+        try:
+            from apstools.utils.statistics import xy_statistics
+
+            utils.xy_statistics = xy_statistics
+        except ImportError:
+            utils.xy_statistics = MagicMock(name="xy_statistics")
 
 
 def _stub_run_engine() -> None:
@@ -125,6 +164,9 @@ def _stub_run_engine() -> None:
 def _stub_specwriter() -> None:
     """Stub id4_common.callbacks.spec_data_file_writer.specwriter."""
     pkg = _ensure_module("id4_common.callbacks")
+    # Make the stub package a real package so `from .callbacks.X import …`
+    # resolves further submodules (dichro_stream, nexus_data_file_writer).
+    pkg.__path__ = []  # marks it as a package
     mod = _ensure_module("id4_common.callbacks.spec_data_file_writer")
     pkg.spec_data_file_writer = mod
     sw = MagicMock(name="specwriter")
@@ -132,6 +174,16 @@ def _stub_specwriter() -> None:
     sw.spec_filename = MagicMock()
     sw.spec_filename.name = "fake.dat"
     mod.specwriter = sw
+
+    # Other callbacks imported by id4_common.plans.base_scans /
+    # grid_scans / hkl_scans at module load time.
+    dichro = _ensure_module("id4_common.callbacks.dichro_stream")
+    dichro.dichro = MagicMock(name="dichro_device")
+    pkg.dichro_stream = dichro
+
+    nx = _ensure_module("id4_common.callbacks.nexus_data_file_writer")
+    nx.nxwriter = MagicMock(name="nxwriter")
+    pkg.nexus_data_file_writer = nx
 
 
 def _stub_dm_utils() -> None:

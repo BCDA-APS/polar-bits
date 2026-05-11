@@ -5,8 +5,8 @@ from datetime import datetime
 from apsbits.core.instrument_init import oregistry
 from polartools.load_data import load_catalog
 
-from id4_common.plans.center_maximum import cen
-from id4_common.plans.center_maximum import maxi
+from id4_common.plans.peak_position import cen
+from id4_common.plans.peak_position import maxi
 
 
 def opt(method="cen"):
@@ -27,17 +27,17 @@ def opt(method="cen"):
 
     if time.seconds < 60:
         if method == "cen":
-            yield from cen(positioner)
+            yield from cen(positioner=positioner, confirm=False)
         elif method == "max":
-            yield from maxi(positioner)
+            yield from maxi(positioner=positioner, confirm=False)
 
     else:
         inp = input(f"Move {rmotor} to center (Y/[N])? ")
         if inp in ["Y", "y", "yes"]:
             if method == "cen":
-                yield from cen(positioner)
+                yield from cen(positioner=positioner, confirm=False)
             elif method == "max":
-                yield from maxi(positioner)
+                yield from maxi(positioner=positioner, confirm=False)
 
 
 def crl_setup(hutch=None):
