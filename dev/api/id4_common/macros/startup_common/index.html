@@ -711,6 +711,14 @@
                   
   <section id="module-id4_common.macros.startup_common">
 <span id="id4-common-macros-startup-common"></span><h1>id4_common.macros.startup_common<a class="headerlink" href="#module-id4_common.macros.startup_common" title="Link to this heading">#</a></h1>
+<p>One-line session-restart helper.</p>
+<p>Importing this module runs the canonical post-restart sequence:
+<code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> (auto-discovers the experiment snapshot from
+the cwd or the most recent run in the catalog) followed by
+<code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> (re-applies every auto-saved setup knob —
+PR setup, energy tracking, undulator offsets, counters, qxscan
+params). The per-knob status dict is printed so the user can see what
+was applied / skipped / failed.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
