@@ -246,5 +246,3 @@ Module Contents
 
       Return a mapping from human-readable ROI label strings to ROI index
       integers.
-
-

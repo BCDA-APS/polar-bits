@@ -268,6 +268,3 @@ Module Contents
 
       Configure clocks, buffers, counters, I/O, DMA, and trigger for flyscan
       operation.
-
-
-

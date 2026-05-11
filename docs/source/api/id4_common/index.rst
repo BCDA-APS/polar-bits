@@ -26,5 +26,3 @@ Submodules
    /api/id4_common/startup/index
    /api/id4_common/suspenders/index
    /api/id4_common/utils/index
-
-

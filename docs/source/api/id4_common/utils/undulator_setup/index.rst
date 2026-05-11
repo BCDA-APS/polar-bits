@@ -97,5 +97,3 @@ Module Contents
    to enable / disable per-device tracking.
 
    .. seealso:: :func:`id4_common.devices.energy_device.EnergySignal.tracking_setup`, :func:`id4_common.utils.session_state.restore_session_state`
-
-

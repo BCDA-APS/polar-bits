@@ -28,5 +28,3 @@ Submodules
    /api/id4_common/plans/peak_position_legacy/index
    /api/id4_common/plans/sim_plans/index
    /api/id4_common/plans/workflow_plan/index
-
-

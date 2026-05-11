@@ -28,6 +28,3 @@ Module Contents
    .. py:method:: get_file_list(datum_kwarg_gen)
 
       Return a list of file paths for the given datum keyword arguments.
-
-
-

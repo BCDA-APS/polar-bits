@@ -84,6 +84,3 @@ Module Contents
 
       Set default visibility: show analog outputs, hide digitizer, digital
       I/O, and analog inputs.
-
-
-

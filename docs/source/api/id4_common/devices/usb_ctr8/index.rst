@@ -149,6 +149,3 @@ Module Contents
 
    .. py:attribute:: binary_direction_8
       :value: None
-
-
-

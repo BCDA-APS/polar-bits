@@ -151,6 +151,3 @@ Module Contents
    .. py:method:: default_settings()
 
       Initialize monitor, read channels, plot channels, and scaler delays.
-
-
-

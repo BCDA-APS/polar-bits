@@ -70,5 +70,3 @@ Module Contents
 
    :raises RuntimeError: ``temperature_setup()`` has not been run, so there is no active
        controller to talk to.
-
-

@@ -17,5 +17,3 @@ Module Contents
 .. py:function:: atten(atten_value_in=None)
 
    Set or display the x-ray attenuation factor using the EPICS filter device.
-
-

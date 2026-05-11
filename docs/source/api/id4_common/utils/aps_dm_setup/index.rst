@@ -14,6 +14,3 @@ id4_common.utils.aps_dm_setup
    Python code than bluesky and the two often clash.
 
    This setup must be done before any of the DM package libraries are called.
-
-
-

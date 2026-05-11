@@ -55,5 +55,3 @@ Module Contents
 
    Returns ``{knob_group: status_str}`` so callers can print a summary.
    Never raises.
-
-

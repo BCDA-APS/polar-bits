@@ -145,6 +145,3 @@ Module Contents
 
       Set default monitor to chan01 and select all named read and plot
       channels.
-
-
-

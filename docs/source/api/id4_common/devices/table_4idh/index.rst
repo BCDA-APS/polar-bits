@@ -45,5 +45,3 @@ Module Contents
 
 
    .. py:attribute:: ay
-
-

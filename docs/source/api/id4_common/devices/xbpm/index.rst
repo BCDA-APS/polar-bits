@@ -26,5 +26,3 @@ Module Contents
 
 
    .. py:attribute:: y
-
-

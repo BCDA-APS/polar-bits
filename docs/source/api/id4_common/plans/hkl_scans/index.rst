@@ -290,5 +290,3 @@ Module Contents
    inner loop and does not accept a `per_step` hook.
 
    .. seealso:: :func:`hklpy2.scan_psi`
-
-

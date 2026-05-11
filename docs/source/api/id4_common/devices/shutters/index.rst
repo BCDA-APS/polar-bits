@@ -37,6 +37,3 @@ Module Contents
    .. py:method:: stop_auto_shutter()
 
       Unsubscribe all pss_state callbacks to disable automatic reopening.
-
-
-

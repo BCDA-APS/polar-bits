@@ -31,5 +31,3 @@ Module Contents
 .. py:function:: suspender_change_sleep(suspender_label=None, sleep_time=None)
 
    Change the post-beam-return sleep time for one or more shutter suspenders.
-
-

@@ -110,6 +110,3 @@ Module Contents
    .. py:method:: default_settings()
 
       Remove crystal_select from the sub-device list so it is not staged.
-
-
-

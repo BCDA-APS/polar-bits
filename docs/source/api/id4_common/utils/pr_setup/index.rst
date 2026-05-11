@@ -15,4 +15,3 @@ Module Contents
 ---------------
 
 .. py:data:: pr_setup
-

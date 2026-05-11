@@ -31,5 +31,3 @@ Module Contents
 
 
    .. py:attribute:: factory_func
-
-

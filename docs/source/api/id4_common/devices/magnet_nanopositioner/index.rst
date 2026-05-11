@@ -29,5 +29,3 @@ Module Contents
 
 
    .. py:attribute:: z
-
-

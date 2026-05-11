@@ -44,5 +44,3 @@ Module Contents
 
 
    .. py:attribute:: hsize
-
-

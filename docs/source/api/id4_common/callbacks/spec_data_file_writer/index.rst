@@ -54,4 +54,3 @@ Module Contents
 .. py:data:: specwriter
 
    The SPEC file writer object.
-

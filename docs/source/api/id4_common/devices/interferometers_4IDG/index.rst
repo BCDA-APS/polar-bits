@@ -50,6 +50,3 @@ Module Contents
    .. py:method:: plot_all()
 
       Set all six interferometer channels to hinted kind for plotting.
-
-
-

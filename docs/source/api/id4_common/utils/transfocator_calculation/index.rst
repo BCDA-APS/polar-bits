@@ -39,5 +39,3 @@ Module Contents
 .. py:function:: transfocator_calc_old(distance=None, energy=None, experiment='diffractometer', beamline='polar')
 
    Calculate CRL lens configuration using the legacy (non-verbose) algorithm.
-
-

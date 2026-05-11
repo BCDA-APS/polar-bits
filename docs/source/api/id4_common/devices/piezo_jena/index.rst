@@ -72,6 +72,3 @@ Module Contents
       query on .AOUT, waits ``settle_time`` seconds for the asyn
       record to push the response into .TINP, then returns the
       latest .TINP value.
-
-
-

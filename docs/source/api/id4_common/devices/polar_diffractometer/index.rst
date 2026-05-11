@@ -348,5 +348,3 @@ Module Contents
 
 
    .. py:attribute:: phi
-
-

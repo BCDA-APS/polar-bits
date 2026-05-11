@@ -114,6 +114,3 @@ Module Contents
    .. py:method:: default_settings()
 
       Demote rarely-changed sub-signals to config so baseline stays slim.
-
-
-

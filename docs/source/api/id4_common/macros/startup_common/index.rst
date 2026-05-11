@@ -23,4 +23,3 @@ Module Contents
 ---------------
 
 .. py:data:: status
-

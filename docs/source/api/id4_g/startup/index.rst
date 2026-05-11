@@ -28,4 +28,3 @@ Module Contents
 .. py:data:: iconfig_path
 
 .. py:data:: cat
-

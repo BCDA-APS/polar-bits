@@ -37,6 +37,3 @@ id4_common.macros.macros_api
            yield from cen(magnet.tab.x)
            yield from lup(magnet.tab.y, start, end, 60, 0.2)
            yield from cen(magnet.tab.y)
-
-
-

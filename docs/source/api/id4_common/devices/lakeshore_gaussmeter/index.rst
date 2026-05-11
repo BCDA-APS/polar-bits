@@ -40,5 +40,3 @@ Module Contents
    .. py:property:: preset_monitor
 
       Return the dummy acquire signal used as a no-op preset monitor.
-
-

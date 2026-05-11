@@ -250,6 +250,3 @@ Module Contents
 
       Set calibration and configuration signals to config kind and clear
       stage_sigs.
-
-
-

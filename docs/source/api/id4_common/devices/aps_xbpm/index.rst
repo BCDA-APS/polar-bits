@@ -71,5 +71,3 @@ Module Contents
 
 
    .. py:attribute:: cm3
-
-

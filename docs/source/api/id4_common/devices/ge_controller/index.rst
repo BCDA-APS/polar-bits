@@ -50,6 +50,3 @@ Module Contents
    .. py:method:: stop(*, success=False)
 
       Stop the positioner; hold current position if not successful.
-
-
-

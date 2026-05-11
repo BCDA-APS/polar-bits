@@ -128,5 +128,3 @@ Module Contents
    .. py:property:: save_image_flag
 
       Return True if the HDF1 plugin is enabled or autosave is active.
-
-

@@ -56,5 +56,3 @@ Module Contents
    :type selected_lenses: iterable
    :param verbose: Toggle to print information.
    :type verbose: bool
-
-

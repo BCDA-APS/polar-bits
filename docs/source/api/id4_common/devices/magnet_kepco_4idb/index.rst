@@ -71,6 +71,3 @@ Module Contents
    .. py:method:: default_settings()
 
       Configure scan rate, remote control, model ID, and set current mode.
-
-
-

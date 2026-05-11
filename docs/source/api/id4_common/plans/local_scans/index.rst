@@ -20,6 +20,3 @@ id4_common.plans.local_scans
    This shim re-exports every public symbol so existing
    ``from id4_common.plans.local_scans import ...`` callers keep working.
    New code should import from the focused modules directly.
-
-
-

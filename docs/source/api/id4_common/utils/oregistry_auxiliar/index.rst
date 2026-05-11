@@ -24,5 +24,3 @@ Module Contents
    :rtype: None
 
    .. seealso:: :func:`ophydregistry.Registry.findall`
-
-

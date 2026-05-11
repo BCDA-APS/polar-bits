@@ -158,6 +158,3 @@ Module Contents
       Mark channels as Kind.normal without plotting.
 
       Must be called after select_plot because select_roi resets ROI kinds.
-
-
-

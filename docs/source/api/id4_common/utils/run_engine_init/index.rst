@@ -41,5 +41,3 @@ Module Contents
    ``"StoredDict"`` for a file ``MD_PATH`` and ``"PersistentDict"``
    otherwise — the upstream version hard-codes the class and never
    actually restores from disk.
-
-

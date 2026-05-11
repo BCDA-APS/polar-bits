@@ -312,4 +312,3 @@ Module Contents
 .. py:data:: CradleDiffractometerPSI
 
 .. py:data:: HPDiffractometerPSI
-

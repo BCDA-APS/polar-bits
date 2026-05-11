@@ -171,6 +171,3 @@ Module Contents
    .. py:method:: default_settings()
 
       Apply default stage signal settings for the Lambda detector.
-
-
-

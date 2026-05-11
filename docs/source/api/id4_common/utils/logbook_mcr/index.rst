@@ -88,5 +88,3 @@ Module Contents
 
    :returns: List of tuples containing (time, description) for each event
    :rtype: list
-
-

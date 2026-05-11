@@ -185,5 +185,3 @@ Module Contents
    :type md: dictionary, optional
 
    .. seealso:: :func:`bluesky.plans.scan`, :func:`lup`
-
-

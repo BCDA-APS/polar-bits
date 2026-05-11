@@ -72,5 +72,3 @@ Module Contents
    :raises KeyError: ``label`` is not in :data:`TEMPERATURE_CONTROLLERS`.
    :raises LookupError: The mapped device is not in ``oregistry``.
    :raises AttributeError: One of the dotted attribute paths does not resolve on the device.
-
-

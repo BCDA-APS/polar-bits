@@ -68,5 +68,3 @@ Module Contents
 
 
    .. py:attribute:: chan1_q
-
-

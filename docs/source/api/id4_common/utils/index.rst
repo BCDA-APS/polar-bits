@@ -45,5 +45,3 @@ Submodules
    /api/id4_common/utils/undulator_setup/index
    /api/id4_common/utils/utilities/index
    /api/id4_common/utils/wax/index
-
-

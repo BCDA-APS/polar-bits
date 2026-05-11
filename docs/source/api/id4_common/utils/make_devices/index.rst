@@ -83,6 +83,3 @@ Module Contents
    connect : bool
        If True (default), eagerly try to connect every device. If False,
        only load and register them.
-
-
-

@@ -25,5 +25,3 @@ Submodules
    /api/id4_common/macros/shortcuts_4idg_hp/index
    /api/id4_common/macros/shortcuts_4idh_9T/index
    /api/id4_common/macros/startup_common/index
-
-

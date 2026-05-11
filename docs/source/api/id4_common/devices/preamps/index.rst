@@ -59,6 +59,3 @@ Module Contents
 
       Disable string mode on offset_fine and enable put_complete on control
       signals.
-
-
-

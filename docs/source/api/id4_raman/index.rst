@@ -20,5 +20,3 @@ Submodules
 
    /api/id4_raman/configs/index
    /api/id4_raman/startup/index
-
-

@@ -123,6 +123,3 @@ Module Contents
    .. py:method:: rainbow()
 
       Rainbow color cycle.
-
-
-

@@ -341,6 +341,3 @@ Module Contents
    .. py:method:: select_read(channels)
 
       No-op: all stats channels are always read (only hinted/normal differ).
-
-
-

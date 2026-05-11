@@ -367,5 +367,3 @@ Module Contents
    With no argument, restores from ``RE.md`` (the PersistentDict
    bluesky already loaded at startup). With an explicit ``path``,
    loads the YAML snapshot at that location instead.
-
-

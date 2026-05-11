@@ -23,5 +23,3 @@ Module Contents
 
    Return True if the (hkl) reflection is allowed by the space group selection
    rules.
-
-

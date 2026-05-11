@@ -52,5 +52,3 @@ Module Contents
 
    Print current position and limits for all motors, optionally filtered by
    name.
-
-

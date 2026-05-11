@@ -377,5 +377,3 @@ Module Contents
 
    AreaDetector trigger status that clears array-counter subscriptions on
    completion.
-
-

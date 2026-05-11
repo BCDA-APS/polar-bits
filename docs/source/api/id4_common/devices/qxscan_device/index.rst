@@ -195,6 +195,3 @@ Module Contents
 
       Restore qxscan parameters from the baseline stream of a previously
       recorded scan.
-
-
-

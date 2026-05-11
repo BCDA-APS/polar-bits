@@ -547,5 +547,3 @@ Module Contents
 
    Assumes horizontal scattering geometry (``gamma = 2*theta``,
    ``delta = 0``).
-
-

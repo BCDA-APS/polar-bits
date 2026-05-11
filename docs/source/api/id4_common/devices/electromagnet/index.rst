@@ -46,6 +46,3 @@ Module Contents
    .. py:method:: default_settings()
 
       Apply default settings to the Kepco controller.
-
-
-

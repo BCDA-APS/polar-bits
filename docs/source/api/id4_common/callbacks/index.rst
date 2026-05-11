@@ -19,5 +19,3 @@ Submodules
    /api/id4_common/callbacks/dichro_stream/index
    /api/id4_common/callbacks/nexus_data_file_writer/index
    /api/id4_common/callbacks/spec_data_file_writer/index
-
-

@@ -41,5 +41,3 @@ Module Contents
 .. py:function:: sim_rel_scan_plan(span: float = 5, num: int = 11, imax: float = 10000, center: float = 0, sigma: float = 1, noise: str = 'uniform', md: dict = DEFAULT_MD)
 
    Demonstrate the ``rel_scan()`` plan.
-
-

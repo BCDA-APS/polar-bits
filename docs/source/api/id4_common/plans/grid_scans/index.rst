@@ -119,5 +119,3 @@ Module Contents
    :type md: dict, optional
 
    .. seealso:: :func:`grid_scan`, :func:`bluesky.plans.grid_scan`, :func:`bluesky.plans.rel_grid_scan`, :func:`bluesky.plans.inner_product_scan`, :func:`bluesky.plans.scan_nd`
-
-

@@ -38,6 +38,3 @@ Module Contents
 
       Configure pre-amplifier signals for put_complete and disable string mode
       on offset_fine.
-
-
-

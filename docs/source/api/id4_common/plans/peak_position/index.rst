@@ -136,5 +136,3 @@ Module Contents
 .. py:function:: pmin(scan_id=-1, positioner=None, detector=None, confirm=True)
 
    Alias of :func:`mini` (PR #54 name).
-
-

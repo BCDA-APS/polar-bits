@@ -404,5 +404,3 @@ Module Contents
    .. py:property:: save_image_flag
 
       Return True if the HDF5 plugin is enabled or autosave is on.
-
-

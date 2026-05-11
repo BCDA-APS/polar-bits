@@ -94,6 +94,3 @@ Module Contents
    .. py:method:: default_settings()
 
       Resolve and cache the monochromator device from the registry.
-
-
-

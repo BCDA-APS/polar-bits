@@ -71,4 +71,3 @@ Module Contents
    The NeXus file writer object.
 
 .. py:data:: warn_missing
-

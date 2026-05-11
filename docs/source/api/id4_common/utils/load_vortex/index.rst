@@ -45,5 +45,3 @@ Module Contents
 
    :returns: **vortex_detector**
    :rtype: Ophyd device
-
-

@@ -135,6 +135,3 @@ Module Contents
    .. py:method:: default_settings(timeout=10)
 
       Apply default FPGA settings (no-op for this class; subclasses override).
-
-
-

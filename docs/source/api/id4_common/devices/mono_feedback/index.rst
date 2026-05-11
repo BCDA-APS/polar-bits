@@ -108,6 +108,3 @@ Module Contents
    .. py:method:: default_settings()
 
       Subscribe to the station signal so per-station kinds track it.
-
-
-

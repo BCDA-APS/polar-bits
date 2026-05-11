@@ -273,6 +273,3 @@ Module Contents
 
       Perform a single-point MCA mapping acquisition to warm up the HDF5
       plugin.
-
-
-

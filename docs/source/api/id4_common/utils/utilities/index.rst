@@ -49,5 +49,3 @@ Module Contents
        "absorption": functions related to absorption experiments
        "diffraction": functions related to diffraction experiments
        "hklpy": functions related to reciprocal space
-
-

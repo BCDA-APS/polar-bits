@@ -43,6 +43,3 @@ Module Contents
    .. py:method:: wa(line)
 
       List positioner info. 'wa' stands for 'where all'.
-
-
-

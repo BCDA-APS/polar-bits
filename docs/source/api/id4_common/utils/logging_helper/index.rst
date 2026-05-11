@@ -36,5 +36,3 @@ Module Contents
    Idempotent: subsequent calls are no-ops so importing several beamline
    packages (or importing one whose ``__init__.py`` chains through
    id4_common) doesn't re-run `%logstart` and re-print the settings block.
-
-

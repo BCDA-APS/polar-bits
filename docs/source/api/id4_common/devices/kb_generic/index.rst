@@ -33,4 +33,3 @@ Module Contents
 .. py:data:: GKBDevice
 
 .. py:data:: HKBDevice
-

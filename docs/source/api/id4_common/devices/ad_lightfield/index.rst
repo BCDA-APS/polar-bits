@@ -264,4 +264,3 @@ Module Contents
 
 
 .. py:data:: spectrometer
-

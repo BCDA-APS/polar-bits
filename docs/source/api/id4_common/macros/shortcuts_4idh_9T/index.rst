@@ -30,4 +30,3 @@ Module Contents
 .. py:data:: namespace
 
 .. py:data:: dev
-

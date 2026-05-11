@@ -131,5 +131,3 @@ Module Contents
    :type confirm: bool, optional
 
    .. seealso:: :func:`peak`, :func:`pmax`, :func:`peak_pos`
-
-

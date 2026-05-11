@@ -137,6 +137,3 @@ Module Contents
 
       Unsubscribe all auto-mode callbacks so voltage mode is no longer
       enforced.
-
-
-

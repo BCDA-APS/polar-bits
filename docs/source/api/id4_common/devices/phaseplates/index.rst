@@ -176,6 +176,3 @@ Module Contents
 
       Set PZT conversion factor and d-spacing based on the selected crystal
       plane.
-
-
-

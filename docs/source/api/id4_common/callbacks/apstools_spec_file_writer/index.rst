@@ -462,5 +462,3 @@ Module Contents
        (optional)
        Instance of ``SpecWriterCallback()``,
        typically: ``specwriter = SpecWriterCallback()``
-
-
