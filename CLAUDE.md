@@ -136,11 +136,11 @@ Each beamline startup connects only the devices whose labels match its `stations
 | 4IDH | `["core", "4idh"]` |
 | Raman | `["4idb"]` |
 
-Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry the `"core"` label in `devices.yml`.
+Devices shared between beamlines (e.g. `crl`, `gslt`) carry the `"core"` label in `devices.yml`.
 
 ### Key Components in `id4_common/`
 
-- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `transfocator_device.py` (`make_transfocator_class` factory), `counters_mixin.py` (detector plotting API — see below)
+- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `crl_device.py` (`make_crl_class` factory; CRL / transfocator), `counters_mixin.py` (detector plotting API — see below)
 - **`plans/`** — Bluesky scan plans: `local_scans.py` (lup, ascan, grid_scan, qxscan, count, mv/mvr), `_local_scan_utils.py` (private helpers shared by local_scans — `_hkl_motors`, `reset_real_motors_decorator` for fixQ position restore, `_setup_file_io`, etc.), `local_preprocessors.py` (decorators: `configure_counts`, `stage_dichro`, `stage_magnet911`, `stage_4idg_softglue`, `extra_devices`), `dm_plans.py` (DM workflow submission), `center_maximum.py`, `flyscan_demo.py`
 - **`callbacks/`** — `spec_data_file_writer.py`, `nexus_data_file_writer.py`, `dichro_stream.py`
 - **`utils/`** — ~30 modules including HKL/crystallography utilities, DM integration, counters class (`counters_class.py`, provides `CountersClass` with `is_scaler_monitor`, `monitor_field`, `plotselect()`), attenuator control, device loader (`device_loader.py`), local `make_devices` shim (`make_devices.py`, see "Deferred EPICS Connection Pattern"), experiment utilities, and `polartools`/`hklpy2` import wrappers
@@ -249,6 +249,28 @@ directory cannot be created (developer machine without `/net/...` access)
 the helper falls back to apsbits' default `<cwd>/.logs/`. Add a new
 user-friendly key here by extending the `_FILE_LOGS_KEY_MAP` dict in
 `logging_helper.py`.
+
+### Temperature controllers
+
+There are several temperature controllers across the four 4-ID stations
+(LakeShore 336/340 at 4IDG, the 9-Tesla magnet's VTI sensors and needle
+valve at 4IDH, …).  `id4_common.utils.temperature_setup.temperature_setup
+(label)` picks one and binds three names into the session:
+
+- ``tc`` — the **control** signal (movable, the loop setpoint)
+- ``ts`` — the **sample** signal (readable, the readback)
+- ``TEMPERATURE_CONTROLLER`` — the active label string
+
+Once set, ``mv tc 295`` and ``RE(count(1, 1, detectors=[ts]))`` work; ``ts``
+is added to ``sd.baseline`` by default so the sample temperature lands in
+every scan.  ``te(temperature)`` in ``shorts.py`` is now a thin shortcut
+over the active ``tc``.
+
+Adding a new controller is a one-line edit to the ``TEMPERATURE_CONTROLLERS``
+dict in ``id4_common/utils/temperature_setup.py`` — each row is
+``label → (device_name, setpoint_attr_path, readback_attr_path)`` and the
+dotted paths are resolved against ``oregistry.find(device_name)``.  No
+device-class changes required.
 
 ### QueueServer
 

@@ -248,8 +248,8 @@ id4_common.devices.quadems.SydorEMRO:
   prefix: "4idhSydor:T4U_BPM:"
   labels: ["detector", "xbpm", "baseline", "4idh"]
 
-id4_common.devices.transfocator_device.TransfocatorClass:
-- name: transfocator
+id4_common.devices.crl_device.CRLClass:
+- name: crl
   prefix: "4idPyCRL:CRL4ID:"
   labels: ["4idg", "4idh", "optics", "track_energy", "baseline"]
 

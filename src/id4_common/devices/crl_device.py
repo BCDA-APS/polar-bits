@@ -1,4 +1,4 @@
-"""Transfocator."""
+"""CRL."""
 
 from logging import getLogger
 from time import sleep as tsleep
@@ -80,6 +80,58 @@ class PyCRLSignal(EpicsSignal):
     egu = Component(EpicsSignalRO, ".EGU")
 
 
+class BeamsizeSignal(Device):
+    """Beamsize handle in microns.
+
+    The underlying ``focalSize`` setpoint and ``fSize_actual`` readback PVs
+    are in meters and do not fully converge, so this device writes to the
+    setpoint (microns -> meters) and reports the readback
+    (meters -> microns) without enforcing a match: ``mov crl.beamsize 10``
+    writes 10 um to the setpoint and returns immediately. The raw
+    meter-valued PVs remain available as ``crl.beamsize.setpoint`` and
+    ``crl.beamsize.readback``.
+    """
+
+    setpoint = Component(EpicsSignal, "focalSize", kind="config")
+    readback = Component(EpicsSignalRO, "fSize_actual", kind="hinted")
+
+    def set(self, value, **kwargs):
+        """Move the setpoint to ``value`` (microns); finish immediately."""
+        self.setpoint.put(float(value) * 1e-6)
+        status = DeviceStatus(self)
+        status.set_finished()
+        return status
+
+    def get(self, **kwargs):
+        """Return the readback in microns."""
+        return self.readback.get(**kwargs) * 1e6
+
+    @property
+    def position(self):
+        """Readback in microns."""
+        return self.get()
+
+    def read(self):
+        """Report the readback as a single microns-valued field."""
+        rb = self.readback.read()[self.readback.name]
+        return {
+            self.name: {
+                "value": rb["value"] * 1e6,
+                "timestamp": rb["timestamp"],
+            }
+        }
+
+    def describe(self):
+        """Describe the microns-valued field reported by ``read()``."""
+        rb = self.readback.describe()[self.readback.name]
+        return {self.name: {**rb, "units": "um"}}
+
+    @property
+    def hints(self):
+        """Hint the microns-valued field for plotting."""
+        return {"fields": [self.name]}
+
+
 class PyCRL(Device):
     """PyCRL compound refractive lens controller."""
 
@@ -99,8 +151,7 @@ class PyCRL(Device):
     )
 
     # Focus info/control
-    focal_size_setpoint = Component(EpicsSignal, "focalSize")
-    focal_size_readback = Component(EpicsSignalRO, "fSize_actual")
+    beamsize = Component(BeamsizeSignal, "")
     focal_power_index = Component(EpicsSignalWithRBV, "1:sortedIndex")
     focal_sizes = Component(EpicsSignal, "fSizes", kind="omitted")
     minimize_button = Component(
@@ -123,6 +174,12 @@ class PyCRL(Device):
         EpicsSignal, "samplePositionOffset.DOL", kind="config"
     )
     sample = Component(PyCRLSignal, "samplePosition_RBV", kind="config")
+
+    select_station = Component(
+        EpicsSignal, "ZOffsetToggle.VAL", string=True, kind="config"
+    )
+    offset_g = Component(EpicsSignal, "ZOffsetG.VAL", kind="config")
+    offset_h = Component(EpicsSignal, "ZOffsetH.VAL", kind="config")
 
     # Lenses indices
     binary = Component(EpicsSignalRO, "1:lenses", kind="config")
@@ -182,7 +239,7 @@ class PyCRL(Device):
 
 
 class EnergySignal(Signal):
-    """Signal that moves the transfocator to a new energy."""
+    """Signal that moves the crl to a new energy."""
 
     _epics_sleep = EPICS_ENERGY_SLEEP
 
@@ -191,7 +248,7 @@ class EnergySignal(Signal):
         raise NotImplementedError("put operation not setup in this signal.")
 
     def set(self, value, **kwargs):
-        """Move transfocator to the specified energy."""
+        """Move crl to the specified energy."""
         self._readback = value
 
         if self.parent.energy_select.get() != 1:
@@ -199,7 +256,7 @@ class EnergySignal(Signal):
 
         self.parent.energy_local.set(value).wait(1)
         tsleep(self._epics_sleep)
-        # this is needed because the scan of the transfocator is 0.1 s
+        # this is needed because the scan of the crl is 0.1 s
 
         zpos = self.parent.z.user_readback.get() - self.parent.dq.get() * 1000.0
         # dq in meters
@@ -252,18 +309,18 @@ class ZMotor(EpicsMotor):
             self.parent.y.stop(success=success)
 
 
-def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
-    """Return a TransfocatorClass with lens motors bound to motors_ioc.
+def make_crl_class(motors_ioc=DEFAULT_MOTORS_IOC):
+    """Return a CRLClass with lens motors bound to motors_ioc.
 
     Parameters
     ----------
     motors_ioc : str
-        IOC prefix for the transfocator stage motors, e.g. ``"4idgSoft:"``.
+        IOC prefix for the crl stage motors, e.g. ``"4idgSoft:"``.
     """
     lens_list = [f"{motors_ioc}m{n}" for n in [69, 68, 67, 66, 65, 64, 63, 62]]
 
-    class TransfocatorClass(PyCRL):
-        """Transfocator with parametric motor IOC prefix."""
+    class CRLClass(PyCRL):
+        """CRL with parametric motor IOC prefix."""
 
         energy = Component(EnergySignal)
         tracking = Component(TrackingSignal, value=False, kind="config")
@@ -302,7 +359,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
             default_distance=2591,
             **kwargs,
         ):
-            """Initialize TransfocatorClass with motor IOC prefix."""
+            """Initialize CRLClass with motor IOC prefix."""
             self._motors_IOC = motors_ioc
             PyCRL.__init__(self, *args, **kwargs)
             self._lens_pos = lens_pos
@@ -391,7 +448,7 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
 
         def _setup_optimize_distance(self):
             if self.energy_select.get() in (1, "Local"):
-                logger.info("WARNING: transfocator in 'Local' energy mode")
+                logger.info("WARNING: crl in 'Local' energy mode")
 
             distance = self.z.user_readback.get() - self.dq.get() * 1000
 
@@ -432,13 +489,21 @@ def make_transfocator_class(motors_ioc=DEFAULT_MOTORS_IOC):
             return (yield from mv(self.z, self._setup_optimize_distance()))
 
         def default_settings(self):
-            """Apply default stage signals for transfocator."""
+            """Apply default stage signals for crl."""
             self.stage_sigs["energy_select"] = 1
 
-    TransfocatorClass.__name__ = "TransfocatorClass"
-    TransfocatorClass.__qualname__ = "TransfocatorClass"
-    return TransfocatorClass
+        def select_g(self):
+            """Send the CRL sample-position offset to the 4-ID-G hutch value."""
+            self.select_station.put("G")
+
+        def select_h(self):
+            """Send the CRL sample-position offset to the 4-ID-H hutch value."""
+            self.select_station.put("H")
+
+    CRLClass.__name__ = "CRLClass"
+    CRLClass.__qualname__ = "CRLClass"
+    return CRLClass
 
 
 # Module-level default — backward-compatible; used by devices.yml as-is.
-TransfocatorClass = make_transfocator_class()
+CRLClass = make_crl_class()
