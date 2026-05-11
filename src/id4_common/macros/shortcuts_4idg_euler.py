@@ -13,7 +13,7 @@ from logging import getLogger
 from apsbits.core.instrument_init import oregistry
 
 logger = getLogger(__name__)
-_diff = oregistry.find("huber_hp")
+_diff = oregistry.find("huber_euler")
 MAIN_NAMESPACE = "__main__"
 namespace = sys.modules[MAIN_NAMESPACE]
 
