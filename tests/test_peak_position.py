@@ -247,6 +247,41 @@ def test_grid_shape_helper(fresh_module):
     assert shape == (3, 4)
 
 
+def test_grid_shape_prefers_start_shape_when_motors_are_constant(fresh_module):
+    """Step below motor resolution -> readbacks all equal; trust start['shape']."""
+    ppm, _, _ = fresh_module
+    table = _DictTable(
+        {
+            "m1": np.full(9, -0.5501),
+            "m2": np.full(9, 0.2471),
+            "det1": np.zeros(9),
+        }
+    )
+    motors, shape = ppm._grid_shape(
+        {"motors": ["m1", "m2"], "shape": [3, 3]}, table
+    )
+    assert motors == ["m1", "m2"]
+    assert shape == (3, 3)
+
+
+def test_grid_shape_falls_back_when_start_shape_inconsistent(fresh_module):
+    """If start['shape'] doesn't match the table length, fall back to unique."""
+    ppm, _, _ = fresh_module
+    m1 = np.array([0.0, 1.0, 2.0])
+    m2 = np.array([10.0, 20.0, 30.0, 40.0])
+    table = _DictTable(
+        {
+            "m1": np.repeat(m1, 4),
+            "m2": np.tile(m2, 3),
+            "det1": np.zeros(12),
+        }
+    )
+    motors, shape = ppm._grid_shape(
+        {"motors": ["m1", "m2"], "shape": [99, 99]}, table
+    )
+    assert shape == (3, 4)
+
+
 def test_pix_to_motor_helper(fresh_module):
     ppm, _, _ = fresh_module
     m1 = np.array([0.0, 1.0, 2.0])

@@ -68,14 +68,21 @@ def _is_grid_scan(start):
 
 
 def _grid_shape(start, table):
-    """Infer the (M, N, …) grid shape from the unique motor positions.
+    """Return ``(motors, shape)`` for a grid scan.
 
-    Re-derives the shape from data rather than relying on
-    ``start["shape"]`` (which is optional in the bluesky spec).  Works
-    for any ``snake_axes`` setting because we use ``np.unique`` instead
-    of in-table ordering.
+    Prefer ``start["shape"]`` (which ``grid_scan`` / ``rel_grid_scan``
+    always record) so noisy motor readbacks or step sizes below motor
+    resolution don't collapse the inferred grid. Validate the recorded
+    shape against the table length and fall back to a
+    ``np.unique``-based derivation if it's missing or inconsistent.
     """
     motors = list(start["motors"])
+    n_samples = len(table[motors[0]].values) if motors else 0
+    recorded = start.get("shape")
+    if recorded is not None and len(recorded) == len(motors):
+        shape = tuple(int(s) for s in recorded)
+        if int(np.prod(shape)) == n_samples:
+            return motors, shape
     shape = tuple(int(np.unique(table[m].values).size) for m in motors)
     return motors, shape
 
