@@ -18,4 +18,3 @@ Module Contents
 .. py:data:: extra
 
 .. py:data:: iconfig
-
