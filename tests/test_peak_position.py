@@ -282,6 +282,60 @@ def test_grid_shape_falls_back_when_start_shape_inconsistent(fresh_module):
     assert shape == (3, 4)
 
 
+def test_grid_shape_handles_noisy_readbacks_with_start_shape(fresh_module):
+    """Encoder noise -> more unique readbacks than grid points; trust start."""
+    ppm, _, _ = fresh_module
+    # 3x3 grid where every readback has small encoder noise — np.unique would
+    # report (5, 4) instead of (3, 3) and silently corrupt the result.
+    table = _DictTable(
+        {
+            "m1": np.array(
+                [
+                    -0.5511,
+                    -0.5511,
+                    -0.5512,
+                    -0.5511,
+                    -0.5511,
+                    -0.5510,
+                    -0.5491,
+                    -0.5490,
+                    -0.5491,
+                ]
+            ),
+            "m2": np.array(
+                [
+                    0.2463,
+                    0.2470,
+                    0.2480,
+                    0.2462,
+                    0.2470,
+                    0.2480,
+                    0.2462,
+                    0.2470,
+                    0.2480,
+                ]
+            ),
+            "det1": np.zeros(9),
+        }
+    )
+    _, shape = ppm._grid_shape({"motors": ["m1", "m2"], "shape": [3, 3]}, table)
+    assert shape == (3, 3)
+
+
+def test_grid_shape_raises_when_inference_inconsistent(fresh_module):
+    """No start['shape'] AND noisy readbacks -> explicit error, not wrong data."""
+    ppm, _, _ = fresh_module
+    table = _DictTable(
+        {
+            "m1": np.linspace(0, 1, 9),  # 9 unique
+            "m2": np.linspace(0, 1, 9),  # 9 unique
+            "det1": np.zeros(9),
+        }
+    )
+    with pytest.raises(ValueError, match="Cannot infer grid shape"):
+        ppm._grid_shape({"motors": ["m1", "m2"]}, table)
+
+
 def test_pix_to_motor_helper(fresh_module):
     ppm, _, _ = fresh_module
     m1 = np.array([0.0, 1.0, 2.0])

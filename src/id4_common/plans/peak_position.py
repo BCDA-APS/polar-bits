@@ -71,10 +71,12 @@ def _grid_shape(start, table):
     """Return ``(motors, shape)`` for a grid scan.
 
     Prefer ``start["shape"]`` (which ``grid_scan`` / ``rel_grid_scan``
-    always record) so noisy motor readbacks or step sizes below motor
-    resolution don't collapse the inferred grid. Validate the recorded
-    shape against the table length and fall back to a
-    ``np.unique``-based derivation if it's missing or inconsistent.
+    always record). ``np.unique`` on the readback table is unreliable —
+    motor encoder noise produces extra "unique" values, and step sizes
+    below motor resolution collapse them — so it is only a fallback for
+    test runs or external plans that omit ``shape``. The fallback is
+    validated against the row count and raises if the product doesn't
+    match, rather than silently returning a wrong shape.
     """
     motors = list(start["motors"])
     n_samples = len(table[motors[0]].values) if motors else 0
@@ -84,6 +86,15 @@ def _grid_shape(start, table):
         if int(np.prod(shape)) == n_samples:
             return motors, shape
     shape = tuple(int(np.unique(table[m].values).size) for m in motors)
+    if int(np.prod(shape)) != n_samples:
+        raise ValueError(
+            f"Cannot infer grid shape for motors {motors}: start['shape']="
+            f"{recorded!r} does not match {n_samples} rows, and the "
+            f"unique-readback fallback gave {shape} (product "
+            f"{int(np.prod(shape))}). Likely cause: noisy motor readbacks "
+            "or steps below motor resolution. Re-run the scan with a "
+            "larger step or pass the shape explicitly."
+        )
     return motors, shape
 
 
