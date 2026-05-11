@@ -14,12 +14,12 @@ id4_common.devices.hhl_mirror
 Module Contents
 ---------------
 
-.. py:class:: ToroidalMirror
+.. py:class:: HHLMirror
 
    Bases: :py:obj:`ophyd.Device`
 
 
-   Beamline toroidal mirror components.
+   Beamline high heat load mirror components.
 
 
    .. py:attribute:: y
@@ -53,6 +53,9 @@ Module Contents
 
 
    .. py:attribute:: stripe
+
+
+   .. py:attribute:: radius_estimated
 
 
    .. py:attribute:: radius_target

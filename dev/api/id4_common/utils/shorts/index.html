@@ -747,8 +747,8 @@ namespace.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>focal_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Target focal size in microns. If &lt; 5 µm, the device’s
 <code class="docutils literal notranslate"><span class="pre">minimize_button</span></code> is triggered instead of writing a setpoint.
-Otherwise the value is converted to meters and written to
-<code class="docutils literal notranslate"><span class="pre">crl.focal_size_setpoint</span></code>.</p>
+Otherwise the value is written to <code class="docutils literal notranslate"><span class="pre">crl.beamsize</span></code> (which handles
+the microns -&gt; meters conversion internally).</p>
 </dd>
 </dl>
 </dd></dl>
