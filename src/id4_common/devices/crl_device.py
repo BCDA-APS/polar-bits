@@ -80,6 +80,58 @@ class PyCRLSignal(EpicsSignal):
     egu = Component(EpicsSignalRO, ".EGU")
 
 
+class BeamsizeSignal(Device):
+    """Beamsize handle in microns.
+
+    The underlying ``focalSize`` setpoint and ``fSize_actual`` readback PVs
+    are in meters and do not fully converge, so this device writes to the
+    setpoint (microns -> meters) and reports the readback
+    (meters -> microns) without enforcing a match: ``mov crl.beamsize 10``
+    writes 10 um to the setpoint and returns immediately. The raw
+    meter-valued PVs remain available as ``crl.beamsize.setpoint`` and
+    ``crl.beamsize.readback``.
+    """
+
+    setpoint = Component(EpicsSignal, "focalSize", kind="config")
+    readback = Component(EpicsSignalRO, "fSize_actual", kind="hinted")
+
+    def set(self, value, **kwargs):
+        """Move the setpoint to ``value`` (microns); finish immediately."""
+        self.setpoint.put(float(value) * 1e-6)
+        status = DeviceStatus(self)
+        status.set_finished()
+        return status
+
+    def get(self, **kwargs):
+        """Return the readback in microns."""
+        return self.readback.get(**kwargs) * 1e6
+
+    @property
+    def position(self):
+        """Readback in microns."""
+        return self.get()
+
+    def read(self):
+        """Report the readback as a single microns-valued field."""
+        rb = self.readback.read()[self.readback.name]
+        return {
+            self.name: {
+                "value": rb["value"] * 1e6,
+                "timestamp": rb["timestamp"],
+            }
+        }
+
+    def describe(self):
+        """Describe the microns-valued field reported by ``read()``."""
+        rb = self.readback.describe()[self.readback.name]
+        return {self.name: {**rb, "units": "um"}}
+
+    @property
+    def hints(self):
+        """Hint the microns-valued field for plotting."""
+        return {"fields": [self.name]}
+
+
 class PyCRL(Device):
     """PyCRL compound refractive lens controller."""
 
@@ -99,7 +151,7 @@ class PyCRL(Device):
     )
 
     # Focus info/control
-    beamsize = Component(EpicsSignal, "fSize_actual", write_pv="focalSize")
+    beamsize = Component(BeamsizeSignal, "")
     focal_power_index = Component(EpicsSignalWithRBV, "1:sortedIndex")
     focal_sizes = Component(EpicsSignal, "fSizes", kind="omitted")
     minimize_button = Component(

@@ -94,15 +94,15 @@ def crl_size(focal_size):
     focal_size : float
         Target focal size in microns. If < 5 µm, the device's
         ``minimize_button`` is triggered instead of writing a setpoint.
-        Otherwise the value is converted to meters and written to
-        ``crl.focal_size_setpoint``.
+        Otherwise the value is written to ``crl.beamsize`` (which handles
+        the microns -> meters conversion internally).
     """
     focal_size = float(focal_size)
     crl_dev = oregistry.find("crl")
     if focal_size < 5:
         crl_dev.minimize_button.put(1)
     else:
-        crl_dev.beamsize.put(focal_size * 1e-6)
+        crl_dev.beamsize.set(focal_size)
 
 
 def te(temperature):
