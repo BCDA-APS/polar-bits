@@ -283,6 +283,15 @@ class QxscanParams(Device):
 
         self._create_positions_list()
 
+        # Auto-save inline params for restore_session_state().  Lazy
+        # import keeps the module-load order safe.
+        try:
+            from ..utils.session_state import _save_qxscan
+
+            _save_qxscan()
+        except Exception:  # noqa: BLE001
+            pass
+
     def _create_positions_list(self):
         elist = []
         factorlist = []
@@ -471,6 +480,16 @@ class QxscanParams(Device):
         """
         input = json.load(open(fname, "r"))
         self._read_params_dict(input)
+
+        # Record the source file for restore_session_state().  Storing
+        # the path keeps the snapshot small (no need to dump every
+        # region into RE.md).
+        try:
+            from ..utils.session_state import _save_qxscan
+
+            _save_qxscan(source=fname)
+        except Exception:  # noqa: BLE001
+            pass
 
     def load_from_scan(self, scan, cat=cat):
         """

@@ -1,153 +1,203 @@
-"""Utility for configuring upstream and downstream undulator setpoints."""
+"""Utility for configuring upstream and downstream undulator offsets.
+
+The single public function, :func:`undulator_setup`, walks the user
+through an interactive prompt for each undulator (DS = downstream, US =
+upstream): what offset (in keV) to apply between mono energy and
+undulator setpoint, and which harmonic to use.  Any value passed as a
+kwarg short-circuits the matching prompt; ``None`` (the default) means
+"ask interactively, with the current device state as the default
+answer".
+
+What this function does **not** do
+----------------------------------
+
+It does not toggle each undulator's ``.tracking`` flag.  Use
+:func:`id4_common.devices.energy_device.EnergySignal.tracking_setup` for
+that — it's the single source of truth for "which devices follow the
+mono energy".
+
+Typical workflow::
+
+    undulator_setup(ds_off=-0.072, ds_harm=3)        # offset + harmonic
+    energy.tracking_setup(["undulators_ds", "pr2"])  # turn tracking on
+
+Both calls auto-save into ``RE.md["session_state"]``, so a bluesky
+restart restores both halves via
+:func:`id4_common.utils.session_state.restore_session_state`.
+"""
 
 from apsbits.core.instrument_init import oregistry
 
+# Energy thresholds for the "[c]alculate" harmonic auto-pick.  Below the
+# first cutoff use harmonic 1, below the second use 3, otherwise 5.
+HARMONIC_BREAKPOINTS_KEV = ((8.6, 1), (18.0, 3))
+_HARMONIC_FALLBACK = 5  # used when the energy is above every breakpoint
+_VALID_HARMONICS = (1, 3, 5, 7, 9)
 
-def undulator_setup(
-    ds="N", ds_off=999, ds_harm=0, us="N", us_off=999, us_harm=0
-):
+
+def _auto_harmonic(energy_keV: float) -> int:
+    """Pick an undulator harmonic from the mono energy."""
+    for cutoff, harm in HARMONIC_BREAKPOINTS_KEV:
+        if energy_keV < cutoff:
+            return harm
+    return _HARMONIC_FALLBACK
+
+
+def _resolve_offset(side: str, kwarg, side_dev, energy):
+    """Decide on the offset for one undulator.
+
+    - ``kwarg`` is what the caller passed (or ``None`` to prompt).
+    - The prompt's default is the device's current offset, falling back
+      to the calculated value (``undulator.energy.readback - energy``)
+      when the offset is 0 (uninitialised).
+    - Accepts the literal ``"c"`` to recompute from the live readback.
     """
-    Select undulators used and turn energy tracking on/off
+    if kwarg is not None:
+        return float(kwarg)
 
-    - Undulator offset denotes difference of undulator energy to
-      monochromator energy
-      - [c]alculate: calculates offset from monochromator and
-        undulator current energies
+    current = side_dev.energy_offset.get()
+    if current == 0:
+        default = side_dev.energy.readback.get() - energy.get()
+    else:
+        default = current
+
+    while True:
+        answer = (
+            input(
+                f"   {side.upper()} undulator offset "
+                f"(value/[c]alculate) [{default:.3f}]: "
+            )
+            or default
+        )
+        if answer == "c":
+            return float(side_dev.energy.readback.get() - energy.get())
+        try:
+            return float(answer)
+        except (TypeError, ValueError):
+            print("     Offset must be a number or 'c'.")
 
 
+def _resolve_harmonic(side: str, kwarg, side_dev, energy):
+    """Decide on the harmonic for one undulator.
+
+    - ``kwarg`` is what the caller passed (or ``None`` to prompt).
+    - The prompt's default is the device's current harmonic value.
+    - Accepts the literal ``"c"`` to auto-pick from the mono energy
+      via :data:`HARMONIC_BREAKPOINTS_KEV`.
     """
+    if kwarg is not None:
+        return int(kwarg)
 
+    default = side_dev.harmonic_value.get()
+
+    while True:
+        answer = (
+            input(
+                f"   {side.upper()} undulator harmonic "
+                f"(1,3,5,../[c]alculate) [{default:.0f}]: "
+            )
+            or default
+        )
+        if answer == "c":
+            return _auto_harmonic(energy.get())
+        try:
+            return int(answer)
+        except (TypeError, ValueError):
+            print("     Harmonic must be an odd integer or 'c'.")
+
+
+def _setup_one_side(side: str, undulators, energy, off, harm):
+    """Resolve and apply the offset + harmonic for one undulator side.
+
+    Writes ``side.energy_offset`` and (when valid) ``side.harmonic_value``.
+    Does **not** touch ``side.tracking``; tracking is configured by
+    ``energy.tracking_setup`` (see module docstring).  Prints a
+    one-line summary so interactive callers get feedback.
+    """
+    side_dev = getattr(undulators, side)
+
+    resolved_off = _resolve_offset(side, off, side_dev, energy)
+    resolved_harm = _resolve_harmonic(side, harm, side_dev, energy)
+
+    side_dev.energy_offset.put(resolved_off)
+
+    if resolved_harm in _VALID_HARMONICS:
+        try:
+            side_dev.harmonic_value.put(resolved_harm)
+            print(
+                f"{side.upper()} undulator: offset = {resolved_off:.3f}, "
+                f"harmonic = {resolved_harm}"
+            )
+        except TimeoutError:
+            # The harmonic_value PV is disconnected — typical when the
+            # undulator IOC is down.  The offset write above may also
+            # have failed silently; surface that to the user.
+            print(
+                f"     {side.upper()} harmonic_value PV unreachable — "
+                "undulator currently disabled?"
+            )
+    else:
+        print(
+            f"     {side.upper()} harmonic must be one of "
+            f"{_VALID_HARMONICS}; got {resolved_harm!r}.  Skipped."
+        )
+
+
+def undulator_setup(ds_off=None, ds_harm=None, us_off=None, us_harm=None):
+    """
+    Configure each undulator's offset and harmonic.
+
+    Walks DS then US, asking two questions per undulator: "Offset?" →
+    "Harmonic?".  Any kwarg supplied short-circuits the matching prompt.
+
+    Parameters
+    ----------
+    ds_off, us_off : float, optional
+        Offset in keV applied between the mono energy and the undulator
+        setpoint.  ``None`` (default) triggers an interactive prompt
+        that also accepts the literal string ``"c"`` to calculate the
+        offset from ``undulator.energy.readback - energy``.  When the
+        device's current ``energy_offset`` is 0 the prompt's default
+        is the calculated value (assumed-uninitialised); otherwise the
+        prompt's default is the current offset.
+    ds_harm, us_harm : int, optional
+        Undulator harmonic.  Must be an odd integer in
+        ``{1, 3, 5, 7, 9}``.  ``None`` (default) triggers an interactive
+        prompt that also accepts the literal string ``"c"`` to
+        auto-pick from the mono energy via
+        :data:`HARMONIC_BREAKPOINTS_KEV`.
+
+    Side effects
+    ------------
+    Writes ``undulators.ds.energy_offset``, ``undulators.us.energy_offset``,
+    and the corresponding ``harmonic_value`` PVs (when reachable and
+    valid).  Auto-saves the new offsets / deadbands into
+    ``RE.md["session_state"]`` so a bluesky restart can re-apply them
+    via :func:`~id4_common.utils.session_state.restore_session_state`.
+
+    Notes
+    -----
+    Does **not** touch ``.tracking``.  Use
+    :func:`id4_common.devices.energy_device.EnergySignal.tracking_setup`
+    to enable / disable per-device tracking.
+
+    See Also
+    --------
+    :func:`id4_common.devices.energy_device.EnergySignal.tracking_setup`
+    :func:`id4_common.utils.session_state.restore_session_state`
+    """
     undulators = oregistry.find("undulators")
     energy = oregistry.find("energy")
 
-    ds_inq = False
-    us_inq = False
-    ds_off_inq = False
-    us_off_inq = False
-    if ds != "N":
-        ds_inq = True
-    elif ds == "N" and undulators.ds.tracking.get():
-        ds = "Y"
-        ds_inq = False
-    else:
-        ds_inq = False
+    _setup_one_side("ds", undulators, energy, ds_off, ds_harm)
+    _setup_one_side("us", undulators, energy, us_off, us_harm)
 
-    if us != "N":
-        us_inq = True
-    elif us == "N" and undulators.us.tracking.get():
-        us = "Y"
-        us_inq = False
-    else:
-        us_inq = False
+    # Auto-save the new offsets/deadbands so a bluesky restart can
+    # re-apply them via session_state.restore_session_state().  Lazy
+    # import keeps the module-load order safe.
+    try:
+        from .session_state import _save_undulator
 
-    if undulators.ds.energy_offset.get() == 0 and ds_off == 999:
-        ds_off = undulators.ds.energy.readback.get() - energy.get()
-    elif ds_off == 999:
-        ds_off = undulators.ds.energy_offset.get()
-    else:
-        ds_off_inq = True
-    if undulators.us.energy_offset.get() == 0 and us_off == 999:
-        us_off = undulators.us.energy.readback.get() - energy.get()
-    elif us_off == 999:
-        us_off = undulators.us.energy_offset.get()
-    else:
-        us_off_inq = True
-
-    if ds_harm == 0:
-        ds_harm = undulators.ds.harmonic_value.get()
-        ds_harm_inq = False
-    else:
-        ds_harm_inq = True
-
-    if us_harm == 0:
-        us_harm = undulators.us.harmonic_value.get()
-        us_harm_inq = False
-    else:
-        us_harm_inq = True
-
-    ds = ds if ds_inq else input(f"Use DS undulator [{ds}]: ") or ds
-    if ds in ["Yes", "Y", "y", "yes"]:
-        ds_off = (
-            ds_off
-            if ds_off_inq
-            else input(
-                f"   DS undulator offset (value/[c]alculate) [{ds_off:.3f}]: "
-            )
-            or ds_off
-        )
-        if ds_off == "c":
-            ds_off = undulators.ds.energy.readback.get() - energy.get()
-        ds_harm = (
-            ds_harm
-            if ds_harm_inq
-            else input(
-                f"   DS undulator harmonics (1,3,5,../[c]alculate) [{ds_harm:.0f}]: "
-            )
-            or ds_harm
-        )
-        if ds_harm == "c":
-            en = energy.get()
-            if en < 8.6:
-                ds_harm = 1
-            elif en < 18:
-                ds_harm = 3
-            else:
-                ds_harm = 5
-
-        undulators.ds.energy_offset.put(float(ds_off))
-        undulators.ds.tracking.put(True)
-        try:
-            if ds_harm in [1, 3, 5, 7, 9]:
-                undulators.ds.harmonic_value.put(int(ds_harm))
-                print(f"Undulator uses harmonic {ds_harm:.0f}")
-            else:
-                print("     Harmonics needs to be an odd integer!")
-        except Exception:
-            print("     Undulator currently disabled")
-        print(f"DS undulator tracking with offset = {float(ds_off):.3f}\n")
-    else:
-        undulators.ds.tracking.put(False)
-        print("DS undulator tracking OFF\n")
-
-    us = us if us_inq else input(f"Use US undulator [{us}]: ") or us
-    if us in ["Yes", "Y", "y", "yes"]:
-        us_off = (
-            us_off
-            if us_off_inq
-            else input(
-                f"   US undulator offset (value/[c]alculate) [{us_off:.3f}]: "
-            )
-            or us_off
-        )
-        if us_off == "c":
-            us_off = undulators.us.energy.readback.get() - energy.get()
-        us_harm = (
-            us_harm
-            if us_harm_inq
-            else input(
-                f"   US undulator harmonics (1,3,5,../[c]alculate) [{us_harm:.0f}]: "
-            )
-            or us_harm
-        )
-        if us_harm == "c":
-            en = energy.get()
-            if en < 8.6:
-                ds_harm = 1
-            elif en < 18:
-                ds_harm = 3
-            else:
-                ds_harm = 5
-        undulators.us.energy_offset.put(float(us_off))
-        undulators.us.tracking.put(True)
-        try:
-            if us_harm in [1, 3, 5, 7, 9]:
-                undulators.us.harmonic_value.put(int(us_harm))
-                print(f"Undulator uses harmonic {us_harm:.0f}")
-            else:
-                print("     Harmonics needs to be an odd integer!")
-        except Exception:
-            print("     Undulator currently disabled")
-        print(f"US undulator tracking with offset = {float(us_off):.3f}")
-    else:
-        undulators.us.tracking.put(False)
-        print("US undulator tracking OFF")
+        _save_undulator()
+    except Exception:  # noqa: BLE001 — never break a setup function
+        pass

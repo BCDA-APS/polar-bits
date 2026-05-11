@@ -144,6 +144,15 @@ class EnergySignal(Signal):
                 flag = True if name in devices_names else False
                 device.tracking.put(flag)
 
+        # Auto-save the new tracking selection so a bluesky restart can
+        # re-apply it via session_state.restore_session_state().
+        try:
+            from ..utils.session_state import _save_energy_tracking
+
+            _save_energy_tracking()
+        except Exception:  # noqa: BLE001
+            pass
+
     def _tracking_prompts(self):
         _ = self.tracking
         print("=== Enter 0 to disable tracking on all devices ===")

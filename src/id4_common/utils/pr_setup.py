@@ -7,11 +7,56 @@ from apsbits.core.instrument_init import oregistry
 from ..callbacks.dichro_stream import plot_dichro_settings
 
 
+def _autosave():
+    """Mirror current pr_setup state into RE.md['session_state'].
+
+    Imported lazily to avoid a module-load cycle (session_state imports
+    from pr_setup too).  Runs after every property-setter write so direct
+    attribute assignments — the pattern user startup files use today —
+    persist automatically.
+    """
+    try:
+        from .session_state import _save_pr_setup
+    except Exception:  # noqa: BLE001 — never break a property setter
+        return
+    _save_pr_setup()
+
+
 class PRSetup:
-    positioner = None
-    offset = None
-    oscillate_pzt = True
     _dichro_steps = [1, -1, -1, 1]
+
+    def __init__(self):
+        self._current_setup = {}
+        self._positioner = None
+        self._offset = None
+        self._oscillate_pzt = True
+
+    @property
+    def positioner(self):
+        return self._positioner
+
+    @positioner.setter
+    def positioner(self, value):
+        self._positioner = value
+        _autosave()
+
+    @property
+    def offset(self):
+        return self._offset
+
+    @offset.setter
+    def offset(self, value):
+        self._offset = value
+        _autosave()
+
+    @property
+    def oscillate_pzt(self):
+        return self._oscillate_pzt
+
+    @oscillate_pzt.setter
+    def oscillate_pzt(self, value):
+        self._oscillate_pzt = bool(value)
+        _autosave()
 
     @property
     def dichro_steps(self):
@@ -29,9 +74,6 @@ class PRSetup:
             raise ValueError("No phase retarder was found!")
         prs.sort(key=lambda x: x.name)
         return prs
-
-    def __init__(self):
-        self._current_setup = {}
 
     def __repr__(self):
         tracked = ""

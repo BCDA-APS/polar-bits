@@ -42,7 +42,27 @@ with `%run`:
 %run startup_4idh.py
 ```
 
-A typical session startup file looks like this:
+### Quick path: the prebuilt restart helper
+
+For a session restart inside an experiment that has already been set up
+once, the package ships a single import that does the whole restore:
+
+```python
+import id4_common.macros.startup_common  # noqa: F401
+```
+
+That one line calls `experiment_resume()` (auto-discovers the snapshot
+in the current directory or via `cat[-1]`) followed by
+`restore_session_state()` (re-applies every auto-saved setup knob — see
+[Recoverable session state](#recoverable-session-state)) and prints a
+per-knob status summary. `restore_session_state` is also imported into
+the interactive session namespace by `_common_startup.py`, so you can
+re-run it on demand without an extra import.
+
+### Full custom startup
+
+When you need more than a restart — first run of an experiment, manual
+overrides, extra devices — write your own startup file:
 
 ```python
 # startup_4idh.py
@@ -80,7 +100,7 @@ pr_setup.offset        = oregistry.find("pr2_pzt_offset_microns")
 pr_setup.oscillate_pzt = True
 
 # Load motor shortcuts and macros
-from motor_shortcuts import *
+import id4_common.macros.shortcuts_4idh_9T  # noqa: F401
 from macros import *
 ```
 
@@ -88,46 +108,55 @@ from macros import *
 
 ## Motor Shortcuts
 
-Create short variable names for frequently used motors by retrieving them
-from the device registry. Put these in a `motor_shortcuts.py` file:
+Create short variable names for frequently used motors so you can type
+`mv field 3` instead of `mv magnet911.ps.field 3`.
+
+### Prebuilt shortcuts (recommended)
+
+The package ships ready-to-go shortcut modules under
+`id4_common.macros` for each common 4-ID setup. Importing the matching
+one binds its motor names directly into the interactive session:
+
+| Module | Setup | Binds |
+|--------|-------|-------|
+| `shortcuts_4idg_euler` | 4IDG Euler diffractometer (`huber_euler`) | `h`, `k`, `l`, `tau`, `mu`, `gamma`, `delta`, `chi`, `phi`, `x`, `y`, `z` |
+| `shortcuts_4idg_hp` | 4IDG HP diffractometer (`huber_hp`) | the Euler set + `basex`/`basey`/`basez` (+ motor variants), `sample_tilt`, `nanox`/`nanoy`/`nanoz`, `xeryon` |
+| `shortcuts_4idh_9T` | 4IDH 9-Tesla magnet (`magnet911`) | `field`, `tabx`, `taby`, `tabz`, `tabsx`, `tabsz`, `tabrot`, `sy`, `sth` |
 
 ```python
-# motor_shortcuts.py — 4IDH example
+import id4_common.macros.shortcuts_4idg_hp  # noqa: F401
+# now: h, k, l, gamma, delta, nanox, ... are directly usable in the session
+```
+
+The import has to come *after* the underlying device is loaded
+(`huber_hp`, `huber_euler`, or `magnet911`) — the shortcut modules
+resolve names against `oregistry` at import time. Each module logs
+`<full_name> --> <short_name>` to the session log so you can see what
+landed.
+
+### Custom shortcuts
+
+For names that aren't covered by the prebuilt set, write your own
+file using the same pattern:
+
+```python
+# motor_shortcuts.py — extra shortcuts for one experiment
 from apsbits.core.instrument_init import oregistry
 
 _mag = oregistry.find("magnet911")
+_huber = oregistry.find("huber_euler")
 
-tabx  = _mag.tab.x       # sample table X
-taby  = _mag.tab.y       # sample table Y
-tabth = _mag.tab.srot    # sample table rotation
-samy  = _mag.samp.y      # sample Y
-samth = _mag.samp.th     # sample rotation
-field = _mag.ps.field    # magnetic field (Tesla)
-```
-
-```python
-# motor_shortcuts.py — 4IDG example
-from apsbits.core.instrument_init import oregistry
-
-huber_euler = oregistry.find("huber_euler")
-huber_hp    = oregistry.find("huber_hp")
-energy      = oregistry.find("energy")
-
-sx  = huber_euler.x
-sy  = huber_euler.y
-phi = huber_euler.phi
-chi = huber_euler.chi
-delta = huber_euler.delta
-
-nanox = huber_hp.nanox
-nanoy = huber_hp.nanoy
+samy   = _mag.samp.y
+samth  = _mag.samp.th
+energy = oregistry.find("energy")
+sx     = _huber.x
 ```
 
 Import with a wildcard so shortcuts land in the session namespace:
 
 ```python
 from motor_shortcuts import *
-# now: tabx, field, phi, etc. are directly usable
+# now: samy, samth, energy, sx are directly usable
 ```
 
 ---
@@ -136,15 +165,21 @@ from motor_shortcuts import *
 
 Bluesky plans are Python generator functions. They use `yield from` to compose
 built-in plan stubs, which allows the RunEngine to track, pause, and replay
-them. Any sequence of moves and scans can be wrapped in a plan:
+them. Any sequence of moves and scans can be wrapped in a plan.
+
+**Use `id4_common.macros.macros_api`** as the single import line for every
+plan/peak/setting helper your macro needs (issue #18). It re-exports every
+public scan plan (`ascan`, `lup`, `mv`, `mvr`, `grid_scan`, `rel_grid_scan`,
+`hklscan`, `qxscan`, …), every peak-finding plan (`cen` / `com` / `maxi` /
+`mini` plus the legacy `cen2` / `maxi2` / `mini2`), and the session-level
+singletons (`oregistry`, `counters`, `peaks`, `atten`). The list is curated
+and kept stable across internal package reorgs — your macros stay working
+when modules move around inside `id4_common`.
 
 ```python
 # macros.py
 from bluesky.plan_stubs import abs_set, sleep
-from id4_common.plans.local_scans import lup, ascan, mv, grid_scan, rel_grid_scan
-from id4_common.plans.center_maximum import cen
-from id4_common.utils.counters_class import counters
-from apsbits.core.instrument_init import oregistry
+from id4_common.macros.macros_api import *
 
 huber_hp = oregistry.find("huber_hp")
 energy   = oregistry.find("energy")
@@ -171,6 +206,53 @@ def energy_map(energies, dwell=0.5):
             snake_axes=True,
         )
 ```
+
+**Bluesky stubs are not re-exported** from `macros_api` — keep
+`from bluesky.plan_stubs import abs_set, rd, sleep, ...` as a separate
+explicit import so the bluesky surface stays visible.
+
+Six real-world macro templates live under `docs/source/examples/macros/`
+and follow this pattern:
+
+| File | What it shows |
+|------|---------------|
+| `align_routine.py` | tab.x / tab.y alignment + `check_position` retry loop |
+| `xmcd_at_two_edges.py` | per-edge energy + PR2 + preamp swap, then averaged qxscans |
+| `field_sequence.py` | overnight field sweep that re-aligns after every ramp |
+| `qxscan_chain.py` | iterate `qxscan` over a list of edges |
+| `hkl_map.py` | `hklscan` + `cen` to refine a Bragg peak |
+| `startup.py` | recoverable session start template — `experiment_load_from_bluesky()` fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner `id4_common.macros.startup_common`. |
+
+Copy any of them into your experiment directory and edit to taste.
+
+### Recoverable session state
+
+The setup helpers (`pr_setup`, `energy.tracking_setup`,
+`counters.plotselect`, `undulator_setup`,
+`qxscan_setup.load_params_json`) auto-snapshot their current values into
+`RE.md["session_state"]` — apsbits' `PersistentDict` backed by `MD_PATH`
+(`iconfig.yml`).  After a bluesky restart, call
+`restore_session_state()` to re-apply every saved knob in one go.
+`_common_startup.py` already imports it, so it's directly available in
+the session:
+
+```python
+status = restore_session_state()
+for knob, msg in status.items():
+    print(f"  {knob:18}  {msg}")
+```
+
+For a one-line restart that runs `experiment_resume()` first and prints
+the per-knob summary itself, use the prebuilt
+`id4_common.macros.startup_common` module shown in the [Quick path
+section](#quick-path-the-prebuilt-restart-helper).
+`docs/source/examples/macros/startup.py` is a longer template with the
+full `experiment_load_from_bluesky()` fallback and additional
+hand-managed steps (e.g. `load_vortex`).
+
+`status` reports `applied` / `skipped: <reason>` / `failed: <Exception>`
+per knob group — restore never raises, a missing device or single
+failed `.put()` is logged and the rest of the restore continues.
 
 Run a plan:
 
