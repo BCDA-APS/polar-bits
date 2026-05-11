@@ -11,6 +11,7 @@ for three hutches and the Raman offline setup: **4IDB**, **4IDG**, **4IDH**, and
 :hidden:
 :caption: User Guide
 
+whats_new
 getting_started
 plans
 useful_functions
@@ -39,6 +40,13 @@ api/index
 
 ::::{grid} 2 2 3 3
 :gutter: 3
+
+:::{grid-item-card} What's New
+:link: whats_new
+:link-type: doc
+
+Headlines for the current APS run cycle. Returning users start here.
+:::
 
 :::{grid-item-card} Getting Started
 :link: getting_started
