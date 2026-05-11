@@ -21,6 +21,7 @@ Submodules
    /api/id4_common/callbacks/index
    /api/id4_common/configs/index
    /api/id4_common/devices/index
+   /api/id4_common/macros/index
    /api/id4_common/plans/index
    /api/id4_common/startup/index
    /api/id4_common/suspenders/index

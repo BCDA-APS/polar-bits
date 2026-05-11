@@ -36,6 +36,7 @@ Submodules
    /api/id4_common/utils/pr_setup/index
    /api/id4_common/utils/run_engine/index
    /api/id4_common/utils/run_engine_init/index
+   /api/id4_common/utils/session_state/index
    /api/id4_common/utils/shorts/index
    /api/id4_common/utils/spe_handler/index
    /api/id4_common/utils/temperature_setup/index
