@@ -37,6 +37,40 @@ class EdgeDevice(Device):
     TimeFactor = Component(Signal, value=1)
 
 
+class _RegionedDevice(Device):
+    """
+    Base for devices that hold ``num_regions`` plus ``region1..regionN``.
+
+    Hides ``region{i}`` (sets its ``kind`` to ``"omitted"``) for ``i >
+    num_regions`` so unused regions do not bloat the baseline stream.
+    Re-runs on every ``num_regions`` write, so the active set tracks
+    interactive setup and ``load_from_scan`` restores.
+    """
+
+    NUM_REGIONS_MAX = 5
+
+    def __init__(self, *args, **kwargs):
+        """
+        Initialize the regioned device and start tracking ``num_regions``.
+        """
+        super().__init__(*args, **kwargs)
+        self._apply_region_kinds()
+        self.num_regions.subscribe(self._on_num_regions_change, run=False)
+
+    def _on_num_regions_change(self, value=None, **kwargs):
+        """Subscription callback: re-apply region kinds when num_regions changes."""
+        self._apply_region_kinds(int(value) if value is not None else None)
+
+    def _apply_region_kinds(self, num=None):
+        """Set each region's kind to ``normal`` (i ≤ num) or ``omitted``."""
+        if num is None:
+            num = int(self.num_regions.get())
+        for i in range(1, self.NUM_REGIONS_MAX + 1):
+            getattr(self, f"region{i}").kind = (
+                "normal" if i <= num else "omitted"
+            )
+
+
 class PreEdgeRegion(Device):
     """
     Device holding start energy, step, and time-factor for a single pre-edge
@@ -48,7 +82,7 @@ class PreEdgeRegion(Device):
     TimeFactor = Component(Signal, value=1)
 
 
-class PreEdgeDevice(Device):
+class PreEdgeDevice(_RegionedDevice):
     """Device grouping up to five pre-edge scan regions and their count."""
 
     num_regions = Component(Signal, value=1)
@@ -69,7 +103,7 @@ class PostEdgeRegion(Device):
     TimeFactor = Component(Signal, value=1)
 
 
-class PostEdgeDevice(Device):
+class PostEdgeDevice(_RegionedDevice):
     """
     Device grouping up to five post-edge k-space scan regions and their count.
     """

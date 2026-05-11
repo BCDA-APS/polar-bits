@@ -11,8 +11,15 @@ class StatusAPS(Device):
     """Device exposing APS ring current and operational status signals."""
 
     current = Component(EpicsSignalRO, "S-DCCT:CurrentM")
-    machine_status = Component(EpicsSignalRO, "S:DesiredMode", string=True)
-    operating_mode = Component(EpicsSignalRO, "S:ActualMode", string=True)
+    machine_status = Component(
+        EpicsSignalRO, "S:DesiredMode", string=True, kind="config"
+    )
+    operating_mode = Component(
+        EpicsSignalRO, "S:ActualMode", string=True, kind="config"
+    )
     shutter_status = Component(
-        EpicsSignalRO, "RF-ACIS:FePermit:Sect1To35IdM", string=True
+        EpicsSignalRO,
+        "RF-ACIS:FePermit:Sect1To35IdM",
+        string=True,
+        kind="config",
     )

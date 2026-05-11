@@ -122,12 +122,15 @@ class PowerSupply(Device):
 
     field = Component(FieldPositioner, "")
 
-    active_coil = Component(EpicsSignal, "SetActiveCoil", string=True)
+    active_coil = Component(
+        EpicsSignal, "SetActiveCoil", string=True, kind="config"
+    )
 
     safety_message = FormattedComponent(
         EpicsSignalRO,
         "4idhSoft:911TMagnet:safety_msg.SVAL",
         string=True,
+        kind="config",
     )
 
     status = Component(EpicsSignalRO, "Status", string=True, kind="config")
@@ -305,8 +308,8 @@ class Magnet911(Device):
 
     ps = Component(PowerSupply, "911TMagnet:PSU:", labels=["magnet"])
 
-    monitors = DynamicDeviceComponent(_make_monitors(num=6))
+    monitors = DynamicDeviceComponent(_make_monitors(num=6), kind="config")
 
     temps = Component(VTIDevice, "911TMagnet:VTI:")
 
-    needle_valve = Component(NVDevice, "911TMagnet:NV:")
+    needle_valve = Component(NVDevice, "911TMagnet:NV:", kind="config")

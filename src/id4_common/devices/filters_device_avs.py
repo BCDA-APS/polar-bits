@@ -57,7 +57,7 @@ class APSFilter(Device):
     mono_energy = Component(EpicsSignalRO, "EnergyBeamline", kind="config")
     local_energy = Component(EpicsSignal, "EnergyLocal", kind="config")
 
-    energy = Component(EpicsSignalRO, "energy_RBV")
+    energy = Component(EpicsSignalRO, "energy_RBV", kind="config")
 
     status = Component(EpicsSignalRO, "filterBusy", string=True)
 
@@ -68,8 +68,12 @@ class APSFilter(Device):
 
     sorted_index = Component(EpicsSignalWithRBV, "sortedIndex")
 
-    attenuation_2e_harmonic = Component(EpicsSignalRO, "attenuation_2E_actual")
-    attenuation_3e_harmonic = Component(EpicsSignalRO, "attenuation_3E_actual")
+    attenuation_2e_harmonic = Component(
+        EpicsSignalRO, "attenuation_2E_actual", kind="config"
+    )
+    attenuation_3e_harmonic = Component(
+        EpicsSignalRO, "attenuation_3E_actual", kind="config"
+    )
 
     # Configuration
     inter_filter_delay = Component(
