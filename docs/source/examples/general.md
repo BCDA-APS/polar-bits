@@ -76,7 +76,7 @@ scan is `scan_id + 1`. So:
 
 | Value | Effect |
 |-------|--------|
-| `-1` (default) | Leave `RE.md["scan_id"]` untouched. Used by `experiment_resume()` and `experiment_load_from_bluesky()`. |
+| `-1` (default) | Leave `RE.md["scan_id"]` untouched. Used by `experiment_resume()` and `experiment_load_from_scan()`. |
 | `0` | Fresh start: next scan will be `1`. |
 | `47` | Continue numbering: next scan will be `48`. |
 | `None` | Interactive prompt ("Reset last scan_id to 0? [no]"). |
@@ -108,12 +108,15 @@ setup, so this almost always succeeds), then falls back to the
 snapshots exist and point at *different* experiments, you'll be asked
 which one to use.
 
-**`experiment_load_from_bluesky()`** — re-derive the metadata from a
-specific Bluesky run document. Restores `RE.md["scan_id"]` so numbering
-continues from the loaded run.
+**`experiment_load_from_scan(scan_id=-1)`** — re-derive the metadata
+from a specific Bluesky run document. Restores `RE.md["scan_id"]` so
+numbering continues from the loaded run. Defaults to `cat[-1]` (last
+scan); pass any catalog index (negative counts from the end) to load
+from a different run.
 
 ```python
-experiment_load_from_bluesky()    # uses cat[-1]
+experiment_load_from_scan()       # last scan
+experiment_load_from_scan(1234)   # specific scan id
 ```
 
 ### Changing sample mid-experiment

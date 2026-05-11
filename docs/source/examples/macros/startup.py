@@ -20,12 +20,12 @@ marker so a future restart still picks it up.
 from matplotlib import pyplot as plt
 
 from id4_common.macros.macros_api import *  # noqa: F401, F403
-from id4_common.utils.experiment_utils import experiment_load_from_bluesky
+from id4_common.utils.experiment_utils import experiment_load_from_scan
 from id4_common.utils.session_state import restore_session_state
 
 plt.ion()  # interactive plots
 
-experiment_load_from_bluesky()  # restores experiment metadata from cat[-1]
+experiment_load_from_scan()  # restores experiment metadata from cat[-1]
 
 status = restore_session_state()
 print("\nSession-state restore:")
