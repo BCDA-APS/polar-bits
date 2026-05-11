@@ -177,8 +177,11 @@ def temperature_setup(label=None, *, add_to_baseline=True):
     main.ts = new_ts
     main.TEMPERATURE_CONTROLLER = label
 
-    print(
-        f"Active temperature controller: {label}  "
-        f"(tc={device_name}.{setpoint_path}, "
-        f"ts={device_name}.{readback_path})"
+    logger.info(
+        "Active temperature controller: %s  (tc=%s.%s, ts=%s.%s)",
+        label,
+        device_name,
+        setpoint_path,
+        device_name,
+        readback_path,
     )
