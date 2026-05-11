@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -538,9 +538,10 @@
   <section id="scan-plans">
 <h1>Scan Plans<a class="headerlink" href="#scan-plans" title="Link to this heading">#</a></h1>
 <p>All scan plans are available in the session namespace after
-<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">id4_common.startup</span> <span class="pre">import</span> <span class="pre">*</span></code>. They wrap or extend standard
+<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">id4_&lt;beamline&gt;.startup</span> <span class="pre">import</span> <span class="pre">*</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">id4_g.startup</span> <span class="pre">import</span> <span class="pre">*</span></code>). They wrap or extend standard
 <a class="reference external" href="https://blueskyproject.io/bluesky/">Bluesky</a> plans with POLAR-specific
-defaults (counters, monitor selection, DM integration).</p>
+defaults (counters, monitor selection, DM integration). Inside macro
+files the recommended import line is <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">id4_common.macros.macros_api</span> <span class="pre">import</span> <span class="pre">*</span></code> — see <a class="reference internal" href="examples/writing_macros.html"><span class="std std-doc">Writing Macros</span></a>.</p>
 <hr class="docutils" />
 <section id="common-scan-flags">
 <h2>Common Scan Flags<a class="headerlink" href="#common-scan-flags" title="Link to this heading">#</a></h2>
@@ -671,26 +672,30 @@ rate.</p>
 <p><code class="docutils literal notranslate"><span class="pre">qxscan</span></code> is an XAFS-style energy scan covering pre-edge, edge, and post-edge
 regions. The post-edge step size is defined in k-space (Å⁻¹) and converted to
 energy internally, so the energy step increases with energy above the edge.</p>
-<p>All energies in <code class="docutils literal notranslate"><span class="pre">qxscan_params</span></code> are <strong>relative to the absorption edge</strong>.</p>
-<section id="step-1-configure-qxscan-params">
-<h3>Step 1 — Configure <code class="docutils literal notranslate"><span class="pre">qxscan_params</span></code><a class="headerlink" href="#step-1-configure-qxscan-params" title="Link to this heading">#</a></h3>
+<p>All energies in <code class="docutils literal notranslate"><span class="pre">qxscan_setup</span></code> are <strong>relative to the absorption edge</strong>.</p>
+<section id="step-1-configure-qxscan-setup">
+<h3>Step 1 — Configure <code class="docutils literal notranslate"><span class="pre">qxscan_setup</span></code><a class="headerlink" href="#step-1-configure-qxscan-setup" title="Link to this heading">#</a></h3>
 <p>Call the device to enter the interactive setup wizard:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qxscan_params</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qxscan_setup</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This prompts for pre-edge regions (energy start, step, time factor), the edge
 region (energy start/end, step, time factor), and post-edge regions (k end, k
 step, time factor). It then computes and stores the full energy list.</p>
 <p>Parameters can also be saved and reloaded:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qxscan_params</span><span class="o">.</span><span class="n">save_params_json</span><span class="p">(</span><span class="s2">&quot;my_scan.json&quot;</span><span class="p">)</span>
-<span class="n">qxscan_params</span><span class="o">.</span><span class="n">load_params_json</span><span class="p">(</span><span class="s2">&quot;my_scan.json&quot;</span><span class="p">)</span>
-<span class="n">qxscan_params</span><span class="o">.</span><span class="n">load_from_scan</span><span class="p">(</span><span class="n">scan_id</span><span class="p">)</span>   <span class="c1"># restore from a previous run</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qxscan_setup</span><span class="o">.</span><span class="n">save_params_json</span><span class="p">(</span><span class="s2">&quot;my_scan.json&quot;</span><span class="p">)</span>
+<span class="n">qxscan_setup</span><span class="o">.</span><span class="n">load_params_json</span><span class="p">(</span><span class="s2">&quot;my_scan.json&quot;</span><span class="p">)</span>
+<span class="n">qxscan_setup</span><span class="o">.</span><span class="n">load_from_scan</span><span class="p">(</span><span class="n">scan_id</span><span class="p">)</span>   <span class="c1"># restore from a previous run</span>
 </pre></div>
 </div>
 <p>Print the current setup:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">qxscan_params</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">qxscan_setup</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">qxscan_setup()</span></code> and <code class="docutils literal notranslate"><span class="pre">load_params_json()</span></code> auto-snapshot into
+<code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> so a bluesky restart can re-apply them via
+<code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> (see <a class="reference internal" href="examples/writing_macros.html#recoverable-session-state"><span class="std std-ref">Recoverable session
+state</span></a>).</p>
 </section>
 <section id="step-2-run-the-scan">
 <h3>Step 2 — Run the scan<a class="headerlink" href="#step-2-run-the-scan" title="Link to this heading">#</a></h3>
@@ -710,19 +715,99 @@ step, time factor). It then computes and stores the full energy list.</p>
 </section>
 </section>
 <hr class="docutils" />
-<section id="aps-data-management-plans">
-<h2>APS Data Management Plans<a class="headerlink" href="#aps-data-management-plans" title="Link to this heading">#</a></h2>
-<p>Plans in <code class="docutils literal notranslate"><span class="pre">id4_common.plans.dm_plans</span></code> submit workflow jobs to the APS DM
-system after data collection:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Submit a workflow to DM after a scan completes</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">dm_workflow_plan</span><span class="p">(</span>
-    <span class="n">workflow_name</span><span class="o">=</span><span class="s2">&quot;4id-xmcd&quot;</span><span class="p">,</span>
-    <span class="n">scan_plan</span><span class="o">=</span><span class="n">ascan</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<section id="reciprocal-space-scans">
+<h2>Reciprocal-Space Scans<a class="headerlink" href="#reciprocal-space-scans" title="Link to this heading">#</a></h2>
+<p>When a diffractometer is loaded (<code class="docutils literal notranslate"><span class="pre">huber_euler</span></code> / <code class="docutils literal notranslate"><span class="pre">huber_hp</span></code>), four
+plans in <code class="docutils literal notranslate"><span class="pre">id4_common.plans.hkl_scans</span></code> scan along reciprocal-space
+directions while keeping the rest of the HKL coordinates fixed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">hscan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">,</span> <span class="n">count_time</span><span class="p">))</span>   <span class="c1"># vary H</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">kscan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">,</span> <span class="n">count_time</span><span class="p">))</span>   <span class="c1"># vary K</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">lscan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">,</span> <span class="n">count_time</span><span class="p">))</span>   <span class="c1"># vary L</span>
+</pre></div>
+</div>
+<p>A general HKL scan moves between two arbitrary points in HKL space:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">hklscan</span><span class="p">(</span>
+    <span class="n">h_start</span><span class="p">,</span> <span class="n">h_stop</span><span class="p">,</span>
+    <span class="n">k_start</span><span class="p">,</span> <span class="n">k_stop</span><span class="p">,</span>
+    <span class="n">l_start</span><span class="p">,</span> <span class="n">l_stop</span><span class="p">,</span>
+    <span class="n">number_of_points</span><span class="p">,</span> <span class="n">count_time</span><span class="p">,</span>
 <span class="p">))</span>
 </pre></div>
 </div>
-<p>See the <a class="reference internal" href="api/id4_common/plans/index.html"><span class="std std-doc">API reference</span></a> for full parameter
-documentation of <code class="docutils literal notranslate"><span class="pre">dm_plans</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">psiscan</span></code> rotates around the Bragg vector at fixed (H, K, L):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">psiscan</span><span class="p">(</span><span class="n">psi_start</span><span class="p">,</span> <span class="n">psi_stop</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">,</span> <span class="n">count_time</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>All five accept <code class="docutils literal notranslate"><span class="pre">dichro=True</span></code> / <code class="docutils literal notranslate"><span class="pre">lockin=True</span></code> for helicity switching.</p>
+</section>
+<hr class="docutils" />
+<section id="peak-finding-plans">
+<h2>Peak-Finding Plans<a class="headerlink" href="#peak-finding-plans" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">id4_common.plans.peak_position</span></code> provides plans that read the most
+recent scan from the catalog, compute a peak statistic, and move the
+positioner there. Backed by <code class="docutils literal notranslate"><span class="pre">apstools.utils.xy_statistics</span></code> +
+<code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code> / <code class="docutils literal notranslate"><span class="pre">scipy.ndimage</span></code>. They work for both 1-D scans and
+2-D <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> / <code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code> (with <code class="docutils literal notranslate"><span class="pre">np.unique</span></code>-free axis
+derivation that handles encoder noise).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Plan</p></th>
+<th class="head"><p>Moves positioner to …</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cen</span></code></p></td>
+<td><p>FWHM midpoint of the active detector</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">com</span></code></p></td>
+<td><p>center-of-mass (centroid)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">maxi</span></code></p></td>
+<td><p>x-position of maximum y</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mini</span></code></p></td>
+<td><p>x-position of minimum y</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">peak(feature=...)</span></code></p></td>
+<td><p>named feature from <code class="docutils literal notranslate"><span class="pre">xy_statistics</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;centroid&quot;</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">())</span>                          <span class="c1"># use last scan, default detector + positioner</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">positioner</span><span class="o">=</span><span class="n">tabx</span><span class="p">))</span>           <span class="c1"># only move tabx (project a 2-D scan onto its axis)</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">maxi</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;hI2-apd&quot;</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">com</span><span class="p">(</span><span class="n">positioner</span><span class="o">=</span><span class="p">[</span><span class="n">tabx</span><span class="p">,</span> <span class="n">taby</span><span class="p">]))</span>   <span class="c1"># move both motors of a 2-D scan</span>
+</pre></div>
+</div>
+<p>Diagnostic helpers (no motion, just print the stats):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peak_pos</span><span class="p">()</span>                         <span class="c1"># prints + returns nested stats dict</span>
+<span class="n">pmax</span><span class="p">()</span>                             <span class="c1"># like maxi but prints only</span>
+<span class="n">pmin</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">confirm=False</span></code> keyword skips the &gt;5-min interactive confirmation
+prompt — useful inside automated macros.</p>
+<p>Legacy versions (apstools <code class="docutils literal notranslate"><span class="pre">lineup2</span></code>-backed) remain available as <code class="docutils literal notranslate"><span class="pre">cen2</span></code>,
+<code class="docutils literal notranslate"><span class="pre">maxi2</span></code>, <code class="docutils literal notranslate"><span class="pre">mini2</span></code> from <code class="docutils literal notranslate"><span class="pre">id4_common.plans.peak_position_legacy</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="aps-data-management-plans">
+<h2>APS Data Management Plans<a class="headerlink" href="#aps-data-management-plans" title="Link to this heading">#</a></h2>
+<p>Plans in <code class="docutils literal notranslate"><span class="pre">id4_common.plans.dm_plans</span></code> submit workflow jobs to the APS
+DM system:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Kick off a DM workflow against the run that just completed</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">dm_kickoff_workflow</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">argsDict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;experimentName&quot;</span><span class="p">:</span> <span class="s2">&quot;Frontini_26-1&quot;</span><span class="p">}))</span>
+
+<span class="c1"># Submit a workflow job directly (no run required)</span>
+<span class="n">dm_submit_workflow_job</span><span class="p">(</span><span class="s2">&quot;4id-xmcd&quot;</span><span class="p">,</span> <span class="n">argsDict</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">})</span>
+
+<span class="c1"># Inspect the queue</span>
+<span class="n">dm_list_processing_jobs</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="api/id4_common/plans/index.html"><span class="std std-doc">API reference</span></a> for full
+parameter documentation of <code class="docutils literal notranslate"><span class="pre">dm_plans</span></code>.</p>
 </section>
 <hr class="docutils" />
 <section id="runengine">
@@ -806,10 +891,12 @@ documentation of <code class="docutils literal notranslate"><span class="pre">dm
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-count">Simple Count</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#xafs-energy-scan-qxscan">XAFS Energy Scan (<code class="docutils literal notranslate"><span class="pre">qxscan</span></code>)</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-configure-qxscan-params">Step 1 — Configure <code class="docutils literal notranslate"><span class="pre">qxscan_params</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-configure-qxscan-setup">Step 1 — Configure <code class="docutils literal notranslate"><span class="pre">qxscan_setup</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-run-the-scan">Step 2 — Run the scan</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reciprocal-space-scans">Reciprocal-Space Scans</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#peak-finding-plans">Peak-Finding Plans</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aps-data-management-plans">APS Data Management Plans</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runengine">RunEngine</a></li>
 </ul>

@@ -78,7 +78,7 @@ plt.ion()    # enable interactive plots
 # experiment_resume() auto-discovers the snapshot in the current working
 # directory or via cat[-1] (whichever it finds first). If neither is
 # available — first run of an experiment — fall back to the full
-# experiment_setup() prompt, or to experiment_load_from_bluesky() to
+# experiment_setup() prompt, or to experiment_load_from_scan() to
 # re-derive from a Bluesky run document.
 experiment_resume()
 
@@ -221,7 +221,7 @@ and follow this pattern:
 | `field_sequence.py` | overnight field sweep that re-aligns after every ramp |
 | `qxscan_chain.py` | iterate `qxscan` over a list of edges |
 | `hkl_map.py` | `hklscan` + `cen` to refine a Bragg peak |
-| `startup.py` | recoverable session start template — `experiment_load_from_bluesky()` fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner `id4_common.macros.startup_common`. |
+| `startup.py` | recoverable session start template — `experiment_load_from_scan()` fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner `id4_common.macros.startup_common`. |
 
 Copy any of them into your experiment directory and edit to taste.
 
@@ -247,7 +247,7 @@ the per-knob summary itself, use the prebuilt
 `id4_common.macros.startup_common` module shown in the [Quick path
 section](#quick-path-the-prebuilt-restart-helper).
 `docs/source/examples/macros/startup.py` is a longer template with the
-full `experiment_load_from_bluesky()` fallback and additional
+full `experiment_load_from_scan()` fallback and additional
 hand-managed steps (e.g. `load_vortex`).
 
 `status` reports `applied` / `skipped: <reason>` / `failed: <Exception>`

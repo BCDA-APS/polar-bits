@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -595,7 +595,7 @@ the session namespace after startup.</p>
 <hr class="docutils" />
 <section id="loading-devices">
 <h2>Loading Devices<a class="headerlink" href="#loading-devices" title="Link to this heading">#</a></h2>
-<p>In order to connect or reload a device you cna use the following utility functions:</p>
+<p>In order to connect or reload a device you can use the following utility functions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># List all available devices</span>
 <span class="n">find_loadable_devices</span><span class="p">()</span>
 
@@ -613,6 +613,32 @@ the session namespace after startup.</p>
 <span class="n">reload_all_devices</span><span class="p">(</span><span class="n">stations</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="s2">&quot;4idh&quot;</span><span class="p">])</span>  <span class="c1"># for a specific beamline</span>
 </pre></div>
 </div>
+<p>For the CRL specifically there are two convenience shortcuts that
+sit on top of <code class="docutils literal notranslate"><span class="pre">load_device(&quot;crl&quot;)</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crl_setup</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>          <span class="c1"># switch the CRL sample-position offset to 4IDH</span>
+                        <span class="c1"># (or &quot;g&quot;; pass nothing for an interactive prompt)</span>
+<span class="n">crl_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>            <span class="c1"># set the focal size to 50 µm</span>
+                        <span class="c1"># (&lt; 5 µm triggers crl.minimize_button instead)</span>
+<span class="n">mov</span> <span class="n">crl</span><span class="o">.</span><span class="n">beamsize</span> <span class="mi">10</span>     <span class="c1"># write 10 µm directly to the focalSize PV</span>
+                        <span class="c1"># (no setpoint &lt;-&gt; readback convergence wait)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="restarting-a-session">
+<h2>Restarting a Session<a class="headerlink" href="#restarting-a-session" title="Link to this heading">#</a></h2>
+<p>For a session restart inside an experiment that has already been set
+up once, the package ships a one-line helper that runs
+<code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> then <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> and prints a
+per-knob status:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">id4_common.macros.startup_common</span>  <span class="c1"># noqa: F401</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">restore_session_state</span></code> re-applies every auto-saved setup knob (PR
+setup, energy tracking, undulator offsets, counters, qxscan
+parameters) from <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code>. See
+<a class="reference internal" href="examples/writing_macros.html"><span class="std std-doc">Writing Macros</span></a> for the full restart
+template and details on the per-experiment knobs that auto-save.</p>
 </section>
 </section>
 
@@ -672,6 +698,7 @@ the session namespace after startup.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-polar-bits">Starting polar-bits</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-analysis">Data Analysis</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-devices">Loading Devices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#restarting-a-session">Restarting a Session</a></li>
 </ul>
   </nav></div>
 

@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -663,24 +663,37 @@ can resume manually:</p>
 <hr class="docutils" />
 <section id="how-do-i-find-the-peak-center-after-a-scan">
 <h2>How do I find the peak center after a scan?<a class="headerlink" href="#how-do-i-find-the-peak-center-after-a-scan" title="Link to this heading">#</a></h2>
-<p>After any scan the <code class="docutils literal notranslate"><span class="pre">peaks</span></code> object is updated with statistics from the last
-scan:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peaks</span><span class="o">.</span><span class="n">cen</span>    <span class="c1"># center-of-mass position of the peak</span>
-<span class="n">peaks</span><span class="o">.</span><span class="n">com</span>    <span class="c1"># alias for center-of-mass</span>
-<span class="n">peaks</span><span class="o">.</span><span class="n">max</span>    <span class="c1"># position of the maximum value</span>
-<span class="n">peaks</span><span class="o">.</span><span class="n">min</span>    <span class="c1"># position of the minimum value</span>
+<p>The recommended path is the peak-finding plans in
+<code class="docutils literal notranslate"><span class="pre">id4_common.plans.peak_position</span></code> — they read the last scan from the
+catalog, compute the requested statistic, and <strong>move the positioner
+there in one step</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">())</span>     <span class="c1"># move to the FWHM midpoint of the last scan</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">com</span><span class="p">())</span>     <span class="c1"># move to the center-of-mass (centroid)</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">maxi</span><span class="p">())</span>    <span class="c1"># move to x at maximum y</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">mini</span><span class="p">())</span>    <span class="c1"># move to x at minimum y</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">peaks</span></code> reports results per detector signal. If more than one detector was
-active, index by signal name:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peaks</span><span class="o">.</span><span class="n">cen</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>    <span class="c1"># center-of-mass for channel 9</span>
-<span class="n">peaks</span><span class="o">.</span><span class="n">max</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>    <span class="c1"># position of maximum for channel 9</span>
+<p>These work for both 1-D scans and 2-D <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> / <code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code>.
+Pass <code class="docutils literal notranslate"><span class="pre">confirm=False</span></code> to skip the &gt;5-min interactive confirmation, or
+<code class="docutils literal notranslate"><span class="pre">positioner=</span></code>/<code class="docutils literal notranslate"><span class="pre">detector=</span></code> to override the defaults. See
+<a class="reference internal" href="plans.html#peak-finding-plans"><span class="std std-ref">Peak-Finding Plans</span></a> for the full API.</p>
+<p>If you only want the values without moving, the BEC <code class="docutils literal notranslate"><span class="pre">peaks</span></code> object is
+updated after every scan:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peaks</span><span class="o">.</span><span class="n">com</span>    <span class="c1"># x at center-of-mass (centroid)</span>
+<span class="n">peaks</span><span class="o">.</span><span class="n">cen</span>    <span class="c1"># x at FWHM midpoint  ← NOT the same as peaks.com</span>
+<span class="n">peaks</span><span class="o">.</span><span class="n">max</span>    <span class="c1"># x at maximum y</span>
+<span class="n">peaks</span><span class="o">.</span><span class="n">min</span>    <span class="c1"># x at minimum y</span>
+<span class="n">peaks</span><span class="o">.</span><span class="n">fwhm</span>   <span class="c1"># full-width at half-max</span>
 </pre></div>
 </div>
-<p>Move a motor to the peak center:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">mov</span> <span class="n">tabx</span> <span class="n">peaks</span><span class="o">.</span><span class="n">cen</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>
+<p><code class="docutils literal notranslate"><span class="pre">peaks</span></code> reports results per detector signal — index by signal name:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peaks</span><span class="o">.</span><span class="n">com</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>    <span class="c1"># centroid for channel 9</span>
+<span class="n">peaks</span><span class="o">.</span><span class="n">cen</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>    <span class="c1"># FWHM midpoint for channel 9</span>
 </pre></div>
 </div>
+<p>Or use the diagnostic helpers (<code class="docutils literal notranslate"><span class="pre">peak_pos()</span></code>, <code class="docutils literal notranslate"><span class="pre">pmax()</span></code>, <code class="docutils literal notranslate"><span class="pre">pmin()</span></code>) which
+print + return the same statistics for the last scan without moving
+anything.</p>
 </section>
 <hr class="docutils" />
 <section id="how-do-i-get-help-on-a-scan-plan-or-function">
@@ -710,6 +723,72 @@ to see its full source code:</p>
 <span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;kb&quot;</span><span class="p">)</span>     <span class="c1"># substring match on name</span>
 </pre></div>
 </div>
+</section>
+<hr class="docutils" />
+<section id="how-do-i-switch-the-active-temperature-controller">
+<h2>How do I switch the active temperature controller?<a class="headerlink" href="#how-do-i-switch-the-active-temperature-controller" title="Link to this heading">#</a></h2>
+<p>Call <code class="docutils literal notranslate"><span class="pre">temperature_setup(label)</span></code> once. It resolves the requested
+controller from <code class="docutils literal notranslate"><span class="pre">id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS</span></code>
+and injects three names into the session: <code class="docutils literal notranslate"><span class="pre">tc</span></code> (setpoint, movable),
+<code class="docutils literal notranslate"><span class="pre">ts</span></code> (sample readback), and <code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLER</span></code> (the active
+label string). <code class="docutils literal notranslate"><span class="pre">ts</span></code> is added to the baseline so the sample
+temperature lands in every scan automatically.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>        <span class="c1"># 4IDG LakeShore 336 (default loop)</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g-340&quot;</span><span class="p">)</span>    <span class="c1"># 4IDG LakeShore 340</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;h-9T&quot;</span><span class="p">)</span>     <span class="c1"># 4IDH 9 T magnet VTI</span>
+
+<span class="n">mv</span> <span class="n">tc</span> <span class="mi">295</span>                     <span class="c1"># set the setpoint to 295 K</span>
+<span class="n">te</span><span class="p">(</span><span class="mi">295</span><span class="p">)</span>                       <span class="c1"># equivalent shortcut</span>
+
+<span class="n">ts</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>                      <span class="c1"># current sample-temperature readback</span>
+</pre></div>
+</div>
+<p>To add a new controller, edit <code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLERS</span></code> (a single
+<code class="docutils literal notranslate"><span class="pre">label</span> <span class="pre">→</span> <span class="pre">(device_name,</span> <span class="pre">setpoint_attr_path,</span> <span class="pre">readback_attr_path)</span></code>
+tuple). No class changes, no devices.yml edits.</p>
+</section>
+<hr class="docutils" />
+<section id="how-do-i-restore-my-session-after-a-bluesky-restart">
+<h2>How do I restore my session after a bluesky restart?<a class="headerlink" href="#how-do-i-restore-my-session-after-a-bluesky-restart" title="Link to this heading">#</a></h2>
+<p>Each setup helper (<code class="docutils literal notranslate"><span class="pre">pr_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">energy.tracking_setup</span></code>,
+<code class="docutils literal notranslate"><span class="pre">counters.plotselect</span></code>, <code class="docutils literal notranslate"><span class="pre">undulator_setup</span></code>,
+<code class="docutils literal notranslate"><span class="pre">qxscan_setup.load_params_json</span></code>) auto-saves its current values into
+<code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> — apsbits’ <code class="docutils literal notranslate"><span class="pre">PersistentDict</span></code> survives a
+restart. After restarting bluesky, call <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> to
+re-apply every saved knob in one go:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">status</span> <span class="o">=</span> <span class="n">restore_session_state</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">knob</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">status</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">knob</span><span class="si">:</span><span class="s2">18</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">status</span></code> reports <code class="docutils literal notranslate"><span class="pre">applied</span></code> / <code class="docutils literal notranslate"><span class="pre">skipped:</span> <span class="pre">&lt;reason&gt;</span></code> / <code class="docutils literal notranslate"><span class="pre">failed:</span> <span class="pre">&lt;Exception&gt;</span></code>
+per knob group — restore never raises, a missing device or single
+failed put is logged and the rest of the restore continues.</p>
+<p>A one-line wrapper that calls <code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> first and prints
+the status summary itself ships with the package:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">id4_common.macros.startup_common</span>  <span class="c1"># noqa: F401</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="examples/writing_macros.html#recoverable-session-state"><span class="std std-ref">Writing Macros</span></a>
+for the full restart template.</p>
+</section>
+<hr class="docutils" />
+<section id="how-do-i-set-the-crl-focal-size">
+<h2>How do I set the CRL focal size?<a class="headerlink" href="#how-do-i-set-the-crl-focal-size" title="Link to this heading">#</a></h2>
+<p>The recommended path is the <code class="docutils literal notranslate"><span class="pre">crl_size</span></code> shortcut, which handles the
+<code class="docutils literal notranslate"><span class="pre">&lt;</span> <span class="pre">5</span> <span class="pre">µm</span></code> “minimize” path and the µm → m conversion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crl_setup</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>          <span class="c1"># switch the offset to the active hutch (g or h)</span>
+<span class="n">crl_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>            <span class="c1"># 50 µm focal size</span>
+<span class="n">crl_size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>             <span class="c1"># &lt; 5 µm triggers crl.minimize_button</span>
+</pre></div>
+</div>
+<p>For direct <code class="docutils literal notranslate"><span class="pre">mov</span></code>-style control, <code class="docutils literal notranslate"><span class="pre">crl.beamsize</span></code> is now a microns
+handle (PR #61) — <code class="docutils literal notranslate"><span class="pre">mov</span> <span class="pre">crl.beamsize</span> <span class="pre">10</span></code> writes 10 µm to the
+underlying <code class="docutils literal notranslate"><span class="pre">focalSize</span></code> PV and returns immediately without waiting
+for <code class="docutils literal notranslate"><span class="pre">fSize_actual</span></code> to converge (the two PVs do not always agree, and
+the previous <code class="docutils literal notranslate"><span class="pre">EpicsSignal</span></code> with <code class="docutils literal notranslate"><span class="pre">write_pv</span></code> would hang). The raw
+meter-valued PVs are still reachable as <code class="docutils literal notranslate"><span class="pre">crl.beamsize.setpoint</span></code> /
+<code class="docutils literal notranslate"><span class="pre">crl.beamsize.readback</span></code>.</p>
 </section>
 </section>
 
@@ -770,6 +849,9 @@ to see its full source code:</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-did-my-scan-pause-automatically">Why did my scan pause automatically?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-find-the-peak-center-after-a-scan">How do I find the peak center after a scan?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-get-help-on-a-scan-plan-or-function">How do I get help on a scan plan or function?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-switch-the-active-temperature-controller">How do I switch the active temperature controller?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-restore-my-session-after-a-bluesky-restart">How do I restore my session after a bluesky restart?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-set-the-crl-focal-size">How do I set the CRL focal size?</a></li>
 </ul>
   </nav></div>
 

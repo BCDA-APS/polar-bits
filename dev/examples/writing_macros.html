@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Command Reference" href="4idg_diffractometer.html" />
+    <link rel="next" title="4IDG: Diffractometer Usage" href="4idg_diffractometer.html" />
     <link rel="prev" title="General Examples" href="general.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -603,7 +603,7 @@ overrides, extra devices — write your own startup file:</p>
 <span class="c1"># experiment_resume() auto-discovers the snapshot in the current working</span>
 <span class="c1"># directory or via cat[-1] (whichever it finds first). If neither is</span>
 <span class="c1"># available — first run of an experiment — fall back to the full</span>
-<span class="c1"># experiment_setup() prompt, or to experiment_load_from_bluesky() to</span>
+<span class="c1"># experiment_setup() prompt, or to experiment_load_from_scan() to</span>
 <span class="c1"># re-derive from a Bluesky run document.</span>
 <span class="n">experiment_resume</span><span class="p">()</span>
 
@@ -769,7 +769,7 @@ and follow this pattern:</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">hklscan</span></code> + <code class="docutils literal notranslate"><span class="pre">cen</span></code> to refine a Bragg peak</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">startup.py</span></code></p></td>
-<td><p>recoverable session start template — <code class="docutils literal notranslate"><span class="pre">experiment_load_from_bluesky()</span></code> fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner <code class="docutils literal notranslate"><span class="pre">id4_common.macros.startup_common</span></code>.</p></td>
+<td><p>recoverable session start template — <code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan()</span></code> fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner <code class="docutils literal notranslate"><span class="pre">id4_common.macros.startup_common</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -795,7 +795,7 @@ the per-knob summary itself, use the prebuilt
 <code class="docutils literal notranslate"><span class="pre">id4_common.macros.startup_common</span></code> module shown in the <a class="reference internal" href="#quick-path-the-prebuilt-restart-helper"><span class="std std-ref">Quick path
 section</span></a>.
 <code class="docutils literal notranslate"><span class="pre">docs/source/examples/macros/startup.py</span></code> is a longer template with the
-full <code class="docutils literal notranslate"><span class="pre">experiment_load_from_bluesky()</span></code> fallback and additional
+full <code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan()</span></code> fallback and additional
 hand-managed steps (e.g. <code class="docutils literal notranslate"><span class="pre">load_vortex</span></code>).</p>
 <p><code class="docutils literal notranslate"><span class="pre">status</span></code> reports <code class="docutils literal notranslate"><span class="pre">applied</span></code> / <code class="docutils literal notranslate"><span class="pre">skipped:</span> <span class="pre">&lt;reason&gt;</span></code> / <code class="docutils literal notranslate"><span class="pre">failed:</span> <span class="pre">&lt;Exception&gt;</span></code>
 per knob group — restore never raises, a missing device or single
@@ -935,7 +935,7 @@ in any SPEC data viewer.</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Command Reference</p>
+        <p class="prev-next-title">4IDG: Diffractometer Usage</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

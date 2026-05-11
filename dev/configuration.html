@@ -166,7 +166,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -362,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -676,15 +676,25 @@ source of truth</strong> for all device definitions across all beamlines.</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;4idh&quot;</span></code></p></td>
 <td><p>4IDH only</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;baseline&quot;</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;raman&quot;</span></code></p></td>
+<td><p>Raman only</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;baseline&quot;</span></code></p></td>
 <td><p>Added to baseline supplemental data stream</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;detector&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;motor&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;slit&quot;</span></code></p></td>
-<td><p>Functional — used for <code class="docutils literal notranslate"><span class="pre">find_loadable_devices(label=...)</span></code></p></td>
+<tr class="row-even"><td><p>Functional (any string)</p></td>
+<td><p>Used for <code class="docutils literal notranslate"><span class="pre">find_loadable_devices(label=...)</span></code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>Functional labels currently in use across <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code> include
+<code class="docutils literal notranslate"><span class="pre">&quot;detector&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;motor&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;slit&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;phase</span> <span class="pre">retarder&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;track_energy&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;energy</span> <span class="pre">device&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;feedback&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;camera&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;flag&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;kb&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;high</span> <span class="pre">pressure&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;qxscan&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;temperature&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;preamp&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;shutter&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;xbpm&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;status&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;source&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;table&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;magnet&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;mirror&quot;</span></code>. Any string is allowed — these are the
+conventional ones already in use.</p>
 </section>
 <section id="adding-a-new-device">
 <h3>Adding a new device<a class="headerlink" href="#adding-a-new-device" title="Link to this heading">#</a></h3>

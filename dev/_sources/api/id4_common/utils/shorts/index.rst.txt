@@ -51,8 +51,8 @@ Module Contents
 
    :param focal_size: Target focal size in microns. If < 5 µm, the device's
                       ``minimize_button`` is triggered instead of writing a setpoint.
-                      Otherwise the value is converted to meters and written to
-                      ``crl.focal_size_setpoint``.
+                      Otherwise the value is written to ``crl.beamsize`` (which handles
+                      the microns -> meters conversion internally).
    :type focal_size: float
 
 
