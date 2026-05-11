@@ -146,6 +146,7 @@ class EnergySignal(Signal):
 
     def _tracking_prompts(self):
         _ = self.tracking
+        print("=== Enter 0 to disable tracking on all devices ===")
 
         current_selection = []
         for i, device in enumerate(self.trackable_devices):
@@ -156,7 +157,8 @@ class EnergySignal(Signal):
         while True:
             new_selection = (
                 input(
-                    f"\nEnter the index of the devices to track ({current_selection}): "
+                    f"\nEnter the index of the devices to track "
+                    f"(0 = none) ({current_selection}): "
                 )
                 or current_selection
             )
@@ -174,10 +176,15 @@ class EnergySignal(Signal):
                 continue
 
             if not all(
-                0 < i <= len(self.trackable_devices) for i in new_selection
+                0 <= i <= len(self.trackable_devices) for i in new_selection
             ):
                 logger.info("Invalid selection. Please choose valid indices.")
                 continue
+
+            # `0` means "disable tracking on all devices" — when present,
+            # ignore any other indices the user entered alongside it.
+            if 0 in new_selection:
+                new_selection = []
 
             break
 

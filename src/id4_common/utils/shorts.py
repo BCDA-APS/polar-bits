@@ -3,14 +3,10 @@
 from datetime import datetime
 
 from apsbits.core.instrument_init import oregistry
-from epics import caput
 from polartools.load_data import load_catalog
 
-from id4_common.plans.center_maximum import cen
-from id4_common.plans.center_maximum import maxi
-
-_CRL_OFFSET_PV = "4idPyCRL:CRL4ID:1:oePosOffset.DOL"
-_CRL_OFFSETS = {"diffractometer": 0.0, "magnet": 6.5}
+from id4_common.plans.peak_position import cen
+from id4_common.plans.peak_position import maxi
 
 
 def opt(method="cen"):
@@ -31,84 +27,114 @@ def opt(method="cen"):
 
     if time.seconds < 60:
         if method == "cen":
-            yield from cen(positioner)
+            yield from cen(positioner=positioner, confirm=False)
         elif method == "max":
-            yield from maxi(positioner)
+            yield from maxi(positioner=positioner, confirm=False)
 
     else:
         inp = input(f"Move {rmotor} to center (Y/[N])? ")
         if inp in ["Y", "y", "yes"]:
             if method == "cen":
-                yield from cen(positioner)
+                yield from cen(positioner=positioner, confirm=False)
             elif method == "max":
-                yield from maxi(positioner)
+                yield from maxi(positioner=positioner, confirm=False)
 
 
-def crl_setup():
+def crl_setup(hutch=None):
     """
-    Set the CRL sample-position offset for the active instrument.
+    Switch the CRL sample-position offset to the active hutch.
 
-    Prompts for the instrument (Diffractometer or Magnet) and writes
-    the corresponding offset to ``4idPyCRL:CRL4ID:samplePositionOffset_RBV``:
+    Delegates to :meth:`CRLClass.select_g` / ``select_h``, which
+    write to the IOC's ``ZOffsetToggle`` PV.  The per-hutch offset values
+    themselves live on the device as ``crl.offset_g`` / ``offset_h`` and
+    are not changed here.
 
-    - Diffractometer  → 0
-    - Magnet    → 6.5
+    Parameters
+    ----------
+    hutch : {'g', 'h'}, optional
+        Hutch to switch to.  Case-insensitive, accepts ``"G"`` / ``"H"``
+        and the longer aliases ``"diffractometer"`` (= G) /
+        ``"magnet"`` (= H) for backwards compatibility.  When ``None``
+        (default), prompt interactively.
     """
-    answer = (
-        input("Instrument (Diffractometer / Magnet) [Diffractometer]: ")
-        .strip()
-        .lower()
-        or "diffractometer"
-    )
-
-    if answer.startswith("d"):
-        offset = _CRL_OFFSETS["diffractometer"]
-        label = "Diffractometer"
-    elif answer.startswith("9") or "magnet" in answer or answer.startswith("m"):
-        offset = _CRL_OFFSETS["magnet"]
-        label = "Magnet"
+    if hutch is None:
+        hutch = input("Hutch (G / H) [G]: ").strip().lower() or "g"
     else:
-        print(
-            f"Unknown instrument '{answer}'. "
-            "Choose 'Diffractometer' or 'Magnet'."
-        )
+        hutch = str(hutch).strip().lower()
+
+    crl_dev = oregistry.find("crl")
+
+    if hutch in ("g", "diffractometer") or hutch.startswith("d"):
+        crl_dev.select_g()
+        label = "G (diffractometer)"
+    elif (
+        hutch in ("h", "magnet")
+        or hutch.startswith("m")
+        or hutch.startswith("9")
+    ):
+        crl_dev.select_h()
+        label = "H (magnet)"
+    else:
+        print(f"Unknown hutch '{hutch}'.  Choose 'G' or 'H'.")
         return
 
-    caput(_CRL_OFFSET_PV, str(offset))
-    print(f"{label}: {_CRL_OFFSET_PV} = {offset}")
+    print(f"CRL sample-position offset set for {label}.")
 
 
-def crl(focal_size):
+def crl_size(focal_size):
     """
-    Set the CRL focus size on the transfocator.
+    Set the CRL focal size.
+
+    Renamed from ``crl`` so the function does not shadow the ``crl``
+    device that ``load_device("crl")`` injects into the session
+    namespace.
 
     Parameters
     ----------
     focal_size : float
-        Target focal size in microns. If < 5 µm, the transfocator's
+        Target focal size in microns. If < 5 µm, the device's
         ``minimize_button`` is triggered instead of writing a setpoint.
-        Otherwise the value is converted to meters and written to
-        ``transfocator.focal_size_setpoint``.
+        Otherwise the value is written to ``crl.beamsize`` (which handles
+        the microns -> meters conversion internally).
     """
     focal_size = float(focal_size)
-    transfocator = oregistry.find("transfocator")
+    crl_dev = oregistry.find("crl")
     if focal_size < 5:
-        transfocator.minimize_button.put(1)
+        crl_dev.minimize_button.put(1)
     else:
-        transfocator.focal_size_setpoint.put(focal_size * 1e-6)
+        crl_dev.beamsize.set(focal_size)
 
 
 def te(temperature):
     """
-    Set the temperature setpoint on ``temp_336_4idg`` (loop 1).
+    Set the active temperature controller's setpoint.
 
-    Writes the setpoint and returns immediately; the controller continues
-    ramping toward the target on its own.
+    Thin shortcut over the ``tc`` signal installed by
+    :func:`id4_common.utils.temperature_setup.temperature_setup`.  Writes
+    the setpoint and returns immediately; the controller continues ramping
+    toward the target on its own.
 
     Parameters
     ----------
     temperature : float
         Target temperature setpoint.
+
+    Raises
+    ------
+    RuntimeError
+        ``temperature_setup()`` has not been run, so there is no active
+        controller to talk to.
     """
-    controller = oregistry.find("temp_336_4idg")
-    controller.loop1.setpoint.put(float(temperature))
+    from .temperature_setup import get_active_label
+    from .temperature_setup import get_active_tc
+
+    tc = get_active_tc()
+    if tc is None:
+        raise RuntimeError(
+            "No active temperature controller.  Run "
+            "`temperature_setup('<label>')` first (see "
+            "id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS "
+            "for the available labels)."
+        )
+    tc.put(float(temperature))
+    print(f"{get_active_label()}: setpoint -> {float(temperature)}")

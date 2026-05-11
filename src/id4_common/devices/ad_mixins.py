@@ -281,6 +281,7 @@ class VortexDetectorCam(CamMixin_V34, Xspress3DetectorCam):
     erase_on_start = Component(
         EpicsSignal, "EraseOnStart", string=True, kind="config"
     )
+    data_type = ADComponent(EpicsSignalWithRBV, "DataType")
 
     # Removed
     offset = None

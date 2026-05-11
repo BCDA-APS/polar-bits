@@ -13,7 +13,7 @@ from yaml import Loader as yloader
 from yaml import load as yload
 
 from ..utils.run_engine import cat
-from .local_scans import mv
+from .move_plans import mv
 
 dm_workflow = oregistry.find("dm_workflow")
 dm_experiment = oregistry.find("dm_experiment")

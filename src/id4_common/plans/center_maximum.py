@@ -1,5 +1,12 @@
 """
-Plans for moving a motor to the center, maximum, or minimum of the last scan.
+Legacy ``cen2`` / ``maxi2`` / ``mini2`` plans driven by
+`bluesky.callbacks.best_effort.BestEffortCallback().peaks`.
+
+Kept as a fallback path for runs where the BestEffortCallback was
+running live.  For everything else, prefer the new
+:mod:`id4_common.plans.peak_position` ``cen`` / ``com`` / ``maxi`` /
+``mini`` plans, which compute peak statistics from the catalog and
+support 2-D ``grid_scan`` runs (issue #59).
 """
 
 from datetime import datetime
@@ -11,15 +18,15 @@ from bluesky.plan_stubs import null
 
 from ..utils.run_engine import cat
 from ..utils.run_engine import peaks
-from .local_scans import mv
+from .move_plans import mv
 
 logger = getLogger(__name__)
 logger.info(__file__)
 
 __all__ = [
-    "cen",
-    "maxi",
-    "mini",
+    "cen2",
+    "maxi2",
+    "mini2",
 ]
 
 
@@ -98,12 +105,13 @@ def _move_to_pos(parameter, positioner=None, detector=None):
     yield from mv(positioner, new_pos)
 
 
-def cen(positioner=None, detector=None):
+def cen2(positioner=None, detector=None):
     """
-    Plan that moves motor to center of last scan.
+    Legacy: move motor to FWHM-midpoint of last scan via the BEC peaks.
 
-    Uses the position found by the
-    `bluesky.callbacks.best_effort.BestEffortCallback().peaks`.
+    Uses the position found by
+    `bluesky.callbacks.best_effort.BestEffortCallback().peaks`.  Prefer
+    :func:`id4_common.plans.peak_position.cen` for new code.
 
     Parameters
     ----------
@@ -117,12 +125,13 @@ def cen(positioner=None, detector=None):
     yield from _move_to_pos("cen", positioner=positioner, detector=detector)
 
 
-def maxi(positioner=None, detector=None):
+def maxi2(positioner=None, detector=None):
     """
-    Plan that moves motor to maximum of last scan.
+    Legacy: move motor to maximum of last scan via the BEC peaks.
 
-    Uses the position found by the
-    `bluesky.callbacks.best_effort.BestEffortCallback().peaks`.
+    Uses the position found by
+    `bluesky.callbacks.best_effort.BestEffortCallback().peaks`.  Prefer
+    :func:`id4_common.plans.peak_position.maxi` for new code.
 
     Parameters
     ----------
@@ -136,12 +145,13 @@ def maxi(positioner=None, detector=None):
     yield from _move_to_pos("max", positioner=positioner, detector=detector)
 
 
-def mini(positioner=None, detector=None):
+def mini2(positioner=None, detector=None):
     """
-    Plan that moves motor to minimum of last scan.
+    Legacy: move motor to minimum of last scan via the BEC peaks.
 
-    Uses the position found by the
-    `bluesky.callbacks.best_effort.BestEffortCallback().peaks`.
+    Uses the position found by
+    `bluesky.callbacks.best_effort.BestEffortCallback().peaks`.  Prefer
+    :func:`id4_common.plans.peak_position.mini` for new code.
 
     Parameters
     ----------

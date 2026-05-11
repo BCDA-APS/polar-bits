@@ -64,7 +64,8 @@ Configuration is YAML-driven. The main file is `src/id4_common/configs/iconfig.y
 - Enabled output formats (SPEC `.dat` files enabled by default, NeXus `.hdf` optional)
 - APS Data Management (DM) integration paths
 - Area detector defaults (Eiger 1M, Lambda, Vortex, LightField, Vimba)
-- EPICS timeouts and logging paths
+- EPICS timeouts
+- Bluesky session logging (`LOGGING.LOG_PATH` and friends — see "Logging" below)
 
 Device definitions live in `src/id4_common/configs/devices.yml` — the single source of truth for all beamlines. Each device entry maps a Python class path to EPICS PV prefixes, labels, and any extra kwargs the class `__init__` requires.
 
@@ -135,11 +136,11 @@ Each beamline startup connects only the devices whose labels match its `stations
 | 4IDH | `["core", "4idh"]` |
 | Raman | `["4idb"]` |
 
-Devices shared between beamlines (e.g. `transfocator`, `gslt`) carry the `"core"` label in `devices.yml`.
+Devices shared between beamlines (e.g. `crl`, `gslt`) carry the `"core"` label in `devices.yml`.
 
 ### Key Components in `id4_common/`
 
-- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `transfocator_device.py` (`make_transfocator_class` factory), `counters_mixin.py` (detector plotting API — see below)
+- **`devices/`** — ophyd device classes (motors, area detectors, undulators, diffractometer, electromagnet, chopper, etc.). Notable files: `xbpm.py` (generic XBPM with `motorsDict`), `kb_generic.py` (`make_kb_class` factory + `GKBDevice`/`HKBDevice`), `crl_device.py` (`make_crl_class` factory; CRL / transfocator), `counters_mixin.py` (detector plotting API — see below)
 - **`plans/`** — Bluesky scan plans: `local_scans.py` (lup, ascan, grid_scan, qxscan, count, mv/mvr), `_local_scan_utils.py` (private helpers shared by local_scans — `_hkl_motors`, `reset_real_motors_decorator` for fixQ position restore, `_setup_file_io`, etc.), `local_preprocessors.py` (decorators: `configure_counts`, `stage_dichro`, `stage_magnet911`, `stage_4idg_softglue`, `extra_devices`), `dm_plans.py` (DM workflow submission), `center_maximum.py`, `flyscan_demo.py`
 - **`callbacks/`** — `spec_data_file_writer.py`, `nexus_data_file_writer.py`, `dichro_stream.py`
 - **`utils/`** — ~30 modules including HKL/crystallography utilities, DM integration, counters class (`counters_class.py`, provides `CountersClass` with `is_scaler_monitor`, `monitor_field`, `plotselect()`), attenuator control, device loader (`device_loader.py`), local `make_devices` shim (`make_devices.py`, see "Deferred EPICS Connection Pattern"), experiment utilities, and `polartools`/`hklpy2` import wrappers
@@ -172,6 +173,17 @@ remove_device("device_name")                     # disconnect and remove from ba
 reload_all_devices()                             # reload all from YAML (all stations)
 reload_all_devices(stations=["core", "4idh"])  # reload for a specific beamline
 ```
+
+`load_device(name)` is also the canonical way to **reconnect** a device that
+is already in the registry — it routes existing entries through
+`connect_device(...)` rather than skipping. Users who want to retry a flaky
+IOC connection can just call `load_device("...")` again.
+
+The vortex-specific helper `load_vortex(electronic, ...)` (used because vortex
+electronics are picked at runtime rather than from `devices.yml`) follows the
+same contract as `load_device`: it delegates to `connect_device`, runs
+`_post_connect_setup`/`default_settings`/HDF1 priming, and adds the device to
+`__main__` regardless of whether the connection succeeded.
 
 The `oregistry` (from `apsbits`) is the central device registry.
 
@@ -210,11 +222,55 @@ class MyDevice(Device):
 For sub-components (not top-level `devices.yml` entries), use `run=False` on all
 `subscribe()` calls in `__init__` to avoid fetching PV values before connection.
 
+**HDF1 plugin priming.** `connect_device()` automatically calls
+`AD_prime_plugin2(device.hdf1)` after `default_settings()` runs, which fires
+`hdf1.warmup()` when the plugin has never received an array. The contract is
+that each area-detector class wires `self.hdf1.warmup_signals` inside its
+`default_settings()` — a list of `(signal, value)` pairs that briefly trigger
+one acquisition. Reference patterns: `Eiger1MDetector`, `VimbaDetector` (ADCore
+`acquire`); `VortexDante1`/`VortexDante4` (MCA `acquire_start`/`mca_mode`).
+A camera with no warmup signals logs a warning and skips priming.
+
 ### Data Output
 
-- **SPEC files** (`.dat`): enabled by default in `iconfig.yml`; `newSpecFile()`, `spec_comment()` available in session
+- **SPEC files** (`.dat`): enabled by default in `iconfig.yml`; `newSpecFile()`, `spec_comment()` available in session. The local writer (`id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2`) collapses non-scalar metadata to one line via `_one_line()` and replaces array-valued scan args with a `<array len=N>` summary in the `#S` line so pymca can parse `qxscan` files.
 - **NeXus/HDF5** (`.hdf`): opt-in via `iconfig.yml`
 - **Dichro stream**: circular dichroism data processing, always loaded
+
+### Logging
+
+Bluesky session logs are configured by the `LOGGING` block of `iconfig.yml`,
+not by apsbits' default `logging.yml`. `id4_common.utils.logging_helper.
+setup_logging()` (called from each beamline's `__init__.py`) reads the block,
+translates `LOG_PATH`/`MAX_BYTES`/`NUMBER_OF_PREVIOUS_BACKUPS` to the apsbits
+`file_logs`/`ipython_logs` schema, writes a temp YAML, and passes it via
+`configure_logging(extra_logging_configs_path=...)`. If the centralized log
+directory cannot be created (developer machine without `/net/...` access)
+the helper falls back to apsbits' default `<cwd>/.logs/`. Add a new
+user-friendly key here by extending the `_FILE_LOGS_KEY_MAP` dict in
+`logging_helper.py`.
+
+### Temperature controllers
+
+There are several temperature controllers across the four 4-ID stations
+(LakeShore 336/340 at 4IDG, the 9-Tesla magnet's VTI sensors and needle
+valve at 4IDH, …).  `id4_common.utils.temperature_setup.temperature_setup
+(label)` picks one and binds three names into the session:
+
+- ``tc`` — the **control** signal (movable, the loop setpoint)
+- ``ts`` — the **sample** signal (readable, the readback)
+- ``TEMPERATURE_CONTROLLER`` — the active label string
+
+Once set, ``mv tc 295`` and ``RE(count(1, 1, detectors=[ts]))`` work; ``ts``
+is added to ``sd.baseline`` by default so the sample temperature lands in
+every scan.  ``te(temperature)`` in ``shorts.py`` is now a thin shortcut
+over the active ``tc``.
+
+Adding a new controller is a one-line edit to the ``TEMPERATURE_CONTROLLERS``
+dict in ``id4_common/utils/temperature_setup.py`` — each row is
+``label → (device_name, setpoint_attr_path, readback_attr_path)`` and the
+dotted paths are resolved against ``oregistry.find(device_name)``.  No
+device-class changes required.
 
 ### QueueServer
 

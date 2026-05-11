@@ -9,7 +9,7 @@ Public API
     ~experiment
     ~experiment_setup
     ~experiment_change_sample
-    ~experiment_load_from_bluesky
+    ~experiment_load_from_scan
     ~experiment_resume
 """
 
@@ -45,7 +45,7 @@ __all__ = """
     experiment
     experiment_setup
     experiment_change_sample
-    experiment_load_from_bluesky
+    experiment_load_from_scan
     experiment_resume
 """.split()
 
@@ -599,77 +599,32 @@ class ExperimentClass:
             logger.warning("Could not load %s: %s", path, exc)
             return None
 
-    def _discover_resume_path(self) -> Path | None:
-        """Find a snapshot to resume from.
+    def _restore_from_md(self) -> bool:
+        """Populate singleton state from RE.md.
 
-        Probes the current working directory and the last scan's
-        recorded ``base_experiment_path``. Returns the snapshot file if
-        exactly one is found, prompts the user when both exist and
-        differ, returns ``None`` (with a warning logged) when neither
-        is available.
+        Returns False (and logs a warning) when no prior experiment is
+        recorded in RE.md.
         """
-        cwd_candidate = Path.cwd() / PERSIST_FILENAME
-
-        cat_candidate: Path | None = None
-        try:
-            cat_base = cat[-1].metadata["start"]["base_experiment_path"]
-            cat_candidate = Path(cat_base) / PERSIST_FILENAME
-        except Exception as exc:  # noqa: BLE001 — anything goes for cat lookup
-            logger.debug(
-                "Could not read base_experiment_path from cat[-1]: %s", exc
+        if not RE.md.get("experiment_name"):
+            logger.warning(
+                "No prior experiment found in RE.md — run "
+                "experiment_setup() first, or call "
+                "experiment_resume(path=...) with a saved YAML."
             )
+            return False
+        self.esaf = RE.md.get("esaf_id")
+        self.proposal = RE.md.get("proposal_id")
+        self.server = RE.md.get("server")
+        self.experiment_name = RE.md.get("experiment_name")
+        self.sample = RE.md.get("sample")
+        self.file_base_name = RE.md.get("base_name")
+        bep = RE.md.get("base_experiment_path")
+        self.base_experiment_path = Path(bep) if bep else None
+        # scan_id is already in RE.md (PersistentDict restored it).
+        return True
 
-        cwd_ok = cwd_candidate.is_file()
-        cat_ok = cat_candidate is not None and cat_candidate.is_file()
-
-        if (
-            cwd_ok
-            and cat_ok
-            and cwd_candidate.resolve() != cat_candidate.resolve()
-        ):
-            choice = (
-                self._prompt(
-                    "Two experiment snapshots found:\n"
-                    f"  1: {cwd_candidate} (current directory)\n"
-                    f"  2: {cat_candidate} (last scan)\n"
-                    "Which one to resume? [1]: "
-                )
-                or "1"
-            ).strip()
-            return cat_candidate if choice == "2" else cwd_candidate
-
-        if cwd_ok:
-            return cwd_candidate
-        if cat_ok:
-            return cat_candidate
-
-        logger.warning(
-            "No experiment snapshot found (looked in %s and via cat[-1]).",
-            cwd_candidate,
-        )
-        return None
-
-    def resume(self, path: str | Path | None = None) -> None:
-        """Restore an experiment from a saved YAML snapshot.
-
-        With no ``path``, discovers the snapshot automatically: prefers
-        ``Path.cwd() / .polar_experiment.yml`` and falls back to the
-        ``base_experiment_path`` stored in ``cat[-1]``'s start
-        document. Prompts the user only when both exist and point at
-        different files.
-
-        Does NOT contact DM. Use this when DM is down or you want to
-        pick up a previous session quickly. The next scan continues
-        numbering from ``last_scan_id``.
-        """
-        if path is None:
-            path = self._discover_resume_path()
-            if path is None:
-                return
-        snapshot = self.load_params_from_yaml(path)
-        if snapshot is None:
-            return
-
+    def _populate_from_snapshot(self, snapshot: dict) -> None:
+        """Populate singleton + RE.md from a YAML snapshot dict."""
         self.esaf = snapshot.get("esaf_id")
         self.proposal = snapshot.get("proposal_id")
         self.server = snapshot.get("server")
@@ -694,11 +649,33 @@ class ExperimentClass:
             if value is not None:
                 RE.md[key] = str(value) if key.endswith("_id") else value
 
+        if self.base_experiment_path is not None:
+            RE.md["base_experiment_path"] = str(self.base_experiment_path)
+
         last_scan = snapshot.get("last_scan_id")
         if isinstance(last_scan, int) and last_scan >= 0:
             RE.md["scan_id"] = last_scan
         else:
             RE.md.setdefault("scan_id", 0)
+
+    def resume(self, path: str | Path | None = None) -> None:
+        """Restore an experiment after a Bluesky restart.
+
+        With no ``path``, restores singleton state from ``RE.md`` (the
+        PersistentDict bluesky already loaded at startup). With an
+        explicit ``path``, loads the snapshot YAML at that location and
+        populates both singleton state and ``RE.md`` from it.
+
+        Does NOT contact DM either way.
+        """
+        if path is None:
+            if not self._restore_from_md():
+                return
+        else:
+            snapshot = self.load_params_from_yaml(path)
+            if snapshot is None:
+                return
+            self._populate_from_snapshot(snapshot)
 
         if self.base_experiment_path is not None and self.sample is not None:
             self.setup_path()
@@ -769,6 +746,8 @@ class ExperimentClass:
                 )
             else:
                 self.windows_base_experiment_path = None
+
+        RE.md["base_experiment_path"] = str(self.base_experiment_path)
 
     def setup(
         self,
@@ -844,7 +823,6 @@ class ExperimentClass:
             RE.md["scan_id"] = 0
 
         self.start_specwriter()
-        self.save_params_to_yaml()
 
         self._printer(self.__repr__())
 
@@ -860,7 +838,6 @@ class ExperimentClass:
         self.scan_number_input(reset_scan_id)
         self.base_name_input(base_name)
         self.start_specwriter()
-        self.save_params_to_yaml()
 
     def __call__(
         self,
@@ -921,17 +898,19 @@ def experiment_change_sample(
     )
 
 
-def experiment_load_from_bluesky(
+def experiment_load_from_scan(
+    scan_id: int = -1,
     reset_scan_id: int = RESET_SCAN_ID_NOOP,
 ) -> None:
     """Restore experiment state from a previous Bluesky run."""
-    experiment.load_from_bluesky(reset_scan_id=reset_scan_id)
+    experiment.load_from_bluesky(scan_id=scan_id, reset_scan_id=reset_scan_id)
 
 
 def experiment_resume(path: str | Path | None = None) -> None:
-    """Restore experiment state from a saved YAML snapshot.
+    """Restore experiment state after a Bluesky restart.
 
-    With no argument, the snapshot path is auto-discovered (current
-    working directory, then last-scan ``base_experiment_path``).
+    With no argument, restores from ``RE.md`` (the PersistentDict
+    bluesky already loaded at startup). With an explicit ``path``,
+    loads the YAML snapshot at that location instead.
     """
     experiment.resume(path)

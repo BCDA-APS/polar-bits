@@ -278,10 +278,22 @@ class VortexDante1(Trigger, ROICountersMixin, DetectorBase):
         self.hdf1.stage_sigs["num_capture"] = 0
         self.hdf1.stage_sigs["capture"] = 1
 
+        self.cam.mca_mode.put("MCA Mapping")
         self.setup_manual_trigger()
         self.save_images_off()
         self.read_rois = [0]
         self.plot_roi0()
+
+        # Dante uses MCA mode + EraseStart/StopAll to acquire (no `acquire`
+        # signal like ADCore detectors), so the warmup sequence pushes a
+        # short MCA acquisition through the plugin.
+        self.hdf1.warmup_signals = [
+            (self.hdf1.enable, 1),
+            (self.hdf1.parent.cam.array_callbacks, 1),
+            (self.hdf1.parent.cam.mca_mode, 0),  # MCA
+            (self.hdf1.parent.cam.real_time_preset, 0.1),
+            (self.hdf1.parent.cam.acquire_start, 1),
+        ]
 
         for item in "mca1".split():
             mca = getattr(self.mcas, item)

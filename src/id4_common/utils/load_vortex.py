@@ -10,6 +10,7 @@ from ..devices.vortex_dante_me4 import VortexDante4
 from ..devices.vortex_xmap import VortexXMAP
 from ..devices.vortex_xspress3_me4 import VortexXspress34
 from ..devices.vortex_xspress3_me7 import VortexXspress37
+from .device_loader import connect_device
 from .run_engine import sd
 
 logger = getLogger(__name__)
@@ -90,26 +91,26 @@ def load_vortex(
 
     device = vortexclass(pv, name=name, labels=labels, **kwargs)
 
-    try:
-        logger.info("Connecting to %s...", device.name)
-        device.wait_for_connection()
-        if baseline:
-            sd.baseline.append(device)
-        if hasattr(device, "default_settings"):
-            device.default_settings()
-        oregistry.register(device)
-        logger.info("Adding %r to the main namespace.", name)
-        setattr(sys.modules["__main__"], name, device)
-        if "dante" in electronic.lower():
-            message = (
-                "\n To prime, hdf, Acq.Mode needs to be in MCA mapping mode."
-            )
-            message += "\n with IOC with dpuser, vortex._local_folder = /local/home/dpuser/sector4/"
-            message += "\n with IOC with polar, vortex._local_folder = /net/s4data/export/sector4/4idd/bluesky_images/vortex"
-        logger.warning(message)
-    except TimeoutError:
-        message = f"Device {device.name} is disconnected."
-        if baseline:
-            message += " This device was not added to the baseline."
+    # Delegate the actual connect / register / baseline / hdf1-prime work to
+    # the shared helper so vortex devices behave identically to anything
+    # loaded via `load_device` (including the `_post_connect_setup` hook and
+    # the HDF1 warmup wired up in each device's `default_settings`).
+    connect_device(device, baseline=baseline, raise_error=False)
+
+    # Always expose the device in `__main__`, matching `load_device`.  Even
+    # if `connect_device` failed, the user gets the object back in their
+    # session and can retry via `connect_device(<name>)` or `load_vortex(...)`.
+    logger.info("Adding %r to the main namespace.", name)
+    setattr(sys.modules["__main__"], name, device)
+
+    if "dante" in electronic.lower():
+        logger.warning(
+            "\n To prime hdf, Acq.Mode needs to be in MCA mapping mode."
+            "\n with IOC with dpuser, "
+            "vortex._local_folder = /local/home/dpuser/sector4/"
+            "\n with IOC with polar, "
+            "vortex._local_folder = /net/s4data/export/sector4/4idd/"
+            "bluesky_images/vortex"
+        )
 
     return device
