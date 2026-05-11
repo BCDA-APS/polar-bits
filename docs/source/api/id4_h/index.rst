@@ -7,7 +7,8 @@ id4_h
 
    Demo instrument package.
 
-   This package provides a demo instrument implementation for testing and development.
+   This package provides a demo instrument implementation
+   for testing and development.
 
 
 
@@ -19,3 +20,5 @@ Submodules
 
    /api/id4_h/configs/index
    /api/id4_h/startup/index
+
+

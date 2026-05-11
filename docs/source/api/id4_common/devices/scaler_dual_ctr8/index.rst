@@ -35,115 +35,22 @@ Module Contents
    Bases: :py:obj:`ophyd.scaler.ScalerChannel`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   ScalerChannel subclass that tracks which physical scaler board owns this
+   channel.
 
 
 .. py:function:: make_channels()
+
+   Build an OrderedDict of 15 combined channels across two CTR8 scaler boards.
+
 
 .. py:class:: DualCTR8Scaler(prefix1, prefix2, **kwargs)
 
    Bases: :py:obj:`ophyd.Device`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   Combined scaler device aggregating two CTR8 boards into a single 15-channel
+   interface.
 
 
    .. py:attribute:: prefix1
@@ -174,6 +81,9 @@ Module Contents
 
    .. py:method:: match_names()
 
+      Sync each channel's Python name to the EPICS channel-name PV value.
+
+
 
    .. py:method:: select_channels(chan_names=None)
 
@@ -188,17 +98,26 @@ Module Contents
 
    .. py:property:: trigger_scaler
 
+      Return scaler1 as the hardware trigger source for both boards.
+
 
    .. py:method:: trigger()
 
-      Start acquisition
+      Trigger acquisition on scaler1; the second board follows via hardware
+      connection.
 
 
 
    .. py:property:: channels_name_map
 
+      Return a dict mapping EPICS channel names to component attribute names.
+
 
    .. py:method:: select_plot_channels(chan_names=None)
+
+      Set the Kind of each channel to hinted (in chan_names) or normal
+      (others).
+
 
 
    .. py:method:: select_read_channels(chan_names=None)
@@ -214,11 +133,24 @@ Module Contents
 
    .. py:property:: monitor
 
+      Return the EPICS name of the currently selected monitor channel.
+
 
    .. py:property:: plot_options
+
+      Return a list of all named scaler channel names available for plotting.
 
 
    .. py:method:: select_plot(channels)
 
+      Set hinted kind for the given channel list, delegating to
+      select_plot_channels.
+
+
 
    .. py:method:: default_settings()
+
+      Initialize monitor, read channels, plot channels, and scaler delays.
+
+
+

@@ -19,9 +19,7 @@ Module Contents
    Bases: :py:obj:`ophyd.MotorBundle`
 
 
-   Sub-class this to device a bundle of motors
-
-   This provides better default behavior for :ref:``hints``.
+   Three-axis (X, Y, Z) nanopositioning motor bundle.
 
 
    .. py:attribute:: x
@@ -31,3 +29,5 @@ Module Contents
 
 
    .. py:attribute:: z
+
+

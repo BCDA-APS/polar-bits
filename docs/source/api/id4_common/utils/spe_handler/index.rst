@@ -19,12 +19,15 @@ Module Contents
    Bases: :py:obj:`area_detector_handlers.HandlerBase`
 
 
-   Base-class for Handlers to provide the boiler plate to
-   make them usable in context managers by provding stubs of
-   ``__enter__``, ``__exit__`` and ``close``
+   Area detector handler for SPE files produced by the LightField detector.
 
 
    .. py:attribute:: specs
 
 
    .. py:method:: get_file_list(datum_kwarg_gen)
+
+      Return a list of file paths for the given datum keyword arguments.
+
+
+

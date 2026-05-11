@@ -19,7 +19,7 @@ Module Contents
    Bases: :py:obj:`apstools.devices.MeasCompCtr`
 
 
-   Measurement Computing USB CTR08 high-speed counter/timer.
+   MeasCompCtr subclass for the USB-CTR8, omitting unconnected I/O channels.
 
 
    .. py:attribute:: long_in
@@ -149,3 +149,6 @@ Module Contents
 
    .. py:attribute:: binary_direction_8
       :value: None
+
+
+

@@ -14,12 +14,12 @@ id4_common.devices.hhl_mirror
 Module Contents
 ---------------
 
-.. py:class:: ToroidalMirror(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
+.. py:class:: HHLMirror(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`ophyd.Device`
 
 
-   Beamline toroidal mirror components.
+   Beamline high heat load mirror components.
 
 
    .. py:attribute:: y
@@ -55,6 +55,9 @@ Module Contents
    .. py:attribute:: stripe
 
 
+   .. py:attribute:: radius_estimated
+
+
    .. py:attribute:: radius_target
 
 
@@ -65,3 +68,5 @@ Module Contents
 
 
    .. py:attribute:: alpha
+
+

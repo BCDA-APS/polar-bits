@@ -1,0 +1,29 @@
+id4_common.macros
+=================
+
+.. py:module:: id4_common.macros
+
+.. autoapi-nested-parse::
+
+   User-facing macro helpers (issue #18).
+
+   This package is the curated surface that user macro files import from,
+   so internal reorgs in ``id4_common`` don't ripple into beamline scripts.
+   The single canonical entry point is :mod:`id4_common.macros.macros_api`;
+   other helpers will be added here over time.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/id4_common/macros/macros_api/index
+   /api/id4_common/macros/shortcuts_4idg_euler/index
+   /api/id4_common/macros/shortcuts_4idg_hp/index
+   /api/id4_common/macros/shortcuts_4idh_9T/index
+   /api/id4_common/macros/startup_common/index
+
+

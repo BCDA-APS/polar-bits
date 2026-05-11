@@ -19,7 +19,7 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.StatsPlugin`
 
 
-   Remove property attribute found in AD IOCs now.
+   StatsPlugin variant for QuadEM that disables auto-kind subscriptions.
 
 
    .. py:attribute:: kind
@@ -32,15 +32,8 @@ Module Contents
    Bases: :py:obj:`ophyd.QuadEM`
 
 
-   This trigger mixin class takes one acquisition per trigger.
-
-   .. rubric:: Examples
-
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+   QuadEM device with POLAR-specific statistics plugins and fast readback
+   signals.
 
 
    .. py:attribute:: image
@@ -126,21 +119,16 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return the averaging_time signal as the count-time preset for scan
+      plans.
+
 
 .. py:class:: TetrAMM(*args, **kwargs)
 
    Bases: :py:obj:`QuadEMPOLAR`
 
 
-   This trigger mixin class takes one acquisition per trigger.
-
-   .. rubric:: Examples
-
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+   QuadEMPOLAR subclass for the Sydor TetrAMM 4-channel electrometer.
 
 
    .. py:attribute:: conf
@@ -151,56 +139,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   Mixin that replaces the QuadEM trigger/preset with a no-op for read-only
+   use.
 
 
    .. py:attribute:: dummy
@@ -208,56 +148,24 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return a dummy signal so scan plans have a no-op preset target.
+
 
    .. py:method:: trigger()
 
-      Start acquisition
+      Immediately mark acquisition complete without driving the hardware.
 
 
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Stage using base Device logic, bypassing QuadEM staging.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Unstage using base Device logic, bypassing QuadEM unstaging.
 
 
 
@@ -266,56 +174,7 @@ Module Contents
    Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`QuadEMPOLAR`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   Read-only Sydor T4U beam position monitor using the QuadEM framework.
 
 
    .. py:attribute:: conf
@@ -373,62 +232,24 @@ Module Contents
 
    .. py:method:: default_settings()
 
+      Set calibration and configuration signals to config kind and clear
+      stage_sigs.
+
+
 
 .. py:class:: TetrAMMRO(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
    Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`TetrAMM`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   Read-only TetrAMM 4-channel electrometer that disables staging and
+   triggering.
 
 
    .. py:method:: default_settings()
+
+      Set calibration and configuration signals to config kind and clear
+      stage_sigs.
+
+
+

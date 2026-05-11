@@ -48,7 +48,7 @@ Module Contents
 
    .. py:method:: write_root(filename)
 
-      root of the HDF5 file
+      Write the root group and set POLAR-specific NeXus version attributes.
 
 
 
@@ -71,3 +71,4 @@ Module Contents
    The NeXus file writer object.
 
 .. py:data:: warn_missing
+

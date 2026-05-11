@@ -3,6 +3,11 @@ id4_common.utils.oregistry_auxiliar
 
 .. py:module:: id4_common.utils.oregistry_auxiliar
 
+.. autoapi-nested-parse::
+
+   Auxiliary utilities for querying and displaying the ophyd device registry.
+
+
 
 
 
@@ -19,3 +24,5 @@ Module Contents
    :rtype: None
 
    .. seealso:: :func:`ophydregistry.Registry.findall`
+
+

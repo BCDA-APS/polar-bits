@@ -3,6 +3,11 @@ id4_common.utils.device_loader
 
 .. py:module:: id4_common.utils.device_loader
 
+.. autoapi-nested-parse::
+
+   Device loading, connecting, and registry management utilities.
+
+
 
 
 
@@ -109,11 +114,11 @@ Module Contents
 
    .. rubric:: Notes
 
-   The function checks if the device already exists in the registry.
-   If not, it loads the device configuration, dynamically imports the
-   device class, and connects the device. The device is then added to
-   the main namespace and optionally to the baseline if specified in
-   the configuration.
+   If the device is already registered, this function attempts to (re)connect
+   it via :func:`connect_device` instead of skipping. Otherwise, it loads the
+   device configuration, dynamically imports the device class, instantiates
+   the device, connects it, and adds it to the main namespace (and to the
+   baseline if specified in the configuration).
 
 
 .. py:function:: AD_plugin_primed(plugin)
@@ -203,3 +208,5 @@ Module Contents
    If a device name (str) is provided, the function looks up the device in
    `oregistry`. The device is removed from `oregistry` and, if present, from
    `sd.baseline`.
+
+

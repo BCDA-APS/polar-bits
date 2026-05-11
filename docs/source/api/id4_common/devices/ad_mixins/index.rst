@@ -94,8 +94,14 @@ Module Contents
 
    .. py:method:: start_auto_kind()
 
+      Subscribe all compute signals to auto-update component kinds.
+
+
 
    .. py:method:: stop_auto_kind()
+
+      Unsubscribe all compute signals from auto kind updates.
+
 
 
 .. py:class:: CodecPlugin(*args, **kwargs)
@@ -219,13 +225,17 @@ Module Contents
    Bases: :py:obj:`apstools.devices.CamMixin_V34`, :py:obj:`ophyd.areadetector.Xspress3DetectorCam`
 
 
-   Update cam support to AD release 3.1.1.
+   Vortex fluorescence detector camera with simplified trigger and erase
+   controls.
 
 
    .. py:attribute:: trigger_mode
 
 
    .. py:attribute:: erase_on_start
+
+
+   .. py:attribute:: data_type
 
 
    .. py:attribute:: offset
@@ -248,119 +258,24 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.filestore_mixins.FileStoreBase`
 
 
-   Base class for FileStore mixin classes
-
-   This class provides
-
-     - python side path management (root, seperate write / read paths)
-     - provides :meth:`generate_datum` to work with
-       :meth:`~ophyd.areadetector.detectors.DetectorBase.dispatch`
-     - cooperative stage / unstage methods
-     - cooperative read / describe methods that inject datums
-
-   Separate read and write paths are supported because the IOC that
-   writes the files may not have the data storage mounted at the same
-   place as the computers that are expected to access it later (for
-   example, if the IOC is running on a windows machine and mounting a
-   NFS share via samba).
-
-   ``write_path_template`` must always be provided, only provide
-   ``read_path_template`` if the writer and reader will not have the
-   same mount point.
-
-   The properties :attr:`read_path_template` and
-   :attr:`write_path_template` do the following check against
-   ``root``
-
-     - if the only ``write_path_template`` is provided
-
-       - Used to generate read and write paths (which are identical)
-       - verify that the path starts with :attr:`root` or the path is
-         a relative, prepend :attr:`root`
-
-     - if ``read_path_template`` is also provided then the above
-       checks are applied to it, but ``write_path_template`` is
-       returned without any validation.
-
-   This mixin assumes that it's peers provide an ``enable`` signal
-
-   :param write_path_template: Template feed to :py:meth:`~datetime.datetime.strftime` to generate the
-                               path to set the IOC to write saved files to.
-
-                               See above for interactions with root and read_path_template
-   :type write_path_template: str
-   :param root: The 'root' of the file path.  This is inserted into filestore and
-                enables files to be renamed or re-mounted with only some pain.
-
-                This represents the part of the full path that is not
-                'semantic'.  For example in the path
-                '/data/XF42ID/2248/05/01/', the first two parts,
-                '/data/XF42ID/', would be part of the 'root', where as the
-                final 3 parts, '2248/05/01' is the date the data was taken.
-                If the files were to be renamed, it is likely that only the
-                'root' will be changed (for example of the whole file tree is
-                copied to / mounted on another system or external hard drive).
-   :type root: str, optional
-   :param path_semantics:
-   :type path_semantics: {'posix', 'windows'}, optional
-   :param read_path_template: The read path template, if different from the write path.   See the
-                              docstrings for ``write_path_template`` and ``root``.
-   :type read_path_template: str, optional
-   :param reg: If None provided, try to import the top-level api from
-               filestore.api This will be deprecated 17Q3.
-
-               This object must provide::
-
-                  def register_resource(spec: str,
-                                        root: str, rpath: str,
-                                        rkwargs: dict,
-                                        path_semantics: Optional[str]) -> str:
-                      ...
-
-                  def register_datum(resource_uid: str, datum_kwargs: dict) -> str:
-                      ...
-   :type reg: Registry
-
-   .. rubric:: Notes
-
-   This class in cooperative and expected to particpate in multiple
-   inheritance, all ``*args`` and extra ``**kwargs`` are passed up the
-   MRO chain.
-
-   This class may be collapsed with :class:`FileStorePluginBase`
+   FileStore base that derives file paths from EPICS PV values rather than
+   templates.
 
 
    .. py:property:: use_dm
 
+      Return True if data management path is used for file writing.
+
 
    .. py:method:: make_write_read_paths(path=None)
+
+      Return the IOC write path, full file path, and relative file path.
+
 
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Stage the file plugin, checking path existence and file collision.
 
 
 
@@ -369,86 +284,7 @@ Module Contents
    Bases: :py:obj:`FileStorePluginBaseEpicsName`
 
 
-   Base class for FileStore mixin classes
-
-   This class provides
-
-     - python side path management (root, seperate write / read paths)
-     - provides :meth:`generate_datum` to work with
-       :meth:`~ophyd.areadetector.detectors.DetectorBase.dispatch`
-     - cooperative stage / unstage methods
-     - cooperative read / describe methods that inject datums
-
-   Separate read and write paths are supported because the IOC that
-   writes the files may not have the data storage mounted at the same
-   place as the computers that are expected to access it later (for
-   example, if the IOC is running on a windows machine and mounting a
-   NFS share via samba).
-
-   ``write_path_template`` must always be provided, only provide
-   ``read_path_template`` if the writer and reader will not have the
-   same mount point.
-
-   The properties :attr:`read_path_template` and
-   :attr:`write_path_template` do the following check against
-   ``root``
-
-     - if the only ``write_path_template`` is provided
-
-       - Used to generate read and write paths (which are identical)
-       - verify that the path starts with :attr:`root` or the path is
-         a relative, prepend :attr:`root`
-
-     - if ``read_path_template`` is also provided then the above
-       checks are applied to it, but ``write_path_template`` is
-       returned without any validation.
-
-   This mixin assumes that it's peers provide an ``enable`` signal
-
-   :param write_path_template: Template feed to :py:meth:`~datetime.datetime.strftime` to generate the
-                               path to set the IOC to write saved files to.
-
-                               See above for interactions with root and read_path_template
-   :type write_path_template: str
-   :param root: The 'root' of the file path.  This is inserted into filestore and
-                enables files to be renamed or re-mounted with only some pain.
-
-                This represents the part of the full path that is not
-                'semantic'.  For example in the path
-                '/data/XF42ID/2248/05/01/', the first two parts,
-                '/data/XF42ID/', would be part of the 'root', where as the
-                final 3 parts, '2248/05/01' is the date the data was taken.
-                If the files were to be renamed, it is likely that only the
-                'root' will be changed (for example of the whole file tree is
-                copied to / mounted on another system or external hard drive).
-   :type root: str, optional
-   :param path_semantics:
-   :type path_semantics: {'posix', 'windows'}, optional
-   :param read_path_template: The read path template, if different from the write path.   See the
-                              docstrings for ``write_path_template`` and ``root``.
-   :type read_path_template: str, optional
-   :param reg: If None provided, try to import the top-level api from
-               filestore.api This will be deprecated 17Q3.
-
-               This object must provide::
-
-                  def register_resource(spec: str,
-                                        root: str, rpath: str,
-                                        rkwargs: dict,
-                                        path_semantics: Optional[str]) -> str:
-                      ...
-
-                  def register_datum(resource_uid: str, datum_kwargs: dict) -> str:
-                      ...
-   :type reg: Registry
-
-   .. rubric:: Notes
-
-   This class in cooperative and expected to particpate in multiple
-   inheritance, all ``*args`` and extra ``**kwargs`` are passed up the
-   MRO chain.
-
-   This class may be collapsed with :class:`FileStorePluginBase`
+   HDF5 iterative-write filestore that reads file name from EPICS PVs.
 
 
    .. py:attribute:: filestore_spec
@@ -458,56 +294,25 @@ Module Contents
 
    .. py:method:: get_frames_per_point()
 
+      Return the number of frames expected per scan point.
+
+
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Stage the HDF5 plugin and generate the resource document.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Unstage the HDF5 plugin and reset the point counter.
 
 
 
    .. py:method:: generate_datum(key, timestamp, datum_kwargs)
 
-      Generate a uid and cache it with its key for later insertion.
+      Generate a datum document with the current point number.
 
 
 
@@ -516,7 +321,7 @@ Module Contents
    Bases: :py:obj:`PluginMixin`, :py:obj:`ophyd.areadetector.plugins.HDF5Plugin_V34`
 
 
-   Remove property attribute found in AD IOCs now.
+   HDF5 plugin with the property attribute removed for compatibility.
 
 
 .. py:class:: PolarHDF5Plugin(*args, write_path_template='', **kwargs)
@@ -532,59 +337,24 @@ Module Contents
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Stage the HDF5 plugin, enabling image saving if autosave is on.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Unstage the HDF5 plugin, disabling image saving if autosave is on.
 
 
 
    .. py:property:: warmup_signals
 
+      Return ordered dict of (signal, value) pairs used for detector warmup.
+
 
    .. py:method:: warmup()
 
-      A convenience method for 'priming' the plugin.
-
-      The plugin has to 'see' one acquisition before it is ready to capture.
-      This sets the array size, etc.
+      Run the warmup sequence to prime the HDF5 plugin for fast acquisition.
 
 
 
@@ -605,7 +375,7 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.trigger_mixins.ADTriggerStatus`
 
 
-   A Status for AreaDetector triggers
+   AreaDetector trigger status that clears array-counter subscriptions on
+   completion.
 
-   A special status object that notifies watches (progress bars)
-   based on comparing device.cam.array_counter to  device.cam.num_images.
+

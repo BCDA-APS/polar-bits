@@ -7,7 +7,8 @@ id4_common
 
    Demo instrument package.
 
-   This package provides a demo instrument implementation for testing and development.
+   This package provides a demo instrument implementation
+   for testing and development.
 
 
 
@@ -20,7 +21,10 @@ Submodules
    /api/id4_common/callbacks/index
    /api/id4_common/configs/index
    /api/id4_common/devices/index
+   /api/id4_common/macros/index
    /api/id4_common/plans/index
    /api/id4_common/startup/index
    /api/id4_common/suspenders/index
    /api/id4_common/utils/index
+
+

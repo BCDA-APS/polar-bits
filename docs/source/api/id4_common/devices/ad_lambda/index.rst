@@ -45,47 +45,13 @@ Module Contents
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Subscribe to detector state changes and stage the detector.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Unstage the detector and unsubscribe from detector state changes.
 
 
 
@@ -139,8 +105,7 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.filestore_mixins.FileStoreHDF5SingleIterativeWrite`, :py:obj:`ophyd.areadetector.plugins.HDF5Plugin_V34`
 
 
-   Used for running Areadetectors hdf5 plugin in `Single` mode, with
-   `point_number` in the kwargs.
+   HDF5 plugin for the Lambda 250k detector with POLAR-specific filestore spec.
 
 
    .. py:attribute:: filestore_spec
@@ -153,14 +118,7 @@ Module Contents
    Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   This trigger mixin class takes one acquisition per trigger.
-   .. rubric:: Examples
-
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+   Lambda 250k area detector with HDF5 file writing and statistics plugins.
 
 
    .. py:attribute:: cam
@@ -201,8 +159,18 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return the signal used to set exposure time.
+
 
    .. py:method:: default_kinds()
 
+      Configure default kind settings for all detector plugins and components.
+
+
 
    .. py:method:: default_settings()
+
+      Apply default stage signal settings for the Lambda detector.
+
+
+

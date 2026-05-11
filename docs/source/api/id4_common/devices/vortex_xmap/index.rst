@@ -25,7 +25,8 @@ Module Contents
    Bases: :py:obj:`ophyd.mca.SaturnDXP`
 
 
-   All high-level DXP parameters for each channel
+   SaturnDXP subclass that removes unused live_time_output and trigger_output
+   components.
 
 
    .. py:attribute:: live_time_output
@@ -43,7 +44,8 @@ Module Contents
    Bases: :py:obj:`ophyd.mca.EpicsMCARecord`
 
 
-   SynApps MCA Record interface
+   EpicsMCARecord subclass that adds a check_acquiring signal for polling
+   acquisition state.
 
 
    .. py:attribute:: check_acquiring
@@ -66,47 +68,13 @@ Module Contents
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Subscribe the status-signal callback and delegate to parent stage.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Unsubscribe the status-signal callback and delegate to parent unstage.
 
 
 
@@ -131,23 +99,17 @@ Module Contents
 
    .. py:method:: get(**kwargs)
 
-      The readback value
+      Return the sum of deadtime-corrected ROI counts across all XMAP
+      channels.
 
 
 
 .. py:class:: VortexXMAP(*args, **kwargs)
 
-   Bases: :py:obj:`SingleTrigger`
+   Bases: :py:obj:`SingleTrigger`, :py:obj:`id4_common.devices.counters_mixin.ROICountersMixin`
 
 
-   This trigger mixin class takes one acquisition per trigger.
-   .. rubric:: Examples
-
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+   Four-element Vortex detector driven by an XIA XMAP DXP controller.
 
 
    .. py:attribute:: start
@@ -225,40 +187,64 @@ Module Contents
    .. py:attribute:: dxp4
 
 
-   .. py:property:: preset_monitor
-
-
    .. py:method:: default_kinds()
+
+      Set default read/configuration attribute lists for MCA channels
+      (placeholder).
+
 
 
    .. py:method:: default_settings()
 
+      Set default stage signals for erase-on-start and real-time preset mode.
+
+
 
    .. py:property:: read_rois
+
+      Return the list of ROI indices that are currently included in reads.
 
 
    .. py:method:: select_roi(rois)
 
+      Set the hinted ROI totals to those in rois, keeping other read_rois as
+      normal.
+
+
 
    .. py:method:: plot_roi0()
+
+      Set ROI 0 as the hinted plot channel.
+
 
 
    .. py:method:: plot_roi1()
 
+      Set ROI 1 as the hinted plot channel.
+
+
 
    .. py:method:: plot_roi2()
+
+      Set ROI 2 as the hinted plot channel.
+
 
 
    .. py:method:: plot_roi3()
 
+      Set ROI 3 as the hinted plot channel.
+
+
 
    .. py:method:: plot_roi4()
+
+      Set ROI 4 as the hinted plot channel.
+
 
 
    .. py:property:: label_option_map
 
+      Return a mapping from human-readable ROI label strings to ROI index
+      integers.
 
-   .. py:property:: plot_options
 
-
-   .. py:method:: select_plot(channels)

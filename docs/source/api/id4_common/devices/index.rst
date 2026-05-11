@@ -25,6 +25,7 @@ Submodules
    /api/id4_common/devices/aps_undulator/index
    /api/id4_common/devices/aps_xbpm/index
    /api/id4_common/devices/chopper_device/index
+   /api/id4_common/devices/counters_mixin/index
    /api/id4_common/devices/crl_device/index
    /api/id4_common/devices/diamond_window_table/index
    /api/id4_common/devices/electromagnet/index
@@ -50,6 +51,7 @@ Submodules
    /api/id4_common/devices/monochromator/index
    /api/id4_common/devices/nanopositioner/index
    /api/id4_common/devices/phaseplates/index
+   /api/id4_common/devices/piezo_jena/index
    /api/id4_common/devices/polar_diffractometer/index
    /api/id4_common/devices/polar_diffractometer_hklpy2/index
    /api/id4_common/devices/polar_status/index
@@ -57,6 +59,7 @@ Submodules
    /api/id4_common/devices/preamps/index
    /api/id4_common/devices/quadems/index
    /api/id4_common/devices/qxscan_device/index
+   /api/id4_common/devices/ringlight/index
    /api/id4_common/devices/scaler/index
    /api/id4_common/devices/scaler_dual_ctr8/index
    /api/id4_common/devices/shutters/index
@@ -78,3 +81,5 @@ Submodules
    /api/id4_common/devices/vortex_xspress3_me7/index
    /api/id4_common/devices/wb_slit/index
    /api/id4_common/devices/xbpm/index
+
+

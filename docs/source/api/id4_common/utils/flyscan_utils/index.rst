@@ -26,3 +26,5 @@ Module Contents
 .. py:function:: find_eiger_triggers(fname, key='Attocube 1 ch. 3')
 
    Finds the points where the Eiger was triggered
+
+

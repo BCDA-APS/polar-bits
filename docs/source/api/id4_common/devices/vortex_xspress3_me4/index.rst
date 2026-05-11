@@ -36,84 +36,48 @@ Module Contents
 
    .. py:method:: setup_manual_trigger()
 
+      Configure stage_sigs for internal single-image triggered acquisition.
+
+
 
    .. py:method:: setup_external_trigger()
+
+      Configure stage_sigs for TTL-veto flyscan triggering.
+
 
 
    .. py:method:: setup_sgzbca_trigger()
 
+      Configure stage_sigs for SoftGlue BCA TTL-veto triggering.
+
+
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Erase the detector, configure the trigger mode, and arm the Xspress3
+      before staging.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Stop the Xspress3, unsubscribe the busy callback, and restore manual-
+      trigger mode.
 
 
 
    .. py:method:: trigger()
 
-      Trigger the device and return status object.
-
-      This method is responsible for implementing 'trigger' or
-      'acquire' functionality of this device.
-
-      If there is an appreciable time between triggering the device
-      and it being able to be read (via the
-      :meth:`~BlueskyInterface.read` method) then this method is
-      also responsible for arranging that the
-      :obj:`~ophyd.status.StatusBase` object returned by this method
-      is notified when the device is ready to be read.
-
-      If there is no delay between triggering and being readable,
-      then this method must return a :obj:`~ophyd.status.StatusBase`
-      object which is already completed.
-
-      :returns: **status** -- :obj:`~ophyd.status.StatusBase` object which will be marked
-                as complete when the device is ready to be read.
-      :rtype: StatusBase
+      Start one Xspress3 acquisition and return a status object that completes
+      when done.
 
 
 
    .. py:method:: arm_plan()
+
+      Bluesky plan that arms the Xspress3 and waits until the detector is
+      ready.
+
 
 
 .. py:class:: ROIStatN(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
@@ -121,56 +85,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   Single ROI statistics device with name, bounds, and integrated-count
+   readbacks.
 
 
    .. py:attribute:: roi_name
@@ -223,7 +139,8 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.ROIStatPlugin`
 
 
-   Remove property attribute found in AD IOCs now.
+   ROIStatPlugin with eight named ROI statistics sub-devices for the Vortex
+   Xspress3.
 
 
    .. py:attribute:: roi1
@@ -255,7 +172,7 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.AttributePlugin`
 
 
-   Remove property attribute found in AD IOCs now.
+   Xspress3 per-channel SCA providing deadtime and event-count attributes.
 
 
    .. py:attribute:: clock_ticks
@@ -296,7 +213,8 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
 
-   Using the filename from EPICS.
+   HDF5 plugin for the Xspress3 4-element Vortex with a separate array-counter
+   readback PV.
 
 
    .. py:attribute:: array_counter
@@ -318,16 +236,18 @@ Module Contents
 
    .. py:method:: get(**kwargs)
 
-      The readback value
+      Return the sum of deadtime-corrected ROI counts across all Xspress3
+      channels.
 
 
 
 .. py:class:: VortexXspress34(*args, default_folder=Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex'), hdf1_file_format='%s/%s_%6.6d.h5', **kwargs)
 
-   Bases: :py:obj:`Trigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`Trigger`, :py:obj:`id4_common.devices.counters_mixin.ROICountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   This trigger mixin class takes one acquisition per trigger.
+   Four-element Vortex detector driven by an Xspress3 controller with HDF5 file
+   saving.
 
 
    .. py:attribute:: cam
@@ -383,9 +303,6 @@ Module Contents
 
 
 
-   .. py:property:: preset_monitor
-
-
    .. py:method:: align_on(time=0.1)
 
       Start detector in alignment mode
@@ -400,50 +317,92 @@ Module Contents
 
    .. py:method:: save_images_on()
 
+      Enable the HDF5 plugin so acquisitions are written to disk.
+
+
 
    .. py:method:: save_images_off()
+
+      Disable the HDF5 plugin so acquisitions are not written to disk.
+
 
 
    .. py:method:: auto_save_on()
 
+      Enable HDF5 autosave so files are written automatically.
+
+
 
    .. py:method:: auto_save_off()
+
+      Disable HDF5 autosave.
+
 
 
    .. py:method:: wait_for_detector()
 
+      Bluesky plan that waits until the detector array counter stops
+      incrementing.
+
+
 
    .. py:method:: default_settings()
+
+      Configure HDF5 path, stage signals, ROIs, and manual-trigger mode.
+
 
 
    .. py:property:: read_rois
 
+      Return the list of ROI indices that are currently included in reads.
+
 
    .. py:method:: select_roi(rois)
+
+      Set the hinted ROI totals to those in rois, keeping other read_rois as
+      normal.
+
 
 
    .. py:method:: plot_roi1()
 
+      Set ROI 1 as the hinted plot channel.
+
+
 
    .. py:method:: plot_roi2()
+
+      Set ROI 2 as the hinted plot channel.
+
 
 
    .. py:method:: plot_roi3()
 
+      Set ROI 3 as the hinted plot channel.
+
+
 
    .. py:method:: plot_roi4()
+
+      Set ROI 4 as the hinted plot channel.
+
 
 
    .. py:property:: label_option_map
 
-
-   .. py:property:: plot_options
-
-
-   .. py:method:: select_plot(channels)
+      Return a mapping from human-readable ROI label strings to ROI index
+      integers.
 
 
    .. py:method:: setup_images(base_folder, file_name_base, file_number, flyscan=False)
 
+      Configure HDF5 file name, number, path, and flysetup flag for an
+      upcoming scan.
+
+
 
    .. py:property:: save_image_flag
+
+      Return True if the HDF5 plugin is enabled or autosave is on.
+
+

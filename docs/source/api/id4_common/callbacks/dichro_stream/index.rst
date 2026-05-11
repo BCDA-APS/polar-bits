@@ -19,3 +19,4 @@ Module Contents
 .. py:data:: plot_dichro_settings
 
 .. py:data:: dichro_bec
+

@@ -29,28 +29,47 @@ Module Contents
 
    .. py:property:: mono
 
+      Return the monochromator device, resolving from registry on first
+      access.
+
 
    .. py:property:: trackable_devices
+
+      Return all track_energy-labelled devices plus any manually added extra
+      devices.
 
 
    .. py:property:: extra_devices
 
+      Return the list of manually added trackable devices.
+
 
    .. py:property:: tracking
+
+      Print a table of all trackable devices and their current tracking state.
 
 
    .. py:method:: tracking_setup(devices_names: collections.abc.Iterable = [])
 
+      Enable tracking for the named devices, or prompt interactively if names
+      are empty.
+
+
 
    .. py:property:: position
+
+      Return the current monochromator energy position.
 
 
    .. py:property:: limits
 
-      The control limits (low, high), such that low <= value <= high
+      Return the monochromator energy soft limits.
 
 
    .. py:property:: feedback_device
+
+      Return the monochromator feedback device from the registry, or None if
+      absent.
 
 
    .. py:method:: get(**kwargs)
@@ -61,11 +80,8 @@ Module Contents
 
    .. py:method:: set(position, *, wait=False, timeout=None, settle_time=None, moved_cb=None)
 
-      Set the value of the Signal and return a Status object.
-
-      :returns: **st** -- This status object will be finished upon return in the
-                case of basic soft Signals
-      :rtype: Status
+      Move mono and all tracking devices to position (keV); disable feedback
+      during the move.
 
 
 
@@ -76,3 +92,8 @@ Module Contents
 
 
    .. py:method:: default_settings()
+
+      Resolve and cache the monochromator device from the registry.
+
+
+

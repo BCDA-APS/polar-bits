@@ -24,23 +24,42 @@ Module Contents
 
    .. py:property:: acquisition_signal
 
+      Return the acquisition signal object.
+
 
    .. py:property:: delay
+
+      Return the post-trigger delay in seconds.
 
 
    .. py:property:: min_period
 
+      Return the minimum time between triggers in seconds.
+
 
    .. py:method:: setup_manual_trigger()
+
+      Configure detector stage signals for manual (software) triggering.
+
 
 
    .. py:method:: setup_external_trigger(trigger_type='gate')
 
+      Configure detector stage signals for external hardware triggering.
+
+
 
    .. py:method:: stage()
 
+      Stage the detector, optionally enabling external trigger for flyscans.
+
+
 
    .. py:method:: unstage()
+
+      Unstage the detector, stopping acquisition and waiting for processing to
+      finish.
+
 
 
    .. py:method:: trigger()
@@ -51,10 +70,10 @@ Module Contents
 
 .. py:class:: Eiger1MDetector(*args, default_folder='', hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', max_num_images=600000, **kwargs)
 
-   Bases: :py:obj:`TriggerTime`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`TriggerTime`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   This trigger mixin class takes one acquisition per trigger.
+   Eiger 1M area detector with HDF5 file writing and statistics plugins.
 
 
    .. py:attribute:: cam
@@ -120,9 +139,6 @@ Module Contents
 
 
 
-   .. py:property:: preset_monitor
-
-
    .. py:method:: align_on(time=0.1)
 
       Start detector in alignment mode
@@ -137,38 +153,74 @@ Module Contents
 
    .. py:method:: save_images_on()
 
+      Enable HDF5 image saving.
+
+
 
    .. py:method:: save_images_off()
+
+      Disable HDF5 image saving.
+
 
 
    .. py:method:: auto_save_on()
 
+      Enable automatic HDF5 saving on each acquisition.
+
+
 
    .. py:method:: auto_save_off()
+
+      Disable automatic HDF5 saving on each acquisition.
+
 
 
    .. py:method:: default_settings()
 
+      Apply default detector settings and stage signal configuration.
+
+
 
    .. py:method:: plot_all()
+
+      Set all five stats channels to be plotted.
+
 
 
    .. py:method:: plot_stats1()
 
+      Set only Stats1 total to be plotted.
+
+
 
    .. py:method:: plot_stats2()
+
+      Set only Stats2 total to be plotted.
+
 
 
    .. py:method:: plot_stats3()
 
+      Set only Stats3 total to be plotted.
+
+
 
    .. py:method:: plot_stats4()
+
+      Set only Stats4 total to be plotted.
+
 
 
    .. py:method:: plot_stats5()
 
+      Set only Stats5 total to be plotted.
+
+
 
    .. py:method:: setup_images(base_path, name_template, file_number, flyscan=False)
+
+      Configure HDF5 file path, name, and number for the upcoming scan.
+
 
 
    .. py:method:: plot_select(stats)
@@ -184,11 +236,34 @@ Module Contents
 
    .. py:property:: save_image_flag
 
+      Return True if images will be saved on next acquisition.
+
 
    .. py:property:: label_option_map
+
+      Return mapping of stats channel label names to their index numbers.
 
 
    .. py:property:: plot_options
 
+      Return list of available channel names for plot selection.
+
 
    .. py:method:: select_plot(channels)
+
+      Select which stats channels to plot by label name.
+
+
+
+   .. py:method:: field_for_label(label)
+
+      Return the ophyd field name for a plot-option label.
+
+
+
+   .. py:method:: select_read(channels)
+
+      No-op: all stats channels are always read (only hinted/normal differ).
+
+
+

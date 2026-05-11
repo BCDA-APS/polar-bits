@@ -24,79 +24,36 @@ Module Contents
 
    .. py:method:: setup_manual_trigger()
 
+      Configure stage_sigs for single-image manual-trigger mode.
+
+
 
    .. py:method:: setup_external_trigger()
       :abstractmethod:
 
 
+      Raise NotImplementedError — external trigger is not supported for Vimba
+      detectors.
+
+
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Disarm the detector, subscribe to busy signal, and call parent stage.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Call parent unstage, stop acquisition, clear busy subscription, and
+      restore manual trigger.
 
 
 
    .. py:method:: trigger()
 
-      Trigger the device and return status object.
-
-      This method is responsible for implementing 'trigger' or
-      'acquire' functionality of this device.
-
-      If there is an appreciable time between triggering the device
-      and it being able to be read (via the
-      :meth:`~BlueskyInterface.read` method) then this method is
-      also responsible for arranging that the
-      :obj:`~ophyd.status.StatusBase` object returned by this method
-      is notified when the device is ready to be read.
-
-      If there is no delay between triggering and being readable,
-      then this method must return a :obj:`~ophyd.status.StatusBase`
-      object which is already completed.
-
-      :returns: **status** -- :obj:`~ophyd.status.StatusBase` object which will be marked
-                as complete when the device is ready to be read.
-      :rtype: StatusBase
+      Trigger one acquisition and return a status object that completes when
+      acquire_busy drops.
 
 
 
@@ -105,9 +62,8 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.CamBase`
 
 
-   The AreaDetector base class
-
-   This serves as the base for all detectors and plugins
+   CamBase subclass for AVT Vimba cameras with trigger, gain, and statistics
+   signals.
 
 
    .. py:attribute:: pool_max_buffers
@@ -195,10 +151,11 @@ Module Contents
 
 .. py:class:: VimbaDetector(*args, default_folder='', hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', max_num_images=65535, **kwargs)
 
-   Bases: :py:obj:`Trigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`Trigger`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   This trigger mixin class takes one acquisition per trigger.
+   Vimba area detector with ROI/stats plugins, HDF5 output, and alignment
+   helpers.
 
 
    .. py:attribute:: cam
@@ -251,16 +208,9 @@ Module Contents
 
    .. py:method:: wait_for_connection(all_signals=False, timeout=2)
 
-      Wait for signals to connect
+      Wait for the cam to fully connect before calling the parent
+      wait_for_connection.
 
-      :param all_signals: Wait for all signals to connect (including lazy ones)
-      :type all_signals: bool, optional
-      :param timeout: Overall timeout
-      :type timeout: float or None
-
-
-
-   .. py:property:: preset_monitor
 
 
    .. py:method:: align_on(time=0.1)
@@ -277,17 +227,33 @@ Module Contents
 
    .. py:method:: save_images_on()
 
+      Enable the HDF1 plugin to save images.
+
+
 
    .. py:method:: save_images_off()
+
+      Disable the HDF1 plugin so images are not saved.
+
 
 
    .. py:method:: auto_save_on()
 
+      Enable HDF1 autosave mode.
+
+
 
    .. py:method:: auto_save_off()
 
+      Disable HDF1 autosave mode.
+
+
 
    .. py:method:: default_settings()
+
+      Configure detector defaults: single-image mode, HDF1 template, and
+      warmup sequence.
+
 
 
    .. py:method:: plot_select(rois)
@@ -303,32 +269,78 @@ Module Contents
 
    .. py:method:: plot_allrois()
 
+      Set all five stats ROIs to hinted kind for plotting.
+
+
 
    .. py:method:: plot_roi1()
+
+      Set only ROI1 stats to hinted kind for plotting.
+
 
 
    .. py:method:: plot_roi2()
 
+      Set only ROI2 stats to hinted kind for plotting.
+
+
 
    .. py:method:: plot_roi3()
+
+      Set only ROI3 stats to hinted kind for plotting.
+
 
 
    .. py:method:: plot_roi4()
 
+      Set only ROI4 stats to hinted kind for plotting.
+
+
 
    .. py:method:: plot_roi5()
+
+      Set only ROI5 (full detector) stats to hinted kind for plotting.
+
 
 
    .. py:method:: setup_images(base_path, name_template, file_number, flyscan=False)
 
+      Configure HDF1 file path, name, and number for an upcoming acquisition.
+
+
 
    .. py:property:: save_image_flag
+
+      Return True if HDF1 plugin is enabled or autosave is active.
 
 
    .. py:property:: label_option_map
 
+      Return a mapping from ROI label strings to ROI numbers for plot
+      selection.
+
 
    .. py:property:: plot_options
 
+      Return a list of all ROI label strings available for plot selection.
+
 
    .. py:method:: select_plot(channels)
+
+      Set hinted kind for the given channel label list, delegating to
+      plot_select.
+
+
+
+   .. py:method:: field_for_label(label)
+
+      Return the ophyd field name for a plot-option label.
+
+
+
+   .. py:method:: select_read(channels)
+
+      No-op: all stats channels are always read (only hinted/normal differ).
+
+
+

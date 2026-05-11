@@ -33,47 +33,13 @@ Module Contents
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Subscribe to detector state changes and stage the detector.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Unstage the detector and unsubscribe from detector state changes.
 
 
 
@@ -88,7 +54,14 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
 
+   HDF5 plugin for LightField that translates Windows paths to Linux read
+   paths.
+
+
    .. py:method:: make_write_read_paths(write_path=None, read_path=None)
+
+      Return write path, full read path, and relative read path for HDF5 file.
+
 
 
 .. py:class:: LightFieldFilePlugin(*args, **kwargs)
@@ -109,35 +82,18 @@ Module Contents
 
    .. py:property:: base_name
 
+      Return the base filename from the LightField camera.
+
 
    .. py:method:: make_write_read_paths(write_path=None, read_path=None)
+
+      Return write path, full read path, and relative read path for SPE file.
+
 
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Stage the file plugin, verifying the output file does not already exist.
 
 
 
@@ -152,9 +108,7 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.LightFieldDetectorCam`
 
 
-   The AreaDetector base class
-
-   This serves as the base for all detectors and plugins
+   LightField camera with additional file naming and grating wavelength PVs.
 
 
    .. py:attribute:: file_name_base
@@ -194,17 +148,11 @@ Module Contents
 
 .. py:class:: LightFieldDetector(*args, hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', bluesky_files_root='', windows_files_root='', relative_default_folder='', **kwargs)
 
-   Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`MySingleTrigger`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   This trigger mixin class takes one acquisition per trigger.
-   .. rubric:: Examples
-
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+   Princeton Instruments LightField spectrometer detector with HDF5 and SPE
+   file writing.
 
 
    .. py:attribute:: cam
@@ -239,28 +187,81 @@ Module Contents
 
 
 
-   .. py:property:: preset_monitor
+   .. py:property:: label_option_map
+      :type: dict
+
+
+      No selectable plot channels — LightField saves full spectra.
+
+
+   .. py:property:: plot_options
+      :type: list
+
+
+      Return empty list — LightField has no selectable plot channels.
+
+
+   .. py:method:: select_plot(channels: list) -> None
+
+      No-op — LightField has no selectable plot channels.
+
+
+
+   .. py:method:: field_for_label(label: str) -> str
+
+      Return label unchanged — LightField has no channel mapping.
+
 
 
    .. py:method:: save_images_on()
 
+      Enable HDF5 image saving.
+
+
 
    .. py:method:: save_images_off()
+
+      Disable HDF5 image saving.
+
 
 
    .. py:method:: auto_save_on()
 
+      Enable automatic HDF5 saving on each acquisition.
+
+
 
    .. py:method:: auto_save_off()
+
+      Disable automatic HDF5 saving on each acquisition.
+
 
 
    .. py:method:: default_settings()
 
+      Apply default detector settings and stage signal configuration.
+
+
 
    .. py:method:: setup_images(base_path, name_template, file_number, flyscan=False)
+
+      Configure HDF5 and SPE file paths and names for the upcoming scan.
+
 
 
    .. py:property:: save_image_flag
 
+      Return True; LightField detector always saves images.
+
+
+   .. py:method:: predict_save_path(base_path, name_template, file_number)
+
+      Return (full_path, relative_path) without any EPICS I/O.
+
+      Overrides CountersMixin default because LightField uses read_path.name
+      (not a trailing slash) as the directory token in make_write_read_paths.
+
+
 
 .. py:data:: spectrometer
+

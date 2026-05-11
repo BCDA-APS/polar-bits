@@ -19,9 +19,7 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.ADBase`
 
 
-   The AreaDetector base class
-
-   This serves as the base for all detectors and plugins
+   Area-detector CAM interface for a single-element Dante MCA detector.
 
 
    .. py:attribute:: port_name
@@ -138,9 +136,8 @@ Module Contents
    Bases: :py:obj:`DanteCAM1`
 
 
-   The AreaDetector base class
-
-   This serves as the base for all detectors and plugins
+   DanteCAM1 variant for a 4-element Dante detector with SNL connectivity
+   status.
 
 
    .. py:attribute:: snl_connected
@@ -151,9 +148,8 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.ADBase`
 
 
-   The AreaDetector base class
-
-   This serves as the base for all detectors and plugins
+   Per-channel SCA (single-channel analyser) statistics and parameters for a
+   Dante board.
 
 
    .. py:attribute:: real_time
@@ -263,6 +259,10 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
 
+   HDF5 plugin for the Dante detector with Dante-specific array counter and
+   warmup.
+
+
    .. py:attribute:: array_counter
 
 
@@ -270,3 +270,9 @@ Module Contents
 
 
    .. py:method:: warmup()
+
+      Perform a single-point MCA mapping acquisition to warm up the HDF5
+      plugin.
+
+
+

@@ -39,14 +39,17 @@ Module Contents
 
    .. py:property:: settle_time
 
-      Amount of time to wait after moves to report status completion
+      Return the settle time in seconds after a move completes.
 
 
    .. py:property:: egu
 
-      The engineering units (EGU) for a position
+      Return the engineering units string from the EPICS units signal.
 
 
    .. py:method:: stop(*, success=False)
 
-      Hold the current readback when stop() is called and not :meth:`inposition`.
+      Stop the positioner; hold current position if not successful.
+
+
+

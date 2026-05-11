@@ -19,9 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.areadetector.ADBase`
 
 
-   The AreaDetector base class
-
-   This serves as the base for all detectors and plugins
+   ADBase subclass for position-stream cameras with acquire, counter, and
+   callback signals.
 
 
    .. py:attribute:: port_name
@@ -62,54 +61,19 @@ Module Contents
    Bases: :py:obj:`ophyd.BlueskyInterface`
 
 
-   Classes that inherit from this can safely customize the
-   these methods without breaking mro.
-
+   BlueskyInterface mixin that triggers a single acquisition and waits for the
+   busy signal.
 
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Subscribe to acquire_busy changes and call the parent stage method.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Call parent unstage and unsubscribe the acquire_busy callback.
 
 
 
@@ -124,9 +88,7 @@ Module Contents
    Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
-   Classes that inherit from this can safely customize the
-   these methods without breaking mro.
-
+   AreaDetector device for position-stream data with HDF5 file output.
 
 
    .. py:attribute:: cam
@@ -147,11 +109,24 @@ Module Contents
 
    .. py:property:: preset_monitor
 
+      Return the dummy acquire_time signal used as a no-op preset monitor.
+
 
    .. py:method:: default_settings()
+
+      Set the HDF1 plugin warmup signal sequence for proper plugin
+      initialization.
+
 
 
    .. py:method:: setup_images(base_path, name_template, file_number, flyscan=False)
 
+      Configure HDF1 file path, name, and number for an upcoming acquisition.
+
+
 
    .. py:property:: save_image_flag
+
+      Return True if the HDF1 plugin is enabled or autosave is active.
+
+

@@ -19,31 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.PseudoPositioner`
 
 
-   A pseudo positioner which can be comprised of multiple positioners
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str
-   :param concurrent: If set, all real motors will be moved concurrently. If not, they will
-                      be moved in order of how they were defined initially
-   :type concurrent: bool, optional
-   :param read_attrs: the components to include in a normal reading (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param name: The name of the device
-   :type name: str, optional
-   :param egu: The user-defined engineering units for the whole PseudoPositioner
-   :type egu: str, optional
-   :param auto_target: Automatically set the target position of PseudoSingle devices when
-                       moving to a single PseudoPosition
-   :type auto_target: bool, optional
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None
-   :param settle_time: The amount of time to wait after moves to report status completion
-   :type settle_time: float, optional
-   :param timeout: The default timeout to use for motion requests, in seconds.
-   :type timeout: float, optional
+   Double-crystal monochromator as a pseudo-positioner converting energy to
+   theta and y2.
 
 
    .. py:attribute:: energy
@@ -93,11 +70,22 @@ Module Contents
 
    .. py:method:: convert_energy_to_theta(energy)
 
+      Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+      d-spacing.
+
+
 
    .. py:method:: convert_energy_to_y(energy)
 
+      Convert photon energy (keV) to second-crystal vertical position (mm).
+
+
 
    .. py:method:: convert_theta_to_energy(theta)
+
+      Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+      d-spacing.
+
 
 
    .. py:method:: forward(pseudo_pos)
@@ -114,5 +102,14 @@ Module Contents
 
    .. py:method:: set_energy(energy)
 
+      Update the theta readback offset so that the current theta corresponds
+      to energy (keV).
+
+
 
    .. py:method:: default_settings()
+
+      Remove crystal_select from the sub-device list so it is not staged.
+
+
+

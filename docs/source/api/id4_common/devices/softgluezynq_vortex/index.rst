@@ -3,6 +3,11 @@ id4_common.devices.softgluezynq_vortex
 
 .. py:module:: id4_common.devices.softgluezynq_vortex
 
+.. autoapi-nested-parse::
+
+   SoftGlue Zynq device for histogram-mode Vortex detector triggering.
+
+
 
 
 
@@ -14,56 +19,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   SoftGlue Zynq device that sequences histogram-mode Vortex detector
+   acquisitions.
 
 
    .. py:attribute:: preset_monitor
@@ -119,66 +76,52 @@ Module Contents
 
    .. py:property:: frequency
 
+      Return the configured detector trigger frequency in Hz.
+
 
    .. py:method:: start_softglue()
+
+      Bluesky plan stub to assert the enable buffer (in1 = '1').
+
 
 
    .. py:method:: stop_softglue()
 
+      Bluesky plan stub to de-assert the enable buffer (in1 = '0').
+
+
 
    .. py:method:: reset()
+
+      Bluesky plan stub to pulse the reset buffer and clear the histogram
+      scaler.
+
 
 
    .. py:method:: stage()
 
-      Stage the device for data collection.
-
-      This method is expected to put the device into a state where
-      repeated calls to :meth:`~BlueskyInterface.trigger` and
-      :meth:`~BlueskyInterface.read` will 'do the right thing'.
-
-      Staging not idempotent and should raise
-      :obj:`RedundantStaging` if staged twice without an
-      intermediate :meth:`~BlueskyInterface.unstage`.
-
-      This method should be as fast as is feasible as it does not return
-      a status object.
-
-      The return value of this is a list of all of the (sub) devices
-      stage, including it's self.  This is used to ensure devices
-      are not staged twice by the :obj:`~bluesky.run_engine.RunEngine`.
-
-      This is an optional method, if the device does not need
-      staging behavior it should not implement `stage` (or
-      `unstage`).
-
-      :returns: **devices** -- list including self and all child devices staged
-      :rtype: list
+      Stop and reset the SGZ, then subscribe the acquire callback before
+      staging.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the device.
-
-      This method returns the device to the state it was prior to the
-      last `stage` call.
-
-      This method should be as fast as feasible as it does not
-      return a status object.
-
-      This method must be idempotent, multiple calls (without a new
-      call to 'stage') have no effect.
-
-      :returns: **devices** -- list including self and all child devices unstaged
-      :rtype: list
+      Stop, reset the SGZ, and unsubscribe the acquire callback after
+      unstaging.
 
 
 
    .. py:method:: trigger()
 
-      Start acquisition
+      Assert the enable buffer to start one histogram acquisition and return
+      its status.
 
 
 
    .. py:method:: default_settings(timeout=10)
+
+      Apply default SGZ Vortex settings (currently a no-op placeholder).
+
+
+

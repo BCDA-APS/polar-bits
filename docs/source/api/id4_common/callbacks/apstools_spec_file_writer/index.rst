@@ -374,7 +374,7 @@ Module Contents
 
    .. py:method:: event(doc)
 
-      a single "row" of data
+      Handle *event* documents and write data rows on-the-fly.
 
 
 
@@ -462,3 +462,5 @@ Module Contents
        (optional)
        Instance of ``SpecWriterCallback()``,
        typically: ``specwriter = SpecWriterCallback()``
+
+

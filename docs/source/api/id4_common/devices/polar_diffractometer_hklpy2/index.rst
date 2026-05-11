@@ -38,36 +38,35 @@ Module Contents
 
 .. py:data:: ANALYZER_LIST_PATH
 
+.. py:class:: UBMatrixSignal(pv_name, *, parent=None, name=None, **kwargs)
+
+   Bases: :py:obj:`ophyd.Signal`
+
+
+   In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
+
+   Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
+   other components can subscribe to UB matrix changes via .subscribe().
+
+
+   .. py:method:: get(**kwargs)
+
+      Return the parent diffractometer's current UB matrix.
+
+
+
+   .. py:method:: put(value, *, timestamp=None, force=False, **kwargs)
+
+      Write the UB matrix back to the parent and notify subscribers.
+
+
+
 .. py:class:: AnalyzerDevice(prefix='', *, concurrent=True, read_attrs=None, configuration_attrs=None, name, egu='', auto_target=True, **kwargs)
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
 
 
-   A pseudo positioner which can be comprised of multiple positioners
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str
-   :param concurrent: If set, all real motors will be moved concurrently. If not, they will
-                      be moved in order of how they were defined initially
-   :type concurrent: bool, optional
-   :param read_attrs: the components to include in a normal reading (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param name: The name of the device
-   :type name: str, optional
-   :param egu: The user-defined engineering units for the whole PseudoPositioner
-   :type egu: str, optional
-   :param auto_target: Automatically set the target position of PseudoSingle devices when
-                       moving to a single PseudoPosition
-   :type auto_target: bool, optional
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None
-   :param settle_time: The amount of time to wait after moves to report status completion
-   :type settle_time: float, optional
-   :param timeout: The default timeout to use for motion requests, in seconds.
-   :type timeout: float, optional
+   Crystal polarization analyzer with pseudo-energy axis and crystal setup.
 
 
    .. py:attribute:: energy
@@ -105,34 +104,41 @@ Module Contents
 
    .. py:method:: move_single(pseudo, position, **kwargs)
 
-      Move one PseudoSingle axis to a position
-
-      All other positioners will use their current setpoint/target value, if
-      available. Failing that, their current readback value will be used (see
-      ``PseudoSingle.sync`` and ``PseudoSingle.target``).
-
-      :param pseudo: PseudoSingle positioner to move
-      :type pseudo: PseudoSingle
-      :param position: Position only for the PseudoSingle
-      :type position: float
-      :param kwargs: Passed onto move
-      :type kwargs: dict
+      Guard move_single to require analyzer setup before moving energy.
 
 
 
    .. py:property:: beamline_wavelength
 
+      Return the current beamline wavelength from the parent diffractometer
+      beam object.
+
 
    .. py:property:: beamline_energy
+
+      Return the current beamline energy in keV from the parent diffractometer
+      beam object.
 
 
    .. py:method:: convert_energy_to_theta(energy)
 
+      Convert photon energy (keV) to Bragg angle (degrees) using the crystal
+      d-spacing.
+
+
 
    .. py:method:: convert_energy_to_tth_trans(energy)
 
+      Convert photon energy (keV) to the two-theta translation stage position
+      (mm).
+
+
 
    .. py:method:: convert_theta_to_energy(theta)
+
+      Convert Bragg angle (degrees) to photon energy (keV) using the crystal
+      d-spacing.
+
 
 
    .. py:method:: forward(pseudo_pos)
@@ -149,11 +155,22 @@ Module Contents
 
    .. py:method:: set_energy(energy)
 
+      Calibrate the Bragg-angle motor to match the given photon energy (keV).
 
-   .. py:method:: calc()
+
+
+   .. py:method:: calc(acal='No')
+
+      Print analyzer Bragg angles for the current crystal at the current
+      beamline energy.
+
 
 
    .. py:method:: setup(analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH)
+
+      List compatible analyzer crystals and interactively configure d-spacing
+      and crystal.
+
 
 
 .. py:class:: DiffractometerMixin(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
@@ -161,56 +178,8 @@ Module Contents
    Bases: :py:obj:`ophyd.Device`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   Mixin adding table, area-detector, filter, slit, and analyzer components to
+   a diffractometer.
 
 
    .. py:attribute:: tablex
@@ -234,7 +203,34 @@ Module Contents
    .. py:attribute:: ana
 
 
+   .. py:property:: hints
+
+      Return only explicitly-hinted sub-components to avoid busy plotting.
+
+      ``Kind`` is a bitfield: ``Kind.hinted`` (0b101) shares the
+      ``Kind.normal`` bit (0b001). ``_get_components_of_kind(Kind.hinted)``
+      therefore yields *both* normal and hinted components. The mask
+      ``(~Kind.normal & Kind.hinted)`` isolates the "hinted-only" bit so
+      only components explicitly tagged ``Kind.hinted`` contribute fields.
+
+
+   .. py:property:: auxiliary_axis_names
+
+      Drop nested PseudoPositioner sub-devices from auxiliaries.
+
+      hklpy2's ``wh(full=True)``/``pa()`` formats each auxiliary axis with
+      ``round(component.position, ndigits=...)``. ``PseudoPositioner``
+      sub-devices (e.g. ``ana``) return a ``PseudoPosition`` namedtuple,
+      which has no ``__round__`` and crashes the print step. Filter them
+      out here; scalar single-axis auxiliaries (the case hklpy2 was
+      designed for) still pass through.
+
+
    .. py:method:: default_settings()
+
+      Apply default settings for the diffractometer mixin (no-op; subclasses
+      override).
+
 
 
 .. py:data:: mono_kwargs
@@ -243,59 +239,10 @@ Module Contents
 
 .. py:class:: CradleDiffractometer(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
-   Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+   Bases: :py:obj:`DiffractometerMixin`, :py:obj:`CradleDiffractometerBase`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
-
-
-
-   .. attribute:: -------------
-
-
-
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation.
 
 
    .. py:attribute:: x
@@ -311,59 +258,16 @@ Module Contents
 
 .. py:class:: HPDiffractometer(prefix='', *, name, kind=None, read_attrs=None, configuration_attrs=None, parent=None, child_name_separator='_', connection_timeout=DEFAULT_CONNECTION_TIMEOUT, **kwargs)
 
-   Bases: :py:obj:`CradleDiffractometerBase`, :py:obj:`DiffractometerMixin`
+   Bases: :py:obj:`DiffractometerMixin`, :py:obj:`HPDiffractometerBase`
 
 
-   Base class for device objects
-
-   This class provides attribute access to one or more Signals, which can be
-   a mixture of read-only and writable. All must share the same base_name.
-
-   :param prefix: The PV prefix for all components of the device
-   :type prefix: str, optional
-   :param name: The name of the device (as will be reported via read()`
-   :type name: str, keyword only
-   :param kind: (or equivalent integer), optional
-                Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
-   :type kind: a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
-   :param read_attrs: DEPRECATED: the components to include in a normal reading
-                      (i.e., in ``read()``)
-   :type read_attrs: sequence of attribute names
-   :param configuration_attrs: DEPRECATED: the components to be read less often (i.e., in
-                               ``read_configuration()``) and to adjust via ``configure()``
-   :type configuration_attrs: sequence of attribute names
-   :param parent: The instance of the parent device, if applicable
-   :type parent: instance or None, optional
-   :param connection_timeout: Timeout for connection of all underlying signals.
-
-                              The default value DEFAULT_CONNECTION_TIMEOUT means, "Fall back to
-                              class-wide default." See Device.set_defaults to
-                              configure class defaults.
-
-                              Explicitly passing None means, "Wait forever."
-   :type connection_timeout: float or None, optional
-
-   .. attribute:: lazy_wait_for_connection
-
-      When instantiating a lazy signal upon first access, wait for it to
-      connect before returning control to the user.  See also the context
-      manager helpers: ``wait_for_lazy_connection`` and
-      ``do_not_wait_for_lazy_connection``.
-
-      :type: bool
-
-   .. attribute:: Subscriptions
+   hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
 
 
-
-   .. attribute:: -------------
-
+   .. py:attribute:: chi
 
 
-   .. attribute:: SUB_ACQ_DONE
-
-      A one-time subscription indicating the requested trigger-based
-      acquisition has completed.
+   .. py:attribute:: phi
 
 
    .. py:attribute:: basex
@@ -402,6 +306,10 @@ Module Contents
    .. py:attribute:: nanoz
 
 
+   .. py:attribute:: xeryon
+
+
 .. py:data:: CradleDiffractometerPSI
 
 .. py:data:: HPDiffractometerPSI
+
