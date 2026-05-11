@@ -558,10 +558,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../devices/xbpm/index.html">id4_common.devices.xbpm</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../macros/index.html">id4_common.macros</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../macros/macros_api/index.html">id4_common.macros.macros_api</a></li>
-</ul>
-</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../plans/index.html">id4_common.plans</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/base_scans/index.html">id4_common.plans.base_scans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/center_maximum/index.html">id4_common.plans.center_maximum</a></li>
@@ -573,7 +569,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../plans/local_scans/index.html">id4_common.plans.local_scans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/move_plans/index.html">id4_common.plans.move_plans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/peak_position/index.html">id4_common.plans.peak_position</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../plans/peak_position_legacy/index.html">id4_common.plans.peak_position_legacy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/sim_plans/index.html">id4_common.plans.sim_plans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/workflow_plan/index.html">id4_common.plans.workflow_plan</a></li>
 </ul>
@@ -606,7 +601,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../session_state/index.html">id4_common.utils.session_state</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../shorts/index.html">id4_common.utils.shorts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../spe_handler/index.html">id4_common.utils.spe_handler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../temperature_setup/index.html">id4_common.utils.temperature_setup</a></li>
@@ -707,89 +701,22 @@
                   
   <section id="module-id4_common.utils.undulator_setup">
 <span id="id4-common-utils-undulator-setup"></span><h1>id4_common.utils.undulator_setup<a class="headerlink" href="#module-id4_common.utils.undulator_setup" title="Link to this heading">#</a></h1>
-<p>Utility for configuring upstream and downstream undulator offsets.</p>
-<p>The single public function, <a class="reference internal" href="#id4_common.utils.undulator_setup.undulator_setup" title="id4_common.utils.undulator_setup.undulator_setup"><code class="xref py py-func docutils literal notranslate"><span class="pre">undulator_setup()</span></code></a>, walks the user
-through an interactive prompt for each undulator (DS = downstream, US =
-upstream): what offset (in keV) to apply between mono energy and
-undulator setpoint, and which harmonic to use.  Any value passed as a
-kwarg short-circuits the matching prompt; <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default) means
-“ask interactively, with the current device state as the default
-answer”.</p>
-<section id="what-this-function-does-not-do">
-<h2>What this function does <strong>not</strong> do<a class="headerlink" href="#what-this-function-does-not-do" title="Link to this heading">#</a></h2>
-<p>It does not toggle each undulator’s <code class="docutils literal notranslate"><span class="pre">.tracking</span></code> flag.  Use
-<a class="reference internal" href="../../devices/energy_device/index.html#id4_common.devices.energy_device.EnergySignal.tracking_setup" title="id4_common.devices.energy_device.EnergySignal.tracking_setup"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.devices.energy_device.EnergySignal.tracking_setup()</span></code></a> for
-that — it’s the single source of truth for “which devices follow the
-mono energy”.</p>
-<p>Typical workflow:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">undulator_setup</span><span class="p">(</span><span class="n">ds_off</span><span class="o">=-</span><span class="mf">0.072</span><span class="p">,</span> <span class="n">ds_harm</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>        <span class="c1"># offset + harmonic</span>
-<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">&quot;undulators_ds&quot;</span><span class="p">,</span> <span class="s2">&quot;pr2&quot;</span><span class="p">])</span>  <span class="c1"># turn tracking on</span>
-</pre></div>
-</div>
-<p>Both calls auto-save into <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code>, so a bluesky
-restart restores both halves via
-<a class="reference internal" href="../session_state/index.html#id4_common.utils.session_state.restore_session_state" title="id4_common.utils.session_state.restore_session_state"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.utils.session_state.restore_session_state()</span></code></a>.</p>
-</section>
+<p>Utility for configuring upstream and downstream undulator setpoints.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.utils.undulator_setup.HARMONIC_BREAKPOINTS_KEV">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.undulator_setup.</span></span><span class="sig-name descname"><span class="pre">HARMONIC_BREAKPOINTS_KEV</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">((8.6,</span> <span class="pre">1),</span> <span class="pre">(18.0,</span> <span class="pre">3))</span></span><a class="headerlink" href="#id4_common.utils.undulator_setup.HARMONIC_BREAKPOINTS_KEV" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.undulator_setup.undulator_setup">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.undulator_setup.</span></span><span class="sig-name descname"><span class="pre">undulator_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds_harm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">us_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">us_harm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.undulator_setup.undulator_setup" title="Link to this definition">#</a></dt>
-<dd><p>Configure each undulator’s offset and harmonic.</p>
-<p>Walks DS then US, asking two questions per undulator: “Offset?” →
-“Harmonic?”.  Any kwarg supplied short-circuits the matching prompt.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ds_off</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Offset in keV applied between the mono energy and the undulator
-setpoint.  <code class="docutils literal notranslate"><span class="pre">None</span></code> (default) triggers an interactive prompt
-that also accepts the literal string <code class="docutils literal notranslate"><span class="pre">&quot;c&quot;</span></code> to calculate the
-offset from <code class="docutils literal notranslate"><span class="pre">undulator.energy.readback</span> <span class="pre">-</span> <span class="pre">energy</span></code>.  When the
-device’s current <code class="docutils literal notranslate"><span class="pre">energy_offset</span></code> is 0 the prompt’s default
-is the calculated value (assumed-uninitialised); otherwise the
-prompt’s default is the current offset.</p></li>
-<li><p><strong>us_off</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Offset in keV applied between the mono energy and the undulator
-setpoint.  <code class="docutils literal notranslate"><span class="pre">None</span></code> (default) triggers an interactive prompt
-that also accepts the literal string <code class="docutils literal notranslate"><span class="pre">&quot;c&quot;</span></code> to calculate the
-offset from <code class="docutils literal notranslate"><span class="pre">undulator.energy.readback</span> <span class="pre">-</span> <span class="pre">energy</span></code>.  When the
-device’s current <code class="docutils literal notranslate"><span class="pre">energy_offset</span></code> is 0 the prompt’s default
-is the calculated value (assumed-uninitialised); otherwise the
-prompt’s default is the current offset.</p></li>
-<li><p><strong>ds_harm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Undulator harmonic.  Must be an odd integer in
-<code class="docutils literal notranslate"><span class="pre">{1,</span> <span class="pre">3,</span> <span class="pre">5,</span> <span class="pre">7,</span> <span class="pre">9}</span></code>.  <code class="docutils literal notranslate"><span class="pre">None</span></code> (default) triggers an interactive
-prompt that also accepts the literal string <code class="docutils literal notranslate"><span class="pre">&quot;c&quot;</span></code> to
-auto-pick from the mono energy via
-<a class="reference internal" href="#id4_common.utils.undulator_setup.HARMONIC_BREAKPOINTS_KEV" title="id4_common.utils.undulator_setup.HARMONIC_BREAKPOINTS_KEV"><code class="xref py py-data docutils literal notranslate"><span class="pre">HARMONIC_BREAKPOINTS_KEV</span></code></a>.</p></li>
-<li><p><strong>us_harm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Undulator harmonic.  Must be an odd integer in
-<code class="docutils literal notranslate"><span class="pre">{1,</span> <span class="pre">3,</span> <span class="pre">5,</span> <span class="pre">7,</span> <span class="pre">9}</span></code>.  <code class="docutils literal notranslate"><span class="pre">None</span></code> (default) triggers an interactive
-prompt that also accepts the literal string <code class="docutils literal notranslate"><span class="pre">&quot;c&quot;</span></code> to
-auto-pick from the mono energy via
-<a class="reference internal" href="#id4_common.utils.undulator_setup.HARMONIC_BREAKPOINTS_KEV" title="id4_common.utils.undulator_setup.HARMONIC_BREAKPOINTS_KEV"><code class="xref py py-data docutils literal notranslate"><span class="pre">HARMONIC_BREAKPOINTS_KEV</span></code></a>.</p></li>
-<li><p><strong>effects</strong> (<em>Side</em>)</p></li>
-<li><p><strong>------------</strong></p></li>
-<li><p><strong>undulators.ds.energy_offset</strong> (<em>Writes</em>)</p></li>
-<li><p><strong>undulators.us.energy_offset</strong></p></li>
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.undulator_setup.</span></span><span class="sig-name descname"><span class="pre">undulator_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'N'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds_harm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">us</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'N'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">us_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">us_harm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.undulator_setup.undulator_setup" title="Link to this definition">#</a></dt>
+<dd><p>Select undulators used and turn energy tracking on/off</p>
+<ul>
+<li><p>Undulator offset denotes difference of undulator energy to
+monochromator energy
+- [c]alculate: calculates offset from monochromator and</p>
+<blockquote>
+<div><p>undulator current energies</p>
+</div></blockquote>
+</li>
 </ul>
-</dd>
-</dl>
-<p>:param :
-:param and the corresponding <code class="docutils literal notranslate"><span class="pre">harmonic_value</span></code> PVs (when reachable and:
-:param valid).  Auto-saves the new offsets / deadbands into:
-:param <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> so a bluesky restart can re-apply them:
-:param via <a class="reference internal" href="../session_state/index.html#id4_common.utils.session_state.restore_session_state" title="id4_common.utils.session_state.restore_session_state"><code class="xref py py-func docutils literal notranslate"><span class="pre">restore_session_state()</span></code></a>.:</p>
-<p class="rubric">Notes</p>
-<p>Does <strong>not</strong> touch <code class="docutils literal notranslate"><span class="pre">.tracking</span></code>.  Use
-<a class="reference internal" href="../../devices/energy_device/index.html#id4_common.devices.energy_device.EnergySignal.tracking_setup" title="id4_common.devices.energy_device.EnergySignal.tracking_setup"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.devices.energy_device.EnergySignal.tracking_setup()</span></code></a>
-to enable / disable per-device tracking.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="../../devices/energy_device/index.html#id4_common.devices.energy_device.EnergySignal.tracking_setup" title="id4_common.devices.energy_device.EnergySignal.tracking_setup"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.devices.energy_device.EnergySignal.tracking_setup()</span></code></a>, <a class="reference internal" href="../session_state/index.html#id4_common.utils.session_state.restore_session_state" title="id4_common.utils.session_state.restore_session_state"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.utils.session_state.restore_session_state()</span></code></a></p>
-</div>
 </dd></dl>
 
 </section>
@@ -842,9 +769,7 @@ to enable / disable per-device tracking.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-this-function-does-not-do">What this function does <strong>not</strong> do</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.undulator_setup.HARMONIC_BREAKPOINTS_KEV"><code class="docutils literal notranslate"><span class="pre">HARMONIC_BREAKPOINTS_KEV</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.undulator_setup.undulator_setup"><code class="docutils literal notranslate"><span class="pre">undulator_setup()</span></code></a></li>
 </ul>
 </li>
