@@ -21,5 +21,9 @@ Submodules
    :maxdepth: 1
 
    /api/id4_common/macros/macros_api/index
+   /api/id4_common/macros/shortcuts_4idg_euler/index
+   /api/id4_common/macros/shortcuts_4idg_hp/index
+   /api/id4_common/macros/shortcuts_4idh_9T/index
+   /api/id4_common/macros/startup_common/index
 
 

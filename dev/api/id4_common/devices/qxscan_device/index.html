@@ -558,6 +558,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../xbpm/index.html">id4_common.devices.xbpm</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../macros/index.html">id4_common.macros</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/macros_api/index.html">id4_common.macros.macros_api</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/shortcuts_4idg_euler/index.html">id4_common.macros.shortcuts_4idg_euler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/shortcuts_4idg_hp/index.html">id4_common.macros.shortcuts_4idg_hp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/shortcuts_4idh_9T/index.html">id4_common.macros.shortcuts_4idh_9T</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/startup_common/index.html">id4_common.macros.startup_common</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../plans/index.html">id4_common.plans</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/base_scans/index.html">id4_common.plans.base_scans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/center_maximum/index.html">id4_common.plans.center_maximum</a></li>
@@ -602,6 +610,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/session_state/index.html">id4_common.utils.session_state</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/shorts/index.html">id4_common.utils.shorts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/spe_handler/index.html">id4_common.utils.spe_handler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/temperature_setup/index.html">id4_common.utils.temperature_setup</a></li>
@@ -784,8 +793,8 @@ region.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PreEdgeDevice">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">PreEdgeDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.qxscan_device.PreEdgeDevice" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_RegionedDevice</span></code></p>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">PreEdgeDevice</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PreEdgeDevice" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
 <p>Device grouping up to five pre-edge scan regions and their count.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PreEdgeDevice.num_regions">
@@ -843,8 +852,8 @@ region.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PostEdgeDevice">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">PostEdgeDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.qxscan_device.PostEdgeDevice" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_RegionedDevice</span></code></p>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.qxscan_device.</span></span><span class="sig-name descname"><span class="pre">PostEdgeDevice</span></span><a class="headerlink" href="#id4_common.devices.qxscan_device.PostEdgeDevice" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
 <p>Device grouping up to five post-edge k-space scan regions and their count.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.qxscan_device.PostEdgeDevice.num_regions">

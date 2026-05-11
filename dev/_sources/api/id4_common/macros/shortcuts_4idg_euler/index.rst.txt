@@ -1,0 +1,21 @@
+id4_common.macros.shortcuts_4idg_euler
+======================================
+
+.. py:module:: id4_common.macros.shortcuts_4idg_euler
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: MAIN_NAMESPACE
+   :value: '__main__'
+
+
+.. py:data:: namespace
+
+.. py:data:: dev
+

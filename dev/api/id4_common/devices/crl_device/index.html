@@ -558,6 +558,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../xbpm/index.html">id4_common.devices.xbpm</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../macros/index.html">id4_common.macros</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/macros_api/index.html">id4_common.macros.macros_api</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/shortcuts_4idg_euler/index.html">id4_common.macros.shortcuts_4idg_euler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/shortcuts_4idg_hp/index.html">id4_common.macros.shortcuts_4idg_hp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/shortcuts_4idh_9T/index.html">id4_common.macros.shortcuts_4idh_9T</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../macros/startup_common/index.html">id4_common.macros.startup_common</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../plans/index.html">id4_common.plans</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/base_scans/index.html">id4_common.plans.base_scans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../plans/center_maximum/index.html">id4_common.plans.center_maximum</a></li>
@@ -602,6 +610,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../utils/pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/session_state/index.html">id4_common.utils.session_state</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/shorts/index.html">id4_common.utils.shorts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/spe_handler/index.html">id4_common.utils.spe_handler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/temperature_setup/index.html">id4_common.utils.temperature_setup</a></li>
@@ -797,66 +806,6 @@
 <dt class="sig sig-object py" id="id4_common.devices.crl_device.PyCRLSignal.egu">
 <span class="sig-name descname"><span class="pre">egu</span></span><a class="headerlink" href="#id4_common.devices.crl_device.PyCRLSignal.egu" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.crl_device.</span></span><span class="sig-name descname"><span class="pre">BeamsizeSignal</span></span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
-<p>Beamsize handle in microns.</p>
-<p>The underlying <code class="docutils literal notranslate"><span class="pre">focalSize</span></code> setpoint and <code class="docutils literal notranslate"><span class="pre">fSize_actual</span></code> readback PVs
-are in meters and do not fully converge, so this device writes to the
-setpoint (microns -&gt; meters) and reports the readback
-(meters -&gt; microns) without enforcing a match: <code class="docutils literal notranslate"><span class="pre">mov</span> <span class="pre">crl.beamsize</span> <span class="pre">10</span></code>
-writes 10 um to the setpoint and returns immediately. The raw
-meter-valued PVs remain available as <code class="docutils literal notranslate"><span class="pre">crl.beamsize.setpoint</span></code> and
-<code class="docutils literal notranslate"><span class="pre">crl.beamsize.readback</span></code>.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal.setpoint">
-<span class="sig-name descname"><span class="pre">setpoint</span></span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal.setpoint" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal.readback">
-<span class="sig-name descname"><span class="pre">readback</span></span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal.readback" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal.set" title="Link to this definition">#</a></dt>
-<dd><p>Move the setpoint to <code class="docutils literal notranslate"><span class="pre">value</span></code> (microns); finish immediately.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal.get" title="Link to this definition">#</a></dt>
-<dd><p>Return the readback in microns.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal.position">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal.position" title="Link to this definition">#</a></dt>
-<dd><p>Readback in microns.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal.read" title="Link to this definition">#</a></dt>
-<dd><p>Report the readback as a single microns-valued field.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal.describe" title="Link to this definition">#</a></dt>
-<dd><p>Describe the microns-valued field reported by <code class="docutils literal notranslate"><span class="pre">read()</span></code>.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.crl_device.BeamsizeSignal.hints">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#id4_common.devices.crl_device.BeamsizeSignal.hints" title="Link to this definition">#</a></dt>
-<dd><p>Hint the microns-valued field for plotting.</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -1198,17 +1147,6 @@ meter-valued PVs remain available as <code class="docutils literal notranslate">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.PyCRLSignal"><code class="docutils literal notranslate"><span class="pre">PyCRLSignal</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.PyCRLSignal.value"><code class="docutils literal notranslate"><span class="pre">PyCRLSignal.value</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.PyCRLSignal.egu"><code class="docutils literal notranslate"><span class="pre">PyCRLSignal.egu</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal.setpoint"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal.setpoint</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal.readback"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal.readback</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal.set"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal.set()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal.get"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal.get()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal.position"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal.position</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal.read"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal.read()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal.describe"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal.describe()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.BeamsizeSignal.hints"><code class="docutils literal notranslate"><span class="pre">BeamsizeSignal.hints</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.crl_device.PyCRL"><code class="docutils literal notranslate"><span class="pre">PyCRL</span></code></a><ul class="nav section-nav flex-column">

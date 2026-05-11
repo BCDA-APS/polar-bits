@@ -1,0 +1,13 @@
+id4_common.macros.startup_common
+================================
+
+.. py:module:: id4_common.macros.startup_common
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: status
+
