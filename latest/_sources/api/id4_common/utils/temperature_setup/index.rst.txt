@@ -1,0 +1,76 @@
+id4_common.utils.temperature_setup
+==================================
+
+.. py:module:: id4_common.utils.temperature_setup
+
+.. autoapi-nested-parse::
+
+   Label-keyed setup helper for the active temperature controller (issue #57).
+
+   Picks one entry from :data:`TEMPERATURE_CONTROLLERS`, resolves its setpoint
+   and readback signals on the registered device, and injects the result into
+   the interactive session as three names:
+
+   - ``tc`` — the temperature **control** signal (movable, the setpoint)
+   - ``ts`` — the temperature **sample** signal (readable, the readback)
+   - ``TEMPERATURE_CONTROLLER`` — the active label (or ``None``)
+
+   After ``temperature_setup("g-336-loop1")`` the user can ``mv tc 295`` /
+   ``RE(count(1, 1))`` and the sample temperature will land in the data and
+   (by default) the baseline stream every scan.
+
+   Adding a new controller is a one-line edit to the ``TEMPERATURE_CONTROLLERS``
+   dict below — no class changes, no devices.yml edits.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: TEMPERATURE_CONTROLLERS
+
+.. py:function:: get_active_label()
+
+   Return the currently-active controller label, or ``None``.
+
+
+.. py:function:: get_active_tc()
+
+   Return the currently-active setpoint signal, or ``None``.
+
+
+.. py:function:: get_active_ts()
+
+   Return the currently-active readback signal, or ``None``.
+
+
+.. py:function:: temperature_setup(label=None, *, add_to_baseline=True)
+
+   Bind ``tc`` (setpoint) and ``ts`` (readback) to the requested controller.
+
+   :param label: Key into :data:`TEMPERATURE_CONTROLLERS`.  If ``None`` (default),
+                 prompt interactively, defaulting to the previously-active label
+                 (or no default on the first call of the session).
+   :type label: str, optional
+   :param add_to_baseline: If ``True`` (default), append ``ts`` to ``sd.baseline`` so the
+                           sample temperature is recorded in every scan's baseline stream.
+                           Removes any previously-active ``ts`` from the baseline first so
+                           re-running ``temperature_setup`` swaps cleanly.
+   :type add_to_baseline: bool, optional
+   :param Side effects:
+   :param ------------:
+   :param On success:
+   :param sets the following attributes on ``__main__``:
+   :param - ``tc`` — the resolved setpoint signal (movable).:
+   :param - ``ts`` — the resolved readback signal (readable).:
+   :param - ``TEMPERATURE_CONTROLLER`` — the active label string.:
+
+   :raises KeyError: ``label`` is not in :data:`TEMPERATURE_CONTROLLERS`.
+   :raises LookupError: The mapped device is not in ``oregistry``.
+   :raises AttributeError: One of the dotted attribute paths does not resolve on the device.
+
+
