@@ -45,10 +45,12 @@ constraint management, and configuration save/restore.
 
 | Command | Description |
 |---------|-------------|
-| `peak_pos(scan_id=-1)` | Print peak statistics (com, max, min, fwhm) for the scan's detectors |
-| `RE(peak())` | Move scan motor to peak centroid of the last scan |
-| `RE(pmax())` | Move scan motor to x at peak maximum |
-| `RE(pmin())` | Move scan motor to x at peak minimum |
+| `peak_pos(scan_id=-1)` | Print peak statistics (com, cen, max, min, fwhm) for the scan's detectors; supports 1D **and** 2D `grid_scan` |
+| `RE(cen())` | Move scan motor(s) to the FWHM midpoint |
+| `RE(com())` | Move scan motor(s) to the centroid (center-of-mass) |
+| `RE(maxi())` | Move scan motor(s) to the x at peak maximum |
+| `RE(mini())` | Move scan motor(s) to the x at peak minimum |
+| `RE(cen2())` / `RE(maxi2())` / `RE(mini2())` | Legacy fallback that reads from the live `BestEffortCallback().peaks` (1D only); use when the new plans can't read your scan |
 
 ### Sample management
 
@@ -548,13 +550,18 @@ RE(cen(l))     # moves to the center-of-mass of the last scan
 
 #### Peak position from a previous scan
 
-`peak_pos`, `peak`, `pmax`, and `pmin` use `apstools.utils.xy_statistics`
-(the same machinery as `apstools.lineup2`) on a stored scan. They work on
-any past run from the `4id_polar` catalog — useful for revisiting a peak
-later in the session or for picking a specific detector channel.
+`peak_pos`, `cen`, `com`, `maxi`, and `mini` (and the PR-#54 aliases
+`peak` / `pmax` / `pmin`) compute peak statistics from a stored scan.
+They work on any past run from the `4id_polar` catalog — useful for
+revisiting a peak later in the session or for picking a specific
+detector channel.
 
-Print statistics for the last scan (com, max, min, fwhm) for every
-detector hinted in the scan:
+Backend: `apstools.utils.xy_statistics` for the 1D `com` / `max` / `min`
+/ `fwhm`, `scipy.signal.find_peaks` for the FWHM-midpoint `cen`, and
+`scipy.ndimage` for true 2D peak detection on `grid_scan` runs.
+
+Print statistics for the last scan for every detector hinted in the
+scan:
 
 ```python
 peak_pos()                          # last scan, all hinted detectors
@@ -562,31 +569,52 @@ peak_pos(-3)                        # 3 scans back
 peak_pos(1234, y="scaler1_ch14")    # specific scan, single detector
 ```
 
-Move the scan motor to a peak feature. The default `peak()` moves to the
-centroid; `pmax`/`pmin` move to the x at peak max/min. Plans, so wrap in
-`RE()`:
+Move to a peak feature. Wrap in `RE()`:
 
 ```python
 RE(lup(delta, -0.5, 0.5, 50, 0.5))
-RE(peak())                          # move delta to centroid of last scan
-RE(pmax())                          # move to x at peak maximum
-RE(pmin())                          # move to x at peak minimum
+RE(cen())                           # move delta to the FWHM midpoint
+RE(com())                           # move delta to the centroid
+RE(maxi())                          # move delta to x at peak maximum
+RE(mini())                          # move delta to x at peak minimum
 
 # Pick a specific detector channel:
-RE(peak(detector="scaler1_ch14"))
+RE(cen(detector="scaler1_ch14"))
 
 # Operate on an older scan:
-RE(peak(scan_id=1234))
+RE(cen(scan_id=1234))
 
 # Move a different positioner than the scan axis:
-RE(peak(positioner=phi))
+RE(cen(positioner=phi))
 ```
 
-For multi-motor scans (`hklscan`, ...) `peak()` defaults to the
-fastest-changing axis and prompts to confirm; pass `confirm=False` to
+`cen` and `com` differ only for asymmetric peaks: `cen` is the midpoint
+of the half-max crossings (matches bluesky's `PeakStats.cen`), `com`
+is the moment-based centroid `Σx·y / Σy`.
+
+For multi-motor 1D scans (`hklscan`, …) the move plans default to the
+fastest-changing axis and prompt to confirm; pass `confirm=False` to
 skip every interactive prompt. `th2th` always uses 2θ (`gamma`) — no
 prompt. `psiscan` is rejected because the scan axis is a virtual extra,
 not a movable positioner.
+
+For 2D `grid_scan` runs the move plans default to moving **both** scan
+motors in parallel to the 2D feature (issue #59):
+
+```python
+RE(grid_scan(cryox, -1, 1, 20, cryoy, -1, 1, 20, 0.2))
+RE(cen())                           # one mv() moves cryox + cryoy together
+RE(maxi(positioner=cryox))          # project to cryox, move only that axis
+```
+
+`peak_pos()` on a `grid_scan` returns motor-coordinate tuples
+(`(cryox_val, cryoy_val)`) instead of scalars; per-axis `fwhm` is a
+two-element tuple computed from 1D projections along each motor.
+
+If the new plans can't read a scan (e.g. catalog isn't reachable),
+fall back to the legacy `cen2` / `maxi2` / `mini2`. They read from
+`BestEffortCallback().peaks` and only work on `cat[-1]` (the most
+recently plotted run) — but require no catalog access.
 
 For the HP diffractometer sample stage:
 

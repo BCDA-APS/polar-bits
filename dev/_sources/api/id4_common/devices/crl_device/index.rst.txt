@@ -88,62 +88,6 @@ Module Contents
    .. py:attribute:: egu
 
 
-.. py:class:: BeamsizeSignal
-
-   Bases: :py:obj:`ophyd.Device`
-
-
-   Beamsize handle in microns.
-
-   The underlying ``focalSize`` setpoint and ``fSize_actual`` readback PVs
-   are in meters and do not fully converge, so this device writes to the
-   setpoint (microns -> meters) and reports the readback
-   (meters -> microns) without enforcing a match: ``mov crl.beamsize 10``
-   writes 10 um to the setpoint and returns immediately. The raw
-   meter-valued PVs remain available as ``crl.beamsize.setpoint`` and
-   ``crl.beamsize.readback``.
-
-
-   .. py:attribute:: setpoint
-
-
-   .. py:attribute:: readback
-
-
-   .. py:method:: set(value, **kwargs)
-
-      Move the setpoint to ``value`` (microns); finish immediately.
-
-
-
-   .. py:method:: get(**kwargs)
-
-      Return the readback in microns.
-
-
-
-   .. py:property:: position
-
-      Readback in microns.
-
-
-   .. py:method:: read()
-
-      Report the readback as a single microns-valued field.
-
-
-
-   .. py:method:: describe()
-
-      Describe the microns-valued field reported by ``read()``.
-
-
-
-   .. py:property:: hints
-
-      Hint the microns-valued field for plotting.
-
-
 .. py:class:: PyCRL(*args, **kwargs)
 
    Bases: :py:obj:`ophyd.Device`
