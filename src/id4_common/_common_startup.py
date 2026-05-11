@@ -135,8 +135,10 @@ else:
     from id4_common.utils.logbook_mcr import *  # noqa: F403
     from id4_common.utils.oregistry_auxiliar import get_devices  # noqa: F401
     from id4_common.utils.polartools_hklpy2_imports import *  # noqa: F403
+    from id4_common.utils.session_state import (
+        restore_session_state,  # noqa: F401
+    )
     from id4_common.utils.utilities import *  # noqa: F403
-    from id4_common.utils.session_state import restore_session_state  # noqa: F403
 
 # Use only the A shutter suspender, but the B shutter is still there.
 RE.install_suspender(shutter_suspenders["a_shutter"])
