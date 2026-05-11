@@ -67,6 +67,34 @@ def _is_grid_scan(start):
     return plan_name in {"grid_scan", "rel_grid_scan"} and len(motors) >= 2
 
 
+def _grid_axes(motors, shape, start, table):
+    """Return per-motor axis arrays consistent with ``shape``.
+
+    Mean-of-grid: reshape the scan-order readbacks into the inferred
+    grid and average over all dims except each motor's own. This is
+    robust to encoder noise that ``np.unique`` would otherwise turn
+    into spurious extra axis points.
+
+    Assumes the standard (non-snaking) outer-product layout. If the
+    start doc declares ``snake_axes``, raise — averaging an inner
+    motor's forward+reverse traversals would corrupt its axis.
+    """
+    snake = start.get("snake_axes")
+    if snake:
+        raise NotImplementedError(
+            "peak_pos does not yet support snake_axes scans (scan "
+            f"declared snake_axes={snake!r}). Re-run without snaking, "
+            "or analyse the data manually."
+        )
+    axes = []
+    for i, motor in enumerate(motors):
+        flat = np.asarray(table[motor].values, dtype=float)
+        grid = flat.reshape(shape)
+        reduce_axes = tuple(j for j in range(len(shape)) if j != i)
+        axes.append(grid.mean(axis=reduce_axes))
+    return axes
+
+
 def _grid_shape(start, table):
     """Return ``(motors, shape)`` for a grid scan.
 
@@ -357,7 +385,7 @@ def peak_pos(scan_id=-1, x=None, y=None):
 
     if _is_grid_scan(start):
         motors, shape = _grid_shape(start, table)
-        motor_axes = [np.unique(table[m].values) for m in motors]
+        motor_axes = _grid_axes(motors, shape, start, table)
         result["shape"] = shape
         result["axes"] = motors
         for det in det_fields:
@@ -432,7 +460,7 @@ def _move_to_feature(feature, scan_id, positioner, detector, confirm):
 
     if _is_grid_scan(start):
         motors, shape = _grid_shape(start, table)
-        motor_axes = [np.unique(table[m].values) for m in motors]
+        motor_axes = _grid_axes(motors, shape, start, table)
         flat = np.asarray(table[detector_name].values)
         img = flat.reshape(shape)
 

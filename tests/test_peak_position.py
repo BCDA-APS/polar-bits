@@ -95,6 +95,7 @@ def _make_2d_grid_run(
                 "scan_id": scan_id,
                 "plan_name": plan_name,
                 "motors": [m1_name, m2_name],
+                "shape": [len(m1_vals), len(m2_vals)],
                 "hints": {"detectors": [det_name]},
             },
             "stop": {"time": datetime.now().timestamp()},
@@ -320,6 +321,61 @@ def test_grid_shape_handles_noisy_readbacks_with_start_shape(fresh_module):
     )
     _, shape = ppm._grid_shape({"motors": ["m1", "m2"], "shape": [3, 3]}, table)
     assert shape == (3, 3)
+
+
+def test_grid_axes_averages_through_encoder_noise(fresh_module):
+    """Mean-of-grid must collapse noisy readbacks to one value per grid point."""
+    ppm, _, _ = fresh_module
+    table = _DictTable(
+        {
+            "m1": np.array(
+                [
+                    -0.5511,
+                    -0.5511,
+                    -0.5512,
+                    -0.5511,
+                    -0.5511,
+                    -0.5510,
+                    -0.5491,
+                    -0.5490,
+                    -0.5491,
+                ]
+            ),
+            "m2": np.array(
+                [
+                    0.2463,
+                    0.2470,
+                    0.2480,
+                    0.2462,
+                    0.2470,
+                    0.2480,
+                    0.2462,
+                    0.2470,
+                    0.2480,
+                ]
+            ),
+        }
+    )
+    axes = ppm._grid_axes(["m1", "m2"], (3, 3), {}, table)
+    assert len(axes) == 2
+    assert axes[0].shape == (3,)
+    assert axes[1].shape == (3,)
+    # Three distinct outer (m1) blocks averaged: ~-0.5511, -0.5511, -0.5491
+    np.testing.assert_allclose(
+        axes[0], [-0.55113, -0.55110, -0.54907], atol=1e-4
+    )
+    # Three distinct inner (m2) columns averaged: ~0.2462, 0.2470, 0.2480
+    np.testing.assert_allclose(axes[1], [0.24623, 0.24703, 0.24803], atol=1e-4)
+
+
+def test_grid_axes_rejects_snake_axes(fresh_module):
+    """snake_axes=True would mix forward/reverse traversals; raise instead."""
+    ppm, _, _ = fresh_module
+    table = _DictTable(
+        {"m1": np.zeros(9), "m2": np.zeros(9)},
+    )
+    with pytest.raises(NotImplementedError, match="snake_axes"):
+        ppm._grid_axes(["m1", "m2"], (3, 3), {"snake_axes": True}, table)
 
 
 def test_grid_shape_raises_when_inference_inconsistent(fresh_module):
