@@ -13,6 +13,7 @@ for three hutches and the Raman offline setup: **4IDB**, **4IDG**, **4IDH**, and
 
 getting_started
 plans
+useful_functions
 examples/general
 examples/writing_macros
 examples/4idg_diffractometer
@@ -51,6 +52,14 @@ Installation, first session, loading devices.
 :link-type: doc
 
 `lup`, `ascan`, `grid_scan`, `qxscan`, DM workflow submission.
+:::
+
+:::{grid-item-card} Useful Functions
+:link: useful_functions
+:link-type: doc
+
+Per-session helpers: `pr_setup`, `qxscan_setup`, `temperature_setup`,
+`undulator_setup`, `restore_session_state`, device loaders.
 :::
 
 :::{grid-item-card} Device Reference
