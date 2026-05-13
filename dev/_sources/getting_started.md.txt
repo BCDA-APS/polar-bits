@@ -65,7 +65,7 @@ the session namespace after startup.
 
 ## Loading Devices
 
-In order to connect or reload a device you cna use the following utility functions:
+In order to connect or reload a device you can use the following utility functions:
 
 ```python
 # List all available devices
@@ -84,3 +84,34 @@ remove_device("crl")
 reload_all_devices()
 reload_all_devices(stations=["core", "4idh"])  # for a specific beamline
 ```
+
+For the CRL specifically there are two convenience shortcuts that
+sit on top of `load_device("crl")`:
+
+```python
+crl_setup("h")          # switch the CRL sample-position offset to 4IDH
+                        # (or "g"; pass nothing for an interactive prompt)
+crl_size(50)            # set the focal size to 50 µm
+                        # (< 5 µm triggers crl.minimize_button instead)
+mov crl.beamsize 10     # write 10 µm directly to the focalSize PV
+                        # (no setpoint <-> readback convergence wait)
+```
+
+---
+
+## Restarting a Session
+
+For a session restart inside an experiment that has already been set
+up once, the package ships a one-line helper that runs
+`experiment_resume()` then `restore_session_state()` and prints a
+per-knob status:
+
+```python
+import id4_common.macros.startup_common  # noqa: F401
+```
+
+`restore_session_state` re-applies every auto-saved setup knob (PR
+setup, energy tracking, undulator offsets, counters, qxscan
+parameters) from `RE.md["session_state"]`. See
+[Writing Macros](examples/writing_macros.md) for the full restart
+template and details on the per-experiment knobs that auto-save.

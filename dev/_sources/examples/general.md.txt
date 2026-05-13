@@ -76,7 +76,7 @@ scan is `scan_id + 1`. So:
 
 | Value | Effect |
 |-------|--------|
-| `-1` (default) | Leave `RE.md["scan_id"]` untouched. Used by `experiment_resume()` and `experiment_load_from_bluesky()`. |
+| `-1` (default) | Leave `RE.md["scan_id"]` untouched. Used by `experiment_resume()` and `experiment_load_from_scan()`. |
 | `0` | Fresh start: next scan will be `1`. |
 | `47` | Continue numbering: next scan will be `48`. |
 | `None` | Interactive prompt ("Reset last scan_id to 0? [no]"). |
@@ -108,12 +108,15 @@ setup, so this almost always succeeds), then falls back to the
 snapshots exist and point at *different* experiments, you'll be asked
 which one to use.
 
-**`experiment_load_from_bluesky()`** — re-derive the metadata from a
-specific Bluesky run document. Restores `RE.md["scan_id"]` so numbering
-continues from the loaded run.
+**`experiment_load_from_scan(scan_id=-1)`** — re-derive the metadata
+from a specific Bluesky run document. Restores `RE.md["scan_id"]` so
+numbering continues from the loaded run. Defaults to `cat[-1]` (last
+scan); pass any catalog index (negative counts from the end) to load
+from a different run.
 
 ```python
-experiment_load_from_bluesky()    # uses cat[-1]
+experiment_load_from_scan()       # last scan
+experiment_load_from_scan(1234)   # specific scan id
 ```
 
 ### Changing sample mid-experiment
@@ -123,6 +126,42 @@ experiment_change_sample(sample_name="Fe3O4", base_name="scan")
 ```
 
 This rotates the SPEC file and writes a fresh snapshot to disk.
+
+---
+
+## Per-Session Setup Helpers
+
+A few helpers configure the session-level knobs that every scan reads.
+Calling each of these once per experiment auto-saves the values into
+`RE.md["session_state"]`, so `restore_session_state()` (or
+`import id4_common.macros.startup_common`) can re-apply them after a
+bluesky restart.
+
+```python
+# Active temperature controller (injects tc / ts / TEMPERATURE_CONTROLLER)
+temperature_setup("g")           # 4IDG LakeShore 336
+temperature_setup("h-9T")        # 4IDH 9 T magnet VTI
+mv tc 295                        # use the resulting setpoint
+te(295)                          # equivalent shortcut
+
+# CRL focusing
+crl_setup("g")                   # switch CRL offset to 4IDG
+crl_size(50)                     # set focal size to 50 µm
+mov crl.beamsize 10              # write 10 µm directly to focalSize PV
+
+# Detector / monitor selection (see Detector Selection below)
+counters.plotselect(0, 1)
+
+# Energy tracking + undulator offsets
+energy.tracking_setup(["undulators_ds", "pr2"])
+undulator_setup(ds="Y", ds_off=-0.063)
+
+# Phase-retarder setup (4IDH XMCD workflows)
+pr_setup()                       # interactive
+```
+
+For the full restart workflow see
+[Recoverable session state](writing_macros.md#recoverable-session-state).
 
 ---
 
@@ -274,12 +313,23 @@ import matplotlib.pyplot as plt
 plt.plot(ds["energy"], ds["scaler1_ch9"] / ds["scaler1_ch8"])
 ```
 
-Peak finding from the last scan:
+Peak finding from the last scan — recommended path is the
+[peak-finding plans](../plans.md#peak-finding-plans) which read the
+last scan and **move the positioner there**:
 
 ```python
-peaks.cen    # center-of-mass position of the peak
-peaks.max    # position of maximum
-peaks.com    # alias for center-of-mass
+RE(cen())   # FWHM midpoint of the last scan
+RE(com())   # center-of-mass (centroid)
+RE(maxi())  # x at maximum y
+```
+
+The BEC `peaks` object holds the same statistics if you only want the
+values:
+
+```python
+peaks.com    # x at center-of-mass (centroid)
+peaks.cen    # x at FWHM midpoint  ← NOT the same as peaks.com
+peaks.max    # x at maximum y
 ```
 
 ### polartools

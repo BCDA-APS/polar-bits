@@ -1,9 +1,12 @@
 # Scan Plans
 
 All scan plans are available in the session namespace after
-`from id4_common.startup import *`. They wrap or extend standard
+`from id4_<beamline>.startup import *` (e.g. `from id4_g.startup import
+*`). They wrap or extend standard
 [Bluesky](https://blueskyproject.io/bluesky/) plans with POLAR-specific
-defaults (counters, monitor selection, DM integration).
+defaults (counters, monitor selection, DM integration). Inside macro
+files the recommended import line is `from id4_common.macros.macros_api
+import *` — see [Writing Macros](examples/writing_macros.md).
 
 ---
 
@@ -154,14 +157,14 @@ RE(count(num, time, delay=1.0))   # add delay (seconds) between readings
 regions. The post-edge step size is defined in k-space (Å⁻¹) and converted to
 energy internally, so the energy step increases with energy above the edge.
 
-All energies in `qxscan_params` are **relative to the absorption edge**.
+All energies in `qxscan_setup` are **relative to the absorption edge**.
 
-### Step 1 — Configure `qxscan_params`
+### Step 1 — Configure `qxscan_setup`
 
 Call the device to enter the interactive setup wizard:
 
 ```python
-qxscan_params()
+qxscan_setup()
 ```
 
 This prompts for pre-edge regions (energy start, step, time factor), the edge
@@ -171,16 +174,21 @@ step, time factor). It then computes and stores the full energy list.
 Parameters can also be saved and reloaded:
 
 ```python
-qxscan_params.save_params_json("my_scan.json")
-qxscan_params.load_params_json("my_scan.json")
-qxscan_params.load_from_scan(scan_id)   # restore from a previous run
+qxscan_setup.save_params_json("my_scan.json")
+qxscan_setup.load_params_json("my_scan.json")
+qxscan_setup.load_from_scan(scan_id)   # restore from a previous run
 ```
 
 Print the current setup:
 
 ```python
-print(qxscan_params)
+print(qxscan_setup)
 ```
+
+`qxscan_setup()` and `load_params_json()` auto-snapshot into
+`RE.md["session_state"]` so a bluesky restart can re-apply them via
+`restore_session_state()` (see [Recoverable session
+state](examples/writing_macros.md#recoverable-session-state)).
 
 ### Step 2 — Run the scan
 
@@ -201,21 +209,97 @@ RE(qxscan(edge_energy, time, fixq=True))     # fix diffractometer hkl during sca
 
 ---
 
-## APS Data Management Plans
+## Reciprocal-Space Scans
 
-Plans in `id4_common.plans.dm_plans` submit workflow jobs to the APS DM
-system after data collection:
+When a diffractometer is loaded (`huber_euler` / `huber_hp`), four
+plans in `id4_common.plans.hkl_scans` scan along reciprocal-space
+directions while keeping the rest of the HKL coordinates fixed:
 
 ```python
-# Submit a workflow to DM after a scan completes
-RE(dm_workflow_plan(
-    workflow_name="4id-xmcd",
-    scan_plan=ascan(motor, 0, 1, 10),
+RE(hscan(start, stop, number_of_points, count_time))   # vary H
+RE(kscan(start, stop, number_of_points, count_time))   # vary K
+RE(lscan(start, stop, number_of_points, count_time))   # vary L
+```
+
+A general HKL scan moves between two arbitrary points in HKL space:
+
+```python
+RE(hklscan(
+    h_start, h_stop,
+    k_start, k_stop,
+    l_start, l_stop,
+    number_of_points, count_time,
 ))
 ```
 
-See the [API reference](api/id4_common/plans/index.rst) for full parameter
-documentation of `dm_plans`.
+`psiscan` rotates around the Bragg vector at fixed (H, K, L):
+
+```python
+RE(psiscan(psi_start, psi_stop, number_of_points, count_time))
+```
+
+All five accept `dichro=True` / `lockin=True` for helicity switching.
+
+---
+
+## Peak-Finding Plans
+
+`id4_common.plans.peak_position` provides plans that read the most
+recent scan from the catalog, compute a peak statistic, and move the
+positioner there. Backed by `apstools.utils.xy_statistics` +
+`scipy.signal` / `scipy.ndimage`. They work for both 1-D scans and
+2-D `grid_scan` / `rel_grid_scan` (with `np.unique`-free axis
+derivation that handles encoder noise).
+
+| Plan | Moves positioner to … |
+|------|-----------------------|
+| `cen` | FWHM midpoint of the active detector |
+| `com` | center-of-mass (centroid) |
+| `maxi` | x-position of maximum y |
+| `mini` | x-position of minimum y |
+| `peak(feature=...)` | named feature from `xy_statistics` (e.g. `"centroid"`) |
+
+```python
+RE(cen())                          # use last scan, default detector + positioner
+RE(cen(positioner=tabx))           # only move tabx (project a 2-D scan onto its axis)
+RE(maxi(scan_id=42, detector="hI2-apd"))
+RE(com(positioner=[tabx, taby]))   # move both motors of a 2-D scan
+```
+
+Diagnostic helpers (no motion, just print the stats):
+
+```python
+peak_pos()                         # prints + returns nested stats dict
+pmax()                             # like maxi but prints only
+pmin()
+```
+
+The `confirm=False` keyword skips the >5-min interactive confirmation
+prompt — useful inside automated macros.
+
+Legacy versions (apstools `lineup2`-backed) remain available as `cen2`,
+`maxi2`, `mini2` from `id4_common.plans.peak_position_legacy`.
+
+---
+
+## APS Data Management Plans
+
+Plans in `id4_common.plans.dm_plans` submit workflow jobs to the APS
+DM system:
+
+```python
+# Kick off a DM workflow against the run that just completed
+RE(dm_kickoff_workflow(run, argsDict={"experimentName": "Frontini_26-1"}))
+
+# Submit a workflow job directly (no run required)
+dm_submit_workflow_job("4id-xmcd", argsDict={...})
+
+# Inspect the queue
+dm_list_processing_jobs()
+```
+
+See the [API reference](api/id4_common/plans/index.rst) for full
+parameter documentation of `dm_plans`.
 
 ---
 
