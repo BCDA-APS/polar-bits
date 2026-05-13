@@ -22,28 +22,30 @@ This activates the `polar-bits` conda environment and launches IPython with all
 
 ## Motor Shortcuts
 
-The package ships a prebuilt shortcut module that binds the magnet's
-sub-devices into the interactive session. Importing it once after
-startup makes `field`, `tabx`, `taby`, `tabz`, `tabsx`, `tabsz`,
-`tabrot`, `sy`, `sth` directly usable:
+After the main startup, users run a per-session file (e.g. `motor_shortcuts.py`)
+that assigns convenient short names to the magnet's internal motors:
 
 ```python
-import id4_common.macros.shortcuts_4idh_9T  # noqa: F401
-```
-
-For names that aren't covered, write your own in a per-session file:
-
-```python
-# extra_shortcuts.py
+# motor_shortcuts.py
 from apsbits.core.instrument_init import oregistry
 
 _mag = oregistry.find("magnet911")
 
-samz  = _mag.samp.z       # sample Z (not in the prebuilt set)
-energy = oregistry.find("energy")
+tabx  = _mag.tab.x       # sample table X
+taby  = _mag.tab.y       # sample table Y
+tabth = _mag.tab.srot    # sample table rotation
+samy  = _mag.samp.y      # sample Y (independent of table)
+samth = _mag.samp.th     # sample rotation
+field = _mag.ps.field    # magnetic field in Tesla
 ```
 
-Run with `%run extra_shortcuts.py` or `from extra_shortcuts import *`.
+Run it at the start of each session:
+
+```python
+%run motor_shortcuts.py
+# or, if it uses wildcard exports:
+from motor_shortcuts import *
+```
 
 ---
 
@@ -115,53 +117,11 @@ pr_setup.offset       = oregistry.find("pr2_pzt_offset_microns")
 pr_setup.oscillate_pzt = True
 ```
 
-Each assignment auto-snapshots into `RE.md["session_state"]`, and the
-energy-tracking + undulator-offset blocks above do the same. After a
-bluesky restart, `restore_session_state()` (or
-`import id4_common.macros.startup_common`) re-applies all of them in
-one step — see [Recoverable session
-state](writing_macros.md#recoverable-session-state).
-
 Align PR2 theta:
 
 ```python
 RE(lup(pr2.th, -0.02, 0.02, 100, 0.2))
 %mov pr2.th 22.302          # move to Bragg reflection
-```
-
----
-
-## Temperature Control (VTI)
-
-The 9 T magnet's variable-temperature insert (VTI) is exposed through
-the standard `temperature_setup(label)` helper. Pick the `"h-9T"`
-controller and the session globals `tc` (setpoint) and `ts` (readback)
-become the VTI handles:
-
-```python
-temperature_setup("h-9T")
-mv tc 5.0                # set the VTI setpoint to 5 K
-te(5.0)                  # equivalent shortcut
-ts.get()                 # current sample-temperature readback
-```
-
-`ts` is added to the baseline so the temperature lands in every scan
-automatically.
-
----
-
-## CRL Focusing
-
-The compound refractive lens (`crl`) is shared between 4IDG and 4IDH;
-switch its sample-position offset to the 4IDH value before using:
-
-```python
-crl_setup("h")           # apply the 4IDH offset (or pass nothing for a prompt)
-crl_size(50)             # set the focal size to 50 µm (the < 5 µm path
-                         # triggers crl.minimize_button instead)
-mov crl.beamsize 10      # write 10 µm directly to the focalSize PV
-                         # (returns immediately; the readback in fSize_actual
-                         # may not converge to the same value)
 ```
 
 ---

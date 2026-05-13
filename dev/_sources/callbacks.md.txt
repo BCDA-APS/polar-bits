@@ -15,7 +15,7 @@ After startup, three helpers are available:
 ```python
 # Create a new SPEC file for this session
 newSpecFile("my_experiment")
-# → creates a file like: 04_09_my_experiment.dat
+# → creates a file like: 0409_my_experiment.dat
 
 # Add a free-form comment to the current SPEC file
 spec_comment("Sample aligned, beam 50x50 µm")
@@ -98,22 +98,11 @@ BEC:
 bec           # BestEffortCallback instance
 peaks         # peak-finding helper (populated after each scan)
 
-# After a scan — each is a dict keyed by the detector signal name:
-peaks.com     # x at center-of-mass (centroid)
-peaks.cen     # x at FWHM midpoint
-peaks.max     # x at maximum y
-peaks.min     # x at minimum y
-peaks.fwhm    # full-width at half-max
+# After a scan:
+peaks.com     # center-of-mass position
+peaks.max     # position of maximum
+peaks.cen     # centroid position
 ```
-
-`peaks.com` and `peaks.cen` are **not** the same — `com` is the
-moment-based centroid, `cen` is the midpoint of the FWHM crossings.
-For an asymmetric peak they differ.
-
-For an automation-friendly API that also moves the positioner, prefer
-the [peak-finding plans](plans.md#peak-finding-plans) (`RE(cen())`,
-`RE(maxi())`, …) — they read the same scan data but are usable inside
-plans and macros without going through the BEC singleton.
 
 ---
 

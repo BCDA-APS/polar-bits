@@ -133,44 +133,29 @@ RE.abort()
 
 ## How do I find the peak center after a scan?
 
-The recommended path is the peak-finding plans in
-`id4_common.plans.peak_position` — they read the last scan from the
-catalog, compute the requested statistic, and **move the positioner
-there in one step**:
+After any scan the `peaks` object is updated with statistics from the last
+scan:
 
 ```python
-RE(cen())     # move to the FWHM midpoint of the last scan
-RE(com())     # move to the center-of-mass (centroid)
-RE(maxi())    # move to x at maximum y
-RE(mini())    # move to x at minimum y
+peaks.cen    # center-of-mass position of the peak
+peaks.com    # alias for center-of-mass
+peaks.max    # position of the maximum value
+peaks.min    # position of the minimum value
 ```
 
-These work for both 1-D scans and 2-D `grid_scan` / `rel_grid_scan`.
-Pass `confirm=False` to skip the >5-min interactive confirmation, or
-`positioner=`/`detector=` to override the defaults. See
-[Peak-Finding Plans](plans.md#peak-finding-plans) for the full API.
-
-If you only want the values without moving, the BEC `peaks` object is
-updated after every scan:
+`peaks` reports results per detector signal. If more than one detector was
+active, index by signal name:
 
 ```python
-peaks.com    # x at center-of-mass (centroid)
-peaks.cen    # x at FWHM midpoint  ← NOT the same as peaks.com
-peaks.max    # x at maximum y
-peaks.min    # x at minimum y
-peaks.fwhm   # full-width at half-max
+peaks.cen["scaler1_ch9"]    # center-of-mass for channel 9
+peaks.max["scaler1_ch9"]    # position of maximum for channel 9
 ```
 
-`peaks` reports results per detector signal — index by signal name:
+Move a motor to the peak center:
 
 ```python
-peaks.com["scaler1_ch9"]    # centroid for channel 9
-peaks.cen["scaler1_ch9"]    # FWHM midpoint for channel 9
+%mov tabx peaks.cen["scaler1_ch9"]
 ```
-
-Or use the diagnostic helpers (`peak_pos()`, `pmax()`, `pmin()`) which
-print + return the same statistics for the last scan without moving
-anything.
 
 ---
 
@@ -208,81 +193,3 @@ find_loadable_devices()              # all devices in devices.yml
 find_loadable_devices(label="4idg")  # filter by label
 find_loadable_devices(name="kb")     # substring match on name
 ```
-
----
-
-## How do I switch the active temperature controller?
-
-Call `temperature_setup(label)` once. It resolves the requested
-controller from `id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS`
-and injects three names into the session: `tc` (setpoint, movable),
-`ts` (sample readback), and `TEMPERATURE_CONTROLLER` (the active
-label string). `ts` is added to the baseline so the sample
-temperature lands in every scan automatically.
-
-```python
-temperature_setup("g")        # 4IDG LakeShore 336 (default loop)
-temperature_setup("g-340")    # 4IDG LakeShore 340
-temperature_setup("h-9T")     # 4IDH 9 T magnet VTI
-
-mv tc 295                     # set the setpoint to 295 K
-te(295)                       # equivalent shortcut
-
-ts.get()                      # current sample-temperature readback
-```
-
-To add a new controller, edit `TEMPERATURE_CONTROLLERS` (a single
-`label → (device_name, setpoint_attr_path, readback_attr_path)`
-tuple). No class changes, no devices.yml edits.
-
----
-
-## How do I restore my session after a bluesky restart?
-
-Each setup helper (`pr_setup`, `energy.tracking_setup`,
-`counters.plotselect`, `undulator_setup`,
-`qxscan_setup.load_params_json`) auto-saves its current values into
-`RE.md["session_state"]` — apsbits' `PersistentDict` survives a
-restart. After restarting bluesky, call `restore_session_state()` to
-re-apply every saved knob in one go:
-
-```python
-status = restore_session_state()
-for knob, msg in status.items():
-    print(f"  {knob:18}  {msg}")
-```
-
-`status` reports `applied` / `skipped: <reason>` / `failed: <Exception>`
-per knob group — restore never raises, a missing device or single
-failed put is logged and the rest of the restore continues.
-
-A one-line wrapper that calls `experiment_resume()` first and prints
-the status summary itself ships with the package:
-
-```python
-import id4_common.macros.startup_common  # noqa: F401
-```
-
-See [Writing Macros](examples/writing_macros.md#recoverable-session-state)
-for the full restart template.
-
----
-
-## How do I set the CRL focal size?
-
-The recommended path is the `crl_size` shortcut, which handles the
-`< 5 µm` "minimize" path and the µm → m conversion:
-
-```python
-crl_setup("h")          # switch the offset to the active hutch (g or h)
-crl_size(50)            # 50 µm focal size
-crl_size(2)             # < 5 µm triggers crl.minimize_button
-```
-
-For direct `mov`-style control, `crl.beamsize` is now a microns
-handle (PR #61) — `mov crl.beamsize 10` writes 10 µm to the
-underlying `focalSize` PV and returns immediately without waiting
-for `fSize_actual` to converge (the two PVs do not always agree, and
-the previous `EpicsSignal` with `write_pv` would hang). The raw
-meter-valued PVs are still reachable as `crl.beamsize.setpoint` /
-`crl.beamsize.readback`.

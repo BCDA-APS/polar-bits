@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="4IDG: Diffractometer Usage" href="4idg_diffractometer.html" />
+    <link rel="next" title="Command Reference" href="4idg_diffractometer.html" />
     <link rel="prev" title="General Examples" href="general.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -137,13 +137,6 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../whats_new.html">
-    What’s New
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../getting_started.html">
     Getting Started
   </a>
@@ -158,15 +151,22 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../useful_functions.html">
-    Useful Functions
+  <a class="nav-link nav-internal" href="general.html">
+    General Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Writing Macros
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="general.html">
-    General Examples
+  <a class="nav-link nav-internal" href="4idg_diffractometer.html">
+    Command Reference
   </a>
 </li>
 
@@ -178,20 +178,6 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="#">
-    Writing Macros
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
-  </a>
-</li>
-
-
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="4idh_magnet.html">
     4IDH: Magnet 9-1-1 Usage
@@ -244,6 +230,13 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="../queueserver.html">
     QueueServer
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../api/index.html">
+    API Reference
   </a>
 </li>
 
@@ -340,13 +333,6 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../whats_new.html">
-    What’s New
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../getting_started.html">
     Getting Started
   </a>
@@ -356,13 +342,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../plans.html">
     Scan Plans
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../useful_functions.html">
-    Useful Functions
   </a>
 </li>
 
@@ -383,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -440,6 +419,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../queueserver.html">
     QueueServer
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Reference
   </a>
 </li>
 
@@ -576,29 +562,74 @@ bluesky-core<span class="w">    </span><span class="c1"># shared core only</span
 </div>
 </section>
 <hr class="docutils" />
-<section id="restarting-a-session">
-<h2>Restarting a Session<a class="headerlink" href="#restarting-a-session" title="Link to this heading">#</a></h2>
-<p>The recommended path for picking a session back up — same experiment,
-fresh bluesky process — is the prebuilt one-liner:</p>
+<section id="per-session-startup-files">
+<h2>Per-Session Startup Files<a class="headerlink" href="#per-session-startup-files" title="Link to this heading">#</a></h2>
+<p>After the main shell startup, users typically run a Python file that handles
+session-specific setup: loading extra devices, setting energy tracking,
+configuring detectors, and defining motor shortcuts. This is run inside IPython
+with <code class="docutils literal notranslate"><span class="pre">%run</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">run</span> <span class="n">startup_4idh</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<section id="quick-path-the-prebuilt-restart-helper">
+<h3>Quick path: the prebuilt restart helper<a class="headerlink" href="#quick-path-the-prebuilt-restart-helper" title="Link to this heading">#</a></h3>
+<p>For a session restart inside an experiment that has already been set up
+once, the package ships a single import that does the whole restore:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">id4_common.macros.startup_common</span>  <span class="c1"># noqa: F401</span>
 </pre></div>
 </div>
-<p>That import runs <code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> (auto-discovers the snapshot in
-the current directory or via <code class="docutils literal notranslate"><span class="pre">cat[-1]</span></code>) followed by
+<p>That one line calls <code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> (auto-discovers the snapshot
+in the current directory or via <code class="docutils literal notranslate"><span class="pre">cat[-1]</span></code>) followed by
 <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> (re-applies every auto-saved setup knob — see
 <a class="reference internal" href="#recoverable-session-state"><span class="std std-ref">Recoverable session state</span></a>) and prints a
 per-knob status summary. <code class="docutils literal notranslate"><span class="pre">restore_session_state</span></code> is also imported into
 the interactive session namespace by <code class="docutils literal notranslate"><span class="pre">_common_startup.py</span></code>, so you can
 re-run it on demand without an extra import.</p>
-<p>This works because the regular setup helpers (<code class="docutils literal notranslate"><span class="pre">pr_setup</span></code>,
-<code class="docutils literal notranslate"><span class="pre">energy.tracking_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">counters.plotselect</span></code>, <code class="docutils literal notranslate"><span class="pre">undulator_setup</span></code>,
-<code class="docutils literal notranslate"><span class="pre">qxscan_setup.load_params_json</span></code>) auto-snapshot their values into
-<code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> every time you call them, so the next bluesky
-process can replay the last good configuration with a single import.</p>
-<p>A hand-rolled startup file is rarely necessary — see
-<a class="reference internal" href="#full-custom-startup-file-rare"><span class="std std-ref">Full custom startup file (rare)</span></a> at
-the end of this page for the cases where you do need one (first run of
-an experiment, extra devices, non-standard overrides).</p>
+</section>
+<section id="full-custom-startup">
+<h3>Full custom startup<a class="headerlink" href="#full-custom-startup" title="Link to this heading">#</a></h3>
+<p>When you need more than a restart — first run of an experiment, manual
+overrides, extra devices — write your own startup file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># startup_4idh.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">apsbits.core.instrument_init</span><span class="w"> </span><span class="kn">import</span> <span class="n">oregistry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.experiment_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">experiment_resume</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.counters_class</span><span class="w"> </span><span class="kn">import</span> <span class="n">counters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.pr_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">pr_setup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>    <span class="c1"># enable interactive plots</span>
+
+<span class="c1"># Restore the previous session from its YAML snapshot.</span>
+<span class="c1"># experiment_resume() auto-discovers the snapshot in the current working</span>
+<span class="c1"># directory or via cat[-1] (whichever it finds first). If neither is</span>
+<span class="c1"># available — first run of an experiment — fall back to the full</span>
+<span class="c1"># experiment_setup() prompt, or to experiment_load_from_bluesky() to</span>
+<span class="c1"># re-derive from a Bluesky run document.</span>
+<span class="n">experiment_resume</span><span class="p">()</span>
+
+<span class="c1"># Energy tracking</span>
+<span class="n">energy</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">&quot;undulators_ds&quot;</span><span class="p">,</span> <span class="s2">&quot;pr2&quot;</span><span class="p">])</span>
+
+<span class="c1"># Undulator offset</span>
+<span class="n">undulators</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;undulators&quot;</span><span class="p">)</span>
+<span class="n">undulators</span><span class="o">.</span><span class="n">ds</span><span class="o">.</span><span class="n">energy_offset</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="o">-</span><span class="mf">0.063</span><span class="p">)</span>
+<span class="n">undulators</span><span class="o">.</span><span class="n">ds</span><span class="o">.</span><span class="n">energy_deadband</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">0.002</span><span class="p">)</span>
+
+<span class="c1"># Default detector/monitor selection</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># PR2 setup for helicity switching</span>
+<span class="n">pr_setup</span><span class="o">.</span><span class="n">positioner</span>    <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;pr2_pzt_localdc&quot;</span><span class="p">)</span>
+<span class="n">pr_setup</span><span class="o">.</span><span class="n">offset</span>        <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;pr2_pzt_offset_microns&quot;</span><span class="p">)</span>
+<span class="n">pr_setup</span><span class="o">.</span><span class="n">oscillate_pzt</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># Load motor shortcuts and macros</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">id4_common.macros.shortcuts_4idh_9T</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">macros</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+</section>
 </section>
 <hr class="docutils" />
 <section id="motor-shortcuts">
@@ -738,7 +769,7 @@ and follow this pattern:</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">hklscan</span></code> + <code class="docutils literal notranslate"><span class="pre">cen</span></code> to refine a Bragg peak</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">startup.py</span></code></p></td>
-<td><p>recoverable session start template — <code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan()</span></code> fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner <code class="docutils literal notranslate"><span class="pre">id4_common.macros.startup_common</span></code>.</p></td>
+<td><p>recoverable session start template — <code class="docutils literal notranslate"><span class="pre">experiment_load_from_bluesky()</span></code> fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner <code class="docutils literal notranslate"><span class="pre">id4_common.macros.startup_common</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -761,12 +792,11 @@ the session:</p>
 </div>
 <p>For a one-line restart that runs <code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> first and prints
 the per-knob summary itself, use the prebuilt
-<code class="docutils literal notranslate"><span class="pre">id4_common.macros.startup_common</span></code> module shown in
-<a class="reference internal" href="#restarting-a-session"><span class="std std-ref">Restarting a Session</span></a> at the top of this page.
+<code class="docutils literal notranslate"><span class="pre">id4_common.macros.startup_common</span></code> module shown in the <a class="reference internal" href="#quick-path-the-prebuilt-restart-helper"><span class="std std-ref">Quick path
+section</span></a>.
 <code class="docutils literal notranslate"><span class="pre">docs/source/examples/macros/startup.py</span></code> is a longer template with the
-full <code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan()</span></code> fallback and additional
-hand-managed steps (e.g. <code class="docutils literal notranslate"><span class="pre">load_vortex</span></code>); see
-<a class="reference internal" href="#full-custom-startup-file-rare"><span class="std std-ref">Full custom startup file (rare)</span></a>.</p>
+full <code class="docutils literal notranslate"><span class="pre">experiment_load_from_bluesky()</span></code> fallback and additional
+hand-managed steps (e.g. <code class="docutils literal notranslate"><span class="pre">load_vortex</span></code>).</p>
 <p><code class="docutils literal notranslate"><span class="pre">status</span></code> reports <code class="docutils literal notranslate"><span class="pre">applied</span></code> / <code class="docutils literal notranslate"><span class="pre">skipped:</span> <span class="pre">&lt;reason&gt;</span></code> / <code class="docutils literal notranslate"><span class="pre">failed:</span> <span class="pre">&lt;Exception&gt;</span></code>
 per knob group — restore never raises, a missing device or single
 failed <code class="docutils literal notranslate"><span class="pre">.put()</span></code> is logged and the rest of the restore continues.</p>
@@ -879,73 +909,6 @@ in any SPEC data viewer.</p>
 </pre></div>
 </div>
 </section>
-<hr class="docutils" />
-<section id="full-custom-startup-file-rare">
-<h2>Full custom startup file (rare)<a class="headerlink" href="#full-custom-startup-file-rare" title="Link to this heading">#</a></h2>
-<p>Most sessions should restart via <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">id4_common.macros.startup_common</span></code>
-(<a class="reference internal" href="#restarting-a-session"><span class="std std-ref">Restarting a Session</span></a> above) — auto-saved
-state covers the common knobs and a single import re-applies all of
-them. A hand-rolled startup file is only needed for situations the
-auto-save doesn’t cover:</p>
-<ul class="simple">
-<li><p><strong>First run of a new experiment.</strong> Nothing has been saved yet, so
-there is no <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> to restore from.</p></li>
-<li><p><strong>Loading optional devices</strong> that aren’t in the beamline’s default
-station list (e.g. <code class="docutils literal notranslate"><span class="pre">load_vortex(&quot;xspress4&quot;)</span></code> after deciding which
-vortex electronics to use this run).</p></li>
-<li><p><strong>Non-default overrides</strong> that you want to bake into a versioned
-file rather than typing each session.</p></li>
-</ul>
-<p>When one of those applies, write your own file and <code class="docutils literal notranslate"><span class="pre">%run</span></code> it inside
-IPython:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">run</span> <span class="n">startup_4idh</span><span class="o">.</span><span class="n">py</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># startup_4idh.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">apsbits.core.instrument_init</span><span class="w"> </span><span class="kn">import</span> <span class="n">oregistry</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.experiment_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">experiment_resume</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.counters_class</span><span class="w"> </span><span class="kn">import</span> <span class="n">counters</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">id4_common.utils.pr_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">pr_setup</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>    <span class="c1"># enable interactive plots</span>
-
-<span class="c1"># Restore the previous session from its YAML snapshot.</span>
-<span class="c1"># experiment_resume() auto-discovers the snapshot in the current working</span>
-<span class="c1"># directory or via cat[-1] (whichever it finds first). If neither is</span>
-<span class="c1"># available — first run of an experiment — fall back to the full</span>
-<span class="c1"># experiment_setup() prompt, or to experiment_load_from_scan() to</span>
-<span class="c1"># re-derive from a Bluesky run document.</span>
-<span class="n">experiment_resume</span><span class="p">()</span>
-
-<span class="c1"># Energy tracking</span>
-<span class="n">energy</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
-<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">&quot;undulators_ds&quot;</span><span class="p">,</span> <span class="s2">&quot;pr2&quot;</span><span class="p">])</span>
-
-<span class="c1"># Undulator offset</span>
-<span class="n">undulators</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;undulators&quot;</span><span class="p">)</span>
-<span class="n">undulators</span><span class="o">.</span><span class="n">ds</span><span class="o">.</span><span class="n">energy_offset</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="o">-</span><span class="mf">0.063</span><span class="p">)</span>
-<span class="n">undulators</span><span class="o">.</span><span class="n">ds</span><span class="o">.</span><span class="n">energy_deadband</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">0.002</span><span class="p">)</span>
-
-<span class="c1"># Default detector/monitor selection</span>
-<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
-
-<span class="c1"># PR2 setup for helicity switching</span>
-<span class="n">pr_setup</span><span class="o">.</span><span class="n">positioner</span>    <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;pr2_pzt_localdc&quot;</span><span class="p">)</span>
-<span class="n">pr_setup</span><span class="o">.</span><span class="n">offset</span>        <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;pr2_pzt_offset_microns&quot;</span><span class="p">)</span>
-<span class="n">pr_setup</span><span class="o">.</span><span class="n">oscillate_pzt</span> <span class="o">=</span> <span class="kc">True</span>
-
-<span class="c1"># Load motor shortcuts and macros</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">id4_common.macros.shortcuts_4idh_9T</span>  <span class="c1"># noqa: F401</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">macros</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
-</pre></div>
-</div>
-<p>Note that every call above (<code class="docutils literal notranslate"><span class="pre">pr_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">energy.tracking_setup</span></code>,
-<code class="docutils literal notranslate"><span class="pre">counters.plotselect</span></code>, the undulator offset writes) auto-saves into
-<code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code>, so the <em>next</em> restart of this experiment can
-go back to the one-line <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">id4_common.macros.startup_common</span></code>
-path and skip this file entirely.</p>
-</section>
 </section>
 
 
@@ -972,7 +935,7 @@ path and skip this file entirely.</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">4IDG: Diffractometer Usage</p>
+        <p class="prev-next-title">Command Reference</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -996,7 +959,11 @@ path and skip this file entirely.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#startup-scripts-shell">Startup Scripts (Shell)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#restarting-a-session">Restarting a Session</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#per-session-startup-files">Per-Session Startup Files</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-path-the-prebuilt-restart-helper">Quick path: the prebuilt restart helper</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#full-custom-startup">Full custom startup</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motor-shortcuts">Motor Shortcuts</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prebuilt-shortcuts-recommended">Prebuilt shortcuts (recommended)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-shortcuts">Custom shortcuts</a></li>
@@ -1010,7 +977,6 @@ path and skip this file entirely.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#non-interactive-experiment-setup-in-scripts">Non-Interactive Experiment Setup in Scripts</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging-notes-within-a-session">Logging Notes Within a Session</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importing-macros">Importing Macros</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#full-custom-startup-file-rare">Full custom startup file (rare)</a></li>
 </ul>
   </nav></div>
 

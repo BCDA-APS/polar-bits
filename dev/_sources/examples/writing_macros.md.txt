@@ -31,33 +31,78 @@ bluesky-core    # shared core only
 
 ---
 
-## Restarting a Session
+## Per-Session Startup Files
 
-The recommended path for picking a session back up — same experiment,
-fresh bluesky process — is the prebuilt one-liner:
+After the main shell startup, users typically run a Python file that handles
+session-specific setup: loading extra devices, setting energy tracking,
+configuring detectors, and defining motor shortcuts. This is run inside IPython
+with `%run`:
+
+```python
+%run startup_4idh.py
+```
+
+### Quick path: the prebuilt restart helper
+
+For a session restart inside an experiment that has already been set up
+once, the package ships a single import that does the whole restore:
 
 ```python
 import id4_common.macros.startup_common  # noqa: F401
 ```
 
-That import runs `experiment_resume()` (auto-discovers the snapshot in
-the current directory or via `cat[-1]`) followed by
+That one line calls `experiment_resume()` (auto-discovers the snapshot
+in the current directory or via `cat[-1]`) followed by
 `restore_session_state()` (re-applies every auto-saved setup knob — see
 [Recoverable session state](#recoverable-session-state)) and prints a
 per-knob status summary. `restore_session_state` is also imported into
 the interactive session namespace by `_common_startup.py`, so you can
 re-run it on demand without an extra import.
 
-This works because the regular setup helpers (`pr_setup`,
-`energy.tracking_setup`, `counters.plotselect`, `undulator_setup`,
-`qxscan_setup.load_params_json`) auto-snapshot their values into
-`RE.md["session_state"]` every time you call them, so the next bluesky
-process can replay the last good configuration with a single import.
+### Full custom startup
 
-A hand-rolled startup file is rarely necessary — see
-[Full custom startup file (rare)](#full-custom-startup-file-rare) at
-the end of this page for the cases where you do need one (first run of
-an experiment, extra devices, non-standard overrides).
+When you need more than a restart — first run of an experiment, manual
+overrides, extra devices — write your own startup file:
+
+```python
+# startup_4idh.py
+from apsbits.core.instrument_init import oregistry
+from id4_common.utils.experiment_utils import experiment_resume
+from id4_common.utils.counters_class import counters
+from id4_common.utils.pr_setup import pr_setup
+import matplotlib.pyplot as plt
+
+plt.ion()    # enable interactive plots
+
+# Restore the previous session from its YAML snapshot.
+# experiment_resume() auto-discovers the snapshot in the current working
+# directory or via cat[-1] (whichever it finds first). If neither is
+# available — first run of an experiment — fall back to the full
+# experiment_setup() prompt, or to experiment_load_from_bluesky() to
+# re-derive from a Bluesky run document.
+experiment_resume()
+
+# Energy tracking
+energy = oregistry.find("energy")
+energy.tracking_setup(["undulators_ds", "pr2"])
+
+# Undulator offset
+undulators = oregistry.find("undulators")
+undulators.ds.energy_offset.put(-0.063)
+undulators.ds.energy_deadband.put(0.002)
+
+# Default detector/monitor selection
+counters.plotselect(9, 8)
+
+# PR2 setup for helicity switching
+pr_setup.positioner    = oregistry.find("pr2_pzt_localdc")
+pr_setup.offset        = oregistry.find("pr2_pzt_offset_microns")
+pr_setup.oscillate_pzt = True
+
+# Load motor shortcuts and macros
+import id4_common.macros.shortcuts_4idh_9T  # noqa: F401
+from macros import *
+```
 
 ---
 
@@ -176,7 +221,7 @@ and follow this pattern:
 | `field_sequence.py` | overnight field sweep that re-aligns after every ramp |
 | `qxscan_chain.py` | iterate `qxscan` over a list of edges |
 | `hkl_map.py` | `hklscan` + `cen` to refine a Bragg peak |
-| `startup.py` | recoverable session start template — `experiment_load_from_scan()` fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner `id4_common.macros.startup_common`. |
+| `startup.py` | recoverable session start template — `experiment_load_from_bluesky()` fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner `id4_common.macros.startup_common`. |
 
 Copy any of them into your experiment directory and edit to taste.
 
@@ -199,12 +244,11 @@ for knob, msg in status.items():
 
 For a one-line restart that runs `experiment_resume()` first and prints
 the per-knob summary itself, use the prebuilt
-`id4_common.macros.startup_common` module shown in
-[Restarting a Session](#restarting-a-session) at the top of this page.
+`id4_common.macros.startup_common` module shown in the [Quick path
+section](#quick-path-the-prebuilt-restart-helper).
 `docs/source/examples/macros/startup.py` is a longer template with the
-full `experiment_load_from_scan()` fallback and additional
-hand-managed steps (e.g. `load_vortex`); see
-[Full custom startup file (rare)](#full-custom-startup-file-rare).
+full `experiment_load_from_bluesky()` fallback and additional
+hand-managed steps (e.g. `load_vortex`).
 
 `status` reports `applied` / `skipped: <reason>` / `failed: <Exception>`
 per knob group — restore never raises, a missing device or single
@@ -337,74 +381,3 @@ To share macros across sessions, keep them in a dedicated directory and use
 ```python
 %run /home/beams/POLAR/macros/macros_4idh.py
 ```
-
----
-
-## Full custom startup file (rare)
-
-Most sessions should restart via `import id4_common.macros.startup_common`
-([Restarting a Session](#restarting-a-session) above) — auto-saved
-state covers the common knobs and a single import re-applies all of
-them. A hand-rolled startup file is only needed for situations the
-auto-save doesn't cover:
-
-- **First run of a new experiment.** Nothing has been saved yet, so
-  there is no `RE.md["session_state"]` to restore from.
-- **Loading optional devices** that aren't in the beamline's default
-  station list (e.g. `load_vortex("xspress4")` after deciding which
-  vortex electronics to use this run).
-- **Non-default overrides** that you want to bake into a versioned
-  file rather than typing each session.
-
-When one of those applies, write your own file and `%run` it inside
-IPython:
-
-```python
-%run startup_4idh.py
-```
-
-```python
-# startup_4idh.py
-from apsbits.core.instrument_init import oregistry
-from id4_common.utils.experiment_utils import experiment_resume
-from id4_common.utils.counters_class import counters
-from id4_common.utils.pr_setup import pr_setup
-import matplotlib.pyplot as plt
-
-plt.ion()    # enable interactive plots
-
-# Restore the previous session from its YAML snapshot.
-# experiment_resume() auto-discovers the snapshot in the current working
-# directory or via cat[-1] (whichever it finds first). If neither is
-# available — first run of an experiment — fall back to the full
-# experiment_setup() prompt, or to experiment_load_from_scan() to
-# re-derive from a Bluesky run document.
-experiment_resume()
-
-# Energy tracking
-energy = oregistry.find("energy")
-energy.tracking_setup(["undulators_ds", "pr2"])
-
-# Undulator offset
-undulators = oregistry.find("undulators")
-undulators.ds.energy_offset.put(-0.063)
-undulators.ds.energy_deadband.put(0.002)
-
-# Default detector/monitor selection
-counters.plotselect(9, 8)
-
-# PR2 setup for helicity switching
-pr_setup.positioner    = oregistry.find("pr2_pzt_localdc")
-pr_setup.offset        = oregistry.find("pr2_pzt_offset_microns")
-pr_setup.oscillate_pzt = True
-
-# Load motor shortcuts and macros
-import id4_common.macros.shortcuts_4idh_9T  # noqa: F401
-from macros import *
-```
-
-Note that every call above (`pr_setup`, `energy.tracking_setup`,
-`counters.plotselect`, the undulator offset writes) auto-saves into
-`RE.md["session_state"]`, so the *next* restart of this experiment can
-go back to the one-line `import id4_common.macros.startup_common`
-path and skip this file entirely.

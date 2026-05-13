@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Device Reference" href="../devices_reference.html" />
-    <link rel="prev" title="4IDG: Diffractometer Usage" href="4idg_diffractometer.html" />
+    <link rel="prev" title="Command Reference" href="4idg_diffractometer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -137,13 +137,6 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../whats_new.html">
-    What’s New
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../getting_started.html">
     Getting Started
   </a>
@@ -158,15 +151,22 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../useful_functions.html">
-    Useful Functions
+  <a class="nav-link nav-internal" href="general.html">
+    General Examples
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="general.html">
-    General Examples
+  <a class="nav-link nav-internal" href="writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="4idg_diffractometer.html">
+    Command Reference
   </a>
 </li>
 
@@ -178,20 +178,6 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="writing_macros.html">
-    Writing Macros
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
-  </a>
-</li>
-
-
 <li class=" current active">
   <a class="nav-link dropdown-item nav-internal" href="#">
     4IDH: Magnet 9-1-1 Usage
@@ -244,6 +230,13 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="../queueserver.html">
     QueueServer
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../api/index.html">
+    API Reference
   </a>
 </li>
 
@@ -340,13 +333,6 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../whats_new.html">
-    What’s New
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../getting_started.html">
     Getting Started
   </a>
@@ -356,13 +342,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../plans.html">
     Scan Plans
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../useful_functions.html">
-    Useful Functions
   </a>
 </li>
 
@@ -383,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -440,6 +419,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../queueserver.html">
     QueueServer
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API Reference
   </a>
 </li>
 
@@ -568,24 +554,27 @@ all using the circular dichroism data stream.</p>
 <hr class="docutils" />
 <section id="motor-shortcuts">
 <h2>Motor Shortcuts<a class="headerlink" href="#motor-shortcuts" title="Link to this heading">#</a></h2>
-<p>The package ships a prebuilt shortcut module that binds the magnet’s
-sub-devices into the interactive session. Importing it once after
-startup makes <code class="docutils literal notranslate"><span class="pre">field</span></code>, <code class="docutils literal notranslate"><span class="pre">tabx</span></code>, <code class="docutils literal notranslate"><span class="pre">taby</span></code>, <code class="docutils literal notranslate"><span class="pre">tabz</span></code>, <code class="docutils literal notranslate"><span class="pre">tabsx</span></code>, <code class="docutils literal notranslate"><span class="pre">tabsz</span></code>,
-<code class="docutils literal notranslate"><span class="pre">tabrot</span></code>, <code class="docutils literal notranslate"><span class="pre">sy</span></code>, <code class="docutils literal notranslate"><span class="pre">sth</span></code> directly usable:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">id4_common.macros.shortcuts_4idh_9T</span>  <span class="c1"># noqa: F401</span>
-</pre></div>
-</div>
-<p>For names that aren’t covered, write your own in a per-session file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># extra_shortcuts.py</span>
+<p>After the main startup, users run a per-session file (e.g. <code class="docutils literal notranslate"><span class="pre">motor_shortcuts.py</span></code>)
+that assigns convenient short names to the magnet’s internal motors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># motor_shortcuts.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">apsbits.core.instrument_init</span><span class="w"> </span><span class="kn">import</span> <span class="n">oregistry</span>
 
 <span class="n">_mag</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;magnet911&quot;</span><span class="p">)</span>
 
-<span class="n">samz</span>  <span class="o">=</span> <span class="n">_mag</span><span class="o">.</span><span class="n">samp</span><span class="o">.</span><span class="n">z</span>       <span class="c1"># sample Z (not in the prebuilt set)</span>
-<span class="n">energy</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
+<span class="n">tabx</span>  <span class="o">=</span> <span class="n">_mag</span><span class="o">.</span><span class="n">tab</span><span class="o">.</span><span class="n">x</span>       <span class="c1"># sample table X</span>
+<span class="n">taby</span>  <span class="o">=</span> <span class="n">_mag</span><span class="o">.</span><span class="n">tab</span><span class="o">.</span><span class="n">y</span>       <span class="c1"># sample table Y</span>
+<span class="n">tabth</span> <span class="o">=</span> <span class="n">_mag</span><span class="o">.</span><span class="n">tab</span><span class="o">.</span><span class="n">srot</span>    <span class="c1"># sample table rotation</span>
+<span class="n">samy</span>  <span class="o">=</span> <span class="n">_mag</span><span class="o">.</span><span class="n">samp</span><span class="o">.</span><span class="n">y</span>      <span class="c1"># sample Y (independent of table)</span>
+<span class="n">samth</span> <span class="o">=</span> <span class="n">_mag</span><span class="o">.</span><span class="n">samp</span><span class="o">.</span><span class="n">th</span>     <span class="c1"># sample rotation</span>
+<span class="n">field</span> <span class="o">=</span> <span class="n">_mag</span><span class="o">.</span><span class="n">ps</span><span class="o">.</span><span class="n">field</span>    <span class="c1"># magnetic field in Tesla</span>
 </pre></div>
 </div>
-<p>Run with <code class="docutils literal notranslate"><span class="pre">%run</span> <span class="pre">extra_shortcuts.py</span></code> or <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">extra_shortcuts</span> <span class="pre">import</span> <span class="pre">*</span></code>.</p>
+<p>Run it at the start of each session:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">run</span> <span class="n">motor_shortcuts</span><span class="o">.</span><span class="n">py</span>
+<span class="c1"># or, if it uses wildcard exports:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">motor_shortcuts</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
 </section>
 <hr class="docutils" />
 <section id="beam-alignment">
@@ -646,45 +635,9 @@ centered on the current position:</p>
 <span class="n">pr_setup</span><span class="o">.</span><span class="n">oscillate_pzt</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
-<p>Each assignment auto-snapshots into <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code>, and the
-energy-tracking + undulator-offset blocks above do the same. After a
-bluesky restart, <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> (or
-<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">id4_common.macros.startup_common</span></code>) re-applies all of them in
-one step — see <a class="reference internal" href="writing_macros.html#recoverable-session-state"><span class="std std-ref">Recoverable session
-state</span></a>.</p>
 <p>Align PR2 theta:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">pr2</span><span class="o">.</span><span class="n">th</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
 <span class="o">%</span><span class="n">mov</span> <span class="n">pr2</span><span class="o">.</span><span class="n">th</span> <span class="mf">22.302</span>          <span class="c1"># move to Bragg reflection</span>
-</pre></div>
-</div>
-</section>
-<hr class="docutils" />
-<section id="temperature-control-vti">
-<h2>Temperature Control (VTI)<a class="headerlink" href="#temperature-control-vti" title="Link to this heading">#</a></h2>
-<p>The 9 T magnet’s variable-temperature insert (VTI) is exposed through
-the standard <code class="docutils literal notranslate"><span class="pre">temperature_setup(label)</span></code> helper. Pick the <code class="docutils literal notranslate"><span class="pre">&quot;h-9T&quot;</span></code>
-controller and the session globals <code class="docutils literal notranslate"><span class="pre">tc</span></code> (setpoint) and <code class="docutils literal notranslate"><span class="pre">ts</span></code> (readback)
-become the VTI handles:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;h-9T&quot;</span><span class="p">)</span>
-<span class="n">mv</span> <span class="n">tc</span> <span class="mf">5.0</span>                <span class="c1"># set the VTI setpoint to 5 K</span>
-<span class="n">te</span><span class="p">(</span><span class="mf">5.0</span><span class="p">)</span>                  <span class="c1"># equivalent shortcut</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>                 <span class="c1"># current sample-temperature readback</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">ts</span></code> is added to the baseline so the temperature lands in every scan
-automatically.</p>
-</section>
-<hr class="docutils" />
-<section id="crl-focusing">
-<h2>CRL Focusing<a class="headerlink" href="#crl-focusing" title="Link to this heading">#</a></h2>
-<p>The compound refractive lens (<code class="docutils literal notranslate"><span class="pre">crl</span></code>) is shared between 4IDG and 4IDH;
-switch its sample-position offset to the 4IDH value before using:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crl_setup</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>           <span class="c1"># apply the 4IDH offset (or pass nothing for a prompt)</span>
-<span class="n">crl_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>             <span class="c1"># set the focal size to 50 µm (the &lt; 5 µm path</span>
-                         <span class="c1"># triggers crl.minimize_button instead)</span>
-<span class="n">mov</span> <span class="n">crl</span><span class="o">.</span><span class="n">beamsize</span> <span class="mi">10</span>      <span class="c1"># write 10 µm directly to the focalSize PV</span>
-                         <span class="c1"># (returns immediately; the readback in fSize_actual</span>
-                         <span class="c1"># may not converge to the same value)</span>
 </pre></div>
 </div>
 </section>
@@ -859,7 +812,7 @@ and are available in the session namespace after startup.</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">4IDG: Diffractometer Usage</p>
+        <p class="prev-next-title">Command Reference</p>
       </div>
     </a>
     <a class="right-next"
@@ -895,8 +848,6 @@ and are available in the session namespace after startup.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beam-alignment">Beam Alignment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#energy-and-phase-retarder-setup">Energy and Phase Retarder Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-retarder-pr2-setup">Phase Retarder (PR2) Setup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-control-vti">Temperature Control (VTI)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#crl-focusing">CRL Focusing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dichroism-data-stream">Dichroism Data Stream</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#field-operations">Field Operations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#field-dependent-scans">Field-Dependent Scans</a></li>

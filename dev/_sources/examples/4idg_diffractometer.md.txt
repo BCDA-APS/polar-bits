@@ -1,4 +1,4 @@
-# 4IDG: Diffractometer Usage
+!# 4IDG: Diffractometer Usage
 
 4IDG is the diffraction hutch. The 6-circle diffractometer is controlled through
 [hklpy2](https://blueskyproject.io/hklpy2/) for reciprocal-space navigation.
@@ -752,35 +752,18 @@ counters.plotselect([14, 19], 5)  # multiple detectors
 
 ## Temperature Control
 
-The recommended path is `temperature_setup(label)` — it injects three
-session globals (`tc` for the setpoint, `ts` for the readback, and
-`TEMPERATURE_CONTROLLER` for the active label) and adds `ts` to the
-baseline so the sample temperature lands in every scan automatically:
+Temperature controllers are available at 4IDG:
 
 ```python
-temperature_setup("g")        # LakeShore 336 (default)
-mv tc 295                     # set the loop-1 setpoint to 295 K
-te(295)                       # equivalent shortcut
+# LakeShore 336 (primary)
+temp_336_4idg.input.A.temperature.get()     # read sensor A
+temp_336_4idg.output.one.setpoint.put(100)  # set to 100 K
 
-ts.get()                      # current loop-2 readback
-RE(count(1, 1, detectors=[ts]))  # explicit count
+# LakeShore 340
+temp_340_4idg.input_A.get()
 
-temperature_setup("g-340")    # switch to the LakeShore 340
-```
-
-`TEMPERATURE_CONTROLLERS` lists every supported label — see
-`id4_common.utils.temperature_setup`.
-
-Direct access to the LakeShore device is also available for read-only
-inspection or non-standard channels:
-
-```python
-temp_336_4idg.loop1.readback.get()       # sensor A readback (K)
-temp_336_4idg.loop1.setpoint.put(100)    # set loop-1 setpoint
-temp_336_4idg.loop2.readback.get()       # sensor B readback (K)
-
-temp_340_4idg.sample.get()               # readback of LS340 "sample" channel
-temp_340_4idg.control.setpoint.put(295)  # set LS340 control loop
+# Convenient shortcut (from per-session startup)
+temp = oregistry.find("temp_340_4idg").control
 ```
 
 ---

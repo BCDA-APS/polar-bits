@@ -23,9 +23,8 @@ Loaded by **all** hutches (label: `"core"`).
 |------|-------|-------------|-------------|--------|
 | `aps_xbpm` | `MyXBPM` | `S04` | APS X-ray BPM (sector 4) | `source`, `baseline` |
 | `undulators` | `PolarUndulatorPair` | `S04ID:` | Upstream + downstream undulator pair | `source`, `energy device`, `baseline` |
-| `status_aps` | `StatusAPS` | (none) | APS machine status (current, mode) | `source`, `status`, `baseline` |
+| `status_aps` | `StatusAPS` | — | APS machine status (current, mode) | `source`, `status`, `baseline` |
 | `status_polar` | `Status4ID` | `S04ID-PSS:` | POLAR beamline PSS status | `status`, `baseline` |
-| `srs810` | `LockinDevice` | `4idbSoft:SRS810:` | SRS-810 lock-in amplifier | `core`, `baseline` |
 
 ### Monochromator and Energy
 
@@ -47,10 +46,10 @@ Loaded by **all** hutches (label: `"core"`).
 
 | Name | Class | EPICS Prefix | Description | Labels |
 |------|-------|-------------|-------------|--------|
-| `hhl_mirror` | `HHLMirror` | `4idHHLM:` | HHL (high-heat-load) toroidal mirror | `mirror`, `baseline` |
+| `hhl_mirror` | `ToroidalMirror` | `4idHHLM:` | HHL (high-heat-load) toroidal mirror | `mirror`, `baseline` |
 | `t_mirror` | `ToroidalMirror` | `4idbToro:` | Toroidal focusing mirror | `optics`, `mirror`, `baseline` |
-| `wbslt` | `SlitDevice` (`wb_slit`) | `4idVDCM:` | White-beam slits (`hor, diag, pitch, yaw`) | `slit`, `baseline` |
-| `monoslt` | `SlitDevice` (`jj_slits`) | `4idVDCM:` | Post-monochromator slits (`top, bot, out, inb`) | `slit`, `baseline` |
+| `wbslt` | `SlitDevice` | `4idVDCM:` | White-beam slits (`hor, diag, pitch, yaw`) | `slit`, `baseline` |
+| `monoslt` | `SlitDevice` | `4idVDCM:` | Post-monochromator slits (`top, bot, out, inb`) | `slit`, `baseline` |
 | `diamond_window` | `WindowStages` | `4idbSoft:` | Diamond window insertion stages | `baseline` |
 
 ### Shutters
@@ -87,11 +86,11 @@ These are shared across the three downstream hutches.
 
 | Name | Class | EPICS Prefix | Description | Labels |
 |------|-------|-------------|-------------|--------|
-| `bslt` | `SlitDevice` (`jj_slits`) | `4idbSoft:` | 4IDB beam-defining slits (`top, bot, out, inb`) | `slit`, `baseline` |
+| `bslt` | `SlitDevice` | `4idbSoft:` | 4IDB beam-defining slits (`top, bot, out, inb`) | `slit`, `baseline` |
 | `bkb` | `KBMirror` | `4idbSoft:` | KB mirror pair | `optics`, `baseline` |
-| `bfilter` | `APSFilter` (`filters_device`) | `4idbSoft:filter:` | Attenuator filter bank | `filter`, `baseline` |
+| `bfilter` | `APSFilter` | `4idbSoft:filter:` | Attenuator filter bank | `filter`, `baseline` |
 | `btetramm` | `TetrAMMRO` | `4idbSoft:TetrAMM:` | TetrAMM quad-electrometer / XBPM | `detector`, `xbpm`, `baseline` |
-| `bmag` | `Magnet2T` | `motor_prefix=4idb:`, `kepco_prefix=4idbSoft:BOP:PS1:` | 2T electromagnet + Kepco power supply | `magnet`, `baseline` |
+| `emag` | `Magnet2T` | `4idb:` / `4idbSoft:BOP:PS1:` | 2T electromagnet + Kepco power supply | `magnet`, `baseline` |
 | `pol` | `PolAnalyzer` | `4idbSoft:` | Polarimeter / analyzer | `baseline` |
 | `midtable_4idb` | `Table4idb` | `4idbSoft:` | Sample positioning table | `baseline` |
 | `labjack_4idb` | `CustomLabJackT7` | `4idbSoft:LJ:` | LabJack T7 at 4IDB | `baseline` |
@@ -104,25 +103,19 @@ These are shared across the three downstream hutches.
 
 | Name | Class | EPICS Prefix | Description | Labels |
 |------|-------|-------------|-------------|--------|
-| `huber_euler` | `CradleDiffractometer` (`polar_diffractometer_hklpy2`) | `4idgSoft:` | Huber Euler 6-circle diffractometer | `4idg`, `diffractometer`, `baseline` |
-| `huber_euler_psi` | `CradleDiffractometerPSI` (`polar_diffractometer_hklpy2`) | `4idgSoft:` | Huber Euler — psi engine | `4idg`, `diffractometer`, `baseline` |
-| `huber_hp` | `HPDiffractometer` (`polar_diffractometer_hklpy2`) | `4idgSoft:` | HP (high-pressure) diffractometer | `4idg`, `diffractometer`, `baseline` |
-| `huber_hp_psi` | `HPDiffractometerPSI` (`polar_diffractometer_hklpy2`) | `4idgSoft:` | HP diffractometer — psi engine | `4idg`, `diffractometer`, `baseline` |
+| `huber_euler` | `CradleDiffractometer` | `4idgSoft:` | Huber Euler 6-circle diffractometer | `diffractometer`, `baseline` |
+| `huber_euler_psi` | `CradlePSI` | `4idgSoft:` | Huber Euler — psi engine | `diffractometer`, `baseline` |
+| `huber_hp` | `HPDiffractometer` | `4idgSoft:` | HP (high-pressure) diffractometer | `diffractometer`, `baseline` |
+| `huber_hp_psi` | `HPPSI` | `4idgSoft:` | HP diffractometer — psi engine | `diffractometer`, `baseline` |
 | `gkb` | `GKBDevice` | `4idgKB:` | KB mirror pair (4IDG) | `optics`, `kb`, `baseline` |
-| `crl` | `CRLClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens (CRL, shared 4IDG/4IDH) | `optics`, `track_energy`, `baseline` |
-| `gslt` | `SlitDevice` (`jj_slits`) | `4idgSoft:` | 4IDG slits (`top, bot, out, inb`) | `slit`, `baseline` |
-| `gfilter` | `APSFilter` (`filters_device_avs`) | `4idPyFilter:FL1:` | Attenuator filter bank (4IDG) | `filter`, `baseline` |
+| `crl` | `CRLClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens / transfocator (shared 4IDG/4IDH) | `optics`, `track_energy`, `baseline` |
+| `gfilter` | `APSFilter` | `4idPyFilter:FL1:` | Attenuator filter bank (4IDG) | `filter`, `baseline` |
 | `gxbpm` | `XBPM` | `4idgSoft:` | XBPM with positioning motors (`x=m48, y=m47`) | `baseline` |
 | `gsydor` | `SydorEMRO` | `4idgSydor:T4U_BPM:` | Sydor EM T4U beam position monitor | `detector`, `xbpm`, `baseline` |
 | `eiger` | `Eiger1MDetector` | `4idEiger:` | Dectris Eiger 1M area detector | `detector` |
-| `temp_336_4idg` | `LakeShore336Device` | `4idgSoft:LS336:TC1:` | LakeShore 336 temperature controller (`temperature_setup("g")`) | `temperature`, `baseline` |
-| `temp_340_4idg` | `LakeShore340Device` | `4idgSoftX:LS340:TC1:` | LakeShore 340 temperature controller (`temperature_setup("g-340")`) | `temperature`, `baseline` |
+| `temp_336_4idg` | `LakeShore336Device` | `4idgSoft:LS336:TC1:` | LakeShore 336 temperature controller | `temperature`, `baseline` |
+| `temp_340_4idg` | `LakeShore340Device` | `4idgSoftX:LS340:TC1:` | LakeShore 340 temperature controller | `temperature`, `baseline` |
 | `i0g` | `I04idg` | `4idgSoft:` | I0 monitor motors (4IDG) | `baseline` |
-| `ringlight` | `Ringlight` | `RINGLIGHT:` | Ring light controller | `baseline` |
-| `piezo_jena` | `PiezoJena` | `4idgSoftX:asyn_MOXA_G:2` | Piezo-Jena nanopositioner stage | `baseline` |
-| `gmag` | `KepcoDevice` | `4idkepco:` | Kepco power supply | `baseline` |
-| `comp` | `GEController` | `4idPace:PC1:` | High-pressure compression controller | `high pressure`, `baseline` |
-| `decomp` | `GEController` | `4idPace:PC2:` | High-pressure decompression controller | `high pressure`, `baseline` |
 | `preamp_4idgI0` | `LocalPreAmp` | `4idgSoftX:A1` | I0 pre-amplifier (4IDG) | `preamp`, `baseline` |
 | `preamp_4idgI` | `LocalPreAmp` | `4idgSoftX:A2` | I (transmitted) pre-amplifier (4IDG) | `preamp`, `baseline` |
 
@@ -132,16 +125,14 @@ These are shared across the three downstream hutches.
 
 | Name | Class | EPICS Prefix | Description | Labels |
 |------|-------|-------------|-------------|--------|
-| `magnet911` | `Magnet911` | `4idhSoft:` | 9T-1T-1T superconducting vector magnet (`temperature_setup("h-9T")` for the VTI) | `magnet`, `baseline` |
+| `magnet911` | `Magnet911` | `4idhSoft:` | 9T-1T-1T superconducting vector magnet | `magnet`, `baseline` |
 | `hkb` | `HKBDevice` | `4idhKB:` | KB mirror pair (4IDH) | `optics`, `kb`, `baseline` |
-| `crl` | `CRLClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens (CRL, shared 4IDG/4IDH; use `crl_setup("h")` to switch the offset) | `optics`, `track_energy`, `baseline` |
-| `hslt` | `SlitDevice` (`jj_slits`) | `4idhSoft:` | 4IDH slits (`top, bot, out, inb`) | `slit`, `baseline` |
-| `hfilter` | `APSFilter` (`filters_device_avs`) | `4idPyFilter:FL2:` | Attenuator filter bank (4IDH) | `filter`, `baseline` |
+| `crl` | `CRLClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens / transfocator (shared 4IDG/4IDH) | `optics`, `track_energy`, `baseline` |
+| `hfilter` | `APSFilter` | `4idPyFilter:FL2:` | Attenuator filter bank (4IDH) | `filter`, `baseline` |
 | `hxbpm` | `XBPM` | `4idhSoft:` | XBPM with positioning motors (`x=m6, y=m5`) | `baseline` |
 | `hsydor` | `SydorEMRO` | `4idhSydor:T4U_BPM:` | Sydor EM T4U beam position monitor | `detector`, `xbpm`, `baseline` |
 | `table_4idh` | `Table4idh` | `4idhSoft:` | Sample positioning table | `table`, `baseline` |
 | `i0h` | `I04idh` | `4idhSoft:` | I0 monitor motors (4IDH) | `baseline` |
-| `laser` | `VentusLaser` | `4idhSoft:LQE1:` | Ventus Q-switched laser (alignment / pump) | `baseline` |
 | `preamp_4idhI0` | `LocalPreAmp` | `4idhSoft:A1` | I0 pre-amplifier (4IDH) | `preamp`, `baseline` |
 | `preamp_4idhI1` | `LocalPreAmp` | `4idhSoft:A2` | I1 pre-amplifier (4IDH) | `preamp`, `baseline` |
 | `preamp_4idhI2` | `LocalPreAmp` | `4idhSoft:A3` | I2 pre-amplifier (4IDH) | `preamp`, `baseline` |

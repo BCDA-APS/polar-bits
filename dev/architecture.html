@@ -137,13 +137,6 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="whats_new.html">
-    What’s New
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting Started
   </a>
@@ -158,15 +151,22 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="useful_functions.html">
-    Useful Functions
+  <a class="nav-link nav-internal" href="examples/general.html">
+    General Examples
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="examples/general.html">
-    General Examples
+  <a class="nav-link nav-internal" href="examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
+    Command Reference
   </a>
 </li>
 
@@ -178,20 +178,6 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="examples/writing_macros.html">
-    Writing Macros
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
-  </a>
-</li>
-
-
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="examples/4idh_magnet.html">
     4IDH: Magnet 9-1-1 Usage
@@ -244,6 +230,13 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="queueserver.html">
     QueueServer
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
+    API Reference
   </a>
 </li>
 
@@ -340,13 +333,6 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="whats_new.html">
-    What’s New
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting Started
   </a>
@@ -356,13 +342,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="plans.html">
     Scan Plans
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="useful_functions.html">
-    Useful Functions
   </a>
 </li>
 
@@ -383,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -440,6 +419,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="queueserver.html">
     QueueServer
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API Reference
   </a>
 </li>
 
@@ -581,11 +567,11 @@ separate packages.</p>
 <tbody>
 <tr class="row-even"><td><p>Core shared devices</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_common/devices/</span></code></p></td>
-<td><p>undulator, monochromator, KB mirrors, CRL</p></td>
+<td><p>undulator, monochromator, KB mirrors</p></td>
 </tr>
 <tr class="row-odd"><td><p>Shared scan plans</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_common/plans/</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">lup</span></code>, <code class="docutils literal notranslate"><span class="pre">ascan</span></code>, <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code>, <code class="docutils literal notranslate"><span class="pre">hklscan</span></code>, <code class="docutils literal notranslate"><span class="pre">cen</span></code>/<code class="docutils literal notranslate"><span class="pre">com</span></code>/<code class="docutils literal notranslate"><span class="pre">maxi</span></code>/<code class="docutils literal notranslate"><span class="pre">mini</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">lup</span></code>, <code class="docutils literal notranslate"><span class="pre">ascan</span></code>, <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p>Data callbacks</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_common/callbacks/</span></code></p></td>
@@ -593,17 +579,13 @@ separate packages.</p>
 </tr>
 <tr class="row-odd"><td><p>Session utilities</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_common/utils/</span></code></p></td>
-<td><p>device loader, counters, HKL utilities, session-state restore</p></td>
+<td><p>device loader, counters, HKL utilities</p></td>
 </tr>
-<tr class="row-even"><td><p>Per-session macros</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">id4_common/macros/</span></code></p></td>
-<td><p>curated <code class="docutils literal notranslate"><span class="pre">macros_api</span></code>, <code class="docutils literal notranslate"><span class="pre">startup_common</span></code>, motor shortcuts</p></td>
-</tr>
-<tr class="row-odd"><td><p>Safety suspenders</p></td>
+<tr class="row-even"><td><p>Safety suspenders</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_common/suspenders/</span></code></p></td>
 <td><p>shutter-based suspenders</p></td>
 </tr>
-<tr class="row-even"><td><p>Instrument overrides</p></td>
+<tr class="row-odd"><td><p>Instrument overrides</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">id4_{b,g,h,raman}/</span></code></p></td>
 <td><p>startup.py, iconfig_extras.yml</p></td>
 </tr>
@@ -615,26 +597,17 @@ separate packages.</p>
 <hr class="docutils" />
 <section id="startup-flow">
 <h2>Startup Flow<a class="headerlink" href="#startup-flow" title="Link to this heading">#</a></h2>
-<p>The per-beamline <code class="docutils literal notranslate"><span class="pre">id4_{b,g,h,raman}/startup.py</span></code> files orchestrate session
-initialization in this order:</p>
+<p><code class="docutils literal notranslate"><span class="pre">startup.py</span></code> orchestrates session initialization in this order:</p>
 <ol class="arabic simple">
 <li><p>Load <code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code></p></li>
 <li><p>Set up APS DM integration (<code class="docutils literal notranslate"><span class="pre">aps_dm_setup</span></code>)</p></li>
-<li><p>Initialize <code class="docutils literal notranslate"><span class="pre">RE</span></code> (RunEngine), <code class="docutils literal notranslate"><span class="pre">cat</span></code> (databroker catalog), <code class="docutils literal notranslate"><span class="pre">bec</span></code>, and
-supplementary data streams</p></li>
+<li><p>Initialize <code class="docutils literal notranslate"><span class="pre">RE</span></code> (RunEngine), <code class="docutils literal notranslate"><span class="pre">cat</span></code> (databroker catalog), <code class="docutils literal notranslate"><span class="pre">bec</span></code>, and supplementary data streams</p></li>
 <li><p>Conditionally load SPEC / NeXus callbacks based on <code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code></p></li>
 <li><p>Load dichro stream callback</p></li>
-<li><p>Import scan plans, peak-finding plans, counters, attenuators</p></li>
-<li><p>Expose <code class="docutils literal notranslate"><span class="pre">restore_session_state</span></code> in the interactive namespace</p></li>
-<li><p>Call <code class="docutils literal notranslate"><span class="pre">make_devices(connect=False)</span></code> — instantiates every device entry
-from <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code> without making EPICS connections</p></li>
-<li><p>Iterate <code class="docutils literal notranslate"><span class="pre">oregistry.findall([...])</span></code> for the beamline’s station labels
-and call <code class="docutils literal notranslate"><span class="pre">connect_device(...)</span></code> for each</p></li>
-<li><p>Install the A-shutter suspender on the RunEngine</p></li>
+<li><p>Prompt user to load devices — calls <code class="docutils literal notranslate"><span class="pre">make_devices()</span></code> which reads <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code></p></li>
+<li><p>Connect devices tagged with that beamline’s station labels</p></li>
+<li><p>Install shutter suspenders on the RunEngine</p></li>
 </ol>
-<p>After startup the user can <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">id4_common.macros.startup_common</span></code> to
-re-apply the auto-saved per-experiment knobs (PR setup, energy tracking,
-counters, undulator offsets, qxscan params) from <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code>.</p>
 </section>
 <hr class="docutils" />
 <section id="station-labels">
@@ -731,49 +704,19 @@ succeeds.</p>
 <ul class="simple">
 <li><p>Area detectors: <code class="docutils literal notranslate"><span class="pre">ad_eiger1M</span></code>, <code class="docutils literal notranslate"><span class="pre">ad_lambda</span></code>, <code class="docutils literal notranslate"><span class="pre">ad_lightfield</span></code>, <code class="docutils literal notranslate"><span class="pre">ad_vimba</span></code></p></li>
 <li><p>X-ray diagnostics: <code class="docutils literal notranslate"><span class="pre">aps_xbpm</span></code>, <code class="docutils literal notranslate"><span class="pre">aps_undulator</span></code>, <code class="docutils literal notranslate"><span class="pre">aps_status</span></code></p></li>
-<li><p>Optics: <code class="docutils literal notranslate"><span class="pre">kb_generic</span></code> (KB mirror factory), <code class="docutils literal notranslate"><span class="pre">crl_device</span></code> (CRL factory)</p></li>
-<li><p>Monochromator / energy: <code class="docutils literal notranslate"><span class="pre">monochromator</span></code>, <code class="docutils literal notranslate"><span class="pre">energy_device</span></code>, <code class="docutils literal notranslate"><span class="pre">mono_feedback</span></code></p></li>
-<li><p>Diffractometer: <code class="docutils literal notranslate"><span class="pre">polar_diffractometer_hklpy2</span></code> (Cradle / HP cradles + <code class="docutils literal notranslate"><span class="pre">_psi</span></code> engines)</p></li>
-<li><p>Fluorescence detectors: <code class="docutils literal notranslate"><span class="pre">vortex_xmap</span></code>, <code class="docutils literal notranslate"><span class="pre">vortex_xspress3_me{4,7}</span></code>, <code class="docutils literal notranslate"><span class="pre">vortex_dante_me{1,4}</span></code></p></li>
-<li><p>Area detectors: <code class="docutils literal notranslate"><span class="pre">ad_eiger1M</span></code>, <code class="docutils literal notranslate"><span class="pre">ad_lambda</span></code>, <code class="docutils literal notranslate"><span class="pre">ad_lightfield</span></code>, <code class="docutils literal notranslate"><span class="pre">ad_vimba</span></code></p></li>
-<li><p>Scalers / electrometers: <code class="docutils literal notranslate"><span class="pre">scaler</span></code>, <code class="docutils literal notranslate"><span class="pre">quadems</span></code>, <code class="docutils literal notranslate"><span class="pre">sydor_device</span></code></p></li>
-<li><p>Magnets / sample environment: <code class="docutils literal notranslate"><span class="pre">electromagnet</span></code>, <code class="docutils literal notranslate"><span class="pre">magnet_911</span></code>, <code class="docutils literal notranslate"><span class="pre">lakeshore_gaussmeter</span></code></p></li>
-<li><p>Utilities: <code class="docutils literal notranslate"><span class="pre">shutters</span></code>, <code class="docutils literal notranslate"><span class="pre">chopper_device</span></code>, <code class="docutils literal notranslate"><span class="pre">phaseplates</span></code>, <code class="docutils literal notranslate"><span class="pre">qxscan_device</span></code></p></li>
+<li><p>Optics: <code class="docutils literal notranslate"><span class="pre">kb_generic</span></code> (KB mirror factory), <code class="docutils literal notranslate"><span class="pre">crl_device</span></code> (CRL / transfocator factory)</p></li>
+<li><p>Monochromator / energy: <code class="docutils literal notranslate"><span class="pre">monochromator</span></code>, <code class="docutils literal notranslate"><span class="pre">energy_device</span></code></p></li>
+<li><p>Diffractometer: <code class="docutils literal notranslate"><span class="pre">polar_diffractometer</span></code></p></li>
+<li><p>Detectors: <code class="docutils literal notranslate"><span class="pre">scaler</span></code>, <code class="docutils literal notranslate"><span class="pre">vortex_xmap</span></code>, <code class="docutils literal notranslate"><span class="pre">vortex_xspress3_*</span></code></p></li>
+<li><p>Utilities: <code class="docutils literal notranslate"><span class="pre">shutters</span></code>, <code class="docutils literal notranslate"><span class="pre">electromagnet</span></code>, <code class="docutils literal notranslate"><span class="pre">chopper_device</span></code></p></li>
 </ul>
 </section>
 <section id="plans">
 <h3><code class="docutils literal notranslate"><span class="pre">plans/</span></code><a class="headerlink" href="#plans" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">base_scans</span></code> — <code class="docutils literal notranslate"><span class="pre">lup</span></code>, <code class="docutils literal notranslate"><span class="pre">ascan</span></code>, <code class="docutils literal notranslate"><span class="pre">count</span></code>, <code class="docutils literal notranslate"><span class="pre">qxscan</span></code>, <code class="docutils literal notranslate"><span class="pre">th2th</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">grid_scans</span></code> — <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code>, <code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hkl_scans</span></code> — <code class="docutils literal notranslate"><span class="pre">hklscan</span></code>, <code class="docutils literal notranslate"><span class="pre">hscan</span></code>, <code class="docutils literal notranslate"><span class="pre">kscan</span></code>, <code class="docutils literal notranslate"><span class="pre">lscan</span></code>, <code class="docutils literal notranslate"><span class="pre">psiscan</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">move_plans</span></code> — <code class="docutils literal notranslate"><span class="pre">mv</span></code>, <code class="docutils literal notranslate"><span class="pre">mvr</span></code>, <code class="docutils literal notranslate"><span class="pre">abs_set</span></code> (with magnet911 staging)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">peak_position</span></code> — <code class="docutils literal notranslate"><span class="pre">cen</span></code> / <code class="docutils literal notranslate"><span class="pre">com</span></code> / <code class="docutils literal notranslate"><span class="pre">maxi</span></code> / <code class="docutils literal notranslate"><span class="pre">mini</span></code> / <code class="docutils literal notranslate"><span class="pre">peak</span></code> / <code class="docutils literal notranslate"><span class="pre">peak_pos</span></code> /
-<code class="docutils literal notranslate"><span class="pre">pmax</span></code> / <code class="docutils literal notranslate"><span class="pre">pmin</span></code> (scipy-backed; 2-D <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> support)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">peak_position_legacy</span></code> — <code class="docutils literal notranslate"><span class="pre">cen2</span></code> / <code class="docutils literal notranslate"><span class="pre">maxi2</span></code> / <code class="docutils literal notranslate"><span class="pre">mini2</span></code> (apstools <code class="docutils literal notranslate"><span class="pre">lineup2</span></code> backed)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">center_maximum</span></code> — single-pass center / maximum helpers</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dm_plans</span></code> — <code class="docutils literal notranslate"><span class="pre">dm_kickoff_workflow</span></code>, <code class="docutils literal notranslate"><span class="pre">dm_submit_workflow_job</span></code>,
-<code class="docutils literal notranslate"><span class="pre">dm_list_processing_jobs</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">local_scans</span></code> — back-compat shim that re-exports from the focused
-modules above (so old <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">id4_common.plans.local_scans</span> <span class="pre">import</span> <span class="pre">…</span></code>
-imports still work)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">local_preprocessors</span></code> — staging decorators (dichro, magnet911,
-4idg softglue, extra devices)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">flyscan_demo</span></code>, <code class="docutils literal notranslate"><span class="pre">workflow_plan</span></code></p></li>
-</ul>
-</section>
-<section id="macros-new-pr-65">
-<h3><code class="docutils literal notranslate"><span class="pre">macros/</span></code> (new, PR #65)<a class="headerlink" href="#macros-new-pr-65" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">macros_api</span></code> — curated star-import surface for plans, peak finders,
-session singletons. The recommended import line for user macros is
-<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">id4_common.macros.macros_api</span> <span class="pre">import</span> <span class="pre">*</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">startup_common</span></code> — one-line restart helper
-(<code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> + <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">shortcuts_4idg_euler</span></code> / <code class="docutils literal notranslate"><span class="pre">shortcuts_4idg_hp</span></code> / <code class="docutils literal notranslate"><span class="pre">shortcuts_4idh_9T</span></code> —
-prebuilt motor-shortcut modules. Importing a module binds its
-diffractometer or magnet sub-devices into <code class="docutils literal notranslate"><span class="pre">__main__</span></code> under short
-names.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">local_scans</span></code> — <code class="docutils literal notranslate"><span class="pre">lup</span></code>, <code class="docutils literal notranslate"><span class="pre">ascan</span></code>, <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code>, <code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code>, <code class="docutils literal notranslate"><span class="pre">count</span></code>, <code class="docutils literal notranslate"><span class="pre">qxscan</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dm_plans</span></code> — APS Data Management workflow submission</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">center_maximum</span></code>, <code class="docutils literal notranslate"><span class="pre">flyscan_demo</span></code>, <code class="docutils literal notranslate"><span class="pre">workflow_plan</span></code></p></li>
 </ul>
 </section>
 <section id="callbacks">
@@ -782,28 +725,12 @@ names.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">spec_data_file_writer</span></code> — SPEC <code class="docutils literal notranslate"><span class="pre">.dat</span></code> output</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">nexus_data_file_writer</span></code> — NeXus/HDF5 output</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dichro_stream</span></code> — circular dichroism processing</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">apstools_spec_file_writer</span></code> — local subclass of apstools’ SPEC writer
-(collapses non-scalar metadata so qxscan files parse in pymca)</p></li>
 </ul>
 </section>
 <section id="utils">
 <h3><code class="docutils literal notranslate"><span class="pre">utils/</span></code><a class="headerlink" href="#utils" title="Link to this heading">#</a></h3>
-<p>~28 utility modules. Highlights:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">device_loader</span></code> — <code class="docutils literal notranslate"><span class="pre">load_device</span></code>, <code class="docutils literal notranslate"><span class="pre">find_loadable_devices</span></code>, <code class="docutils literal notranslate"><span class="pre">reload_all_devices</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">counters_class</span></code> — <code class="docutils literal notranslate"><span class="pre">CountersClass.plotselect()</span></code> (auto-saved into session state)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">temperature_setup</span></code> — <code class="docutils literal notranslate"><span class="pre">temperature_setup(label)</span></code> injects <code class="docutils literal notranslate"><span class="pre">tc</span></code> / <code class="docutils literal notranslate"><span class="pre">ts</span></code> /
-<code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLER</span></code> into the session</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pr_setup</span></code> — interactive phase-retarder setup (auto-saved into session state)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">undulator_setup</span></code> — undulator offset / harmonic helpers</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">session_state</span></code> — auto-save / <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> against
-<code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">experiment_utils</span></code> — <code class="docutils literal notranslate"><span class="pre">experiment_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">experiment_resume</span></code>,
-<code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">hkl_utils_hklpy2</span></code> — hklpy2 wrappers</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">polartools_hklpy2_imports</span></code> — re-exports</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">shorts</span></code> — <code class="docutils literal notranslate"><span class="pre">crl_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">crl_size</span></code>, <code class="docutils literal notranslate"><span class="pre">te</span></code>, <code class="docutils literal notranslate"><span class="pre">opt</span></code></p></li>
-</ul>
+<p>~33 utility modules including device loader, counters class, HKL/crystallography
+helpers, DM integration, attenuator control, and more.</p>
 </section>
 </section>
 </section>
@@ -866,7 +793,6 @@ names.</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-components-in-id4-common">Key Components in <code class="docutils literal notranslate"><span class="pre">id4_common/</span></code></a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#devices"><code class="docutils literal notranslate"><span class="pre">devices/</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plans"><code class="docutils literal notranslate"><span class="pre">plans/</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#macros-new-pr-65"><code class="docutils literal notranslate"><span class="pre">macros/</span></code> (new, PR #65)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#callbacks"><code class="docutils literal notranslate"><span class="pre">callbacks/</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#utils"><code class="docutils literal notranslate"><span class="pre">utils/</span></code></a></li>
 </ul>

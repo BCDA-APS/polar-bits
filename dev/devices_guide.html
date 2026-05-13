@@ -137,13 +137,6 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="whats_new.html">
-    What’s New
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting Started
   </a>
@@ -158,15 +151,22 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="useful_functions.html">
-    Useful Functions
+  <a class="nav-link nav-internal" href="examples/general.html">
+    General Examples
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="examples/general.html">
-    General Examples
+  <a class="nav-link nav-internal" href="examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
+    Command Reference
   </a>
 </li>
 
@@ -178,20 +178,6 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="examples/writing_macros.html">
-    Writing Macros
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
-  </a>
-</li>
-
-
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="examples/4idh_magnet.html">
     4IDH: Magnet 9-1-1 Usage
@@ -244,6 +230,13 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="queueserver.html">
     QueueServer
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="api/index.html">
+    API Reference
   </a>
 </li>
 
@@ -340,13 +333,6 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="whats_new.html">
-    What’s New
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting Started
   </a>
@@ -356,13 +342,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="plans.html">
     Scan Plans
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="useful_functions.html">
-    Useful Functions
   </a>
 </li>
 
@@ -383,7 +362,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
-    4IDG: Diffractometer Usage
+    Command Reference
   </a>
 </li>
 
@@ -440,6 +419,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="queueserver.html">
     QueueServer
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API Reference
   </a>
 </li>
 
@@ -656,19 +642,19 @@ new class:</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Eiger1MDetector</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Eiger1M</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ad_eiger1M</span></code></p></td>
 <td><p>Dectris Eiger 1M</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Lambda</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ad_lambda</span></code></p></td>
-<td><p>X-Spectrum Lambda 250k</p></td>
+<td><p>X-Spectrum Lambda</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LightFieldDetector</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LightField</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ad_lightfield</span></code></p></td>
 <td><p>Princeton LightField spectrometer</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">VimbaDetector</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Vimba</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ad_vimba</span></code></p></td>
 <td><p>Allied Vision Vimba camera</p></td>
 </tr>
@@ -682,29 +668,17 @@ new class:</p>
 <thead>
 <tr class="row-odd"><th class="head"><p>Class</p></th>
 <th class="head"><p>Module</p></th>
-<th class="head"><p>Notes</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VortexXMAP</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VortexXmap</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">vortex_xmap</span></code></p></td>
-<td><p>Vortex with XMAP electronics</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">VortexXspress37</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">vortex_xspress3_me7</span></code></p></td>
-<td><p>Vortex 7-element with Xspress3</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">VortexXspress3_1Element</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">vortex_xspress3_1element</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VortexXspress34</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">vortex_xspress3_me4</span></code></p></td>
-<td><p>Vortex 4-element with Xspress3</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">VortexDante1</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">vortex_dante_me1</span></code></p></td>
-<td><p>Vortex 1-element with Dante</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VortexDante4</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">vortex_dante_me4</span></code></p></td>
-<td><p>Vortex 4-element with Dante</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VortexXspress3_4Element</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">vortex_xspress3_4element</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -728,7 +702,7 @@ new class:</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">crl_device</span></code></p></td>
 <td><p>Compound refractive lens (factory-built)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MonoDevice</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Monochromator</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">monochromator</span></code></p></td>
 <td><p>Si(111) DCM</p></td>
 </tr>
@@ -742,15 +716,7 @@ new class:</p>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MyXBPM</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">aps_xbpm</span></code></p></td>
-<td><p>APS-source XBPM</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">XBPM</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">xbpm</span></code></p></td>
-<td><p>Generic XBPM (used by <code class="docutils literal notranslate"><span class="pre">gxbpm</span></code> / <code class="docutils literal notranslate"><span class="pre">hxbpm</span></code>)</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HHLMirror</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">hhl_mirror</span></code></p></td>
-<td><p>High-heat-load mirror</p></td>
+<td><p>X-ray beam position monitor</p></td>
 </tr>
 </tbody>
 </table>
@@ -766,13 +732,9 @@ new class:</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CradleDiffractometer</span></code> / <code class="docutils literal notranslate"><span class="pre">HPDiffractometer</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">polar_diffractometer_hklpy2</span></code></p></td>
-<td><p>Huber Euler / HP cradles (hklpy2)</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CradleDiffractometerPSI</span></code> / <code class="docutils literal notranslate"><span class="pre">HPDiffractometerPSI</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">polar_diffractometer_hklpy2</span></code></p></td>
-<td><p>Companion <code class="docutils literal notranslate"><span class="pre">_psi</span></code> engines</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PolarDiffractometer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">polar_diffractometer</span></code></p></td>
+<td><p>Huber Euler 6-circle (hklpy2)</p></td>
 </tr>
 </tbody>
 </table>
@@ -788,25 +750,21 @@ new class:</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Magnet2T</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Electromagnet</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">electromagnet</span></code></p></td>
-<td><p>2 T electromagnet power supply</p></td>
+<td><p>Magnet power supply control</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Magnet911</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">magnet_911</span></code></p></td>
-<td><p>4IDH 9-Tesla magnet (table + sample + VTI)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ChopperDevice</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Chopper</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">chopper_device</span></code></p></td>
 <td><p>Time-resolved chopper</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PolarShutter</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Shutter</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">shutters</span></code></p></td>
-<td><p>Local fast shutter (the A/B PSS shutters use <code class="docutils literal notranslate"><span class="pre">apstools.devices.ApsPssShutterWithStatus</span></code>)</p></td>
+<td><p>Fast shutter</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalScalerCH</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Scaler</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">scaler</span></code></p></td>
-<td><p>Multi-channel scaler (USB-CTR8)</p></td>
+<td><p>Multi-channel scaler (SIS3820)</p></td>
 </tr>
 </tbody>
 </table>
@@ -824,17 +782,9 @@ detector and monitor selection used by all scan plans:</p>
 <span class="n">counters</span><span class="o">.</span><span class="n">extra_devices</span>    <span class="c1"># devices read but not plotted</span>
 
 <span class="c1"># Change the selection</span>
-<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>                  <span class="c1"># detector index 0, monitor index 1</span>
-<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="n">dets</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mon</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>         <span class="c1"># equivalent (named args)</span>
-<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">()</span>                      <span class="c1"># interactive prompt</span>
+<span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="n">det_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mon_idx</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">plotselect()</span></code> accepts integer indices into the scaler channel list,
-single device objects, or lists/tuples of either; pass nothing to enter
-the interactive prompt. The active selection is auto-snapshotted into
-<code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> so a bluesky restart can re-apply it via
-<code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> (see <a class="reference internal" href="examples/writing_macros.html#recoverable-session-state"><span class="std std-ref">Recoverable session
-state</span></a>).</p>
 <p>Scan plans automatically read <code class="docutils literal notranslate"><span class="pre">counters.detectors</span></code> and <code class="docutils literal notranslate"><span class="pre">counters.monitor</span></code>
 unless overridden by explicit arguments.</p>
 </section>

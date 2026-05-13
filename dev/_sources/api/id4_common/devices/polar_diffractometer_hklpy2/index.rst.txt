@@ -233,6 +233,24 @@ Module Contents
 
 
 
+.. py:class:: DeferredEpicsMonochromatorRO
+
+   Bases: :py:obj:`hklpy2.incident.EpicsMonochromatorRO`
+
+
+   ``EpicsMonochromatorRO`` whose wavelength/energy don't block on init.
+
+   See ``_DeferredEpicsSignalRO`` for the rationale. Used as the ``beam``
+   component for the POLAR diffractometers so they can be instantiated
+   while the VDCM IOC is offline.
+
+
+   .. py:attribute:: wavelength
+
+
+   .. py:attribute:: energy
+
+
 .. py:data:: mono_kwargs
 
 .. py:data:: CradleDiffractometerBase

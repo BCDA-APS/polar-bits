@@ -120,17 +120,8 @@ Labels control which beamlines load a device:
 | `"4idb"` | 4IDB only |
 | `"4idg"` | 4IDG only |
 | `"4idh"` | 4IDH only |
-| `"raman"` | Raman only |
 | `"baseline"` | Added to baseline supplemental data stream |
-| Functional (any string) | Used for `find_loadable_devices(label=...)` |
-
-Functional labels currently in use across `devices.yml` include
-`"detector"`, `"motor"`, `"slit"`, `"phase retarder"`, `"track_energy"`,
-`"energy device"`, `"feedback"`, `"camera"`, `"flag"`, `"kb"`,
-`"high pressure"`, `"qxscan"`, `"temperature"`, `"preamp"`,
-`"filter"`, `"shutter"`, `"xbpm"`, `"status"`, `"source"`, `"table"`,
-`"magnet"`, `"mirror"`. Any string is allowed — these are the
-conventional ones already in use.
+| `"detector"`, `"motor"`, `"slit"` | Functional — used for `find_loadable_devices(label=...)` |
 
 ### Adding a new device
 

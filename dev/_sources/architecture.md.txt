@@ -24,11 +24,10 @@ src/
 
 | Layer | Location | Examples |
 |-------|----------|---------|
-| Core shared devices | `id4_common/devices/` | undulator, monochromator, KB mirrors, CRL |
-| Shared scan plans | `id4_common/plans/` | `lup`, `ascan`, `grid_scan`, `hklscan`, `cen`/`com`/`maxi`/`mini` |
+| Core shared devices | `id4_common/devices/` | undulator, monochromator, KB mirrors |
+| Shared scan plans | `id4_common/plans/` | `lup`, `ascan`, `grid_scan` |
 | Data callbacks | `id4_common/callbacks/` | SPEC writer, NeXus writer, dichro stream |
-| Session utilities | `id4_common/utils/` | device loader, counters, HKL utilities, session-state restore |
-| Per-session macros | `id4_common/macros/` | curated `macros_api`, `startup_common`, motor shortcuts |
+| Session utilities | `id4_common/utils/` | device loader, counters, HKL utilities |
 | Safety suspenders | `id4_common/suspenders/` | shutter-based suspenders |
 | Instrument overrides | `id4_{b,g,h,raman}/` | startup.py, iconfig_extras.yml |
 
@@ -36,26 +35,16 @@ src/
 
 ## Startup Flow
 
-The per-beamline `id4_{b,g,h,raman}/startup.py` files orchestrate session
-initialization in this order:
+`startup.py` orchestrates session initialization in this order:
 
 1. Load `iconfig.yml`
 2. Set up APS DM integration (`aps_dm_setup`)
-3. Initialize `RE` (RunEngine), `cat` (databroker catalog), `bec`, and
-   supplementary data streams
+3. Initialize `RE` (RunEngine), `cat` (databroker catalog), `bec`, and supplementary data streams
 4. Conditionally load SPEC / NeXus callbacks based on `iconfig.yml`
 5. Load dichro stream callback
-6. Import scan plans, peak-finding plans, counters, attenuators
-7. Expose `restore_session_state` in the interactive namespace
-8. Call `make_devices(connect=False)` — instantiates every device entry
-   from `devices.yml` without making EPICS connections
-9. Iterate `oregistry.findall([...])` for the beamline's station labels
-   and call `connect_device(...)` for each
-10. Install the A-shutter suspender on the RunEngine
-
-After startup the user can `import id4_common.macros.startup_common` to
-re-apply the auto-saved per-experiment knobs (PR setup, energy tracking,
-counters, undulator offsets, qxscan params) from `RE.md["session_state"]`.
+6. Prompt user to load devices — calls `make_devices()` which reads `devices.yml`
+7. Connect devices tagged with that beamline's station labels
+8. Install shutter suspenders on the RunEngine
 
 ---
 
@@ -133,68 +122,25 @@ succeeds.
 
 - Area detectors: `ad_eiger1M`, `ad_lambda`, `ad_lightfield`, `ad_vimba`
 - X-ray diagnostics: `aps_xbpm`, `aps_undulator`, `aps_status`
-- Optics: `kb_generic` (KB mirror factory), `crl_device` (CRL factory)
-- Monochromator / energy: `monochromator`, `energy_device`, `mono_feedback`
-- Diffractometer: `polar_diffractometer_hklpy2` (Cradle / HP cradles + `_psi` engines)
-- Fluorescence detectors: `vortex_xmap`, `vortex_xspress3_me{4,7}`, `vortex_dante_me{1,4}`
-- Area detectors: `ad_eiger1M`, `ad_lambda`, `ad_lightfield`, `ad_vimba`
-- Scalers / electrometers: `scaler`, `quadems`, `sydor_device`
-- Magnets / sample environment: `electromagnet`, `magnet_911`, `lakeshore_gaussmeter`
-- Utilities: `shutters`, `chopper_device`, `phaseplates`, `qxscan_device`
+- Optics: `kb_generic` (KB mirror factory), `crl_device` (CRL / transfocator factory)
+- Monochromator / energy: `monochromator`, `energy_device`
+- Diffractometer: `polar_diffractometer`
+- Detectors: `scaler`, `vortex_xmap`, `vortex_xspress3_*`
+- Utilities: `shutters`, `electromagnet`, `chopper_device`
 
 ### `plans/`
 
-- `base_scans` — `lup`, `ascan`, `count`, `qxscan`, `th2th`
-- `grid_scans` — `grid_scan`, `rel_grid_scan`
-- `hkl_scans` — `hklscan`, `hscan`, `kscan`, `lscan`, `psiscan`
-- `move_plans` — `mv`, `mvr`, `abs_set` (with magnet911 staging)
-- `peak_position` — `cen` / `com` / `maxi` / `mini` / `peak` / `peak_pos` /
-  `pmax` / `pmin` (scipy-backed; 2-D `grid_scan` support)
-- `peak_position_legacy` — `cen2` / `maxi2` / `mini2` (apstools `lineup2` backed)
-- `center_maximum` — single-pass center / maximum helpers
-- `dm_plans` — `dm_kickoff_workflow`, `dm_submit_workflow_job`,
-  `dm_list_processing_jobs`
-- `local_scans` — back-compat shim that re-exports from the focused
-  modules above (so old `from id4_common.plans.local_scans import …`
-  imports still work)
-- `local_preprocessors` — staging decorators (dichro, magnet911,
-  4idg softglue, extra devices)
-- `flyscan_demo`, `workflow_plan`
-
-### `macros/` (new, PR #65)
-
-- `macros_api` — curated star-import surface for plans, peak finders,
-  session singletons. The recommended import line for user macros is
-  `from id4_common.macros.macros_api import *`.
-- `startup_common` — one-line restart helper
-  (`experiment_resume()` + `restore_session_state()`).
-- `shortcuts_4idg_euler` / `shortcuts_4idg_hp` / `shortcuts_4idh_9T` —
-  prebuilt motor-shortcut modules. Importing a module binds its
-  diffractometer or magnet sub-devices into `__main__` under short
-  names.
+- `local_scans` — `lup`, `ascan`, `grid_scan`, `rel_grid_scan`, `count`, `qxscan`
+- `dm_plans` — APS Data Management workflow submission
+- `center_maximum`, `flyscan_demo`, `workflow_plan`
 
 ### `callbacks/`
 
 - `spec_data_file_writer` — SPEC `.dat` output
 - `nexus_data_file_writer` — NeXus/HDF5 output
 - `dichro_stream` — circular dichroism processing
-- `apstools_spec_file_writer` — local subclass of apstools' SPEC writer
-  (collapses non-scalar metadata so qxscan files parse in pymca)
 
 ### `utils/`
 
-~28 utility modules. Highlights:
-
-- `device_loader` — `load_device`, `find_loadable_devices`, `reload_all_devices`
-- `counters_class` — `CountersClass.plotselect()` (auto-saved into session state)
-- `temperature_setup` — `temperature_setup(label)` injects `tc` / `ts` /
-  `TEMPERATURE_CONTROLLER` into the session
-- `pr_setup` — interactive phase-retarder setup (auto-saved into session state)
-- `undulator_setup` — undulator offset / harmonic helpers
-- `session_state` — auto-save / `restore_session_state()` against
-  `RE.md["session_state"]`
-- `experiment_utils` — `experiment_setup`, `experiment_resume`,
-  `experiment_load_from_scan`
-- `hkl_utils_hklpy2` — hklpy2 wrappers
-- `polartools_hklpy2_imports` — re-exports
-- `shorts` — `crl_setup`, `crl_size`, `te`, `opt`
+~33 utility modules including device loader, counters class, HKL/crystallography
+helpers, DM integration, attenuator control, and more.
