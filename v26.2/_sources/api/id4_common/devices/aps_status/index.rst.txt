@@ -1,0 +1,36 @@
+id4_common.devices.aps_status
+=============================
+
+.. py:module:: id4_common.devices.aps_status
+
+.. autoapi-nested-parse::
+
+   APS status
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: StatusAPS
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   Device exposing APS ring current and operational status signals.
+
+
+   .. py:attribute:: current
+
+
+   .. py:attribute:: machine_status
+
+
+   .. py:attribute:: operating_mode
+
+
+   .. py:attribute:: shutter_status
+
+

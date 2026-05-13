@@ -1,0 +1,410 @@
+# Writing Macros
+
+Macros are Python files (or functions) that extend a session with reusable
+procedures. They range from simple motor shortcuts to complex multi-step
+Bluesky plans. The files in `.usage_logs/` provide real examples from
+production sessions.
+
+---
+
+## Startup Scripts (Shell)
+
+The `startup_scripts/` folder contains shell scripts that launch a session
+for each beamline. Each one activates the conda environment and starts IPython
+with the appropriate import:
+
+```bash
+# startup_scripts/bluesky-4idh
+#!/bin/bash
+source /APSshare/miniconda/x86_64/bin/activate polar-bits
+ipython -i -c "from id4_h.startup import *"
+```
+
+Run from a terminal:
+
+```bash
+bluesky-4idg    # 4IDG session
+bluesky-4idh    # 4IDH session
+bluesky-4idb    # 4IDB session
+bluesky-core    # shared core only
+```
+
+---
+
+## Restarting a Session
+
+The recommended path for picking a session back up — same experiment,
+fresh bluesky process — is the prebuilt one-liner:
+
+```python
+import id4_common.macros.startup_common  # noqa: F401
+```
+
+That import runs `experiment_resume()` (auto-discovers the snapshot in
+the current directory or via `cat[-1]`) followed by
+`restore_session_state()` (re-applies every auto-saved setup knob — see
+[Recoverable session state](#recoverable-session-state)) and prints a
+per-knob status summary. `restore_session_state` is also imported into
+the interactive session namespace by `_common_startup.py`, so you can
+re-run it on demand without an extra import.
+
+This works because the regular setup helpers (`pr_setup`,
+`energy.tracking_setup`, `counters.plotselect`, `undulator_setup`,
+`qxscan_setup.load_params_json`) auto-snapshot their values into
+`RE.md["session_state"]` every time you call them, so the next bluesky
+process can replay the last good configuration with a single import.
+
+A hand-rolled startup file is rarely necessary — see
+[Full custom startup file (rare)](#full-custom-startup-file-rare) at
+the end of this page for the cases where you do need one (first run of
+an experiment, extra devices, non-standard overrides).
+
+---
+
+## Motor Shortcuts
+
+Create short variable names for frequently used motors so you can type
+`mv field 3` instead of `mv magnet911.ps.field 3`.
+
+### Prebuilt shortcuts (recommended)
+
+The package ships ready-to-go shortcut modules under
+`id4_common.macros` for each common 4-ID setup. Importing the matching
+one binds its motor names directly into the interactive session:
+
+| Module | Setup | Binds |
+|--------|-------|-------|
+| `shortcuts_4idg_euler` | 4IDG Euler diffractometer (`huber_euler`) | `h`, `k`, `l`, `tau`, `mu`, `gamma`, `delta`, `chi`, `phi`, `x`, `y`, `z` |
+| `shortcuts_4idg_hp` | 4IDG HP diffractometer (`huber_hp`) | the Euler set + `basex`/`basey`/`basez` (+ motor variants), `sample_tilt`, `nanox`/`nanoy`/`nanoz`, `xeryon` |
+| `shortcuts_4idh_9T` | 4IDH 9-Tesla magnet (`magnet911`) | `field`, `tabx`, `taby`, `tabz`, `tabsx`, `tabsz`, `tabrot`, `sy`, `sth` |
+
+```python
+import id4_common.macros.shortcuts_4idg_hp  # noqa: F401
+# now: h, k, l, gamma, delta, nanox, ... are directly usable in the session
+```
+
+The import has to come *after* the underlying device is loaded
+(`huber_hp`, `huber_euler`, or `magnet911`) — the shortcut modules
+resolve names against `oregistry` at import time. Each module logs
+`<full_name> --> <short_name>` to the session log so you can see what
+landed.
+
+### Custom shortcuts
+
+For names that aren't covered by the prebuilt set, write your own
+file using the same pattern:
+
+```python
+# motor_shortcuts.py — extra shortcuts for one experiment
+from apsbits.core.instrument_init import oregistry
+
+_mag = oregistry.find("magnet911")
+_huber = oregistry.find("huber_euler")
+
+samy   = _mag.samp.y
+samth  = _mag.samp.th
+energy = oregistry.find("energy")
+sx     = _huber.x
+```
+
+Import with a wildcard so shortcuts land in the session namespace:
+
+```python
+from motor_shortcuts import *
+# now: samy, samth, energy, sx are directly usable
+```
+
+---
+
+## Writing Bluesky Plans
+
+Bluesky plans are Python generator functions. They use `yield from` to compose
+built-in plan stubs, which allows the RunEngine to track, pause, and replay
+them. Any sequence of moves and scans can be wrapped in a plan.
+
+**Use `id4_common.macros.macros_api`** as the single import line for every
+plan/peak/setting helper your macro needs (issue #18). It re-exports every
+public scan plan (`ascan`, `lup`, `mv`, `mvr`, `grid_scan`, `rel_grid_scan`,
+`hklscan`, `qxscan`, …), every peak-finding plan (`cen` / `com` / `maxi` /
+`mini` plus the legacy `cen2` / `maxi2` / `mini2`), and the session-level
+singletons (`oregistry`, `counters`, `peaks`, `atten`). The list is curated
+and kept stable across internal package reorgs — your macros stay working
+when modules move around inside `id4_common`.
+
+```python
+# macros.py
+from bluesky.plan_stubs import abs_set, sleep
+from id4_common.macros.macros_api import *
+
+huber_hp = oregistry.find("huber_hp")
+energy   = oregistry.find("energy")
+
+
+def align_sample():
+    """Align sample in X and Y by scanning to the transmission peak."""
+    tabx  = oregistry.find("magnet911").tab.x
+    taby  = oregistry.find("magnet911").tab.y
+    yield from lup(tabx, -0.5, 0.5, 30, 0.2)
+    yield from cen(tabx)
+    yield from lup(taby, -0.5, 0.5, 30, 0.2)
+    yield from cen(taby)
+
+
+def energy_map(energies, dwell=0.5):
+    """Take a 2D nano-scan at each energy in the list."""
+    for en in energies:
+        yield from mv(energy, en)
+        yield from rel_grid_scan(
+            huber_hp.nanoy, -3, 3, 31,
+            huber_hp.nanox, -2, 2, 21,
+            dwell,
+            snake_axes=True,
+        )
+```
+
+**Bluesky stubs are not re-exported** from `macros_api` — keep
+`from bluesky.plan_stubs import abs_set, rd, sleep, ...` as a separate
+explicit import so the bluesky surface stays visible.
+
+Six real-world macro templates live under `docs/source/examples/macros/`
+and follow this pattern:
+
+| File | What it shows |
+|------|---------------|
+| `align_routine.py` | tab.x / tab.y alignment + `check_position` retry loop |
+| `xmcd_at_two_edges.py` | per-edge energy + PR2 + preamp swap, then averaged qxscans |
+| `field_sequence.py` | overnight field sweep that re-aligns after every ramp |
+| `qxscan_chain.py` | iterate `qxscan` over a list of edges |
+| `hkl_map.py` | `hklscan` + `cen` to refine a Bragg peak |
+| `startup.py` | recoverable session start template — `experiment_load_from_scan()` fallback + per-experiment hand-managed steps. Use this when you outgrow the in-package one-liner `id4_common.macros.startup_common`. |
+
+Copy any of them into your experiment directory and edit to taste.
+
+### Recoverable session state
+
+The setup helpers (`pr_setup`, `energy.tracking_setup`,
+`counters.plotselect`, `undulator_setup`,
+`qxscan_setup.load_params_json`) auto-snapshot their current values into
+`RE.md["session_state"]` — apsbits' `PersistentDict` backed by `MD_PATH`
+(`iconfig.yml`).  After a bluesky restart, call
+`restore_session_state()` to re-apply every saved knob in one go.
+`_common_startup.py` already imports it, so it's directly available in
+the session:
+
+```python
+status = restore_session_state()
+for knob, msg in status.items():
+    print(f"  {knob:18}  {msg}")
+```
+
+For a one-line restart that runs `experiment_resume()` first and prints
+the per-knob summary itself, use the prebuilt
+`id4_common.macros.startup_common` module shown in
+[Restarting a Session](#restarting-a-session) at the top of this page.
+`docs/source/examples/macros/startup.py` is a longer template with the
+full `experiment_load_from_scan()` fallback and additional
+hand-managed steps (e.g. `load_vortex`); see
+[Full custom startup file (rare)](#full-custom-startup-file-rare).
+
+`status` reports `applied` / `skipped: <reason>` / `failed: <Exception>`
+per knob group — restore never raises, a missing device or single
+failed `.put()` is logged and the rest of the restore continues.
+
+Run a plan:
+
+```python
+RE(align_sample())
+RE(energy_map([6.205, 6.208, 6.211]))
+```
+
+Chain plans sequentially:
+
+```python
+RE(align_sample())
+RE(energy_map([6.205, 6.208, 6.211], dwell=0.1))
+```
+
+Or within a single plan:
+
+```python
+def overnight_run(energies):
+    """Full overnight sequence."""
+    yield from align_sample()
+    yield from energy_map(energies)
+
+RE(overnight_run([6.205, 6.208, 6.210, 6.212]))
+```
+
+---
+
+## Accessing Devices Inside Plans
+
+Use `oregistry.find()` at the top of the macro file to get device references.
+Avoid accessing the registry inside a running plan — resolve names at import
+time instead:
+
+```python
+# Good — resolve at import time
+_magnet = oregistry.find("magnet911")
+field   = _magnet.ps.field
+
+def field_sweep():
+    yield from ascan(field, -1, 1, 50, 2.0, dichro=True)
+```
+
+---
+
+## Non-Interactive Experiment Setup in Scripts
+
+When running from a script (not interactive), pass all arguments to
+`experiment_setup()` as keywords so it does not prompt:
+
+```python
+from id4_common.utils.experiment_utils import experiment_setup, experiment
+from apsbits.utils.config_loaders import get_config
+from pathlib import Path
+
+experiment_setup(
+    esaf_id         = 281924,
+    proposal_id     = "1014446",
+    base_name       = "scan",
+    sample          = "EuAl4",
+    server          = "dserv",
+    experiment_name = "Frontini_26-1",
+    reset_scan_id   = 0,        # last scan_id = 0 → next scan = 1
+)
+
+# Override the data path if needed
+iconfig = get_config()
+experiment.base_experiment_path = (
+    Path(iconfig["DM_ROOT_PATH"]) / "2026-1/Frontini_26-1/data"
+)
+```
+
+`reset_scan_id` is the **last completed** scan number, not the next one
+— `0` means "fresh start, next scan will be `1`"; `47` means "continue
+from where we left off, next scan will be `48`". `-1` is the no-op
+sentinel.
+
+If you do not want `experiment_setup()` to talk to Data Management at
+all (e.g. DM is down), nothing special is needed: the function probes
+DM at the start and falls back to `dserv` automatically with a single
+warning. To force the bypass even when DM is up, pass
+`server="dserv"` or `esaf_id="dev"`/`proposal_id="dev"`.
+
+---
+
+## Logging Notes Within a Session
+
+Use `spec_comment` to annotate the SPEC logbook with free-form text at any
+point during a session:
+
+```python
+spec_comment("Sample: EuAl4 single crystal, (001) face")
+spec_comment("PR2 theta = 22.302 deg, field = +3 T, T = 100 K")
+spec_comment("Starting overnight field-dependent XMCD run")
+```
+
+Comments appear in the SPEC `.dat` file prefixed with `#C` and are visible
+in any SPEC data viewer.
+
+For Python-side logging within a macro, use the standard `logging` module:
+
+```python
+import logging
+logger = logging.getLogger(__name__)
+
+def my_plan():
+    logger.info("Starting field sweep")
+    yield from ascan(field, -1, 1, 50, 2.0)
+    logger.info("Field sweep complete")
+```
+
+---
+
+## Importing Macros
+
+Load macros into the session namespace:
+
+```python
+%run macros_4idh.py          # executes the file; all names land in session
+from macros_4idh import *    # explicit wildcard import
+```
+
+To share macros across sessions, keep them in a dedicated directory and use
+`%run` from anywhere:
+
+```python
+%run /home/beams/POLAR/macros/macros_4idh.py
+```
+
+---
+
+## Full custom startup file (rare)
+
+Most sessions should restart via `import id4_common.macros.startup_common`
+([Restarting a Session](#restarting-a-session) above) — auto-saved
+state covers the common knobs and a single import re-applies all of
+them. A hand-rolled startup file is only needed for situations the
+auto-save doesn't cover:
+
+- **First run of a new experiment.** Nothing has been saved yet, so
+  there is no `RE.md["session_state"]` to restore from.
+- **Loading optional devices** that aren't in the beamline's default
+  station list (e.g. `load_vortex("xspress4")` after deciding which
+  vortex electronics to use this run).
+- **Non-default overrides** that you want to bake into a versioned
+  file rather than typing each session.
+
+When one of those applies, write your own file and `%run` it inside
+IPython:
+
+```python
+%run startup_4idh.py
+```
+
+```python
+# startup_4idh.py
+from apsbits.core.instrument_init import oregistry
+from id4_common.utils.experiment_utils import experiment_resume
+from id4_common.utils.counters_class import counters
+from id4_common.utils.pr_setup import pr_setup
+import matplotlib.pyplot as plt
+
+plt.ion()    # enable interactive plots
+
+# Restore the previous session from its YAML snapshot.
+# experiment_resume() auto-discovers the snapshot in the current working
+# directory or via cat[-1] (whichever it finds first). If neither is
+# available — first run of an experiment — fall back to the full
+# experiment_setup() prompt, or to experiment_load_from_scan() to
+# re-derive from a Bluesky run document.
+experiment_resume()
+
+# Energy tracking
+energy = oregistry.find("energy")
+energy.tracking_setup(["undulators_ds", "pr2"])
+
+# Undulator offset
+undulators = oregistry.find("undulators")
+undulators.ds.energy_offset.put(-0.063)
+undulators.ds.energy_deadband.put(0.002)
+
+# Default detector/monitor selection
+counters.plotselect(9, 8)
+
+# PR2 setup for helicity switching
+pr_setup.positioner    = oregistry.find("pr2_pzt_localdc")
+pr_setup.offset        = oregistry.find("pr2_pzt_offset_microns")
+pr_setup.oscillate_pzt = True
+
+# Load motor shortcuts and macros
+import id4_common.macros.shortcuts_4idh_9T  # noqa: F401
+from macros import *
+```
+
+Note that every call above (`pr_setup`, `energy.tracking_setup`,
+`counters.plotselect`, the undulator offset writes) auto-saves into
+`RE.md["session_state"]`, so the *next* restart of this experiment can
+go back to the one-line `import id4_common.macros.startup_common`
+path and skip this file entirely.

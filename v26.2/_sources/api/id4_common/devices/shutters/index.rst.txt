@@ -1,0 +1,42 @@
+id4_common.devices.shutters
+===========================
+
+.. py:module:: id4_common.devices.shutters
+
+.. autoapi-nested-parse::
+
+   Shutters
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: PolarShutter
+
+   Bases: :py:obj:`apstools.devices.ApsPssShutterWithStatus`
+
+
+   APS PSS shutter with optional auto-reopen logic on beam loss.
+
+
+   .. py:attribute:: sleep_time
+      :value: 5
+
+
+
+   .. py:method:: start_auto_shutter()
+
+      Subscribe to pss_state so the shutter reopens automatically on beam
+      loss.
+
+
+
+   .. py:method:: stop_auto_shutter()
+
+      Unsubscribe all pss_state callbacks to disable automatic reopening.
+
+
+
