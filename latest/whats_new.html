@@ -1,0 +1,925 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>What’s New &#8212; polar-bits</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=f539c95a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'whats_new';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="getting_started.html" />
+    <link rel="prev" title="polar-bits" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">polar-bits</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/general.html">
+    General Examples
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/general.html">
+    General Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">What’s New</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="what-s-new">
+<h1>What’s New<a class="headerlink" href="#what-s-new" title="Link to this heading">#</a></h1>
+<p>A short summary of the user-visible changes since the previous APS run.
+This page is updated once per APS run cycle (three runs per year);
+older entries are kept for reference.</p>
+<p>For the full commit history see <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/commits/main">GitHub</a>.</p>
+<hr class="docutils" />
+<section id="run-2026-2-spring-summer-2026">
+<h2>Run 2026-2 (Spring/Summer 2026)<a class="headerlink" href="#run-2026-2-spring-summer-2026" title="Link to this heading">#</a></h2>
+<p>Covers changes merged since <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/30">PR #30</a>
+(“Update repository to match latest apsbits”), which was the baseline
+for the 2026-1 run. Roughly 15 PRs landed during the shutdown — this
+section groups them by user-visible theme.</p>
+<p>Sections are ordered by how often a typical user is likely to notice
+the change — restart workflow first, day-to-day scan helpers next,
+then per-experiment setup, then the lower-level work that’s mostly
+transparent.</p>
+<section id="restarting-a-session-one-line-instead-of-a-startup-file">
+<h3>Restarting a session — one line instead of a startup file<a class="headerlink" href="#restarting-a-session-one-line-instead-of-a-startup-file" title="Link to this heading">#</a></h3>
+<p>The setup helpers (<code class="docutils literal notranslate"><span class="pre">pr_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">energy.tracking_setup</span></code>,
+<code class="docutils literal notranslate"><span class="pre">counters.plotselect</span></code>, <code class="docutils literal notranslate"><span class="pre">undulator_setup</span></code>,
+<code class="docutils literal notranslate"><span class="pre">qxscan_setup.load_params_json</span></code>) now auto-save their values into
+<code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> every time you call them. After a bluesky
+restart inside the same experiment, a single import re-applies
+everything:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">id4_common.macros.startup_common</span>  <span class="c1"># noqa: F401</span>
+</pre></div>
+</div>
+<p>That runs <code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> followed by <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code>
+and prints a per-knob status. The hand-rolled startup file is now the
+exception, not the rule. See
+<a class="reference internal" href="examples/writing_macros.html#restarting-a-session"><span class="std std-ref">Restarting a Session</span></a>.</p>
+<p>A new curated star-import surface lives at <code class="docutils literal notranslate"><span class="pre">id4_common.macros.macros_api</span></code>
+— one import line for every public scan plan, peak-finder, and session
+singleton, kept stable across internal package reorgs. Three prebuilt
+motor-shortcut modules (<code class="docutils literal notranslate"><span class="pre">shortcuts_4idg_euler</span></code>, <code class="docutils literal notranslate"><span class="pre">shortcuts_4idg_hp</span></code>,
+<code class="docutils literal notranslate"><span class="pre">shortcuts_4idh_9T</span></code>) bind diffractometer / magnet sub-devices into
+<code class="docutils literal notranslate"><span class="pre">__main__</span></code> under short names.</p>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/65">#65</a>.</p>
+</section>
+<section id="new-peak-finding-plans">
+<h3>New peak-finding plans<a class="headerlink" href="#new-peak-finding-plans" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">cen</span></code> / <code class="docutils literal notranslate"><span class="pre">com</span></code> / <code class="docutils literal notranslate"><span class="pre">maxi</span></code> / <code class="docutils literal notranslate"><span class="pre">mini</span></code> are now plans you can call inside
+macros — they read the most recent scan from the catalog, compute the
+requested statistic (FWHM midpoint / centroid / max / min), and move
+the positioner there:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">())</span>                                <span class="c1"># FWHM midpoint of last scan</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">com</span><span class="p">(</span><span class="n">positioner</span><span class="o">=</span><span class="n">tabx</span><span class="p">))</span>                 <span class="c1"># project a 2-D scan onto its axis</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">maxi</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;hI2-apd&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Backed by <code class="docutils literal notranslate"><span class="pre">apstools.utils.xy_statistics</span></code> + <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code> /
+<code class="docutils literal notranslate"><span class="pre">scipy.ndimage</span></code>. Works for both 1-D scans and 2-D <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> /
+<code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code> (with noise-robust axis derivation that handles
+encoder jitter). Diagnostic-only versions: <code class="docutils literal notranslate"><span class="pre">peak_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">pmax</span></code>, <code class="docutils literal notranslate"><span class="pre">pmin</span></code>.</p>
+<p>The earlier <code class="docutils literal notranslate"><span class="pre">apstools.lineup2</span></code>-backed implementations are still
+available as <code class="docutils literal notranslate"><span class="pre">cen2</span></code> / <code class="docutils literal notranslate"><span class="pre">maxi2</span></code> / <code class="docutils literal notranslate"><span class="pre">mini2</span></code> from
+<code class="docutils literal notranslate"><span class="pre">id4_common.plans.peak_position_legacy</span></code>.</p>
+<p>See <a class="reference internal" href="plans.html#peak-finding-plans"><span class="std std-ref">Peak-Finding Plans</span></a>.</p>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/62">#62</a>.</p>
+</section>
+<section id="temperature-controllers-tc-ts-te">
+<h3>Temperature controllers — <code class="docutils literal notranslate"><span class="pre">tc</span></code> / <code class="docutils literal notranslate"><span class="pre">ts</span></code> / <code class="docutils literal notranslate"><span class="pre">te</span></code><a class="headerlink" href="#temperature-controllers-tc-ts-te" title="Link to this heading">#</a></h3>
+<p>A new <code class="docutils literal notranslate"><span class="pre">temperature_setup(label)</span></code> helper picks the active controller
+from a labelled lookup table and injects three names into the session:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>        <span class="c1"># 4IDG LakeShore 336</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g-340&quot;</span><span class="p">)</span>    <span class="c1"># 4IDG LakeShore 340</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;h-9T&quot;</span><span class="p">)</span>     <span class="c1"># 4IDH 9 T magnet VTI</span>
+<span class="n">mv</span> <span class="n">tc</span> <span class="mi">295</span>                     <span class="c1"># write the setpoint</span>
+<span class="n">te</span><span class="p">(</span><span class="mi">295</span><span class="p">)</span>                       <span class="c1"># equivalent shortcut</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>                      <span class="c1"># read the sample temperature</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ts</span></code> is added to the baseline so the sample temperature lands in every
+scan automatically. Adding a new controller is a one-line edit to
+<code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLERS</span></code> in <code class="docutils literal notranslate"><span class="pre">id4_common.utils.temperature_setup</span></code>.</p>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/57">#57</a>,
+<a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/61">#61</a>.</p>
+</section>
+<section id="crl-focusing-new-shortcuts-and-microns-handle">
+<h3>CRL focusing — new shortcuts and microns handle<a class="headerlink" href="#crl-focusing-new-shortcuts-and-microns-handle" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">crl_setup(hutch)</span></code> switches the CRL sample-position offset between
+4IDG and 4IDH (<code class="docutils literal notranslate"><span class="pre">&quot;g&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;h&quot;</span></code> / interactive).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">crl_size(focal_size)</span></code> sets the focal size in µm (with <code class="docutils literal notranslate"><span class="pre">&lt;</span> <span class="pre">5</span> <span class="pre">µm</span></code>
+triggering <code class="docutils literal notranslate"><span class="pre">crl.minimize_button</span></code> instead).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mov</span> <span class="pre">crl.beamsize</span> <span class="pre">10</span></code> writes 10 µm directly to the underlying
+<code class="docutils literal notranslate"><span class="pre">focalSize</span></code> PV. The previous <code class="docutils literal notranslate"><span class="pre">EpicsSignal</span></code> with <code class="docutils literal notranslate"><span class="pre">write_pv</span></code> would
+hang waiting for <code class="docutils literal notranslate"><span class="pre">fSize_actual</span></code> to converge; the new <code class="docutils literal notranslate"><span class="pre">BeamsizeSignal</span></code>
+Device returns immediately. The raw meter-valued PVs are still
+reachable as <code class="docutils literal notranslate"><span class="pre">crl.beamsize.setpoint</span></code> / <code class="docutils literal notranslate"><span class="pre">crl.beamsize.readback</span></code>.</p></li>
+</ul>
+<p>The internal device class was renamed <code class="docutils literal notranslate"><span class="pre">transfocator</span></code> → <code class="docutils literal notranslate"><span class="pre">crl</span></code> across
+the codebase. The device is now <code class="docutils literal notranslate"><span class="pre">crl</span></code> in the registry; old <code class="docutils literal notranslate"><span class="pre">transfocator</span></code>
+references should be updated.</p>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/58">#58</a>,
+<a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/61">#61</a>.</p>
+</section>
+<section id="reciprocal-space-scans-4idg">
+<h3>Reciprocal-space scans (4IDG)<a class="headerlink" href="#reciprocal-space-scans-4idg" title="Link to this heading">#</a></h3>
+<p>Five new plans for the diffractometer (<code class="docutils literal notranslate"><span class="pre">huber_euler</span></code> / <code class="docutils literal notranslate"><span class="pre">huber_hp</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">hscan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">kscan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">lscan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">hklscan</span><span class="p">(</span><span class="n">h0</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">l0</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">psiscan</span><span class="p">(</span><span class="n">psi_start</span><span class="p">,</span> <span class="n">psi_stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span>   <span class="c1"># rotate around Bragg vector</span>
+</pre></div>
+</div>
+<p>All accept <code class="docutils literal notranslate"><span class="pre">dichro=True</span></code> / <code class="docutils literal notranslate"><span class="pre">lockin=True</span></code>. Together with <code class="docutils literal notranslate"><span class="pre">theta0</span></code>,
+constraint cut points, and <code class="docutils literal notranslate"><span class="pre">setor0</span></code> / <code class="docutils literal notranslate"><span class="pre">setor1</span></code> / <code class="docutils literal notranslate"><span class="pre">or_swap</span></code> /
+<code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix</span></code> updates, the 4IDG session migrated fully from hklpy
+to hklpy2. The legacy hklpy code path was removed.</p>
+<p>Two new devices were added to the 4IDG list: <code class="docutils literal notranslate"><span class="pre">ringlight</span></code> (sample
+camera ring light) and <code class="docutils literal notranslate"><span class="pre">piezo_jena</span></code> (Piezo-Jena nanopositioner stage).</p>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/41">#41</a>,
+<a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/45">#45</a>,
+<a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/54">#54</a>.</p>
+</section>
+<section id="experiment-lifecycle">
+<h3>Experiment lifecycle<a class="headerlink" href="#experiment-lifecycle" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">experiment_setup</span></code> was refactored: it now auto-detects whether DM is
+reachable and falls back to <code class="docutils literal notranslate"><span class="pre">dserv</span></code> automatically with one warning
+(no need to remember <code class="docutils literal notranslate"><span class="pre">skip_DM=True</span></code>); fixed the <code class="docutils literal notranslate"><span class="pre">reset_scan_id</span></code>
+behaviour; added YAML persistence for restart; first unit-test suite
+in the repo.</p>
+<p><code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> and <code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan(scan_id=-1)</span></code>
+(renamed from the earlier <code class="docutils literal notranslate"><span class="pre">experiment_load_from_bluesky</span></code>) are the two
+ways to pick up where you left off — one from the YAML snapshot, one
+from a previous Bluesky run document.</p>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/52">#52</a>.</p>
+</section>
+<section id="devices-baseline-cleanup-missing-devices-wired-up">
+<h3>Devices — baseline cleanup + missing devices wired up<a class="headerlink" href="#devices-baseline-cleanup-missing-devices-wired-up" title="Link to this heading">#</a></h3>
+<p>Several rarely-changed signals were demoted from <code class="docutils literal notranslate"><span class="pre">kind=&quot;hinted&quot;</span></code> /
+<code class="docutils literal notranslate"><span class="pre">kind=&quot;normal&quot;</span></code> to <code class="docutils literal notranslate"><span class="pre">kind=&quot;config&quot;</span></code> so the baseline stream is no longer
+flooded with values that don’t change over an experiment.</p>
+<p>Devices that existed in code but weren’t in <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code> were added:
+<code class="docutils literal notranslate"><span class="pre">srs810</span></code> (SRS-810 lock-in), <code class="docutils literal notranslate"><span class="pre">gslt</span></code> / <code class="docutils literal notranslate"><span class="pre">hslt</span></code> (4IDG/4IDH JJ slits),
+<code class="docutils literal notranslate"><span class="pre">ringlight</span></code>, <code class="docutils literal notranslate"><span class="pre">piezo_jena</span></code>, <code class="docutils literal notranslate"><span class="pre">gmag</span></code> (Kepco PS), <code class="docutils literal notranslate"><span class="pre">comp</span></code> / <code class="docutils literal notranslate"><span class="pre">decomp</span></code> (HP
+controllers), <code class="docutils literal notranslate"><span class="pre">laser</span></code> (Ventus laser).</p>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/64">#64</a>.</p>
+</section>
+<section id="bug-fixes-and-infrastructure">
+<h3>Bug fixes and infrastructure<a class="headerlink" href="#bug-fixes-and-infrastructure" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>SPEC writer</strong> now produces files that <code class="docutils literal notranslate"><span class="pre">pymca</span></code> can parse for
+<code class="docutils literal notranslate"><span class="pre">qxscan</span></code> and other array-metadata scans (no more bare line wraps
+inside <code class="docutils literal notranslate"><span class="pre">#MD</span></code> blocks; <code class="docutils literal notranslate"><span class="pre">#S</span></code> lines collapse arrays to
+<code class="docutils literal notranslate"><span class="pre">&lt;array</span> <span class="pre">len=N&gt;</span></code>).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">load_device(name)</span></code></strong> is now the single canonical entry point for
+both first-load and reconnect (used to skip already-registered
+devices with a warning).</p></li>
+<li><p><strong>HDF1 priming</strong> wired up for <code class="docutils literal notranslate"><span class="pre">Lambda250kDetector</span></code>, <code class="docutils literal notranslate"><span class="pre">VortexXspress34</span></code>,
+<code class="docutils literal notranslate"><span class="pre">VortexXspress37</span></code>, <code class="docutils literal notranslate"><span class="pre">VortexDante1</span></code>, <code class="docutils literal notranslate"><span class="pre">VortexDante4</span></code> — the first scan
+after a fresh IOC start no longer fails at staging.</p></li>
+<li><p><strong>Bluesky session logs</strong> now go to the central log dir specified by
+<code class="docutils literal notranslate"><span class="pre">LOGGING.LOG_PATH</span></code> in <code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code> (with automatic fallback to
+<code class="docutils literal notranslate"><span class="pre">&lt;cwd&gt;/.logs/</span></code> when the central path is unwritable).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">load_vortex</span></code></strong> has parity with <code class="docutils literal notranslate"><span class="pre">load_device</span></code>: always assigns the
+device to <code class="docutils literal notranslate"><span class="pre">__main__</span></code>, runs <code class="docutils literal notranslate"><span class="pre">_post_connect_setup</span></code>, primes HDF1.</p></li>
+<li><p><strong>Energy tracking</strong> prompt accepts <code class="docutils literal notranslate"><span class="pre">0</span></code> to disable tracking on every
+device.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pr_setup</span></code></strong> memory leak fixed; <code class="docutils literal notranslate"><span class="pre">fixQ</span></code> reset on scan abort fixed;
+scan hints fixed; <code class="docutils literal notranslate"><span class="pre">predict_save_path</span></code> and <code class="docutils literal notranslate"><span class="pre">use_scalers</span></code> fixes.</p></li>
+</ul>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/37">#37</a>,
+<a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/53">#53</a>.</p>
+</section>
+<section id="plans-module-split-mostly-transparent">
+<h3>Plans module split (mostly transparent)<a class="headerlink" href="#plans-module-split-mostly-transparent" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">id4_common.plans.local_scans</span></code> was split into focused modules so
+imports inside macros are tidier:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>New module</p></th>
+<th class="head"><p>Plans</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">base_scans</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">lup</span></code>, <code class="docutils literal notranslate"><span class="pre">ascan</span></code>, <code class="docutils literal notranslate"><span class="pre">count</span></code>, <code class="docutils literal notranslate"><span class="pre">qxscan</span></code>, <code class="docutils literal notranslate"><span class="pre">th2th</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid_scans</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">grid_scan</span></code>, <code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hkl_scans</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hklscan</span></code>, <code class="docutils literal notranslate"><span class="pre">hscan</span></code>, <code class="docutils literal notranslate"><span class="pre">kscan</span></code>, <code class="docutils literal notranslate"><span class="pre">lscan</span></code>, <code class="docutils literal notranslate"><span class="pre">psiscan</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">move_plans</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mv</span></code>, <code class="docutils literal notranslate"><span class="pre">mvr</span></code>, <code class="docutils literal notranslate"><span class="pre">abs_set</span></code> (with magnet911 staging)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">peak_position</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cen</span></code>, <code class="docutils literal notranslate"><span class="pre">com</span></code>, <code class="docutils literal notranslate"><span class="pre">maxi</span></code>, <code class="docutils literal notranslate"><span class="pre">mini</span></code>, <code class="docutils literal notranslate"><span class="pre">peak</span></code>, <code class="docutils literal notranslate"><span class="pre">peak_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">pmax</span></code>, <code class="docutils literal notranslate"><span class="pre">pmin</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">peak_position_legacy</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cen2</span></code>, <code class="docutils literal notranslate"><span class="pre">maxi2</span></code>, <code class="docutils literal notranslate"><span class="pre">mini2</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">id4_common.plans.local_scans</span></code> still exists as a back-compat shim that
+re-exports from each of the above, so existing macros keep working
+without changes. New macros should prefer
+<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">id4_common.macros.macros_api</span> <span class="pre">import</span> <span class="pre">*</span></code>, which is the curated
+surface and is kept stable across internal reorgs.</p>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/56">#56</a>,
+<a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/65">#65</a>.</p>
+</section>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h3>
+<p>The full documentation site was audited and refreshed:</p>
+<ul class="simple">
+<li><p>New <a class="reference internal" href="useful_functions.html"><span class="std std-doc">Useful Functions</span></a> reference page covering
+every session-level helper (<code class="docutils literal notranslate"><span class="pre">pr_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">qxscan_setup</span></code>,
+<code class="docutils literal notranslate"><span class="pre">temperature_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">restore_session_state</span></code>, device loaders, …).</p></li>
+<li><p>New “What’s New” page (this one), updated each APS run.</p></li>
+<li><p>Several broken code snippets fixed (<code class="docutils literal notranslate"><span class="pre">experiment_load_from_bluesky</span></code>
+→ <code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan</span></code>, LakeShore <code class="docutils literal notranslate"><span class="pre">.input.A.temperature</span></code> /
+<code class="docutils literal notranslate"><span class="pre">.output.one.setpoint</span></code> → <code class="docutils literal notranslate"><span class="pre">loop1.readback</span></code> / <code class="docutils literal notranslate"><span class="pre">loop1.setpoint</span></code>, eight
+wrong device-class names in <code class="docutils literal notranslate"><span class="pre">devices_guide.md</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">peaks.cen</span></code> vs <code class="docutils literal notranslate"><span class="pre">peaks.com</span></code> documentation fixed (they are not the
+same — <code class="docutils literal notranslate"><span class="pre">peaks.cen</span></code> is the FWHM midpoint, <code class="docutils literal notranslate"><span class="pre">peaks.com</span></code> is the
+moment-based centroid).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">devices_reference.md</span></code> filled in nine missing devices.</p></li>
+<li><p>The autogenerated API reference is no longer tracked in git
+(regenerated on every build, was producing ~140 noisy diffs after
+every local <code class="docutils literal notranslate"><span class="pre">sphinx-build</span></code>).</p></li>
+</ul>
+<p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/31">#31</a>,
+<a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/66">#66</a>.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">polar-bits</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="getting_started.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Getting Started</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-2026-2-spring-summer-2026">Run 2026-2 (Spring/Summer 2026)</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restarting-a-session-one-line-instead-of-a-startup-file">Restarting a session — one line instead of a startup file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-peak-finding-plans">New peak-finding plans</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-controllers-tc-ts-te">Temperature controllers — <code class="docutils literal notranslate"><span class="pre">tc</span></code> / <code class="docutils literal notranslate"><span class="pre">ts</span></code> / <code class="docutils literal notranslate"><span class="pre">te</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#crl-focusing-new-shortcuts-and-microns-handle">CRL focusing — new shortcuts and microns handle</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reciprocal-space-scans-4idg">Reciprocal-space scans (4IDG)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#experiment-lifecycle">Experiment lifecycle</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#devices-baseline-cleanup-missing-devices-wired-up">Devices — baseline cleanup + missing devices wired up</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes-and-infrastructure">Bug fixes and infrastructure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plans-module-split-mostly-transparent">Plans module split (mostly transparent)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/whats_new.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/whats_new.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2014-2025, APS.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

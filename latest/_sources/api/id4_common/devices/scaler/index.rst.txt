@@ -14,6 +14,20 @@ id4_common.devices.scaler
 Module Contents
 ---------------
 
+.. py:class:: LocalScalerChannel(prefix, ch_num, **kwargs)
+
+   Bases: :py:obj:`ophyd.scaler.ScalerChannel`
+
+
+   ScalerChannel that defers ``match_name`` until after EPICS connection.
+
+   Why: the upstream ``ScalerChannel.__init__`` calls ``match_name()``,
+   which does ``self.chname.get()`` and triggers an EPICS connection while
+   the device is being instantiated. That breaks ``make_devices(connect=False)``
+   when the IOC is off, because guarneri's loader fails before any of our
+   deferred-connect logic gets a chance to run.
+
+
 .. py:class:: PresetMonitorSignal(*args, **kwargs)
 
    Bases: :py:obj:`ophyd.signal.Signal`
@@ -55,6 +69,9 @@ Module Contents
 
    ScalerCH subclass with a flexible monitor channel and plot/read channel
    selection.
+
+
+   .. py:attribute:: channels
 
 
    .. py:attribute:: preset_time

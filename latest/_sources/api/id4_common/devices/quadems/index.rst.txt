@@ -19,7 +19,11 @@ Module Contents
    Bases: :py:obj:`id4_common.devices.ad_mixins.StatsPlugin`
 
 
-   StatsPlugin variant for QuadEM that disables auto-kind subscriptions.
+   StatsPlugin variant for QuadEM that uses ``config`` kind by default.
+
+   Auto-kind subscriptions from ``StatsPlugin.start_auto_kind`` are not
+   installed here — QuadEM users want the stats plugin to stay at
+   ``config`` regardless of which compute_* signals are enabled.
 
 
    .. py:attribute:: kind
@@ -27,7 +31,7 @@ Module Contents
 
 
 
-.. py:class:: QuadEMPOLAR
+.. py:class:: QuadEMPOLAR(*args, **kwargs)
 
    Bases: :py:obj:`ophyd.QuadEM`
 
@@ -123,7 +127,7 @@ Module Contents
       plans.
 
 
-.. py:class:: TetrAMM
+.. py:class:: TetrAMM(*args, **kwargs)
 
    Bases: :py:obj:`QuadEMPOLAR`
 
@@ -169,7 +173,7 @@ Module Contents
 
 
 
-.. py:class:: SydorEMRO
+.. py:class:: SydorEMRO(*args, **kwargs)
 
    Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`QuadEMPOLAR`
 
@@ -237,7 +241,7 @@ Module Contents
 
 
 
-.. py:class:: TetrAMMRO
+.. py:class:: TetrAMMRO(*args, **kwargs)
 
    Bases: :py:obj:`QuadEMRO_mixins`, :py:obj:`TetrAMM`
 

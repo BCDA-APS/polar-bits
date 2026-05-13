@@ -74,7 +74,7 @@ Module Contents
    Remove property attribute found in AD IOCs now.
 
 
-.. py:class:: StatsPlugin(*args, **kwargs)
+.. py:class:: StatsPlugin
 
    Bases: :py:obj:`PluginMixin`, :py:obj:`ophyd.areadetector.plugins.StatsPlugin_V34`
 

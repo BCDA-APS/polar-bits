@@ -12,7 +12,7 @@ QS host process and configuration.
 | 4IDG | `src/id4_g_qserver/qs-config.yml` | `src/id4_g_qserver/qs_host.sh` |
 | 4IDH | `src/id4_h_qserver/qs-config.yml` | `src/id4_h_qserver/qs_host.sh` |
 | Raman | `src/id4_raman_qserver/qs-config.yml` | `src/id4_raman_qserver/qs_host.sh` |
-| Shared | `src/id4_common_qserver/` | — |
+| Shared | `src/id4_common_qserver/qs-config.yml` | `src/id4_common_qserver/qs_host.sh` |
 
 ---
 
