@@ -7,6 +7,7 @@ from collections import OrderedDict
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignalRO
+from ophyd import Kind
 from ophyd import QuadEM
 from ophyd import Signal
 from ophyd.quadem import QuadEMPort
@@ -16,16 +17,16 @@ from .ad_mixins import StatsPlugin
 
 
 class StatsPluginQuadEM(StatsPlugin):
-    """StatsPlugin variant for QuadEM that disables auto-kind subscriptions."""
+    """StatsPlugin variant for QuadEM that uses ``config`` kind by default.
 
-    # Remove subscriptions from StatsPlugin
+    Auto-kind subscriptions from ``StatsPlugin.start_auto_kind`` are not
+    installed here — QuadEM users want the stats plugin to stay at
+    ``config`` regardless of which compute_* signals are enabled.
+    """
+
     def __init__(self, *args, **kwargs):
-        """
-        Initialize and immediately stop auto-kind updates, setting kind to
-        config.
-        """
+        """Initialize and force the plugin to ``config`` kind."""
         super().__init__(*args, **kwargs)
-        self.stop_auto_kind()
         self.kind = "config"
 
 
@@ -74,6 +75,25 @@ class QuadEMPOLAR(QuadEM):
     posy_mean = Component(EpicsSignalRO, "PosY:MeanValue_RBV")
     posy_fast = Component(EpicsSignalRO, "PositionYAve")
     posy_sigma = Component(EpicsSignalRO, "PosY:Sigma_RBV")
+
+    def __init__(self, *args, **kwargs):
+        """Initialize without triggering lazy EPICS access on the channels.
+
+        The upstream ``QuadEM.__init__`` sets
+        ``current{i}.mean_value.kind = Kind.hinted`` at instantiation, which
+        forces a ``wait_for_connection()`` on each channel's lazy stats
+        plugin. That breaks ``make_devices(connect=False)`` when the IOC is
+        off. We bypass it here and re-apply the hint in
+        ``_post_connect_setup`` once EPICS is live.
+        """
+        super(QuadEM, self).__init__(*args, **kwargs)
+        self.stage_sigs.update([("acquire", 0), ("acquire_mode", 2)])
+        self._acquisition_signal = self.acquire
+
+    def _post_connect_setup(self):
+        """Apply hints that require EPICS connection."""
+        for i in range(1, 5):
+            getattr(self, f"current{i}").mean_value.kind = Kind.hinted
 
     @property
     def preset_monitor(self):

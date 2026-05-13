@@ -304,6 +304,17 @@ class VimbaDetector(Trigger, CountersMixin, DetectorBase):
         self.plot_roi1()
         self.hdf1.enable.subscribe(self.hdf1._setup_kind, run=False)
 
+        # Now that EPICS is connected, install the auto-kind subscriptions
+        # on each StatsPlugin.
+        for stats in (
+            self.stats1,
+            self.stats2,
+            self.stats3,
+            self.stats4,
+            self.stats5,
+        ):
+            stats.start_auto_kind()
+
         self.hdf1.warmup_signals = [
             (self.hdf1.enable, 1),
             (self.hdf1.file_name, "warmup_file"),
