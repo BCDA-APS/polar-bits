@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 
 from hklpy2 import diffractometer_class_factory
+from hklpy2.incident import EpicsMonochromatorRO
 from numpy import arcsin
 from numpy import pi
 from numpy import sin
@@ -14,6 +15,7 @@ from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import EpicsSignal
+from ophyd import EpicsSignalRO
 from ophyd import FormattedComponent
 from ophyd import Kind
 from ophyd import PseudoPositioner
@@ -389,8 +391,62 @@ class DiffractometerMixin(Device):
         # self._update_calc_energy()
 
 
+class _DeferredEpicsSignalRO(EpicsSignalRO):
+    """EpicsSignalRO that returns a fallback value before EPICS is connected.
+
+    Why: hklpy2's ``DiffractometerBase.__init__`` calls
+    ``beam.wavelength.get()`` (and indirectly ``beam.energy``) while seeding
+    the solver. With a plain ``EpicsSignalRO`` this triggers
+    ``wait_for_connection()``, which times out after 60 s when the IOC is
+    off and breaks ``make_devices(connect=False)``. This subclass returns
+    the fallback only while the signal is unconnected; once EPICS connects,
+    the normal ``EpicsSignalRO.get()`` path takes over.
+
+    How to apply: set ``_fallback_value`` to a sane default for the PV (a
+    plausible wavelength in angstroms / energy in keV). The value is only
+    ever returned during the disconnected-startup window.
+    """
+
+    _fallback_value = 1.0
+
+    def get(self, *args, **kwargs):
+        """Return the fallback value if not yet connected, else read EPICS."""
+        if not self.connected:
+            return self._fallback_value
+        return super().get(*args, **kwargs)
+
+
+class _DeferredEnergySignalRO(_DeferredEpicsSignalRO):
+    """Deferred wavelength signal with an X-ray-like fallback (8 keV)."""
+
+    _fallback_value = 8.0
+
+
+class DeferredEpicsMonochromatorRO(EpicsMonochromatorRO):
+    """``EpicsMonochromatorRO`` whose wavelength/energy don't block on init.
+
+    See ``_DeferredEpicsSignalRO`` for the rationale. Used as the ``beam``
+    component for the POLAR diffractometers so they can be instantiated
+    while the VDCM IOC is offline.
+    """
+
+    wavelength = FormattedComponent(
+        _DeferredEpicsSignalRO,
+        "{prefix}{_pv_wavelength}",
+        kind="hinted",
+    )
+    energy = FormattedComponent(
+        _DeferredEnergySignalRO,
+        "{prefix}{_pv_energy}",
+        kind="hinted",
+    )
+
+
 mono_kwargs = {
-    "class": "hklpy2.incident.EpicsMonochromatorRO",
+    "class": (
+        "id4_common.devices.polar_diffractometer_hklpy2."
+        "DeferredEpicsMonochromatorRO"
+    ),
     "prefix": "4idVDCM:",
     "source_type": "Simulated read-only EPICS Monochromator",
     "pv_energy": "BraggERdbkAO",  # the energy readback PV

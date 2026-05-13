@@ -3,14 +3,47 @@ Scalers
 """
 
 import time
+from collections import OrderedDict
 
 from ophyd import Component
+from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal
 from ophyd import Kind
 from ophyd.scaler import ScalerCH
+from ophyd.scaler import ScalerChannel
 from ophyd.signal import Signal
 
 from .counters_mixin import CountersMixin
+
+
+class LocalScalerChannel(ScalerChannel):
+    """ScalerChannel that defers ``match_name`` until after EPICS connection.
+
+    Why: the upstream ``ScalerChannel.__init__`` calls ``match_name()``,
+    which does ``self.chname.get()`` and triggers an EPICS connection while
+    the device is being instantiated. That breaks ``make_devices(connect=False)``
+    when the IOC is off, because guarneri's loader fails before any of our
+    deferred-connect logic gets a chance to run.
+    """
+
+    def __init__(self, prefix, ch_num, **kwargs):
+        """Initialize without contacting EPICS for the channel name."""
+        self._ch_num = ch_num
+        # Skip ScalerChannel.__init__ to avoid the match_name() EPICS call;
+        # call its grandparent (Device.__init__) directly.
+        super(ScalerChannel, self).__init__(prefix, **kwargs)
+
+
+def _local_sc_chans(attr_fix, id_range):
+    """DDC definition using the deferred-connection ``LocalScalerChannel``."""
+    defn = OrderedDict()
+    for k in id_range:
+        defn["{}{:02d}".format(attr_fix, k)] = (
+            LocalScalerChannel,
+            "",
+            {"ch_num": k, "kind": Kind.normal},
+        )
+    return defn
 
 
 class PresetMonitorSignal(Signal):
@@ -103,6 +136,10 @@ class LocalScalerCH(CountersMixin, ScalerCH):
     selection.
     """
 
+    # Override channels DDC to use the deferred-connection channel class so
+    # ``__init__`` does not trigger any EPICS connections.
+    channels = DDCpt(_local_sc_chans("chan", range(1, 33)))
+
     preset_time = None
     preset_monitor = Component(PresetMonitorSignal, kind=Kind.config)
     freq = Component(EpicsSignal, ".FREQ", kind=Kind.config)
@@ -113,6 +150,10 @@ class LocalScalerCH(CountersMixin, ScalerCH):
         """
         super().__init__(*args, **kwargs)
         self._monitor = self.channels.chan01  # Time is the default monitor.
+
+    def _post_connect_setup(self):
+        """Run deferred ``match_names`` after the EPICS connection is live."""
+        self.match_names()
 
     @property
     def channels_name_map(self):
