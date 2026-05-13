@@ -31,6 +31,10 @@ myst_enable_extensions = [
     "substitution",
 ]
 
+# Auto-generate anchors for h1..h3 headings so cross-page links like
+# `(my_page.md#some-heading)` work without explicit `(label)=` directives.
+myst_heading_anchors = 3
+
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # Suppress noisy-but-harmless warnings from autoapi cross-module import

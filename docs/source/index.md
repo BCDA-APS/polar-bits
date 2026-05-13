@@ -11,8 +11,10 @@ for three hutches and the Raman offline setup: **4IDB**, **4IDG**, **4IDH**, and
 :hidden:
 :caption: User Guide
 
+whats_new
 getting_started
 plans
+useful_functions
 examples/general
 examples/writing_macros
 examples/4idg_diffractometer
@@ -39,6 +41,13 @@ api/index
 ::::{grid} 2 2 3 3
 :gutter: 3
 
+:::{grid-item-card} What's New
+:link: whats_new
+:link-type: doc
+
+Headlines for the current APS run cycle. Returning users start here.
+:::
+
 :::{grid-item-card} Getting Started
 :link: getting_started
 :link-type: doc
@@ -51,6 +60,14 @@ Installation, first session, loading devices.
 :link-type: doc
 
 `lup`, `ascan`, `grid_scan`, `qxscan`, DM workflow submission.
+:::
+
+:::{grid-item-card} Useful Functions
+:link: useful_functions
+:link-type: doc
+
+Per-session helpers: `pr_setup`, `qxscan_setup`, `temperature_setup`,
+`undulator_setup`, `restore_session_state`, device loaders.
 :::
 
 :::{grid-item-card} Device Reference

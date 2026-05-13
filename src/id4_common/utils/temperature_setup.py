@@ -9,7 +9,7 @@ the interactive session as three names:
 - ``ts`` — the temperature **sample** signal (readable, the readback)
 - ``TEMPERATURE_CONTROLLER`` — the active label (or ``None``)
 
-After ``temperature_setup("g-336-loop1")`` the user can ``mv tc 295`` /
+After ``temperature_setup("g")`` the user can ``mv tc 295`` /
 ``RE(count(1, 1))`` and the sample temperature will land in the data and
 (by default) the baseline stream every scan.
 

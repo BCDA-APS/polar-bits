@@ -98,18 +98,20 @@ Real examples in the codebase:
 
 | Class | Module | Notes |
 |-------|--------|-------|
-| `Eiger1M` | `ad_eiger1M` | Dectris Eiger 1M |
-| `Lambda` | `ad_lambda` | X-Spectrum Lambda |
-| `LightField` | `ad_lightfield` | Princeton LightField spectrometer |
-| `Vimba` | `ad_vimba` | Allied Vision Vimba camera |
+| `Eiger1MDetector` | `ad_eiger1M` | Dectris Eiger 1M |
+| `Lambda250kDetector` | `ad_lambda` | X-Spectrum Lambda 250k |
+| `LightFieldDetector` | `ad_lightfield` | Princeton LightField spectrometer |
+| `VimbaDetector` | `ad_vimba` | Allied Vision Vimba camera |
 
 ### Fluorescence Detectors
 
-| Class | Module |
-|-------|--------|
-| `VortexXmap` | `vortex_xmap` |
-| `VortexXspress3_1Element` | `vortex_xspress3_1element` |
-| `VortexXspress3_4Element` | `vortex_xspress3_4element` |
+| Class | Module | Notes |
+|-------|--------|-------|
+| `VortexXMAP` | `vortex_xmap` | Vortex with XMAP electronics |
+| `VortexXspress37` | `vortex_xspress3_me7` | Vortex 7-element with Xspress3 |
+| `VortexXspress34` | `vortex_xspress3_me4` | Vortex 4-element with Xspress3 |
+| `VortexDante1` | `vortex_dante_me1` | Vortex 1-element with Dante |
+| `VortexDante4` | `vortex_dante_me4` | Vortex 4-element with Dante |
 
 ### Optics and Beam Delivery
 
@@ -117,25 +119,29 @@ Real examples in the codebase:
 |-------|--------|-------|
 | `GKBDevice` / `HKBDevice` | `kb_generic` | KB mirror pair (factory-built) |
 | `CRLClass` | `crl_device` | Compound refractive lens (factory-built) |
-| `Monochromator` | `monochromator` | Si(111) DCM |
+| `MonoDevice` | `monochromator` | Si(111) DCM |
 | `EnergySignal` | `energy_device` | Tracks mono energy; other devices can subscribe |
 | `PolarUndulatorPair` | `aps_undulator` | Upstream/downstream undulators |
-| `MyXBPM` | `aps_xbpm` | X-ray beam position monitor |
+| `MyXBPM` | `aps_xbpm` | APS-source XBPM |
+| `XBPM` | `xbpm` | Generic XBPM (used by `gxbpm` / `hxbpm`) |
+| `HHLMirror` | `hhl_mirror` | High-heat-load mirror |
 
 ### Diffractometer
 
 | Class | Module | Notes |
 |-------|--------|-------|
-| `PolarDiffractometer` | `polar_diffractometer` | Huber Euler 6-circle (hklpy2) |
+| `CradleDiffractometer` / `HPDiffractometer` | `polar_diffractometer_hklpy2` | Huber Euler / HP cradles (hklpy2) |
+| `CradleDiffractometerPSI` / `HPDiffractometerPSI` | `polar_diffractometer_hklpy2` | Companion `_psi` engines |
 
 ### Experiment Utilities
 
 | Class | Module | Notes |
 |-------|--------|-------|
-| `Electromagnet` | `electromagnet` | Magnet power supply control |
-| `Chopper` | `chopper_device` | Time-resolved chopper |
-| `Shutter` | `shutters` | Fast shutter |
-| `Scaler` | `scaler` | Multi-channel scaler (SIS3820) |
+| `Magnet2T` | `electromagnet` | 2 T electromagnet power supply |
+| `Magnet911` | `magnet_911` | 4IDH 9-Tesla magnet (table + sample + VTI) |
+| `ChopperDevice` | `chopper_device` | Time-resolved chopper |
+| `PolarShutter` | `shutters` | Local fast shutter (the A/B PSS shutters use `apstools.devices.ApsPssShutterWithStatus`) |
+| `LocalScalerCH` | `scaler` | Multi-channel scaler (USB-CTR8) |
 
 ---
 
@@ -151,8 +157,17 @@ counters.monitor          # scaler channel used as monitor
 counters.extra_devices    # devices read but not plotted
 
 # Change the selection
-counters.plotselect(det_idx=0, mon_idx=1)
+counters.plotselect(0, 1)                  # detector index 0, monitor index 1
+counters.plotselect(dets=0, mon=1)         # equivalent (named args)
+counters.plotselect()                      # interactive prompt
 ```
+
+`plotselect()` accepts integer indices into the scaler channel list,
+single device objects, or lists/tuples of either; pass nothing to enter
+the interactive prompt. The active selection is auto-snapshotted into
+`RE.md["session_state"]` so a bluesky restart can re-apply it via
+`restore_session_state()` (see [Recoverable session
+state](examples/writing_macros.md#recoverable-session-state)).
 
 Scan plans automatically read `counters.detectors` and `counters.monitor`
 unless overridden by explicit arguments.

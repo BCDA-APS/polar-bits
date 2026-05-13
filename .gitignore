@@ -70,6 +70,12 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/build/
+
+# sphinx-autoapi: regenerated on every build, no need to track.
+# CI runs `sphinx-build` before deploying GitHub Pages, so the
+# published API reference is always fresh.
+docs/source/api/
 
 # PyBuilder
 .pybuilder/
