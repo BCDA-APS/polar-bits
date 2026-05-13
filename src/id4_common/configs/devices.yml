@@ -125,7 +125,7 @@ id4_common.devices.labjacks.CustomLabJackT7:
 
 id4_common.devices.srs810.LockinDevice:
 - name: srs810
-  prefix: "4idbSoft:SRS810:"
+  prefix: "4idbSoft:SRS810:1:"
   labels: ["core", "baseline"]
 
 # All JJ slits share the same class — must be under one key
