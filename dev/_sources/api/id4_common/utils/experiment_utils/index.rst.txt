@@ -325,7 +325,7 @@ Module Contents
 
 
 
-   .. py:method:: setup(esaf_id: int | str | None = None, proposal_id: int | str | None = None, base_name: str | None = None, sample: str | None = None, server: str | None = None, experiment_name: str | None = None, reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
+   .. py:method:: setup(esaf_id: int | str | None = None, proposal_id: int | str | None = None, base_name: str | None = None, sample: str | None = None, server: str | None = None, experiment_name: str | None = None, reset_scan_id: int | None = None) -> None
 
       Run the full experiment setup.
 
@@ -335,22 +335,30 @@ Module Contents
       bypass even when DM is up, pass ``server="dserv"`` or use
       ``esaf_id="dev"``/``proposal_id="dev"``.
 
+      ``reset_scan_id`` defaults to ``None``, which prompts the user
+      interactively. Pass ``RESET_SCAN_ID_NOOP`` to silently keep the
+      existing ``RE.md["scan_id"]``, or a non-negative int to set it.
 
 
-   .. py:method:: change_sample(sample_name: str | None = None, base_name: str | None = None, reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
+
+   .. py:method:: change_sample(sample_name: str | None = None, base_name: str | None = None, reset_scan_id: int | None = None) -> None
 
       Switch sample, refresh paths, and start a new SPEC file.
+
+      ``reset_scan_id`` defaults to ``None``, which prompts the user
+      interactively. Pass ``RESET_SCAN_ID_NOOP`` to silently keep the
+      existing ``RE.md["scan_id"]``, or a non-negative int to set it.
 
 
 
 .. py:data:: experiment
 
-.. py:function:: experiment_setup(esaf_id: int | str | None = None, proposal_id: int | str | None = None, base_name: str | None = None, sample: str | None = None, server: str | None = None, experiment_name: str | None = None, reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
+.. py:function:: experiment_setup(esaf_id: int | str | None = None, proposal_id: int | str | None = None, base_name: str | None = None, sample: str | None = None, server: str | None = None, experiment_name: str | None = None, reset_scan_id: int | None = None) -> None
 
    Run the full experiment setup (delegates to ``experiment.setup``).
 
 
-.. py:function:: experiment_change_sample(sample_name: str | None = None, base_name: str | None = None, reset_scan_id: int | None = RESET_SCAN_ID_NOOP) -> None
+.. py:function:: experiment_change_sample(sample_name: str | None = None, base_name: str | None = None, reset_scan_id: int | None = None) -> None
 
    Switch sample (delegates to ``experiment.change_sample``).
 

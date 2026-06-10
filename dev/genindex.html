@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -35,10 +35,10 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
@@ -268,11 +268,18 @@
       
         <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -285,8 +292,7 @@
           
           
           
-          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
       
@@ -450,11 +456,18 @@
         
           <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -467,8 +480,7 @@
           
           
           
-          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
         
@@ -670,8 +682,12 @@
         <li><a href="api/id4_common/devices/polar_diffractometer_hklpy2/index.html#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice">(class in id4_common.devices.polar_diffractometer_hklpy2)</a>
 </li>
       </ul></li>
-      <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.and_1">and_1 (id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.and_1">and_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+
+      <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.and_1">(id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.and_3">and_3 (id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/piezo_jena/index.html#id4_common.devices.piezo_jena.PiezoJena.aout">aout (id4_common.devices.piezo_jena.PiezoJena attribute)</a>
@@ -982,6 +998,8 @@
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.buffers">buffers (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice attribute)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.buffers">(id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.buffers">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevice attribute)</a>
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.buffers">(id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
@@ -1137,9 +1155,11 @@
 </li>
       <li><a href="api/id4_common/utils/hkl_utils_hklpy2/index.html#id4_common.utils.hkl_utils_hklpy2.Sync_UB_Matrix.cleanup">cleanup() (id4_common.utils.hkl_utils_hklpy2.Sync_UB_Matrix method)</a>
 </li>
-      <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZDFF.clear">clear (id4_common.devices.softgluezynq_parts.SGZDFF attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.UpDownCounter.clear">clear (id4_common.devices.softgluezynq_g_new.UpDownCounter attribute)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZDFF.clear">(id4_common.devices.softgluezynq_parts.SGZDFF attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZHistScal.clear">(id4_common.devices.softgluezynq_parts.SGZHistScal attribute)</a>
 </li>
       </ul></li>
@@ -1159,9 +1179,15 @@
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.clear_enable_dma">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevice method)</a>
 </li>
       </ul></li>
-      <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN.clock">clock (id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.clear_output_fields">clear_output_fields() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.PulseTrain.clock">clock (id4_common.devices.softgluezynq_g_new.PulseTrain attribute)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.UpDownCounter.clock">(id4_common.devices.softgluezynq_g_new.UpDownCounter attribute)</a>
+</li>
+        <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN.clock">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly.clock">(id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly attribute)</a>
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter.clock">(id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter attribute)</a>
@@ -1217,6 +1243,8 @@
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZClocks.clock_variable">(id4_common.devices.softgluezynq_parts.SGZClocks attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clocks">clocks (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice attribute)</a>
 
       <ul>
@@ -1225,8 +1253,6 @@
         <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.clocks">(id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/aps_xbpm/index.html#id4_common.devices.aps_xbpm.MyXBPM.cm1">cm1 (id4_common.devices.aps_xbpm.MyXBPM attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/aps_xbpm/index.html#id4_common.devices.aps_xbpm.MyXBPM.cm2">cm2 (id4_common.devices.aps_xbpm.MyXBPM attribute)</a>
@@ -1327,9 +1353,11 @@
 </li>
       <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.EigerDetectorCam.counting_mode">counting_mode (id4_common.devices.ad_mixins.EigerDetectorCam attribute)</a>
 </li>
-      <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter.counts">counts (id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.UpDownCounter.counts">counts (id4_common.devices.softgluezynq_g_new.UpDownCounter attribute)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter.counts">(id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZUpCounter.counts">(id4_common.devices.softgluezynq_parts.SGZUpCounter attribute)</a>
 </li>
       </ul></li>
@@ -1346,6 +1374,8 @@
       <li><a href="api/id4_common/devices/polar_diffractometer/index.html#id4_common.devices.polar_diffractometer.CradlePSI">CradlePSI (class in id4_common.devices.polar_diffractometer)</a>
 </li>
       <li><a href="api/id4_common/utils/dm_utils/index.html#id4_common.utils.dm_utils.create_dm_experiment">create_dm_experiment() (in module id4_common.utils.dm_utils)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.create_snake_bits">create_snake_bits() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
 </li>
       <li><a href="api/id4_common/devices/hhl_mirror/index.html#id4_common.devices.hhl_mirror.HHLMirror.critical_energy">critical_energy (id4_common.devices.hhl_mirror.HHLMirror attribute)</a>
 </li>
@@ -1453,6 +1483,22 @@
         <li><a href="api/id4_common/devices/polar_diffractometer_hklpy2/index.html#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.d_spacing">(id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac1_init">dac1_init (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac1_man">dac1_man (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac1_val">dac1_val (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac1_write">dac1_write (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.DAC_CENTRE_UM">DAC_CENTRE_UM (in module id4_common.plans.flyscans)</a>
+</li>
+      <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.DAC_MAX_UM">DAC_MAX_UM (in module id4_common.plans.flyscans)</a>
+</li>
+      <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.DAC_MIN_UM">DAC_MIN_UM (in module id4_common.plans.flyscans)</a>
+</li>
+      <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.DAC_SWING_UM">DAC_SWING_UM (in module id4_common.plans.flyscans)</a>
+</li>
       <li><a href="api/id4_common/devices/vortex_dante_parts/index.html#id4_common.devices.vortex_dante_parts.DanteCAM1">DanteCAM1 (class in id4_common.devices.vortex_dante_parts)</a>
 </li>
       <li><a href="api/id4_common/devices/vortex_dante_parts/index.html#id4_common.devices.vortex_dante_parts.DanteCAM4">DanteCAM4 (class in id4_common.devices.vortex_dante_parts)</a>
@@ -1615,6 +1661,8 @@
 </li>
       <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZHistScal.det2">det2 (id4_common.devices.softgluezynq_parts.SGZHistScal attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.det_keymap">det_keymap (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/utils/load_vortex/index.html#id4_common.utils.load_vortex.DETECTORS">DETECTORS (in module id4_common.utils.load_vortex)</a>
 </li>
       <li><a href="api/id4_common/devices/polar_diffractometer/index.html#id4_common.devices.polar_diffractometer.SixCircleDiffractometer.detslt">detslt (id4_common.devices.polar_diffractometer.SixCircleDiffractometer attribute)</a>
@@ -1661,7 +1709,17 @@
 </li>
       <li><a href="api/id4_common/devices/labjacks/index.html#id4_common.devices.labjacks.CustomLabJackT7.digital_ios">digital_ios (id4_common.devices.labjacks.CustomLabJackT7 attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.disable_waveform">disable_waveform() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.div_by_n">div_by_n (id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.div_by_n_1">div_by_n_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.div_by_n_2">div_by_n_2 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.div_by_n_3">div_by_n_3 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.div_by_n_4">div_by_n_4 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_count">div_by_n_count (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice attribute)</a>
 
@@ -1718,6 +1776,8 @@
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.dma">dma (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice attribute)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dma">(id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.dma">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevice attribute)</a>
 </li>
       </ul></li>
@@ -1741,6 +1801,8 @@
         <li><a href="api/id4_common/devices/magnet_911/index.html#id4_common.devices.magnet_911.FieldPositioner.done_value">(id4_common.devices.magnet_911.FieldPositioner attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.down_counter_1">down_counter_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.down_counter_pulse">down_counter_pulse (id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/crl_device/index.html#id4_common.devices.crl_device.PyCRL.dq">dq (id4_common.devices.crl_device.PyCRL attribute)</a>
@@ -1832,6 +1894,8 @@
 </li>
         <li><a href="api/id4_common/devices/mono_feedback/index.html#id4_common.devices.mono_feedback.MonoFeedback.enable">(id4_common.devices.mono_feedback.MonoFeedback attribute)</a>
 </li>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.UpDownCounter.enable">(id4_common.devices.softgluezynq_g_new.UpDownCounter attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN.enable">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN attribute)</a>
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter.enable">(id4_common.devices.softgluezynq_old.SoftGlueZynqUpCounter attribute)</a>
@@ -1847,6 +1911,10 @@
         <li><a href="api/id4_common/devices/vortex_dante_parts/index.html#id4_common.devices.vortex_dante_parts.DanteSCA.enable">(id4_common.devices.vortex_dante_parts.DanteSCA attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.enable_detector_trigger">enable_detector_trigger() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.enable_waveform">enable_waveform() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/devices/aps_undulator/index.html#id4_common.devices.aps_undulator.PolarUndulator.energy">energy (id4_common.devices.aps_undulator.PolarUndulator attribute)</a>
 
       <ul>
@@ -1879,6 +1947,8 @@
         <li><a href="api/id4_common/devices/polar_diffractometer/index.html#id4_common.devices.polar_diffractometer.SixCircleDiffractometer.energy_offset">(id4_common.devices.polar_diffractometer.SixCircleDiffractometer attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/crl_device/index.html#id4_common.devices.crl_device.PyCRL.energy_select">energy_select (id4_common.devices.crl_device.PyCRL attribute)</a>
 
       <ul>
@@ -1887,8 +1957,6 @@
         <li><a href="api/id4_common/devices/filters_device_avs/index.html#id4_common.devices.filters_device_avs.APSFilter.energy_select">(id4_common.devices.filters_device_avs.APSFilter attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/ad_lambda/index.html#id4_common.devices.ad_lambda.Lambda250kCam.energy_threshold">energy_threshold (id4_common.devices.ad_lambda.Lambda250kCam attribute)</a>
 
       <ul>
@@ -2038,6 +2106,8 @@
       <ul>
         <li><a href="api/id4_common/devices/ad_lightfield/index.html#id4_common.devices.ad_lightfield.LightFieldDetector.field_for_label">(id4_common.devices.ad_lightfield.LightFieldDetector method)</a>
 </li>
+        <li><a href="api/id4_common/devices/ad_positionstream/index.html#id4_common.devices.ad_positionstream.PositionStreamDevice.field_for_label">(id4_common.devices.ad_positionstream.PositionStreamDevice method)</a>
+</li>
         <li><a href="api/id4_common/devices/ad_vimba/index.html#id4_common.devices.ad_vimba.VimbaDetector.field_for_label">(id4_common.devices.ad_vimba.VimbaDetector method)</a>
 </li>
         <li><a href="api/id4_common/devices/counters_mixin/index.html#id4_common.devices.counters_mixin.CountersMixin.field_for_label">(id4_common.devices.counters_mixin.CountersMixin method)</a>
@@ -2097,10 +2167,10 @@
         <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName.filestore_spec">(id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.FileStoreHDF5IterativeWriteEpicsName">FileStoreHDF5IterativeWriteEpicsName (class in id4_common.devices.ad_mixins)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.FileStorePluginBaseEpicsName">FileStorePluginBaseEpicsName (class in id4_common.devices.ad_mixins)</a>
 </li>
       <li><a href="api/id4_common/devices/polar_diffractometer/index.html#id4_common.devices.polar_diffractometer.SixCircleDiffractometer.filter">filter (id4_common.devices.polar_diffractometer.SixCircleDiffractometer attribute)</a>
@@ -2133,12 +2203,16 @@
 </li>
       <li><a href="api/id4_common/devices/mirror_toroidal/index.html#id4_common.devices.mirror_toroidal.MR3.flat_button">flat_button (id4_common.devices.mirror_toroidal.MR3 attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.flip_flop_1">flip_flop_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueScalToStream.flush">flush (id4_common.devices.softgluezynq_old.SoftGlueScalToStream attribute)</a>
 
       <ul>
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SoftGlueScalToStream.flush">(id4_common.devices.softgluezynq_parts.SoftGlueScalToStream attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.flyscan">flyscan() (in module id4_common.plans.flyscans)</a>
+</li>
       <li><a href="api/id4_common/plans/flyscan_demo/index.html#id4_common.plans.flyscan_demo.flyscan_1d">flyscan_1d() (in module id4_common.plans.flyscan_demo)</a>
 </li>
       <li><a href="api/id4_common/plans/flyscan_demo/index.html#id4_common.plans.flyscan_demo.flyscan_cycler">flyscan_cycler() (in module id4_common.plans.flyscan_demo)</a>
@@ -2234,6 +2308,8 @@
       <li><a href="api/id4_common/devices/aps_undulator/index.html#id4_common.devices.aps_undulator.PhaseShifterDevice.gap">gap (id4_common.devices.aps_undulator.PhaseShifterDevice attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/aps_undulator/index.html#id4_common.devices.aps_undulator.PhaseShifterDevice.gap_deadband">gap_deadband (id4_common.devices.aps_undulator.PhaseShifterDevice attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.gate_delay_1">gate_delay_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.gate_sync">gate_sync (id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
 </li>
@@ -2956,6 +3032,13 @@
 </li>
       </ul></li>
       <li>
+    id4_common.devices.softgluezynq_g_new
+
+      <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#module-id4_common.devices.softgluezynq_g_new">module</a>
+</li>
+      </ul></li>
+      <li>
     id4_common.devices.softgluezynq_old
 
       <ul>
@@ -3081,8 +3164,6 @@
         <li><a href="api/id4_common/macros/index.html#module-id4_common.macros">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     id4_common.macros.macros_api
 
@@ -3090,6 +3171,8 @@
         <li><a href="api/id4_common/macros/macros_api/index.html#module-id4_common.macros.macros_api">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     id4_common.macros.shortcuts_4idg_euler
 
@@ -3151,6 +3234,13 @@
 
       <ul>
         <li><a href="api/id4_common/plans/flyscan_demo/index.html#module-id4_common.plans.flyscan_demo">module</a>
+</li>
+      </ul></li>
+      <li>
+    id4_common.plans.flyscans
+
+      <ul>
+        <li><a href="api/id4_common/plans/flyscans/index.html#module-id4_common.plans.flyscans">module</a>
 </li>
       </ul></li>
       <li>
@@ -3526,6 +3616,12 @@
       </ul></li>
       <li><a href="api/id4_common/devices/magnet_kepco_4idb/index.html#id4_common.devices.magnet_kepco_4idb.KepcoController.id_read">id_read (id4_common.devices.magnet_kepco_4idb.KepcoController attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.if_tracker_1">if_tracker_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.if_tracker_2">if_tracker_2 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.if_tracker_3">if_tracker_3 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/devices/ad_eiger1M/index.html#id4_common.devices.ad_eiger1M.Eiger1MDetector.image">image (id4_common.devices.ad_eiger1M.Eiger1MDetector attribute)</a>
 
       <ul>
@@ -3625,6 +3721,8 @@
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.io">io (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice attribute)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.io">(id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.io">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevice attribute)</a>
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.io">(id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
@@ -3676,6 +3774,8 @@
 
       <ul>
         <li><a href="api/id4_common/devices/ad_lightfield/index.html#id4_common.devices.ad_lightfield.LightFieldDetector.label_option_map">(id4_common.devices.ad_lightfield.LightFieldDetector property)</a>
+</li>
+        <li><a href="api/id4_common/devices/ad_positionstream/index.html#id4_common.devices.ad_positionstream.PositionStreamDevice.label_option_map">(id4_common.devices.ad_positionstream.PositionStreamDevice property)</a>
 </li>
         <li><a href="api/id4_common/devices/ad_vimba/index.html#id4_common.devices.ad_vimba.VimbaDetector.label_option_map">(id4_common.devices.ad_vimba.VimbaDetector property)</a>
 </li>
@@ -3768,8 +3868,12 @@
 </li>
       <li><a href="api/id4_common/devices/vortex_xmap/index.html#id4_common.devices.vortex_xmap.MyDXP.live_time_output">live_time_output (id4_common.devices.vortex_xmap.MyDXP attribute)</a>
 </li>
-      <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZDownCounter.load">load (id4_common.devices.softgluezynq_parts.SGZDownCounter attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.UpDownCounter.load">load (id4_common.devices.softgluezynq_g_new.UpDownCounter attribute)</a>
+
+      <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZDownCounter.load">(id4_common.devices.softgluezynq_parts.SGZDownCounter attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/id4_common/utils/device_loader/index.html#id4_common.utils.device_loader.load_device">load_device() (in module id4_common.utils.device_loader)</a>
 </li>
       <li><a href="api/id4_common/utils/experiment_utils/index.html#id4_common.utils.experiment_utils.ExperimentClass.load_from_bluesky">load_from_bluesky() (id4_common.utils.experiment_utils.ExperimentClass method)</a>
@@ -3841,6 +3945,8 @@
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.logger">(in module id4_common.devices.softgluezynq_g)</a>
 </li>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.logger">(in module id4_common.devices.softgluezynq_g_new)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.logger">(in module id4_common.devices.softgluezynq_old)</a>
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.logger">(in module id4_common.devices.softgluezynq_parts)</a>
@@ -3858,6 +3964,8 @@
         <li><a href="api/id4_common/plans/dm_plans/index.html#id4_common.plans.dm_plans.logger">(in module id4_common.plans.dm_plans)</a>
 </li>
         <li><a href="api/id4_common/plans/flyscan_demo/index.html#id4_common.plans.flyscan_demo.logger">(in module id4_common.plans.flyscan_demo)</a>
+</li>
+        <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.logger">(in module id4_common.plans.flyscans)</a>
 </li>
         <li><a href="api/id4_common/plans/local_preprocessors/index.html#id4_common.plans.local_preprocessors.logger">(in module id4_common.plans.local_preprocessors)</a>
 </li>
@@ -3988,6 +4096,8 @@
       </ul></li>
       <li><a href="api/id4_common/devices/vortex_dante_parts/index.html#id4_common.devices.vortex_dante_parts.DanteSCA.max_energy">max_energy (id4_common.devices.vortex_dante_parts.DanteSCA attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/vortex_xspress3_me4/index.html#id4_common.devices.vortex_xspress3_me4.Trigger.max_images">max_images (id4_common.devices.vortex_xspress3_me4.Trigger attribute)</a>
+</li>
       <li><a href="api/id4_common/devices/vortex_xspress3_me4/index.html#id4_common.devices.vortex_xspress3_me4.MAX_IMAGES">MAX_IMAGES (in module id4_common.devices.vortex_xspress3_me4)</a>
 
       <ul>
@@ -4074,6 +4184,24 @@
         <li><a href="api/id4_common/devices/vortex_xspress3_me7/index.html#id4_common.devices.vortex_xspress3_me7.ROIStatN.mean_value">(id4_common.devices.vortex_xspress3_me7.ROIStatN attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_x_address">mem_x_address (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_x_clk">mem_x_clk (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_x_data">mem_x_data (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_x_enable">mem_x_enable (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_x_write">mem_x_write (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_y_address">mem_y_address (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_y_clk">mem_y_clk (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_y_data">mem_y_data (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.mem_y_write">mem_y_write (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/devices/filters_device/index.html#id4_common.devices.filters_device.APSFilter.message">message (id4_common.devices.filters_device.APSFilter attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/aps_undulator/index.html#id4_common.devices.aps_undulator.PhaseShifterDevice.message1">message1 (id4_common.devices.aps_undulator.PhaseShifterDevice attribute)</a>
@@ -4248,6 +4376,8 @@
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_g/index.html#module-id4_common.devices.softgluezynq_g">id4_common.devices.softgluezynq_g</a>
 </li>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#module-id4_common.devices.softgluezynq_g_new">id4_common.devices.softgluezynq_g_new</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#module-id4_common.devices.softgluezynq_old">id4_common.devices.softgluezynq_old</a>
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#module-id4_common.devices.softgluezynq_parts">id4_common.devices.softgluezynq_parts</a>
@@ -4303,6 +4433,8 @@
         <li><a href="api/id4_common/plans/dm_plans/index.html#module-id4_common.plans.dm_plans">id4_common.plans.dm_plans</a>
 </li>
         <li><a href="api/id4_common/plans/flyscan_demo/index.html#module-id4_common.plans.flyscan_demo">id4_common.plans.flyscan_demo</a>
+</li>
+        <li><a href="api/id4_common/plans/flyscans/index.html#module-id4_common.plans.flyscans">id4_common.plans.flyscans</a>
 </li>
         <li><a href="api/id4_common/plans/grid_scans/index.html#module-id4_common.plans.grid_scans">id4_common.plans.grid_scans</a>
 </li>
@@ -4449,6 +4581,8 @@
         <li><a href="api/id4_common/devices/polar_diffractometer_hklpy2/index.html#id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice.move_single">(id4_common.devices.polar_diffractometer_hklpy2.AnalyzerDevice method)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.move_x_analog">move_x_analog() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/utils/local_magics/index.html#id4_common.utils.local_magics.LocalMagics.movr">movr() (id4_common.utils.local_magics.LocalMagics method)</a>
 </li>
       <li><a href="api/id4_common/devices/mirror_toroidal/index.html#id4_common.devices.mirror_toroidal.MR3">MR3 (class in id4_common.devices.mirror_toroidal)</a>
@@ -4507,9 +4641,11 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN.n">n (id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.PulseTrain.n">n (id4_common.devices.softgluezynq_g_new.PulseTrain attribute)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN.n">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevideByN attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZDevideByN.n">(id4_common.devices.softgluezynq_parts.SGZDevideByN attribute)</a>
 </li>
       </ul></li>
@@ -4521,6 +4657,8 @@
         <li><a href="api/id4_common/macros/shortcuts_4idh_9T/index.html#id4_common.macros.shortcuts_4idh_9T.namespace">(in module id4_common.macros.shortcuts_4idh_9T)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.NANO_EGU_PER_UM">NANO_EGU_PER_UM (in module id4_common.plans.flyscans)</a>
+</li>
       <li><a href="api/id4_common/devices/magnet_nanopositioner/index.html#id4_common.devices.magnet_nanopositioner.NanoPositioner">NanoPositioner (class in id4_common.devices.magnet_nanopositioner)</a>
 
       <ul>
@@ -4561,14 +4699,14 @@
         <li><a href="api/id4_common/devices/vortex_xspress3_me7/index.html#id4_common.devices.vortex_xspress3_me7.ROIStatN.net_value">(id4_common.devices.vortex_xspress3_me7.ROIStatN attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback.newfile">newfile() (id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback method)</a>
 
       <ul>
         <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2.newfile">(id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2 method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/utils/hkl_utils_hklpy2/index.html#id4_common.utils.hkl_utils_hklpy2.newsample">newsample() (in module id4_common.utils.hkl_utils_hklpy2)</a>
 </li>
       <li><a href="api/id4_common/callbacks/spec_data_file_writer/index.html#id4_common.callbacks.spec_data_file_writer.newSpecFile">newSpecFile() (in module id4_common.callbacks.spec_data_file_writer)</a>
@@ -4657,10 +4795,10 @@
 </li>
       <li><a href="api/id4_common/devices/preamps/index.html#id4_common.devices.preamps.LocalPreAmp.opt_fine_plan">opt_fine_plan() (id4_common.devices.preamps.LocalPreAmp method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/preamps/index.html#id4_common.devices.preamps.LocalPreAmp.opt_offset_plan">opt_offset_plan() (id4_common.devices.preamps.LocalPreAmp method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/preamps/index.html#id4_common.devices.preamps.LocalPreAmp.opt_sens_plan">opt_sens_plan() (id4_common.devices.preamps.LocalPreAmp method)</a>
 </li>
       <li><a href="api/id4_common/devices/preamps/index.html#id4_common.devices.preamps.LocalPreAmp.optimize_plan">optimize_plan() (id4_common.devices.preamps.LocalPreAmp method)</a>
@@ -4669,8 +4807,12 @@
 </li>
       <li><a href="api/id4_common/utils/hkl_utils_hklpy2/index.html#id4_common.utils.hkl_utils_hklpy2.or1">or1() (in module id4_common.utils.hkl_utils_hklpy2)</a>
 </li>
-      <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.or_1">or_1 (id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.or_1">or_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+
+      <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.or_1">(id4_common.devices.softgluezynq_vortex.SGZVortex attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/id4_common/utils/hkl_utils_hklpy2/index.html#id4_common.utils.hkl_utils_hklpy2.or_swap">or_swap() (in module id4_common.utils.hkl_utils_hklpy2)</a>
 </li>
       <li><a href="api/id4_common/devices/jj_slits/index.html#id4_common.devices.jj_slits.SlitDevice.out">out (id4_common.devices.jj_slits.SlitDevice attribute)</a>
@@ -4717,6 +4859,8 @@
       </ul></li>
       <li><a href="api/id4_common/utils/utilities/index.html#id4_common.utils.utilities.path">path (in module id4_common.utils.utilities)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.pause_softglue">pause_softglue() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/utils/hkl_utils_hklpy2/index.html#id4_common.utils.hkl_utils_hklpy2.pbar_manager">pbar_manager (in module id4_common.utils.hkl_utils_hklpy2)</a>
 </li>
       <li><a href="api/id4_common/plans/peak_position/index.html#id4_common.plans.peak_position.peak">peak() (in module id4_common.plans.peak_position)</a>
@@ -4732,6 +4876,8 @@
 </li>
       </ul></li>
       <li><a href="api/id4_common/devices/vortex_dante_parts/index.html#id4_common.devices.vortex_dante_parts.DanteSCA.peaking_time">peaking_time (id4_common.devices.vortex_dante_parts.DanteSCA attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.PulseTrain.period">period (id4_common.devices.softgluezynq_g_new.PulseTrain attribute)</a>
 </li>
       <li><a href="api/id4_common/utils/experiment_utils/index.html#id4_common.utils.experiment_utils.PERSIST_FILENAME">PERSIST_FILENAME (in module id4_common.utils.experiment_utils)</a>
 </li>
@@ -4755,6 +4901,12 @@
         <li><a href="api/id4_common/devices/polar_diffractometer_hklpy2/index.html#id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer.phi">(id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.PIEZO_HALF_RANGE_UM">PIEZO_HALF_RANGE_UM (in module id4_common.plans.flyscans)</a>
+</li>
+      <li><a href="api/id4_common/utils/shorts/index.html#id4_common.utils.shorts.piezo_jena_setup">piezo_jena_setup() (in module id4_common.utils.shorts)</a>
+</li>
+      <li><a href="api/id4_common/plans/flyscans/index.html#id4_common.plans.flyscans.PIEZO_MECHANICAL_RANGE_UM">PIEZO_MECHANICAL_RANGE_UM (in module id4_common.plans.flyscans)</a>
+</li>
       <li><a href="api/id4_common/devices/piezo_jena/index.html#id4_common.devices.piezo_jena.PiezoJena">PiezoJena (class in id4_common.devices.piezo_jena)</a>
 </li>
       <li><a href="api/id4_common/devices/vortex_dante_parts/index.html#id4_common.devices.vortex_dante_parts.DanteSCA.pileup">pileup (id4_common.devices.vortex_dante_parts.DanteSCA attribute)</a>
@@ -4795,6 +4947,8 @@
 
       <ul>
         <li><a href="api/id4_common/devices/ad_lightfield/index.html#id4_common.devices.ad_lightfield.LightFieldDetector.plot_options">(id4_common.devices.ad_lightfield.LightFieldDetector property)</a>
+</li>
+        <li><a href="api/id4_common/devices/ad_positionstream/index.html#id4_common.devices.ad_positionstream.PositionStreamDevice.plot_options">(id4_common.devices.ad_positionstream.PositionStreamDevice property)</a>
 </li>
         <li><a href="api/id4_common/devices/ad_vimba/index.html#id4_common.devices.ad_vimba.VimbaDetector.plot_options">(id4_common.devices.ad_vimba.VimbaDetector property)</a>
 </li>
@@ -4889,6 +5043,10 @@
 </li>
       <li><a href="api/id4_common/devices/ad_eiger1M/index.html#id4_common.devices.ad_eiger1M.Eiger1MDetector.plot_stats5">plot_stats5() (id4_common.devices.ad_eiger1M.Eiger1MDetector method)</a>
 </li>
+      <li><a href="api/id4_common/utils/shorts/index.html#id4_common.utils.shorts.plots_off">plots_off() (in module id4_common.utils.shorts)</a>
+</li>
+      <li><a href="api/id4_common/utils/shorts/index.html#id4_common.utils.shorts.plots_on">plots_on() (in module id4_common.utils.shorts)</a>
+</li>
       <li><a href="api/id4_common/utils/utilities/index.html#id4_common.utils.utilities.plotselect">plotselect() (in module id4_common.utils.utilities)</a>
 </li>
       <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.PluginMixin">PluginMixin (class in id4_common.devices.ad_mixins)</a>
@@ -4917,12 +5075,12 @@
 </li>
       <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.PolarHDF5Plugin">PolarHDF5Plugin (class in id4_common.devices.ad_mixins)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/polar_diffractometer/index.html#id4_common.devices.polar_diffractometer.PolarPSI">PolarPSI (class in id4_common.devices.polar_diffractometer)</a>
 </li>
       <li><a href="api/id4_common/devices/shutters/index.html#id4_common.devices.shutters.PolarShutter">PolarShutter (class in id4_common.devices.shutters)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/aps_undulator/index.html#id4_common.devices.aps_undulator.PolarUndulator">PolarUndulator (class in id4_common.devices.aps_undulator)</a>
 </li>
       <li><a href="api/id4_common/devices/aps_undulator/index.html#id4_common.devices.aps_undulator.PolarUndulatorPair">PolarUndulatorPair (class in id4_common.devices.aps_undulator)</a>
@@ -5029,10 +5187,16 @@
 </li>
       <li><a href="api/id4_common/devices/scaler_dual_ctr8/index.html#id4_common.devices.scaler_dual_ctr8.PREFIX2">PREFIX2 (in module id4_common.devices.scaler_dual_ctr8)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.prepare">prepare() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback.prepare_scan_contents">prepare_scan_contents() (id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback method)</a>
 </li>
-      <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZDownCounter.preset">preset (id4_common.devices.softgluezynq_parts.SGZDownCounter attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.UpDownCounter.preset">preset (id4_common.devices.softgluezynq_g_new.UpDownCounter attribute)</a>
+
+      <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZDownCounter.preset">(id4_common.devices.softgluezynq_parts.SGZDownCounter attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/id4_common/devices/vortex_xmap/index.html#id4_common.devices.vortex_xmap.VortexXMAP.preset_mode">preset_mode (id4_common.devices.vortex_xmap.VortexXMAP attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/ad_lambda/index.html#id4_common.devices.ad_lambda.Lambda250kDetector.preset_monitor">preset_monitor (id4_common.devices.ad_lambda.Lambda250kDetector property)</a>
@@ -5119,6 +5283,10 @@
         <li><a href="api/id4_common/devices/polar_diffractometer_hklpy2/index.html#id4_common.devices.polar_diffractometer_hklpy2.PTTH_MIN_DEGREES">(in module id4_common.devices.polar_diffractometer_hklpy2)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.pulse_train">pulse_train (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.PulseTrain">PulseTrain (class in id4_common.devices.softgluezynq_g_new)</a>
+</li>
       <li><a href="api/id4_common/devices/crl_device/index.html#id4_common.devices.crl_device.EnergySignal.put">put() (id4_common.devices.crl_device.EnergySignal method)</a>
 
       <ul>
@@ -5190,6 +5358,22 @@
       <li><a href="api/id4_common/devices/hhl_mirror/index.html#id4_common.devices.hhl_mirror.HHLMirror.radius_target">radius_target (id4_common.devices.hhl_mirror.HHLMirror attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/ringlight/index.html#id4_common.devices.ringlight.Ringlight.rainbow">rainbow() (id4_common.devices.ringlight.Ringlight method)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.ram_x_enable">ram_x_enable (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.ram_x_n">ram_x_n (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.ram_y_done">ram_y_done (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.ram_y_enable">ram_y_enable (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.ram_y_end">ram_y_end (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.ram_y_inc">ram_y_inc (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.ram_y_n">ram_y_n (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.ram_y_start">ram_y_start (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/magnet_911/index.html#id4_common.devices.magnet_911.Magnet911.raman">raman (id4_common.devices.magnet_911.Magnet911 attribute)</a>
 </li>
@@ -5353,14 +5537,14 @@
 </li>
       <li><a href="api/id4_common/devices/phaseplates/index.html#id4_common.devices.phaseplates.PRPzt.remote_readback">remote_readback (id4_common.devices.phaseplates.PRPzt attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/phaseplates/index.html#id4_common.devices.phaseplates.PRPzt.remote_setpoint">remote_setpoint (id4_common.devices.phaseplates.PRPzt attribute)</a>
 </li>
       <li><a href="api/id4_common/utils/device_loader/index.html#id4_common.utils.device_loader.remove_device">remove_device() (in module id4_common.utils.device_loader)</a>
 </li>
       <li><a href="api/id4_common/devices/srs810/index.html#id4_common.devices.srs810.LockinDevice.reserve">reserve (id4_common.devices.srs810.LockinDevice attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueScalToStream.reset">reset (id4_common.devices.softgluezynq_old.SoftGlueScalToStream attribute)</a>
 
       <ul>
@@ -5375,8 +5559,12 @@
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SoftGlueScalToStream.reset">(id4_common.devices.softgluezynq_parts.SoftGlueScalToStream attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.reset">reset() (id4_common.devices.softgluezynq_vortex.SGZVortex method)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.reset">reset() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+
+      <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.reset">(id4_common.devices.softgluezynq_vortex.SGZVortex method)</a>
 </li>
+      </ul></li>
       <li><a href="api/id4_common/devices/vortex_xspress3_me4/index.html#id4_common.devices.vortex_xspress3_me4.ROIStatN.reset_button">reset_button (id4_common.devices.vortex_xspress3_me4.ROIStatN attribute)</a>
 
       <ul>
@@ -5393,6 +5581,8 @@
         <li><a href="api/id4_common/devices/vortex_xspress3_me7/index.html#id4_common.devices.vortex_xspress3_me7.VortexSCA.reset_counts">(id4_common.devices.vortex_xspress3_me7.VortexSCA attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.reset_interferometers">reset_interferometers() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.reset_plan">reset_plan() (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice method)</a>
 
       <ul>
@@ -5420,6 +5610,8 @@
       <li><a href="api/id4_common/utils/session_state/index.html#id4_common.utils.session_state.restore_session_state">restore_session_state() (in module id4_common.utils.session_state)</a>
 </li>
       <li><a href="api/id4_common/utils/experiment_utils/index.html#id4_common.utils.experiment_utils.ExperimentClass.resume">resume() (id4_common.utils.experiment_utils.ExperimentClass method)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.resume_softglue">resume_softglue() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
 </li>
       <li><a href="api/id4_common/devices/ringlight/index.html#id4_common.devices.ringlight.Ringlight">Ringlight (class in id4_common.devices.ringlight)</a>
 </li>
@@ -5683,6 +5875,8 @@
 </li>
       <li><a href="api/id4_common/devices/vortex_xspress3_me7/index.html#id4_common.devices.vortex_xspress3_me7.VortexXspress37.sca7">sca7 (id4_common.devices.vortex_xspress3_me7.VortexXspress37 attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.scal_to_stream_1">scal_to_stream_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/devices/scaler_dual_ctr8/index.html#id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.scaler1">scaler1 (id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/scaler_dual_ctr8/index.html#id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.scaler2">scaler2 (id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler attribute)</a>
@@ -5729,6 +5923,8 @@
 
       <ul>
         <li><a href="api/id4_common/devices/ad_lightfield/index.html#id4_common.devices.ad_lightfield.LightFieldDetector.select_plot">(id4_common.devices.ad_lightfield.LightFieldDetector method)</a>
+</li>
+        <li><a href="api/id4_common/devices/ad_positionstream/index.html#id4_common.devices.ad_positionstream.PositionStreamDevice.select_plot">(id4_common.devices.ad_positionstream.PositionStreamDevice method)</a>
 </li>
         <li><a href="api/id4_common/devices/ad_vimba/index.html#id4_common.devices.ad_vimba.VimbaDetector.select_plot">(id4_common.devices.ad_vimba.VimbaDetector method)</a>
 </li>
@@ -5925,6 +6121,14 @@
         <li><a href="api/id4_common/devices/vortex_xspress3_me7/index.html#id4_common.devices.vortex_xspress3_me7.Trigger.setup_external_trigger">(id4_common.devices.vortex_xspress3_me7.Trigger method)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/ad_eiger1M/index.html#id4_common.devices.ad_eiger1M.Eiger1MDetector.setup_flyscan_mode">setup_flyscan_mode() (id4_common.devices.ad_eiger1M.Eiger1MDetector method)</a>
+
+      <ul>
+        <li><a href="api/id4_common/devices/vortex_xspress3_me4/index.html#id4_common.devices.vortex_xspress3_me4.VortexXspress34.setup_flyscan_mode">(id4_common.devices.vortex_xspress3_me4.VortexXspress34 method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.setup_gated_trigger">setup_gated_trigger() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/devices/ad_eiger1M/index.html#id4_common.devices.ad_eiger1M.Eiger1MDetector.setup_images">setup_images() (id4_common.devices.ad_eiger1M.Eiger1MDetector method)</a>
 
       <ul>
@@ -6011,12 +6215,12 @@
       </ul></li>
       <li><a href="api/id4_common/devices/aps_status/index.html#id4_common.devices.aps_status.StatusAPS.shutter_status">shutter_status (id4_common.devices.aps_status.StatusAPS attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/suspenders/shutters_suspenders/index.html#id4_common.suspenders.shutters_suspenders.shutter_suspenders">shutter_suspenders (in module id4_common.suspenders.shutters_suspenders)</a>
 </li>
       <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.StatsPlugin.sigma_x">sigma_x (id4_common.devices.ad_mixins.StatsPlugin attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.StatsPlugin.sigma_y">sigma_y (id4_common.devices.ad_mixins.StatsPlugin attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueSignal.signal">signal (id4_common.devices.softgluezynq_old.SoftGlueSignal attribute)</a>
@@ -6071,6 +6275,10 @@
 </li>
       <li><a href="api/id4_common/devices/filters_device/index.html#id4_common.devices.filters_device.APSFilter.slots">slots (id4_common.devices.filters_device.APSFilter attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.snake_x">snake_x() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.snake_y">snake_y() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/devices/vortex_dante_parts/index.html#id4_common.devices.vortex_dante_parts.DanteCAM4.snl_connected">snl_connected (id4_common.devices.vortex_dante_parts.DanteCAM4 attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueClocks">SoftGlueClocks (class in id4_common.devices.softgluezynq_old)</a>
@@ -6087,6 +6295,8 @@
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SoftGlueSignal">(class in id4_common.devices.softgluezynq_parts)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq">SoftGlueZynq (class in id4_common.devices.softgluezynq_g_new)</a>
+</li>
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice">SoftGlueZynqDevice (class in id4_common.devices.softgluezynq_g)</a>
 
       <ul>
@@ -6120,6 +6330,10 @@
 </li>
       </ul></li>
       <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback.spec_host">spec_host (id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback attribute)</a>
+</li>
+      <li><a href="api/id4_common/utils/shorts/index.html#id4_common.utils.shorts.spec_off">spec_off() (in module id4_common.utils.shorts)</a>
+</li>
+      <li><a href="api/id4_common/utils/shorts/index.html#id4_common.utils.shorts.spec_on">spec_on() (in module id4_common.utils.shorts)</a>
 </li>
       <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SPEC_TIME_FORMAT">SPEC_TIME_FORMAT (in module id4_common.callbacks.apstools_spec_file_writer)</a>
 </li>
@@ -6204,6 +6418,8 @@
       <ul>
         <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2.start">(id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2 method)</a>
 </li>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.start">(id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       </ul></li>
       <li><a href="api/id4_common/devices/ad_mixins/index.html#id4_common.devices.ad_mixins.StatsPlugin.start_auto_kind">start_auto_kind() (id4_common.devices.ad_mixins.StatsPlugin method)</a>
 </li>
@@ -6221,6 +6437,8 @@
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.start_detectors">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevice method)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.start_flyscan">start_flyscan() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_softglue">start_softglue() (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice method)</a>
 
       <ul>
@@ -6382,6 +6600,8 @@
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_softglue">stop_softglue() (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice method)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.stop_softglue">(id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.stop_softglue">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevice method)</a>
 </li>
         <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.stop_softglue">(id4_common.devices.softgluezynq_vortex.SGZVortex method)</a>
@@ -6557,6 +6777,10 @@
 </li>
       <li><a href="api/id4_common/devices/crl_device/index.html#id4_common.devices.crl_device.PyCRL.thickness_error_flag">thickness_error_flag (id4_common.devices.crl_device.PyCRL attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.threshold_neg">threshold_neg (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.threshold_pos">threshold_pos (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/devices/magnet_911/index.html#id4_common.devices.magnet_911.RamanMotors.tilt">tilt (id4_common.devices.magnet_911.RamanMotors attribute)</a>
 </li>
       <li><a href="api/id4_common/devices/vortex_dante_parts/index.html#id4_common.devices.vortex_dante_parts.DanteSCA.time_constant">time_constant (id4_common.devices.vortex_dante_parts.DanteSCA attribute)</a>
@@ -6682,6 +6906,8 @@
 </li>
         <li><a href="api/id4_common/devices/scaler_dual_ctr8/index.html#id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler.trigger">(id4_common.devices.scaler_dual_ctr8.DualCTR8Scaler method)</a>
 </li>
+        <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.trigger">(id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_vortex/index.html#id4_common.devices.softgluezynq_vortex.SGZVortex.trigger">(id4_common.devices.softgluezynq_vortex.SGZVortex method)</a>
 </li>
         <li><a href="api/id4_common/devices/vortex_dante_me1/index.html#id4_common.devices.vortex_dante_me1.Trigger.trigger">(id4_common.devices.vortex_dante_me1.Trigger method)</a>
@@ -6763,6 +6989,8 @@
 </li>
       <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback.uid_short_length">uid_short_length (id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback attribute)</a>
 </li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.um_to_bits">um_to_bits() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
       <li><a href="api/id4_common/utils/undulator_setup/index.html#id4_common.utils.undulator_setup.undulator_setup">undulator_setup() (in module id4_common.utils.undulator_setup)</a>
 </li>
       <li><a href="api/id4_common/devices/ge_controller/index.html#id4_common.devices.ge_controller.GEController.units">units (id4_common.devices.ge_controller.GEController attribute)</a>
@@ -6799,8 +7027,16 @@
         <li><a href="api/id4_common/devices/vortex_xspress3_me7/index.html#id4_common.devices.vortex_xspress3_me7.Trigger.unstage">(id4_common.devices.vortex_xspress3_me7.Trigger method)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.up_counter_1">up_counter_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.up_counter_2">up_counter_2 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.up_counter_3">up_counter_3 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.up_counter_4">up_counter_4 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/devices/softgluezynq_g/index.html#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_count">up_counter_count (id4_common.devices.softgluezynq_g.SoftGlueZynqDevice attribute)</a>
 
       <ul>
@@ -6827,7 +7063,15 @@
         <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqDevice.up_counter_trigger">(id4_common.devices.softgluezynq_old.SoftGlueZynqDevice attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.up_down_counter_1">up_down_counter_1 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.up_down_counter_2">up_down_counter_2 (id4_common.devices.softgluezynq_g_new.SoftGlueZynq attribute)</a>
+</li>
       <li><a href="api/id4_common/utils/hkl_utils_hklpy2/index.html#id4_common.utils.hkl_utils_hklpy2.update_lattice">update_lattice() (in module id4_common.utils.hkl_utils_hklpy2)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.UpDownCounter.updown">updown (id4_common.devices.softgluezynq_g_new.UpDownCounter attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.UpDownCounter">UpDownCounter (class in id4_common.devices.softgluezynq_g_new)</a>
 </li>
       <li><a href="api/id4_common/devices/aps_undulator/index.html#id4_common.devices.aps_undulator.PolarUndulatorPair.us">us (id4_common.devices.aps_undulator.PolarUndulatorPair attribute)</a>
 </li>
@@ -7007,9 +7251,11 @@
 </li>
       <li><a href="api/id4_common/devices/chopper_device/index.html#id4_common.devices.chopper_device.ChopperDevice.wheel">wheel (id4_common.devices.chopper_device.ChopperDevice attribute)</a>
 </li>
-      <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly.width">width (id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly attribute)</a>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.PulseTrain.width">width (id4_common.devices.softgluezynq_g_new.PulseTrain attribute)</a>
 
       <ul>
+        <li><a href="api/id4_common/devices/softgluezynq_old/index.html#id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly.width">(id4_common.devices.softgluezynq_old.SoftGlueZynqGateDly attribute)</a>
+</li>
         <li><a href="api/id4_common/devices/softgluezynq_parts/index.html#id4_common.devices.softgluezynq_parts.SGZGateDly.width">(id4_common.devices.softgluezynq_parts.SGZGateDly attribute)</a>
 </li>
       </ul></li>
@@ -7054,6 +7300,10 @@
       <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback.write_new_header">write_new_header (id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback attribute)</a>
 </li>
       <li><a href="api/id4_common/callbacks/apstools_spec_file_writer/index.html#id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2.write_new_scan_header">write_new_scan_header (id4_common.callbacks.apstools_spec_file_writer.SpecWriterCallback2 attribute)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.write_RAM_x">write_RAM_x() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
+</li>
+      <li><a href="api/id4_common/devices/softgluezynq_g_new/index.html#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.write_RAM_y">write_RAM_y() (id4_common.devices.softgluezynq_g_new.SoftGlueZynq method)</a>
 </li>
       <li><a href="api/id4_common/callbacks/nexus_data_file_writer/index.html#id4_common.callbacks.nexus_data_file_writer.MyNXWriter.write_root">write_root() (id4_common.callbacks.nexus_data_file_writer.MyNXWriter method)</a>
 </li>
@@ -7311,8 +7561,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">

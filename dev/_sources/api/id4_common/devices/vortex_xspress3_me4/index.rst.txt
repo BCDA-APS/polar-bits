@@ -19,7 +19,7 @@ Module Contents
 .. py:data:: logger
 
 .. py:data:: MAX_IMAGES
-   :value: 12216
+   :value: 12000
 
 
 .. py:data:: MAX_ROIS
@@ -32,6 +32,11 @@ Module Contents
 
 
    This trigger mixin class takes one acquisition per trigger.
+
+
+   .. py:attribute:: max_images
+      :value: 12000
+
 
 
    .. py:method:: setup_manual_trigger()
@@ -404,5 +409,26 @@ Module Contents
    .. py:property:: save_image_flag
 
       Return True if the HDF5 plugin is enabled or autosave is on.
+
+
+   .. py:method:: setup_flyscan_mode(*, num_images, acq_time, hdf_images)
+
+      Configure stage_sigs for an external-gate fly-scan.
+
+      Wraps :meth:`setup_external_trigger` (``trigger_type="gate"``) to
+      get the default External Gate stage signals, then overrides the
+      scan-specific image count, per-image acquire time, and HDF5
+      capture chunk size. Call this *before* ``stage()`` so the new
+      ``stage_sigs`` are applied when the RunEngine stages the
+      detector.
+
+      :param num_images: Total number of frames the scan will collect.
+      :type num_images: int
+      :param acq_time: Per-frame acquire time in seconds.
+      :type acq_time: float
+      :param hdf_images: Frames per HDF5 capture chunk (sets
+                         ``hdf1.stage_sigs["num_capture"]``).
+      :type hdf_images: int
+
 
 

@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
-<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+  <link href="../../../../_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
-<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
     <script src="../../../../_static/documentation_options.js?v=f539c95a"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -269,11 +269,18 @@
       
         <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -286,8 +293,7 @@
           
           
           
-          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
       
@@ -453,11 +459,18 @@
         
           <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -470,8 +483,7 @@
           
           
           
-          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
         
@@ -541,6 +553,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../scaler_dual_ctr8/index.html">id4_common.devices.scaler_dual_ctr8</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../shutters/index.html">id4_common.devices.shutters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_g/index.html">id4_common.devices.softgluezynq_g</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../softgluezynq_g_new/index.html">id4_common.devices.softgluezynq_g_new</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_old/index.html">id4_common.devices.softgluezynq_old</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_parts/index.html">id4_common.devices.softgluezynq_parts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_vortex/index.html">id4_common.devices.softgluezynq_vortex</a></li>
@@ -627,7 +640,7 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.MAX_IMAGES">
-<span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xspress3_me4.</span></span><span class="sig-name descname"><span class="pre">MAX_IMAGES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12216</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.MAX_IMAGES" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xspress3_me4.</span></span><span class="sig-name descname"><span class="pre">MAX_IMAGES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12000</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.MAX_IMAGES" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
@@ -640,6 +653,11 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.vortex_xspress3_me4.</span></span><span class="sig-name descname"><span class="pre">Trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.Trigger" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.trigger_mixins.TriggerBase</span></code></p>
 <p>This trigger mixin class takes one acquisition per trigger.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.Trigger.max_images">
+<span class="sig-name descname"><span class="pre">max_images</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12000</span></span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.Trigger.max_images" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.Trigger.setup_manual_trigger">
 <span class="sig-name descname"><span class="pre">setup_manual_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.Trigger.setup_manual_trigger" title="Link to this definition">#</a></dt>
@@ -1115,6 +1133,28 @@ upcoming scan.</p>
 <dd><p>Return True if the HDF5 plugin is enabled or autosave is on.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.VortexXspress34.setup_flyscan_mode">
+<span class="sig-name descname"><span class="pre">setup_flyscan_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acq_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf_images</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.setup_flyscan_mode" title="Link to this definition">#</a></dt>
+<dd><p>Configure stage_sigs for an external-gate fly-scan.</p>
+<p>Wraps <code class="xref py py-meth docutils literal notranslate"><span class="pre">setup_external_trigger()</span></code> (<code class="docutils literal notranslate"><span class="pre">trigger_type=&quot;gate&quot;</span></code>) to
+get the default External Gate stage signals, then overrides the
+scan-specific image count, per-image acquire time, and HDF5
+capture chunk size. Call this <em>before</em> <code class="docutils literal notranslate"><span class="pre">stage()</span></code> so the new
+<code class="docutils literal notranslate"><span class="pre">stage_sigs</span></code> are applied when the RunEngine stages the
+detector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_images</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Total number of frames the scan will collect.</p></li>
+<li><p><strong>acq_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Per-frame acquire time in seconds.</p></li>
+<li><p><strong>hdf_images</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Frames per HDF5 capture chunk (sets
+<code class="docutils literal notranslate"><span class="pre">hdf1.stage_sigs[&quot;num_capture&quot;]</span></code>).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1154,6 +1194,7 @@ upcoming scan.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.MAX_IMAGES"><code class="docutils literal notranslate"><span class="pre">MAX_IMAGES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.MAX_ROIS"><code class="docutils literal notranslate"><span class="pre">MAX_ROIS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.Trigger"><code class="docutils literal notranslate"><span class="pre">Trigger</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.Trigger.max_images"><code class="docutils literal notranslate"><span class="pre">Trigger.max_images</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.Trigger.setup_manual_trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.setup_manual_trigger()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.Trigger.setup_external_trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.setup_external_trigger()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.Trigger.setup_sgzbca_trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.setup_sgzbca_trigger()</span></code></a></li>
@@ -1251,6 +1292,7 @@ upcoming scan.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.label_option_map"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.label_option_map</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.setup_images"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.setup_images()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.save_image_flag"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.save_image_flag</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.setup_flyscan_mode"><code class="docutils literal notranslate"><span class="pre">VortexXspress34.setup_flyscan_mode()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1296,8 +1338,8 @@ upcoming scan.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
-<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">

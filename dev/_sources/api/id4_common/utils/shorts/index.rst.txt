@@ -56,6 +56,19 @@ Module Contents
    :type focal_size: float
 
 
+.. py:function:: piezo_jena_setup()
+
+   Check and change the modulation-input state of the PiezoJena device.
+   This needs to be turned ON to allow analog input from the FPGA used for
+   fly scanning, which is trigering the Eiger detector and reading the
+   interferometers of the sample position.
+
+   For each axis (x, y, z), reads the current modulation-input state
+   (ON / OFF) and prompts for a new value with the current state shown as
+   the default. Accepts ``on`` / ``off`` (case-insensitive); pressing
+   Enter keeps the current state.
+
+
 .. py:function:: te(temperature)
 
    Set the active temperature controller's setpoint.
@@ -70,5 +83,30 @@ Module Contents
 
    :raises RuntimeError: ``temperature_setup()`` has not been run, so there is no active
        controller to talk to.
+
+
+.. py:function:: spec_off()
+
+   Unsubscribe the SPEC file writer from the RunEngine.
+
+   No-op (returns 0) if the writer is already unsubscribed. Pair with
+   :func:`spec_on` to re-enable.
+
+
+.. py:function:: spec_on()
+
+   Re-subscribe the SPEC file writer to the RunEngine.
+
+   No-op if the writer is already subscribed (avoids duplicate output).
+
+
+.. py:function:: plots_on()
+
+   Enable BestEffortCallback live plots.
+
+
+.. py:function:: plots_off()
+
+   Disable BestEffortCallback live plots.
 
 

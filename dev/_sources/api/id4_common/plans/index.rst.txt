@@ -19,6 +19,7 @@ Submodules
    /api/id4_common/plans/center_maximum/index
    /api/id4_common/plans/dm_plans/index
    /api/id4_common/plans/flyscan_demo/index
+   /api/id4_common/plans/flyscans/index
    /api/id4_common/plans/grid_scans/index
    /api/id4_common/plans/hkl_scans/index
    /api/id4_common/plans/local_preprocessors/index

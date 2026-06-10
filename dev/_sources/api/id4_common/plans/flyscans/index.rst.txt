@@ -1,0 +1,204 @@
+id4_common.plans.flyscans
+=========================
+
+.. py:module:: id4_common.plans.flyscans
+
+.. autoapi-nested-parse::
+
+   POLAR ISN 2D piezo fly-scan plan.
+
+   Drives both piezo axes through SoftGlue RAMs (matches POLAR_scan.py):
+
+   * **Fast axis** = X piezo (``huber_hp.nanox``, PV ``4idgSoftX:jena:m1``),
+     driven continuously by the snake waveform in the ``mem`` / ``driveRAM``
+     channel via DAC1 (see :meth:`SoftGlueZynq.snake_x`).
+   * **Slow axis** = Y piezo (``huber_hp.nanoy``, PV ``4idgSoftX:jena:m2``),
+     driven by the step waveform in the ``mem2`` / ``driveRAMx`` channel
+     via DAC2, advancing one increment per fast-axis snake cycle (see
+     :meth:`SoftGlueZynq.snake_y`).
+
+   POLAR has no coarse stage motors — ``nanox`` and ``nanoy`` are the only
+   sample positioners. Analog input from the SoftGlue DACs into the
+   PiezoJena controller is gated by
+   :meth:`PiezoJena.modulation_input_on` / ``_off`` per axis (channel 0 =
+   X, channel 1 = Y).
+
+   DAC swing + modulation behaviour
+   --------------------------------
+   The PiezoJena modulation input is **summed** with the EPICS-driven
+   setpoint, and the SoftGlue DAC contributes a 0..+40 um offset on top:
+
+       piezo_position = nanox.user_setpoint + dac_offset      (um)
+       dac_offset      = 0 ... +40        (DAC 0 V .. 5 V)
+
+   The DAC sweep is **centred on the DAC midpoint** (20 um offset, = 2.5
+   V). For a scan width W = x_max - x_min, the DAC swings:
+
+       [DAC_CENTRE - W/2,  DAC_CENTRE + W/2]  =  [20 - W/2, 20 + W/2]
+
+   To put that swing on top of the user-requested scan window
+   ``[x0 + x_min, x0 + x_max]``, the plan shifts the EPICS motor by:
+
+       shift_x = (x_min + x_max)/2 - DAC_CENTRE_UM
+               = (x_min + x_max)/2 - 20
+
+   so that ``EPICS + DAC = x0 + (x_min+x_max)/2 + DAC_OFFSET``. For a
+   symmetric scan ``x_min = -a, x_max = +a`` the shift is always -20 um;
+   asymmetric scans shift by the scan-centre offset minus 20.
+
+   Centring on the DAC midpoint (rather than anchoring at 0 V) means
+   the DAC1 mid-value coincides with the scan centre, so any DC bias the
+   DAC picks up between manual mode and ``memDrive`` engagement still
+   lands the piezo at the scan centre rather than off the side.
+
+   Scan workflow
+   -------------
+   1. Read current piezo positions ``(x0, y0)`` from ``nanox`` / ``nanoy``.
+   2. Disable DAC modulation. Move ``nanox`` / ``nanoy`` by
+      ``(shift_x, shift_y)`` (relative) so the DAC midpoint lands the
+      piezo at the scan centre.
+   3. Load fast (X) snake into ``mem`` and slow (Y) step waveform into
+      ``mem2`` (also sets ``driveRAMx_START/_INC/_END``). DAC bit values
+      span ``[DAC_CENTRE - W/2, DAC_CENTRE + W/2]``.
+   4. Pre-set DAC1 to ``x_dac_min`` (scan-start DAC value, on the low
+      side of the centred sweep) so the piezo does not jump when
+      modulation re-enables.
+   5. Enable modulation on both axes — piezo = EPICS + DAC offset.
+   6. Switch DAC1 mux back to ``memDrive`` and trigger the SoftGlue.
+   7. Wait for ``sg.ram_y_done`` to assert; flush DMA.
+   8. Cleanup: disable modulation, move EPICS motors back to ``(x0, y0)``.
+
+   Position-unit note
+   ------------------
+   All user-facing scan parameters (``x_min`` / ``x_max`` / etc.) are in
+   **micrometers**, expressed relative to the **current** ``nanox`` /
+   ``nanoy`` position. The same micron convention is assumed for the
+   nano-motor EPICS records; adjust ``NANO_EGU_PER_UM`` if your IOC
+   reports in mm.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: DAC_MIN_UM
+   :value: 0.0
+
+
+.. py:data:: DAC_MAX_UM
+   :value: 40.0
+
+
+.. py:data:: DAC_SWING_UM
+   :value: 40.0
+
+
+.. py:data:: DAC_CENTRE_UM
+   :value: 20.0
+
+
+.. py:data:: PIEZO_HALF_RANGE_UM
+   :value: 20.0
+
+
+.. py:data:: PIEZO_MECHANICAL_RANGE_UM
+   :value: 40.0
+
+
+.. py:data:: NANO_EGU_PER_UM
+   :value: 1.0
+
+
+.. py:function:: flyscan(detectors: list = None, x_min: float = -10, x_max: float = 10, x_npts: int = 21, y_min: float = -10, y_max: float = 10, y_npts: int = 21, acquire_time: float = 50, det_dead: float = 10, interferometer_per_pixel: int = 5, F: float = 0.9, *, softglue='gsgz_isn', piezo='piezo_jena', diffractometer='huber_hp', socketserver='socketserver', savedata='savedata')
+
+   Run a POLAR ISN 2D piezo fly-scan.
+
+   :param detectors: Area detectors that expose ``setup_flyscan_mode``, ``stage``,
+                     ``unstage`` and an ``hdf1`` plugin.
+   :type detectors: list
+   :param x_min: **Fast axis** (X piezo) bounds in microns **relative to the
+                 current** ``nanox`` position ``x0``. Scan physically covers
+                 ``[x0 + x_min, x0 + x_max]``. Each side is capped at +/- 20
+                 um (so the scan width never exceeds the 40-um DAC swing).
+                 ``x_npts`` defaults to 21; the per-point pitch ``dx`` is
+                 derived as ``(x_max - x_min) / (x_npts - 1)``.
+   :type x_min: float / int, optional
+   :param x_max: **Fast axis** (X piezo) bounds in microns **relative to the
+                 current** ``nanox`` position ``x0``. Scan physically covers
+                 ``[x0 + x_min, x0 + x_max]``. Each side is capped at +/- 20
+                 um (so the scan width never exceeds the 40-um DAC swing).
+                 ``x_npts`` defaults to 21; the per-point pitch ``dx`` is
+                 derived as ``(x_max - x_min) / (x_npts - 1)``.
+   :type x_max: float / int, optional
+   :param x_npts: **Fast axis** (X piezo) bounds in microns **relative to the
+                  current** ``nanox`` position ``x0``. Scan physically covers
+                  ``[x0 + x_min, x0 + x_max]``. Each side is capped at +/- 20
+                  um (so the scan width never exceeds the 40-um DAC swing).
+                  ``x_npts`` defaults to 21; the per-point pitch ``dx`` is
+                  derived as ``(x_max - x_min) / (x_npts - 1)``.
+   :type x_npts: float / int, optional
+   :param y_min: **Slow axis** (Y piezo) bounds relative to the current
+                 ``nanoy`` position ``y0`` (same range / cap rules as above).
+                 ``y_npts`` defaults to 21; pitch ``dy`` derived analogously.
+                 The slow-axis range is internally extended by one ``dy`` step
+                 so the last requested line at ``y_max`` is reached —
+                 ``snake_y``'s firmware end-comparison is strict-less-than.
+                 ``plan_args`` records the user-supplied values; the extension
+                 is invisible to downstream metadata.
+   :type y_min: float / int, optional
+   :param y_max: **Slow axis** (Y piezo) bounds relative to the current
+                 ``nanoy`` position ``y0`` (same range / cap rules as above).
+                 ``y_npts`` defaults to 21; pitch ``dy`` derived analogously.
+                 The slow-axis range is internally extended by one ``dy`` step
+                 so the last requested line at ``y_max`` is reached —
+                 ``snake_y``'s firmware end-comparison is strict-less-than.
+                 ``plan_args`` records the user-supplied values; the extension
+                 is invisible to downstream metadata.
+   :type y_max: float / int, optional
+   :param y_npts: **Slow axis** (Y piezo) bounds relative to the current
+                  ``nanoy`` position ``y0`` (same range / cap rules as above).
+                  ``y_npts`` defaults to 21; pitch ``dy`` derived analogously.
+                  The slow-axis range is internally extended by one ``dy`` step
+                  so the last requested line at ``y_max`` is reached —
+                  ``snake_y``'s firmware end-comparison is strict-less-than.
+                  ``plan_args`` records the user-supplied values; the extension
+                  is invisible to downstream metadata.
+   :type y_npts: float / int, optional
+   :param acquire_time: Per-image acquire time in milliseconds.
+   :type acquire_time: float, optional
+   :param det_dead: Detector dead time in milliseconds.
+   :type det_dead: float, optional
+   :param F: Fraction of the fast-axis snake spent in the linear ramp
+             (0 < F <= 1).
+   :type F: float, optional
+   :param interferometer_per_pixel: Interferometry samples streamed per image.
+   :type interferometer_per_pixel: int, optional
+   :param softglue: Device name in ``oregistry`` (or a Device instance). ``softglue``
+                    is the SoftGlueZynq device, ``piezo`` is the PiezoJena
+                    controller, and ``diffractometer`` is the hklpy2 diffractometer
+                    that owns ``.nanox`` and ``.nanoy``.
+   :type softglue: str or Device
+   :param piezo: Device name in ``oregistry`` (or a Device instance). ``softglue``
+                 is the SoftGlueZynq device, ``piezo`` is the PiezoJena
+                 controller, and ``diffractometer`` is the hklpy2 diffractometer
+                 that owns ``.nanox`` and ``.nanoy``.
+   :type piezo: str or Device
+   :param diffractometer: Device name in ``oregistry`` (or a Device instance). ``softglue``
+                          is the SoftGlueZynq device, ``piezo`` is the PiezoJena
+                          controller, and ``diffractometer`` is the hklpy2 diffractometer
+                          that owns ``.nanox`` and ``.nanoy``.
+   :type diffractometer: str or Device
+   :param socketserver: ISN-style helpers. Skipped silently when missing from
+                        ``oregistry``.
+   :type socketserver: str or Device, optional
+   :param savedata: ISN-style helpers. Skipped silently when missing from
+                    ``oregistry``.
+   :type savedata: str or Device, optional
+
+

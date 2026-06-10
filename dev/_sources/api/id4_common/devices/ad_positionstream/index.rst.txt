@@ -85,7 +85,7 @@ Module Contents
 
 .. py:class:: PositionStreamDevice(*args, default_folder='', hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', **kwargs)
 
-   Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`MySingleTrigger`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
    AreaDetector device for position-stream data with HDF5 file output.
@@ -110,6 +110,32 @@ Module Contents
    .. py:property:: preset_monitor
 
       Return the dummy acquire_time signal used as a no-op preset monitor.
+
+
+   .. py:property:: label_option_map
+      :type: dict
+
+
+      No selectable plot channels — pos_stream is a position streamer.
+
+
+   .. py:property:: plot_options
+      :type: list
+
+
+      Return empty list — pos_stream has no selectable plot channels.
+
+
+   .. py:method:: select_plot(channels: list) -> None
+
+      No-op — pos_stream has no selectable plot channels.
+
+
+
+   .. py:method:: field_for_label(label: str) -> str
+
+      Return label unchanged — pos_stream has no channel mapping.
+
 
 
    .. py:method:: default_settings()

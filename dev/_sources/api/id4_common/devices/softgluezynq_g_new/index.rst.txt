@@ -1,0 +1,409 @@
+id4_common.devices.softgluezynq_g_new
+=====================================
+
+.. py:module:: id4_common.devices.softgluezynq_g_new
+
+.. autoapi-nested-parse::
+
+   SoftGlueZynq implementation for ISN.
+
+   Coexists with :class:`id4_common.devices.softgluezynq_g.SoftGlueZynqDevice`.
+   Shares the SoftGlueSignal-based block library with
+   :mod:`id4_common.devices.softgluezynq_parts` — only the blocks that
+   ``softgluezynq_parts`` does not provide (UpDown counter, pulse-train
+   generator, per-interferometer trackers, dual-RAM components, DAC1 mux,
+   threshold trigger) are defined locally.
+
+   Physical axis mapping (POLAR)
+   -----------------------------
+   * **Fast = X piezo**, driven by the ``mem`` / ``driveRAM`` channel via
+     :meth:`snake_x` and :meth:`write_RAM_x`. DAC1 (``dac1_*``) is wired to
+     this channel for manual / waveform mode switching.
+   * **Slow = Y piezo**, driven by the ``mem2`` / ``driveRAMx`` channel via
+     :meth:`snake_y` and :meth:`write_RAM_y`. Advances one increment per
+     fast-axis snake cycle via the ``driveRAMx_START / _INC / _END`` ramp.
+
+   The Python attribute names (``mem_x_*`` / ``ram_x_*`` for fast,
+   ``mem_y_*`` / ``ram_y_*`` for slow) match the physical axes. The
+   underlying EPICS PV names (``SG:mem_*``, ``SG:mem2_*``,
+   ``SG:driveRAM_*``, ``SG:driveRAMx_*``) are inherited from the IOC and
+   do *not* reflect the physical axis.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: UpDownCounter
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue up/down counter block with direction control.
+
+
+   .. py:attribute:: enable
+
+
+   .. py:attribute:: clock
+
+
+   .. py:attribute:: clear
+
+
+   .. py:attribute:: updown
+
+
+   .. py:attribute:: load
+
+
+   .. py:attribute:: preset
+
+
+   .. py:attribute:: counts
+
+
+.. py:class:: PulseTrain
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlue pulse-train generator (number of pulses, period, width).
+
+
+   .. py:attribute:: clock
+
+
+   .. py:attribute:: n
+
+
+   .. py:attribute:: period
+
+
+   .. py:attribute:: width
+
+
+.. py:class:: SoftGlueZynq(*args, det_keymap=None, **kwargs)
+
+   Bases: :py:obj:`ophyd.Device`
+
+
+   SoftGlueZynq FPGA timing device for ISN flyscans.
+
+
+   .. py:attribute:: io
+
+
+   .. py:attribute:: dma
+
+
+   .. py:attribute:: buffers
+
+
+   .. py:attribute:: and_1
+
+
+   .. py:attribute:: or_1
+
+
+   .. py:attribute:: div_by_n_1
+
+
+   .. py:attribute:: div_by_n_2
+
+
+   .. py:attribute:: div_by_n_3
+
+
+   .. py:attribute:: div_by_n_4
+
+
+   .. py:attribute:: up_counter_1
+
+
+   .. py:attribute:: up_counter_2
+
+
+   .. py:attribute:: up_counter_3
+
+
+   .. py:attribute:: up_counter_4
+
+
+   .. py:attribute:: down_counter_1
+
+
+   .. py:attribute:: up_down_counter_1
+
+
+   .. py:attribute:: up_down_counter_2
+
+
+   .. py:attribute:: gate_delay_1
+
+
+   .. py:attribute:: pulse_train
+
+
+   .. py:attribute:: flip_flop_1
+
+
+   .. py:attribute:: scal_to_stream_1
+
+
+   .. py:attribute:: mem_x_address
+
+
+   .. py:attribute:: mem_x_data
+
+
+   .. py:attribute:: mem_x_clk
+
+
+   .. py:attribute:: mem_x_write
+
+
+   .. py:attribute:: mem_x_enable
+
+
+   .. py:attribute:: ram_x_enable
+
+
+   .. py:attribute:: ram_x_n
+
+
+   .. py:attribute:: mem_y_address
+
+
+   .. py:attribute:: mem_y_data
+
+
+   .. py:attribute:: mem_y_clk
+
+
+   .. py:attribute:: mem_y_write
+
+
+   .. py:attribute:: ram_y_enable
+
+
+   .. py:attribute:: ram_y_n
+
+
+   .. py:attribute:: ram_y_start
+
+
+   .. py:attribute:: ram_y_inc
+
+
+   .. py:attribute:: ram_y_end
+
+
+   .. py:attribute:: ram_y_done
+
+
+   .. py:attribute:: dac1_man
+
+
+   .. py:attribute:: dac1_val
+
+
+   .. py:attribute:: dac1_write
+
+
+   .. py:attribute:: dac1_init
+
+
+   .. py:attribute:: threshold_pos
+
+
+   .. py:attribute:: threshold_neg
+
+
+   .. py:attribute:: if_tracker_1
+
+
+   .. py:attribute:: if_tracker_2
+
+
+   .. py:attribute:: if_tracker_3
+
+
+   .. py:attribute:: det_keymap
+      :value: None
+
+
+
+   .. py:method:: start()
+
+      Bluesky plan stub to assert the global enable buffer.
+
+
+
+   .. py:method:: start_flyscan()
+
+      Arm DMA + assert the enable buffer; finish when flip-flop falls.
+
+
+
+   .. py:method:: prepare()
+
+      Arm and clear DMA in preparation for triggering.
+
+
+
+   .. py:method:: trigger()
+
+      Issue a software trigger.
+
+      Returns a ``SubscriptionStatus`` that completes on the rising
+      edge (``0 -> 1``) of :attr:`ram_y_done`, the SoftGlue scan-
+      complete indicator wired to ``4idgACQ:SG:driveRAMx_done``.
+
+
+
+   .. py:method:: stop_softglue()
+
+      Latch the OR-1 reset path and de-assert the enable buffer.
+
+
+
+   .. py:method:: pause_softglue()
+
+      Pause the AND-1 gate (in2 -> "0").
+
+
+
+   .. py:method:: resume_softglue()
+
+      Resume the AND-1 gate (in2 -> "1").
+
+
+
+   .. py:method:: reset()
+
+      Pulse buffer-1 twice to clear the ScalToStream-1 FIFO.
+
+
+
+   .. py:method:: reset_interferometers()
+
+      Bluesky plan stub to pulse buffer-2 (interferometer reset).
+
+
+
+   .. py:method:: setup_gated_trigger(period_time, pulse_width, pulse_delay=0)
+
+      Configure div_by_n_3 and gate_delay_1 for a gated trigger.
+
+
+
+   .. py:method:: enable_waveform()
+
+      Switch the DAC1 mux to RAM-driven (fast axis) waveform mode.
+
+      Only ``dac1_man`` (mux SEL) and ``dac1_write`` are touched.
+      ``mem_x_enable`` is intentionally left alone — toggling it
+      between scans clears the RAM-armed state on the POLAR IOC.
+
+
+
+   .. py:method:: disable_waveform()
+
+      Switch the DAC1 mux back to manual (fast axis) control.
+
+      Only the mux SEL signal (``dac1_man``, PV
+      ``SG:mux32_SEL_Signal``) is toggled — ``mem_x_enable`` must
+      stay asserted so the mem RAM remains armed for the next scan.
+
+
+
+   .. py:method:: write_RAM_x(array)
+
+      Write ``array`` into the fast-axis (X piezo) RAM (driveRAM).
+
+
+
+   .. py:method:: write_RAM_y(array)
+
+      Write ``array`` into the slow-axis (Y piezo) RAM (driveRAMx).
+
+
+
+   .. py:method:: create_snake_bits(A=32767, F=0.9, npts=1000, offset=0)
+
+      Build a snake waveform (linear ramp joined to quarter-sines).
+
+
+
+   .. py:method:: um_to_bits(position)
+
+      Convert a DAC offset (microns, 0..+40) to a DAC bit value.
+
+      POLAR piezo / DAC calibration:
+
+      * The PiezoJena modulation input is **summed** with the EPICS-
+        driven setpoint:  ``piezo = nanox.setpoint + dac_offset``.
+      * The SoftGlue DAC outputs 0..5 V, which the PiezoJena
+        interprets as a 0..+40 um offset on top of the EPICS
+        setpoint (0 V = 0 um added, 5 V = +40 um added).
+      * The DAC's 0..32767 unsigned bit range maps linearly to
+        0..5 V, and therefore to 0..+40 um offset at the piezo.
+
+      ``position`` here is the **DAC offset in microns**, not an
+      absolute piezo position. The same calibration is assumed for
+      both DAC1 (fast X) and DAC2 (slow Y) channels.
+
+
+
+   .. py:method:: snake_x(x_min=0, x_max=32767, F=0.9, npts=1000)
+
+      Build a fast-axis (X piezo) snake waveform and load mem.
+
+      ``x_min`` / ``x_max`` are raw DAC bit values; defaults span the
+      full 16-bit unsigned range. The waveform shape (linear ramp
+      joined to quarter sines, with snake reversal) matches
+      ``snakeYoff`` in ``POLAR_scan.py``.
+
+
+
+   .. py:method:: snake_y(F=0.9, dy=7.28156, npts=1000, y_start=0, y_end=100)
+
+      Build a slow-axis (Y piezo) step waveform and load mem2.
+
+      Also configures ``driveRAMx_START`` / ``_INC`` / ``_END`` so the
+      Y ramp covers ``[y_start, y_end]`` (DAC bit units) in steps of
+      ``2*dy`` (one stored RAM period covers two line spacings ``dy``).
+      Matches ``snakeX`` in ``POLAR_scan.py``.
+
+
+
+   .. py:method:: move_x_analog(position)
+
+      Move the fast-axis (X piezo) to ``position`` um via DAC1.
+
+      Uses manual DAC1 control: switches the mux away from RAM-drive,
+      writes the bit value, and pulses the DAC write strobe. Microns
+      are converted via :meth:`um_to_bits` (19-ID 0-90 um piezo
+      calibration).
+
+
+
+   .. py:method:: enable_detector_trigger(detector_name, det_keymap=None)
+
+      Route the SoftGlue ``trigger`` signal to ``detector_name``'s FO.
+
+
+
+   .. py:method:: clear_output_fields()
+
+      Clear the first eight SoftGlue output fields.
+
+
+

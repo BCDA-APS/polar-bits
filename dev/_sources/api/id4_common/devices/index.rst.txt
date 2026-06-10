@@ -64,6 +64,7 @@ Submodules
    /api/id4_common/devices/scaler_dual_ctr8/index
    /api/id4_common/devices/shutters/index
    /api/id4_common/devices/softgluezynq_g/index
+   /api/id4_common/devices/softgluezynq_g_new/index
    /api/id4_common/devices/softgluezynq_old/index
    /api/id4_common/devices/softgluezynq_parts/index
    /api/id4_common/devices/softgluezynq_vortex/index
