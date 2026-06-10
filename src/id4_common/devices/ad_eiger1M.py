@@ -151,6 +151,8 @@ class TriggerTime(TriggerBase):
         self._flysetup = False
         # self.setup_manual_trigger()
         super().unstage()
+        # from ophyd import Staged
+        # self._staged = Staged.no
 
     def trigger(self):
         "Trigger one acquisition."
@@ -277,7 +279,8 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
         self.hdf1.file_path.put(str(self.default_folder))
         self.hdf1.num_capture.put(0)
 
-        self.hdf1.stage_sigs.pop("enable")
+        if self.hdf1.stage_sigs.get("enable") is not None:
+            self.hdf1.stage_sigs.pop("enable")
         self.hdf1.stage_sigs["num_capture"] = 0
         self.hdf1.stage_sigs["capture"] = 1
 
@@ -328,6 +331,36 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
     def plot_stats5(self):
         """Set only Stats5 total to be plotted."""
         self.plot_select([5])
+
+    def setup_flyscan_mode(self, *, num_images, acq_time, hdf_images):
+        """Configure stage_sigs for an external-gate fly-scan.
+
+        Wraps :meth:`setup_external_trigger` (``trigger_type="gate"``) to
+        get the default External Gate stage signals, then overrides the
+        scan-specific image count, per-image acquire time, and HDF5
+        capture chunk size. Call this *before* ``stage()`` so the new
+        ``stage_sigs`` are applied when the RunEngine stages the
+        detector.
+
+        Parameters
+        ----------
+        num_images : int
+            Total number of frames the scan will collect.
+        acq_time : float
+            Per-frame acquire time in seconds.
+        hdf_images : int
+            Frames per HDF5 capture chunk (sets
+            ``hdf1.stage_sigs["num_capture"]``).
+        """
+        self.setup_external_trigger(trigger_type="gate")
+        self.cam.stage_sigs["num_images"] = int(num_images)
+        self.cam.stage_sigs["acquire_time"] = float(acq_time)
+        # TODO: How to setup per line file like in ISN? Do we need it?
+        # self.hdf1.stage_sigs["num_capture"] = int(hdf_images)
+        self.hdf1.stage_sigs["num_capture"] = 0
+        # We configured stage_sigs explicitly; skip the auto-rewrite that
+        # stage() does when ``_flysetup`` is True.
+        self._flysetup = False
 
     def setup_images(
         self, base_path, name_template, file_number, flyscan=False

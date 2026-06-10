@@ -354,7 +354,6 @@ def newsample():
         ref2_pos = dict(gamma=40, mu=20, chi=0, phi=0, delta=0, tau=0)
         _geom_.add_reflection(ref2_hkl, [ref2_pos[m] for m in motors])
         list_reflections()
-        compute_UB()
         # Use the primitive direction of ref2 as the azimuthal reference
         from functools import reduce
         from math import gcd
@@ -362,6 +361,7 @@ def newsample():
         g = reduce(gcd, (abs(x) for x in ref2_hkl if x != 0))
         az_hkl = tuple(x // g for x in ref2_hkl)
         setaz(*az_hkl)
+        compute_UB()
 
 
 def sampleList():
@@ -1529,8 +1529,9 @@ def reset_constraints():
     Reset all constraints
     """
     _geom_ = get_diffractometer()
-    _geom_.reset_constraints()
-    _geom_.show_constraints()
+    _geom_.core.reset_constraints()
+    print("New constraints:")
+    show_constraints()
 
 
 def set_constraints(*args):
@@ -1881,10 +1882,10 @@ def set_detector():
     else:
         dets = "undefined"
     det = input(f"(E)iger or (P)oint Detector/Analyzer [{dets}]: ") or dets
-    if det in ("Point detector/Analyzer", "Point detector", "p", "P"):
+    if det in ("Point detector/Analyzer", "Point detector", "point detector", "p", "P"):
         caput("4idgSoft:m20.OFF", 0)
         print("Current detector: Point detector/Aanalyzer")
-    elif det in ("Eiger", "e", "E"):
+    elif det in ("Eiger", "eiger", "e", "E"):
         caput("4idgSoft:m20.OFF", 25)
         print("Current detector: Eiger")
     else:
@@ -1899,7 +1900,10 @@ class whClass:
 
     def __repr__(self):
         print("")
-        _wh()
+        try:
+            _wh()
+        except Exception:
+            pass
         return ""
 
 

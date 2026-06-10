@@ -17,6 +17,7 @@ from ophyd.areadetector import EpicsSignalWithRBV
 from ophyd.areadetector.trigger_mixins import DeviceStatus
 
 from .ad_mixins import PolarHDF5Plugin
+from .counters_mixin import CountersMixin
 
 
 class PositionStreamCam(ADBase):
@@ -117,7 +118,7 @@ class MySingleTrigger(BlueskyInterface):
             self._status = None
 
 
-class PositionStreamDevice(MySingleTrigger, DetectorBase):
+class PositionStreamDevice(MySingleTrigger, CountersMixin, DetectorBase):
     """AreaDetector device for position-stream data with HDF5 file output."""
 
     _default_configuration_attrs = ("cam",)
@@ -148,6 +149,23 @@ class PositionStreamDevice(MySingleTrigger, DetectorBase):
         Return the dummy acquire_time signal used as a no-op preset monitor.
         """
         return self.cam.acquire_time
+
+    @property
+    def label_option_map(self) -> dict:
+        """No selectable plot channels — pos_stream is a position streamer."""
+        return {}
+
+    @property
+    def plot_options(self) -> list:
+        """Return empty list — pos_stream has no selectable plot channels."""
+        return []
+
+    def select_plot(self, channels: list) -> None:
+        """No-op — pos_stream has no selectable plot channels."""
+
+    def field_for_label(self, label: str) -> str:
+        """Return label unchanged — pos_stream has no channel mapping."""
+        return label
 
     def default_settings(self):
         """

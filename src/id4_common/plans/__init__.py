@@ -9,6 +9,7 @@ from .base_scans import qxscan  # noqa: F401
 from .center_maximum import cen2  # noqa: F401
 from .center_maximum import maxi2  # noqa: F401
 from .center_maximum import mini2  # noqa: F401
+from .flyscans import flyscan  # noqa: F401
 from .grid_scans import grid_scan  # noqa: F401
 from .grid_scans import rel_grid_scan  # noqa: F401
 from .hkl_scans import hklscan  # noqa: F401

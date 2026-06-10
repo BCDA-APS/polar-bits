@@ -8,6 +8,18 @@ from polartools.load_data import load_catalog
 from id4_common.plans.peak_position import cen
 from id4_common.plans.peak_position import maxi
 
+__all__ = """
+    opt
+    crl_setup
+    crl_size
+    piezo_jena_setup
+    te
+    spec_off
+    spec_on
+    plots_on
+    plots_off
+""".split()
+
 
 def opt(method="cen"):
     """
@@ -105,6 +117,53 @@ def crl_size(focal_size):
         crl_dev.beamsize.set(focal_size)
 
 
+def piezo_jena_setup():
+    """
+    Check and change the modulation-input state of the PiezoJena device.
+    This needs to be turned ON to allow analog input from the FPGA used for
+    fly scanning, which is trigering the Eiger detector and reading the
+    interferometers of the sample position.
+
+    For each axis (x, y, z), reads the current modulation-input state
+    (ON / OFF) and prompts for a new value with the current state shown as
+    the default. Accepts ``on`` / ``off`` (case-insensitive); pressing
+    Enter keeps the current state.
+    """
+    piezo = oregistry.find("piezo_jena")
+
+    def _label(raw):
+        if not raw:
+            return "OFF"
+        return "ON" if str(raw).strip().split(",")[-1].strip() == "1" else "OFF"
+
+    for axis in ("x", "y", "z"):
+        status = piezo.read_status(axis)
+        current = _label(status)
+        ans = input(
+            f"  {axis} modulation input (ON/OFF) [{current}]? "
+        ).strip().lower()
+
+        if not ans:
+            new_state = current
+        elif ans in ("on", "1"):
+            new_state = "ON"
+        elif ans in ("off", "0"):
+            new_state = "OFF"
+        else:
+            print(f"  Invalid value '{ans}', keeping {current}")
+            new_state = current
+
+        if new_state == current:
+            print(f"  {axis}: {current} (unchanged)")
+            continue
+
+        if new_state == "ON":
+            piezo.modulation_input_on(axis)
+        else:
+            piezo.modulation_input_off(axis)
+        print(f"  {axis}: {current} -> {new_state}")
+
+
 def te(temperature):
     """
     Set the active temperature controller's setpoint.
@@ -138,3 +197,66 @@ def te(temperature):
         )
     tc.put(float(temperature))
     print(f"{get_active_label()}: setpoint -> {float(temperature)}")
+
+
+def _spec_writer_tokens():
+    """Return the RE subscription tokens currently bound to specwriter."""
+    from id4_common.callbacks.spec_data_file_writer import specwriter
+    from id4_common.utils.run_engine import RE
+
+    tokens = []
+    for tok, entry in RE.dispatcher.cb_registry.callbacks.items():
+        # bluesky has changed the cb_registry value shape across
+        # versions: either the bare callable or (callable, kwargs).
+        cb = entry[0] if isinstance(entry, tuple) else entry
+        if cb is specwriter.receiver:
+            tokens.append(tok)
+    return tokens
+
+
+def spec_off():
+    """Unsubscribe the SPEC file writer from the RunEngine.
+
+    No-op (returns 0) if the writer is already unsubscribed. Pair with
+    :func:`spec_on` to re-enable.
+    """
+    from id4_common.utils.run_engine import RE
+
+    tokens = _spec_writer_tokens()
+    for tok in tokens:
+        RE.unsubscribe(tok)
+    print(f"SPEC writer: off ({len(tokens)} subscription(s) removed)")
+    return len(tokens)
+
+
+def spec_on():
+    """Re-subscribe the SPEC file writer to the RunEngine.
+
+    No-op if the writer is already subscribed (avoids duplicate output).
+    """
+    from id4_common.callbacks.spec_data_file_writer import specwriter
+    from id4_common.utils.run_engine import RE
+
+    if _spec_writer_tokens():
+        print("SPEC writer: already on")
+        return None
+    token = RE.subscribe(specwriter.receiver)
+    print("SPEC writer: on")
+    return token
+
+
+def plots_on():
+    """Enable BestEffortCallback live plots."""
+    from id4_common.utils.run_engine import bec
+
+    bec.enable_plots()
+    print("Live plots: on")
+
+
+def plots_off():
+    """Disable BestEffortCallback live plots."""
+    from id4_common.utils.run_engine import bec
+
+    bec.disable_plots()
+    print("Live plots: off")
+    print("Kestrel can be used for plotting (nefarian.xray.aps.anl.gov:4173)")

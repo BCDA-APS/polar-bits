@@ -757,7 +757,7 @@ class ExperimentClass:
         sample: str | None = None,
         server: str | None = None,
         experiment_name: str | None = None,
-        reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+        reset_scan_id: int | None = None,
     ) -> None:
         """Run the full experiment setup.
 
@@ -766,6 +766,10 @@ class ExperimentClass:
         ``"dserv"``, and metadata is stamped as ``"dev"``. To force
         bypass even when DM is up, pass ``server="dserv"`` or use
         ``esaf_id="dev"``/``proposal_id="dev"``.
+
+        ``reset_scan_id`` defaults to ``None``, which prompts the user
+        interactively. Pass ``RESET_SCAN_ID_NOOP`` to silently keep the
+        existing ``RE.md["scan_id"]``, or a non-negative int to set it.
         """
         dm_ok = _dm_available()
 
@@ -830,9 +834,14 @@ class ExperimentClass:
         self,
         sample_name: str | None = None,
         base_name: str | None = None,
-        reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+        reset_scan_id: int | None = None,
     ) -> None:
-        """Switch sample, refresh paths, and start a new SPEC file."""
+        """Switch sample, refresh paths, and start a new SPEC file.
+
+        ``reset_scan_id`` defaults to ``None``, which prompts the user
+        interactively. Pass ``RESET_SCAN_ID_NOOP`` to silently keep the
+        existing ``RE.md["scan_id"]``, or a non-negative int to set it.
+        """
         self.sample_input(sample_name)
         self.setup_path()
         self.scan_number_input(reset_scan_id)
@@ -847,7 +856,7 @@ class ExperimentClass:
         sample: str | None = None,
         server: str | None = None,
         experiment_name: str | None = None,
-        reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+        reset_scan_id: int | None = None,
     ) -> None:
         """Shortcut for :meth:`setup`."""
         self.setup(
@@ -871,7 +880,7 @@ def experiment_setup(
     sample: str | None = None,
     server: str | None = None,
     experiment_name: str | None = None,
-    reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+    reset_scan_id: int | None = None,
 ) -> None:
     """Run the full experiment setup (delegates to ``experiment.setup``)."""
     experiment.setup(
@@ -888,7 +897,7 @@ def experiment_setup(
 def experiment_change_sample(
     sample_name: str | None = None,
     base_name: str | None = None,
-    reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+    reset_scan_id: int | None = None,
 ) -> None:
     """Switch sample (delegates to ``experiment.change_sample``)."""
     experiment.change_sample(

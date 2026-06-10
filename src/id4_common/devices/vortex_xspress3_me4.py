@@ -30,7 +30,7 @@ from .counters_mixin import ROICountersMixin
 
 logger = getLogger(__name__)
 
-MAX_IMAGES = 12216
+MAX_IMAGES = 12000
 MAX_ROIS = 8
 
 
@@ -57,6 +57,7 @@ class Trigger(TriggerBase):
         self._status_arm = None
         self._arm_plan_delay = 0.1
         self._sleep_after_trigger = 0.1
+        self.max_images = MAX_IMAGES
 
     def setup_manual_trigger(self):
         """
@@ -71,8 +72,9 @@ class Trigger(TriggerBase):
         """Configure stage_sigs for TTL-veto flyscan triggering."""
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
-        self.cam.stage_sigs["num_images"] = MAX_IMAGES
+        self.cam.stage_sigs["num_images"] = self.max_images
         self.cam.stage_sigs["wait_for_plugins"] = "No"
+        self._flysetup = True
 
     def setup_sgzbca_trigger(self):
         """Configure stage_sigs for SoftGlue BCA TTL-veto triggering."""
@@ -104,6 +106,7 @@ class Trigger(TriggerBase):
 
         super().stage()
 
+        # print(f"{self._flysetup = }")
         if self._flysetup:
             self._acquisition_signal.set(1).wait(timeout=10)
 
@@ -581,3 +584,26 @@ class VortexXspress34(Trigger, ROICountersMixin, DetectorBase):
         _hdf1_auto = True if self.hdf1.autosave.get() == "on" else False
         _hdf1_on = True if self.hdf1.enable.get() == "Enable" else False
         return _hdf1_on or _hdf1_auto
+
+
+    def setup_flyscan_mode(self, *, num_images, acq_time, hdf_images):
+        """Configure stage_sigs for an external-gate fly-scan.
+
+        Wraps :meth:`setup_external_trigger` (``trigger_type="gate"``) to
+        get the default External Gate stage signals, then overrides the
+        scan-specific image count, per-image acquire time, and HDF5
+        capture chunk size. Call this *before* ``stage()`` so the new
+        ``stage_sigs`` are applied when the RunEngine stages the
+        detector.
+
+        Parameters
+        ----------
+        num_images : int
+            Total number of frames the scan will collect.
+        acq_time : float
+            Per-frame acquire time in seconds.
+        hdf_images : int
+            Frames per HDF5 capture chunk (sets
+            ``hdf1.stage_sigs["num_capture"]``).
+        """
+        self.setup_external_trigger()

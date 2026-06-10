@@ -104,10 +104,7 @@ else:
     from id4_common.utils.dm_utils import *  # noqa: F403
     from id4_common.utils.experiment_utils import *  # noqa: F403
     from id4_common.utils.pr_setup import pr_setup  # noqa: F401
-    from id4_common.utils.shorts import crl_setup  # noqa: F401
-    from id4_common.utils.shorts import crl_size  # noqa: F401
-    from id4_common.utils.shorts import opt  # noqa: F401
-    from id4_common.utils.shorts import te  # noqa: F401
+    from id4_common.utils.shorts import *  # noqa: F403
     from id4_common.utils.temperature_setup import (
         temperature_setup,  # noqa: F401
     )

@@ -179,7 +179,7 @@ def test_setup_with_dm_unreachable_falls_back_to_dserv(
 
     # Only experiment_name + sample + base_name should prompt
     # (esaf/proposal/server are auto-set when DM is down).
-    prompts.extend(["polar-fallback", "MySample", "scan"])
+    prompts.extend(["polar-fallback", "MySample", "scan", "no"])
 
     exp.setup()
 
@@ -209,7 +209,7 @@ def test_setup_initializes_scan_id_to_zero(monkeypatch, fresh_experiment):
         "_resolve_base_path",
         lambda: setattr(exp, "base_experiment_path", Path("/tmp/test")),
     )
-    prompts.extend(["polar-fallback", "MySample", "scan"])
+    prompts.extend(["polar-fallback", "MySample", "scan", "no"])
 
     exp.setup()
     assert isinstance(RE.md["scan_id"], int)
@@ -235,7 +235,7 @@ def test_setup_warns_when_scan_id_missing(
         "_resolve_base_path",
         lambda: setattr(exp, "base_experiment_path", Path("/tmp/test")),
     )
-    prompts.extend(["polar-fallback", "MySample", "scan"])
+    prompts.extend(["polar-fallback", "MySample", "scan", "no"])
 
     with caplog.at_level(logging.WARNING):
         exp.setup()
@@ -264,7 +264,7 @@ def test_setup_no_warning_when_scan_id_present(
         "_resolve_base_path",
         lambda: setattr(exp, "base_experiment_path", Path("/tmp/test")),
     )
-    prompts.extend(["polar-fallback", "MySample", "scan"])
+    prompts.extend(["polar-fallback", "MySample", "scan", "no"])
 
     with caplog.at_level(logging.WARNING):
         exp.setup()
