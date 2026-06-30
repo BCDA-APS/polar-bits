@@ -195,7 +195,7 @@ def te(temperature):
             "id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS "
             "for the available labels)."
         )
-    tc.put(float(temperature))
+    tc.setpoint.put(float(temperature))
     print(f"{get_active_label()}: setpoint -> {float(temperature)}")
 
 
