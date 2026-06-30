@@ -115,7 +115,10 @@ class TriggerTime(TriggerBase):
             # change the num_triggers.
             self.cam.stage_sigs.move_to_end("num_triggers", last=False)
 
-            self.cam.stage_sigs["trigger_mode"] = "External Gate"
+            # The External Gate is for pump and probe. External Enable should
+            # work better.
+            # self.cam.stage_sigs["trigger_mode"] = "External Gate"
+            self.cam.stage_sigs["trigger_mode"] = "External Enable"
             self.cam.stage_sigs["manual_trigger"] = "Disable"
             self.cam.stage_sigs["num_images"] = self.max_num_images
             self.cam.stage_sigs["num_exposures"] = 1
