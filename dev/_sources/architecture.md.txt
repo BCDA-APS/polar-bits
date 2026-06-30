@@ -195,6 +195,6 @@ succeeds.
   `RE.md["session_state"]`
 - `experiment_utils` — `experiment_setup`, `experiment_resume`,
   `experiment_load_from_scan`
-- `hkl_utils_hklpy2` — hklpy2 wrappers
+- `hkl_utils` — hklpy2 wrappers
 - `polartools_hklpy2_imports` — re-exports
 - `shorts` — `crl_setup`, `crl_size`, `te`, `opt`

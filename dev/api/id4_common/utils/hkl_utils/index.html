@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
-<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+  <link href="../../../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
-<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
     <script src="../../../../_static/documentation_options.js?v=f539c95a"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -135,6 +135,13 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../getting_started.html">
     Getting Started
   </a>
@@ -149,22 +156,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/general.html">
     General Examples
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../examples/writing_macros.html">
-    Writing Macros
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    Command Reference
   </a>
 </li>
 
@@ -176,6 +176,20 @@
                 </button>
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="../../../../examples/4idh_magnet.html">
     4IDH: Magnet 9-1-1 Usage
@@ -231,13 +245,6 @@
   </a>
 </li>
 
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../index.html">
-    API Reference
-  </a>
-</li>
-
                 </ul>
             </li>
             
@@ -262,11 +269,18 @@
       
         <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -279,8 +293,7 @@
           
           
           
-          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
       
@@ -314,10 +327,8 @@
       
       
       
-        
-      
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -333,6 +344,13 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../getting_started.html">
     Getting Started
   </a>
@@ -342,6 +360,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../plans.html">
     Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../useful_functions.html">
+    Useful Functions
   </a>
 </li>
 
@@ -362,7 +387,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
-    Command Reference
+    4IDG: Diffractometer Usage
   </a>
 </li>
 
@@ -422,13 +447,6 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../index.html">
-    API Reference
-  </a>
-</li>
-
   </ul>
 </nav></div>
           
@@ -441,11 +459,18 @@
         
           <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -458,14 +483,61 @@
           
           
           
-          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
         
       </div>
     
   </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../analyzer_utils/index.html">id4_common.utils.analyzer_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aps_dm_setup/index.html">id4_common.utils.aps_dm_setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aps_functions/index.html">id4_common.utils.aps_functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../counters_class/index.html">id4_common.utils.counters_class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device_loader/index.html">id4_common.utils.device_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dm_utils/index.html">id4_common.utils.dm_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">id4_common.utils.hkl_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging_helper/index.html">id4_common.utils.logging_helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pr_setup/index.html">id4_common.utils.pr_setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../session_state/index.html">id4_common.utils.session_state</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shorts/index.html">id4_common.utils.shorts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spe_handler/index.html">id4_common.utils.spe_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../temperature_setup/index.html">id4_common.utils.temperature_setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../transfocator_calculation/index.html">id4_common.utils.transfocator_calculation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../transfocator_calculation_new/index.html">id4_common.utils.transfocator_calculation_new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../undulator_setup/index.html">id4_common.utils.undulator_setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">id4_common.utils.utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wax/index.html">id4_common.utils.wax</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
@@ -527,21 +599,19 @@
 </tbody>
 </table>
 </div>
+<p>Provide a simplified UI for hklpy2 diffractometer users.</p>
+<p>The user must define a diffractometer instance, then
+register that instance here calling <cite>set_diffractometer(instance)</cite>.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.logger">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.logger" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 <dl class="py data">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.polar_config">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">polar_config</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.polar_config" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.fourc_config">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">fourc_config</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.fourc_config" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.RE">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">RE</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.RE" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
@@ -549,71 +619,97 @@
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">pbar_manager</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.pbar_manager" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.POLAR_DIFFRACTOMETER">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">POLAR_DIFFRACTOMETER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'huber_euler'</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.POLAR_DIFFRACTOMETER" title="Link to this definition">#</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Geometries">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">Geometries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">huber_euler_nm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">huber_euler_psi_nm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">huber_hp_nm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">huber_hp_psi_nm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Geometries" title="Link to this definition">#</a></dt>
+<dd><p>Register the diffractometer geometries.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Geometries.configuration_wrapper">
+<span class="sig-name descname"><span class="pre">configuration_wrapper</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Geometries.configuration_wrapper" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.fourc">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">fourc</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.fourc" title="Link to this definition">#</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Geometries.huber_euler">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">huber_euler</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Geometries.huber_euler" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.get_huber_euler">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">get_huber_euler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.get_huber_euler" title="Link to this definition">#</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Geometries.huber_euler_psi">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">huber_euler_psi</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Geometries.huber_euler_psi" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.get_huber_hp">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">get_huber_hp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.get_huber_hp" title="Link to this definition">#</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Geometries.huber_hp">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">huber_hp</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Geometries.huber_hp" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.get_huber_euler_psi">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">get_huber_euler_psi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.get_huber_euler_psi" title="Link to this definition">#</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Geometries.huber_hp_psi">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">huber_hp_psi</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Geometries.huber_hp_psi" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.select_engine_for_psi">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">select_engine_for_psi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instrument</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.select_engine_for_psi" title="Link to this definition">#</a></dt>
-<dd><p>Name the diffractometer to be used.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.engine_for_psi">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">engine_for_psi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.engine_for_psi" title="Link to this definition">#</a></dt>
-<dd><p>Return the currently-selected psi calc engine (or <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
-</dd></dl>
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.geometries">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">geometries</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.geometries" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.set_diffractometer">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">set_diffractometer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instrument</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.set_diffractometer" title="Link to this definition">#</a></dt>
-<dd><p>Name the diffractometer to be used.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.sampleNew">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">sampleNew</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.sampleNew" title="Link to this definition">#</a></dt>
-<dd><p>Set the lattice constants.</p>
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">set_diffractometer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.set_diffractometer" title="Link to this definition">#</a></dt>
+<dd><p>Wraps the <cite>hklpy2.user.set_diffractometer</cite> and adds the diffractometer
+configuration wrapper to the RunEngine preprocessors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>diffractometer</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>DiffractometerBase</em><em>, </em><em>optional</em>) – Name or device instance to activate.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.change_diffractometer">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">change_diffractometer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.change_diffractometer" title="Link to this definition">#</a></dt>
+<dd><p>Select and initialize the active diffractometer (huber_euler or huber_hp).</p>
+<ol class="arabic simple">
+<li><p>Selects the diffractometer (interactive prompt or argument).</p></li>
+<li><p>Applies the appropriate axis constraints.</p></li>
+<li><p>Creates aliases for all real diffractometer axes in the calling
+namespace (mu, gamma, delta, chi, phi, tau) and the reciprocal-space
+pseudo axes (h, k, l).</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>diffractometer</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>DiffractometerBase</em><em>, </em><em>optional</em>) – Name or device instance to activate. If not provided, prompts
+interactively with the current diffractometer as the default.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.newsample">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">newsample</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.newsample" title="Link to this definition">#</a></dt>
+<dd><p>Interactively add a new sample with lattice constants.</p>
+<dl class="simple">
+<dt>Prompts the user for:</dt><dd><ul class="simple">
+<li><p>sample name</p></li>
+<li><p>lattice constants (a, b, c, alpha, beta, gamma)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Uses defaults if the user just presses Enter.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.sampleList">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">sampleList</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.sampleList" title="Link to this definition">#</a></dt>
+<dd><p>List all samples currently defined in hklpy2; specify  current one.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.sampleChange">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">sampleChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.sampleChange" title="Link to this definition">#</a></dt>
-<dd><p>Change selected sample in hklpy.</p>
+<dd><p>Change selected sample in hklpy2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sample_key</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the sample as set in hklpy. If None it will ask for which
@@ -637,13 +733,11 @@ sample.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.list_reflections">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">list_reflections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.list_reflections" title="Link to this definition">#</a></dt>
-<dd><p>Lists all reflections in defined in hklpy.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
+<dd><p>Lists all reflections defined in hklpy for six-circle geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>all_samples</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, it will list the reflections for all samples, if False, only
-the current sample. Defaults to False.</p>
+<dd class="field-odd"><p><strong>all_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, list reflections for all samples.
+If False, only the current sample. Defaults to False.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -655,31 +749,70 @@ the current sample. Defaults to False.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.setor0">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">setor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.setor0" title="Link to this definition">#</a></dt>
-<dd><p>Sets the primary orientation in hklpy.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.compute_UB">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">compute_UB</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.compute_UB" title="Link to this definition">#</a></dt>
+<dd><p>Calculates the UB matrix. v</p>
+<p>This fixes one issue with the hklpy calc_UB in that using wh() right after
+will not work, it needs to run one calculation first.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>th</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>chi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>mu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
 <li><p><strong>h</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
 for it.</p></li>
 <li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
 for it.</p></li>
 <li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
+for it.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">Sync_UB_Matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix" title="Link to this definition">#</a></dt>
+<dd><p>Keep the UB matrix of target in sync with source via an ophyd subscription.</p>
+<p>Subscribes to source._ub_sync (an ArrayAttributeSignal pointing at
+core.sample.UB) so that whenever the signal is updated the callback
+copies the new matrix to the target and syncs simulated motor positions.
+Call cleanup() to remove the subscription when no longer needed.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.source">
+<span class="sig-name descname"><span class="pre">source</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.source" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.target">
+<span class="sig-name descname"><span class="pre">target</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.target" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.cleanup" title="Link to this definition">#</a></dt>
+<dd><p>Remove the UB-sync subscription.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.sync_callback">
+<span class="sig-name descname"><span class="pre">sync_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.sync_callback" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.setor0">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">setor0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.setor0" title="Link to this definition">#</a></dt>
+<dd><p>Sets the primary orientation in hklpy2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>motors</strong> (<em>diffractometer real</em>) – Values of motor positions for current reflection. It will ask
+for it.</p></li>
+<li><p><strong>h</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. It will ask
+for it.</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. It will ask
+for it.</p></li>
+<li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. It will ask
 for it.</p></li>
 </ul>
 </dd>
@@ -688,30 +821,18 @@ for it.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.setor1">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">setor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.setor1" title="Link to this definition">#</a></dt>
-<dd><p>Sets the primary secondary in hklpy.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">setor1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.setor1" title="Link to this definition">#</a></dt>
+<dd><p>Sets the primary orientation in hklpy2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
+<li><p><strong>motors</strong> (<em>diffractometer real</em>) – Values of motor positions for current reflection. It will ask
 for it.</p></li>
-<li><p><strong>th</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
+<li><p><strong>h</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. It will ask
 for it.</p></li>
-<li><p><strong>chi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. It will ask
 for it.</p></li>
-<li><p><strong>phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>mu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of motor positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>h</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
+<li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. It will ask
 for it.</p></li>
 </ul>
 </dd>
@@ -719,42 +840,9 @@ for it.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.set_orienting">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">set_orienting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.set_orienting" title="Link to this definition">#</a></dt>
-<dd><p>Change the primary and/or secondary orienting reflections to existing reflecitons
-in reflection list in hklpy.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.del_reflection">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">del_reflection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.del_reflection" title="Link to this definition">#</a></dt>
-<dd><p>Delete existing reflection from in reflection list in hklpy.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.list_orienting">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">list_orienting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.list_orienting" title="Link to this definition">#</a></dt>
-<dd><p>Prints the two reflections used in the UB matrix.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>all_samples</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, it will print the reflections of all samples, if False, only of
-the current one.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.or0">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">or0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.or0" title="Link to this definition">#</a></dt>
-<dd><p>Sets the primary orientation in hklpy using the current motor positions.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
+<dd><p>Sets the primary orientation in hklpy2 using the current motor positions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -772,9 +860,7 @@ for it.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.or1">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">or1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.or1" title="Link to this definition">#</a></dt>
-<dd><p>Sets the secondary orientation in hklpy using the current motor positions.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
+<dd><p>Sets the secondary orientation in hklpy2 using the current motor positions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -790,47 +876,35 @@ for it.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.compute_UB">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">compute_UB</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.compute_UB" title="Link to this definition">#</a></dt>
-<dd><p>Calculates the UB matrix.</p>
-<p>This fixes one issue with the hklpy calc_UB in that using wh() right after
-will not work, it needs to run one calculation first.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>h</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
-for it.</p></li>
-<li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Values of H, K, L positions for current reflection. If None, it will ask
-for it.</p></li>
-</ul>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.set_orienting">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">set_orienting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.set_orienting" title="Link to this definition">#</a></dt>
+<dd><p>Change the primary and secondary orienting reflections
+to existing reflections in the reflection list (hklpy2).</p>
+<p>WARNING: Works only with six-circle geometry (fix in progress).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.calc_UB">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">calc_UB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.calc_UB" title="Link to this definition">#</a></dt>
-<dd><p>Compute the UB matrix with two reflections.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>r1</strong> (<em>hklpy reflections</em>) – Orienting reflections from hklpy.</p></li>
-<li><p><strong>r2</strong> (<em>hklpy reflections</em>) – Orienting reflections from hklpy.</p></li>
-<li><p><strong>wavelength</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – This is not used…</p></li>
-<li><p><strong>output</strong> (<em>boolean</em>) – Toggle to decide whether to print the UB matrix.</p></li>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.del_reflection">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">del_reflection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.del_reflection" title="Link to this definition">#</a></dt>
+<dd><p>Delete a reflection from the current sample’s reflection list.</p>
+<ul class="simple">
+<li><p>Displays reflections like set_orienting()</p></li>
+<li><p>User inputs index number of reflection to delete</p></li>
+<li><p>Orienting reflections (first/second) cannot be deleted</p></li>
 </ul>
-</dd>
-</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.list_orienting">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">list_orienting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.list_orienting" title="Link to this definition">#</a></dt>
+<dd><p>List the first and second orienting reflections only
+from the current sample’s reflection list.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.setmode">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">setmode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.setmode" title="Link to this definition">#</a></dt>
 <dd><p>Set the mode of the currently selected diffractometer.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>mode</strong> (<em>string</em><em>, </em><em>optional</em>) – Mode to be selected. If None, it will ask.</p>
@@ -839,8 +913,31 @@ in future releases.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.freeze">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">freeze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.freeze" title="Link to this definition">#</a></dt>
+<dd><p>Set preset values for the constant axes of the current mode.</p>
+<ul class="simple">
+<li><p>For psi constant modes: freezes psi. Uses args[0] if given, otherwise
+computes the current psi from the psi-engine counterpart diffractometer.</p></li>
+<li><p>For ‘4-circles constant phi/mu/chi horizontal’: freezes that axis.
+Uses args[0] if given, otherwise uses the current motor position.</p></li>
+<li><p>For other modes: prompts interactively for each constant axis,
+showing the current preset as the default.</p></li>
+</ul>
+<p>Updates <code class="docutils literal notranslate"><span class="pre">_geom_.core.presets</span></code> or <code class="docutils literal notranslate"><span class="pre">_geom_.core.extras</span></code> as appropriate.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.freeze_general">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">freeze_general</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.freeze_general" title="Link to this definition">#</a></dt>
+<dd><p>Interactively set preset values for the constant axes of the current mode.</p>
+<p>For each angle held constant in the current mode, prompts for a value
+(showing the current preset as default). Updates <code class="docutils literal notranslate"><span class="pre">_geom_.core.presets</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.ca">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">ca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.ca" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">ca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.ca" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the motors position of a reflection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -848,7 +945,6 @@ in future releases.</p>
 <li><p><strong>h</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – H, K, and L values.</p></li>
 <li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – H, K, and L values.</p></li>
 <li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – H, K, and L values.</p></li>
-<li><p><strong>energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – energy (Optional)</p></li>
 </ul>
 </dd>
 </dl>
@@ -885,76 +981,136 @@ in future releases.</p>
 <dd class="field-even"><p>Generator for the bluesky Run Engine.</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<p>RE(br(2, 2, 0))</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.uan">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">uan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.uan" title="Link to this definition">#</a></dt>
-<dd><p>Moves the delta and theta motors.</p>
+<dd><p>Moves the delta and eta motors.</p>
 <p>WARNING: This function will only work with six circles. This will be fixed
 in future releases.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional??</em>) – Delta and th motor angles to be moved to.</p></li>
-<li><p><strong>mu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional??</em>) – Delta and th motor angles to be moved to.</p></li>
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional??</em>) – Delta and eta motor angles to be moved to.</p></li>
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional??</em>) – Delta and eta motor angles to be moved to.</p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.an">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">an</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.an" title="Link to this definition">#</a></dt>
-<dd><p>Moves the delta and theta motors.</p>
-<p>WARNING: This function will only work with six circles. This will be fixed
-in future releases.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional??</em>) – Delta and th motor angles to be moved to.</p></li>
-<li><p><strong>th</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional??</em>) – Delta and th motor angles to be moved to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Generator for the bluesky Run Engine.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.pa_new">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">pa_new</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.pa_new" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve information on the current reciprocal space position.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.setlat">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">setlat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.setlat" title="Link to this definition">#</a></dt>
-<dd><p>Set the lattice constants.</p>
+<dd><p>Set the lattice constants for the current sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
-<li><p><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants. If None, it will ask for input.</p></li>
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants.
+- If all 6 are provided as arguments, they are used directly.
+- If none are provided, the user will be prompted interactively.</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants.
+- If all 6 are provided as arguments, they are used directly.
+- If none are provided, the user will be prompted interactively.</p></li>
+<li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants.
+- If all 6 are provided as arguments, they are used directly.
+- If none are provided, the user will be prompted interactively.</p></li>
+<li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants.
+- If all 6 are provided as arguments, they are used directly.
+- If none are provided, the user will be prompted interactively.</p></li>
+<li><p><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants.
+- If all 6 are provided as arguments, they are used directly.
+- If none are provided, the user will be prompted interactively.</p></li>
+<li><p><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Lattice constants.
+- If all 6 are provided as arguments, they are used directly.
+- If none are provided, the user will be prompted interactively.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If two orienting reflections are defined, UB will be recomputed automatically.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.setaz">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">setaz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.setaz" title="Link to this definition">#</a></dt>
+<dd><p>Set the azimuthal reference reflection (h2, k2, l2).</p>
+<p>Always updates the psi counterpart of the active diffractometer (which uses the psi engine).
+If the main diffractometer is currently in a psi constant mode,
+its h2/k2/l2 extras are also updated while preserving the psi value.
+Works regardless of the current mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Miller indices of the azimuthal reference reflection.
+If not provided, the user will be prompted interactively.</p></li>
+<li><p><strong>k2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Miller indices of the azimuthal reference reflection.
+If not provided, the user will be prompted interactively.</p></li>
+<li><p><strong>l2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Miller indices of the azimuthal reference reflection.
+If not provided, the user will be prompted interactively.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.setaz">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">setaz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.setaz" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.show_constraints">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">show_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.show_constraints" title="Link to this definition">#</a></dt>
+<dd><p>Show constraints (low, high) and cut point for each real axis.</p>
+</dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.freeze">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">freeze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.freeze" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.reset_constraints">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">reset_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.reset_constraints" title="Link to this definition">#</a></dt>
+<dd><p>Reset all constraints</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.set_constraints">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.set_constraints" title="Link to this definition">#</a></dt>
+<dd><p>Change constraint values (low/high limits and optional cut point).</p>
+<section id="call-patterns">
+<h3>Call patterns<a class="headerlink" href="#call-patterns" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints()</span></code>: prompt interactively for every axis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(axis)</span></code>: prompt interactively for one axis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(axis,</span> <span class="pre">low,</span> <span class="pre">high)</span></code>: set limits only.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(axis,</span> <span class="pre">low,</span> <span class="pre">high,</span> <span class="pre">cut)</span></code>: set limits and cut point.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(low1,</span> <span class="pre">high1,</span> <span class="pre">...,</span> <span class="pre">low6,</span> <span class="pre">high6)</span></code>: 12 args, set
+limits for all axes (cut points unchanged).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints(low1,</span> <span class="pre">high1,</span> <span class="pre">cut1,</span> <span class="pre">...,</span> <span class="pre">low6,</span> <span class="pre">high6,</span> <span class="pre">cut6)</span></code>: 18
+args, set limits and cut points for all axes.</p></li>
+</ul>
+<p>Interactive input may supply 2 numbers (low, high) or 3 numbers
+(low, high, cut), separated by spaces or commas. Press Enter to keep
+the current values.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.analyzer_configuration">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">analyzer_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crystal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.analyzer_configuration" title="Link to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Configure analyzer</dt><dd><ul class="simple">
+<li><p>Select analyzer crystal and determine d-spacing</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.analyzer_set">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">analyzer_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.analyzer_set" title="Link to this definition">#</a></dt>
+<dd><p>Set analyzer</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.analyzer_get">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">analyzer_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.analyzer_get" title="Link to this definition">#</a></dt>
+<dd><p>Get current analyzer</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.update_lattice">
@@ -968,46 +1124,55 @@ in future releases.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.write_config">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">write_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'File'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.write_config" title="Link to this definition">#</a></dt>
-<dd><p>Write configuration from file in current directory.</p>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.write_diffractometer_config_file">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">write_diffractometer_config_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.write_diffractometer_config_file" title="Link to this definition">#</a></dt>
+<dd><p>Write diffractometer configuration to file in current directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<em>string</em><em>, </em><em>optional</em>) – right now only “File” possible, but later PV or other</p></li>
-<li><p><strong>overwrite</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – asks if existing file hould be overwritten</p></li>
+<li><p><strong>method</strong> (<em>string</em><em>, </em><em>optional</em>) – Only “File” is currently supported.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If False, asks for confirmation before overwriting an existing file.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.read_config">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">read_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'File'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.read_config" title="Link to this definition">#</a></dt>
-<dd><p>Read configuration from file in current directory.</p>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.read_diffractometer_config_file">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">read_diffractometer_config_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.read_diffractometer_config_file" title="Link to this definition">#</a></dt>
+<dd><p>Read diffractometer configuration from file in current directory.</p>
+<p>Lists all files matching <a href="#id1"><span class="problematic" id="id2">*</span></a>_polar_config.yml, prompts the user to select
+one, and loads it. Defaults to default_polar_config.yml if it exists.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.read_diffractometer_config_scan">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">read_diffractometer_config_scan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.read_diffractometer_config_scan" title="Link to this definition">#</a></dt>
+<dd><p>Restore diffractometer orientation from a previous scan.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>method</strong> (<em>string</em><em>, </em><em>optional</em>) – right now only “File” possible, but later PV or other</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><em>string</em>) – Scan ID to restore orientation from.</p></li>
+<li><p><strong>diffractometer</strong> (<em>diffractometer object</em><em>, </em><em>optional</em>) – Diffractometer to restore. Defaults to the current diffractometer.</p></li>
+<li><p><strong>clear</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> or </em><em>None</em>) – Option to clear any previous diffractometer setup or append it. User
+will be asked if None.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.show_constraints">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">show_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.show_constraints" title="Link to this definition">#</a></dt>
-<dd><p>Show constraints and freeze angles (value)</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.reset_constraints">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">reset_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.reset_constraints" title="Link to this definition">#</a></dt>
-<dd><p>Reset all constraints</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.set_constraints">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.set_constraints" title="Link to this definition">#</a></dt>
-<dd><p>Change constraint values for specific axis</p>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.set_detector">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">set_detector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.set_detector" title="Link to this definition">#</a></dt>
+<dd><p>Interactively select detector on Huber detectorarm to be used.
+Detectors are mounted 25 degrees apart from each other in delta</p>
+<dl class="simple">
+<dt>Prompts the user for:</dt><dd><ul class="simple">
+<li><p>Detector: (E)iger or (P)oint Detector/Analyzer</p></li>
+</ul>
+</dd>
+</dl>
+<p>Uses defaults if the user just presses Enter.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -1021,48 +1186,17 @@ in future releases.</p>
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">wh</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.wh" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.sampleListClass">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">sampleListClass</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.sampleListClass" title="Link to this definition">#</a></dt>
-<dd><p>_sampleList function used without parenthesis</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.sampleList">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">sampleList</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.sampleList" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">Sync_UB_Matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hkl.diffract.Diffractometer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hkl.diffract.Diffractometer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix" title="Link to this definition">#</a></dt>
-<dd><p>Copy the UB matrix from source to target diffractometers.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.source">
-<span class="sig-name descname"><span class="pre">source</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.source" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.target">
-<span class="sig-name descname"><span class="pre">target</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.target" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.cleanup">
-<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.cleanup" title="Link to this definition">#</a></dt>
-<dd><p>Remove all our subscriptions to ophyd objects.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.sync_callback">
-<span class="sig-name descname"><span class="pre">sync_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.sync_callback" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.restore_huber_from_scan">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">restore_huber_from_scan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.restore_huber_from_scan" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.theta0">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">theta0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.theta0" title="Link to this definition">#</a></dt>
+<dd><p>Calculate 2-theta zero-offset and lattice parameter <code class="docutils literal notranslate"><span class="pre">a0</span></code> for a cubic sample.</p>
+<p>Reads the current wavelength from the diffractometer beam object,
+displays the saved reflection list, asks the user to choose two
+reflections by index, then computes the zero-shift and <code class="docutils literal notranslate"><span class="pre">a0</span></code> from
+those two reflections (Brueckel 1994).</p>
+<p>Assumes horizontal scattering geometry (<code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">2*theta</span></code>,
+<code class="docutils literal notranslate"><span class="pre">delta</span> <span class="pre">=</span> <span class="pre">0</span></code>).</p>
+</dd></dl>
 
 </section>
 </section>
@@ -1097,52 +1231,27 @@ in future releases.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.polar_config"><code class="docutils literal notranslate"><span class="pre">polar_config</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.fourc_config"><code class="docutils literal notranslate"><span class="pre">fourc_config</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.RE"><code class="docutils literal notranslate"><span class="pre">RE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.pbar_manager"><code class="docutils literal notranslate"><span class="pre">pbar_manager</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.POLAR_DIFFRACTOMETER"><code class="docutils literal notranslate"><span class="pre">POLAR_DIFFRACTOMETER</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.fourc"><code class="docutils literal notranslate"><span class="pre">fourc</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.get_huber_euler"><code class="docutils literal notranslate"><span class="pre">get_huber_euler()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.get_huber_hp"><code class="docutils literal notranslate"><span class="pre">get_huber_hp()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.get_huber_euler_psi"><code class="docutils literal notranslate"><span class="pre">get_huber_euler_psi()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.select_engine_for_psi"><code class="docutils literal notranslate"><span class="pre">select_engine_for_psi()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.engine_for_psi"><code class="docutils literal notranslate"><span class="pre">engine_for_psi()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Geometries"><code class="docutils literal notranslate"><span class="pre">Geometries</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Geometries.configuration_wrapper"><code class="docutils literal notranslate"><span class="pre">Geometries.configuration_wrapper</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Geometries.huber_euler"><code class="docutils literal notranslate"><span class="pre">Geometries.huber_euler</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Geometries.huber_euler_psi"><code class="docutils literal notranslate"><span class="pre">Geometries.huber_euler_psi</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Geometries.huber_hp"><code class="docutils literal notranslate"><span class="pre">Geometries.huber_hp</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Geometries.huber_hp_psi"><code class="docutils literal notranslate"><span class="pre">Geometries.huber_hp_psi</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.geometries"><code class="docutils literal notranslate"><span class="pre">geometries</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.set_diffractometer"><code class="docutils literal notranslate"><span class="pre">set_diffractometer()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.sampleNew"><code class="docutils literal notranslate"><span class="pre">sampleNew()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.change_diffractometer"><code class="docutils literal notranslate"><span class="pre">change_diffractometer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.newsample"><code class="docutils literal notranslate"><span class="pre">newsample()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.sampleList"><code class="docutils literal notranslate"><span class="pre">sampleList()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.sampleChange"><code class="docutils literal notranslate"><span class="pre">sampleChange()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.sampleRemove"><code class="docutils literal notranslate"><span class="pre">sampleRemove()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.list_reflections"><code class="docutils literal notranslate"><span class="pre">list_reflections()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.or_swap"><code class="docutils literal notranslate"><span class="pre">or_swap()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setor0"><code class="docutils literal notranslate"><span class="pre">setor0()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setor1"><code class="docutils literal notranslate"><span class="pre">setor1()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.set_orienting"><code class="docutils literal notranslate"><span class="pre">set_orienting()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.del_reflection"><code class="docutils literal notranslate"><span class="pre">del_reflection()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.list_orienting"><code class="docutils literal notranslate"><span class="pre">list_orienting()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.or0"><code class="docutils literal notranslate"><span class="pre">or0()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.or1"><code class="docutils literal notranslate"><span class="pre">or1()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.compute_UB"><code class="docutils literal notranslate"><span class="pre">compute_UB()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.calc_UB"><code class="docutils literal notranslate"><span class="pre">calc_UB()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setmode"><code class="docutils literal notranslate"><span class="pre">setmode()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.ca"><code class="docutils literal notranslate"><span class="pre">ca()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.ubr"><code class="docutils literal notranslate"><span class="pre">ubr()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.br"><code class="docutils literal notranslate"><span class="pre">br()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.uan"><code class="docutils literal notranslate"><span class="pre">uan()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.an"><code class="docutils literal notranslate"><span class="pre">an()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.pa_new"><code class="docutils literal notranslate"><span class="pre">pa_new()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setlat"><code class="docutils literal notranslate"><span class="pre">setlat()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setaz"><code class="docutils literal notranslate"><span class="pre">setaz()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.freeze"><code class="docutils literal notranslate"><span class="pre">freeze()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.update_lattice"><code class="docutils literal notranslate"><span class="pre">update_lattice()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.write_config"><code class="docutils literal notranslate"><span class="pre">write_config()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.read_config"><code class="docutils literal notranslate"><span class="pre">read_config()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.show_constraints"><code class="docutils literal notranslate"><span class="pre">show_constraints()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.reset_constraints"><code class="docutils literal notranslate"><span class="pre">reset_constraints()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.set_constraints"><code class="docutils literal notranslate"><span class="pre">set_constraints()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.whClass"><code class="docutils literal notranslate"><span class="pre">whClass</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.wh"><code class="docutils literal notranslate"><span class="pre">wh</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.sampleListClass"><code class="docutils literal notranslate"><span class="pre">sampleListClass</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.sampleList"><code class="docutils literal notranslate"><span class="pre">sampleList</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.source"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix.source</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.target"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix.target</span></code></a></li>
@@ -1150,7 +1259,36 @@ in future releases.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.sync_callback"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix.sync_callback()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.restore_huber_from_scan"><code class="docutils literal notranslate"><span class="pre">restore_huber_from_scan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setor0"><code class="docutils literal notranslate"><span class="pre">setor0()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setor1"><code class="docutils literal notranslate"><span class="pre">setor1()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.or0"><code class="docutils literal notranslate"><span class="pre">or0()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.or1"><code class="docutils literal notranslate"><span class="pre">or1()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.set_orienting"><code class="docutils literal notranslate"><span class="pre">set_orienting()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.del_reflection"><code class="docutils literal notranslate"><span class="pre">del_reflection()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.list_orienting"><code class="docutils literal notranslate"><span class="pre">list_orienting()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setmode"><code class="docutils literal notranslate"><span class="pre">setmode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.freeze"><code class="docutils literal notranslate"><span class="pre">freeze()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.freeze_general"><code class="docutils literal notranslate"><span class="pre">freeze_general()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.ca"><code class="docutils literal notranslate"><span class="pre">ca()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.ubr"><code class="docutils literal notranslate"><span class="pre">ubr()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.br"><code class="docutils literal notranslate"><span class="pre">br()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.uan"><code class="docutils literal notranslate"><span class="pre">uan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setlat"><code class="docutils literal notranslate"><span class="pre">setlat()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setaz"><code class="docutils literal notranslate"><span class="pre">setaz()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.show_constraints"><code class="docutils literal notranslate"><span class="pre">show_constraints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.reset_constraints"><code class="docutils literal notranslate"><span class="pre">reset_constraints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.set_constraints"><code class="docutils literal notranslate"><span class="pre">set_constraints()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.analyzer_configuration"><code class="docutils literal notranslate"><span class="pre">analyzer_configuration()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.analyzer_set"><code class="docutils literal notranslate"><span class="pre">analyzer_set()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.analyzer_get"><code class="docutils literal notranslate"><span class="pre">analyzer_get()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.update_lattice"><code class="docutils literal notranslate"><span class="pre">update_lattice()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.write_diffractometer_config_file"><code class="docutils literal notranslate"><span class="pre">write_diffractometer_config_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.read_diffractometer_config_file"><code class="docutils literal notranslate"><span class="pre">read_diffractometer_config_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.read_diffractometer_config_scan"><code class="docutils literal notranslate"><span class="pre">read_diffractometer_config_scan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.set_detector"><code class="docutils literal notranslate"><span class="pre">set_detector()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.whClass"><code class="docutils literal notranslate"><span class="pre">whClass</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.wh"><code class="docutils literal notranslate"><span class="pre">wh</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.theta0"><code class="docutils literal notranslate"><span class="pre">theta0()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1194,8 +1332,8 @@ in future releases.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
-<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
