@@ -2,14 +2,17 @@
 Polar diffractometer
 """
 
+import math
 from pathlib import Path
 
-import gi
+from hklpy2 import diffractometer_class_factory
+from hklpy2.incident import EpicsMonochromatorRO
 from numpy import arcsin
 from numpy import pi
 from numpy import sin
 from numpy import tan
 from ophyd import Component
+from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import EpicsSignal
 from ophyd import EpicsSignalRO
@@ -28,12 +31,6 @@ from ..utils.analyzer_utils import check_structure_factor
 from .huber_filter import HuberFilter
 from .jj_slits import SlitDevice
 
-gi.require_version("Hkl", "5.0")
-# MUST come before `import hkl`
-import math  # noqa: E402
-
-from hkl.geometries import ApsPolar  # noqa: E402
-
 # Constants
 WAVELENGTH_CONSTANT = 12.39
 PTTH_MIN_DEGREES = 79
@@ -41,9 +38,29 @@ PTTH_MAX_DEGREES = 101
 PTH_MIN_DEGREES = 39
 PTH_MAX_DEGREES = 51
 ANALYZER_LIST_PATH = Path(__file__).parent / "analyzerlist.dat"
-#     "/home/beams17/POLAR/joerg/polar_instrument/src/instrument/devices/"
-#     "analyzerlist.dat"
-# )
+
+
+class UBMatrixSignal(Signal):
+    """
+    In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
+
+    Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
+    other components can subscribe to UB matrix changes via .subscribe().
+    """
+
+    def __init__(self, pv_name, *, parent=None, name=None, **kwargs):
+        """Initialize, ignoring the PV name (Component-required, unused here)."""
+        super().__init__(name=name, parent=parent, **kwargs)
+
+    def get(self, **kwargs):
+        """Return the parent diffractometer's current UB matrix."""
+        self._readback = self.parent.sample.UB
+        return self._readback
+
+    def put(self, value, *, timestamp=None, force=False, **kwargs):
+        """Write the UB matrix back to the parent and notify subscribers."""
+        self.parent.sample.UB = value
+        super().put(value, timestamp=timestamp, force=force, **kwargs)
 
 
 class AnalyzerDevice(PseudoPositioner):
@@ -74,8 +91,8 @@ class AnalyzerDevice(PseudoPositioner):
         """Guard move_single to require analyzer setup before moving energy."""
         if self.d_spacing.get() == 1e4:
             raise RuntimeError(
-                "The analyzer has not been setup, please run the .setup() "
-                "function before moving the energy"
+                "The analyzer has not been setup, please run the "
+                "analyzer_configuration() function before moving the energy"
             )
         return super().move_single(pseudo, position, **kwargs)
 
@@ -84,17 +101,17 @@ class AnalyzerDevice(PseudoPositioner):
     def beamline_wavelength(self):
         """
         Return the current beamline wavelength from the parent diffractometer
-        calc.
+        beam object.
         """
-        return self.parent.calc.wavelength
+        return self.parent.beam.wavelength.get()
 
     @property
     def beamline_energy(self):
         """
-        Return the current beamline energy in keV from the parent
-        diffractometer.
+        Return the current beamline energy in keV from the parent diffractometer
+        beam object.
         """
-        return self.parent.energy.get()
+        return self.parent.beam.energy.get()
 
     def convert_energy_to_theta(self, energy):
         """
@@ -107,6 +124,19 @@ class AnalyzerDevice(PseudoPositioner):
         return theta
 
     def convert_energy_to_tth_trans(self, energy):
+        """
+        Convert photon energy (keV) to the two-theta translation stage position
+        (mm).
+        """
+        # lambda in angstroms, theta in degrees, energy in keV
+        th = self.convert_energy_to_theta(energy)
+        tth = 2 * th
+        tth_trans = self.tth_detector_distance.get() * tan(
+            (tth - 45 - th) * pi / 180.0
+        )
+        return tth_trans
+
+    def convert_energy_to_tth_pseudo(self, energy):
         """
         Convert photon energy (keV) to the two-theta translation stage position
         (mm).
@@ -144,6 +174,9 @@ class AnalyzerDevice(PseudoPositioner):
         return self.PseudoPosition(
             energy=self.convert_theta_to_energy(real_pos.th)
         )
+    
+    def ath_reset_offset(self):
+        self.th_motor.user_offset.put(45, wait=True, force=True)
 
     def set_energy(self, energy):
         """
@@ -151,11 +184,16 @@ class AnalyzerDevice(PseudoPositioner):
         """
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
-        self.th.set_current_position(theta)
+        self.th_motor.set_current_position(theta)
+
+        tth_trans = self.tth_detector_distance.get() * tan((theta-45) * pi / 180.0)
+        offset = tth_trans - self.tth_trans.position 
+        self.tth_trans.user_offset.put(offset, wait=True, force=True)
 
     def calc(self, acal="No"):
         """
-        Print analyzer Bragg angles and optionally calibrate the theta motor.
+        Print analyzer Bragg angles for the current crystal at the current
+        beamline energy.
         """
         d_ana = self.d_spacing.get()
         if d_ana == 1e4:
@@ -177,7 +215,7 @@ class AnalyzerDevice(PseudoPositioner):
             self.set_energy(energy)
         elif acal == "r":
             print("Releasing calibration for ath!")
-            self.th.user_offset.put(0)
+            self.th_motor.user_offset.put(45)
 
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
@@ -272,7 +310,7 @@ class AnalyzerDevice(PseudoPositioner):
                 d_best = [key, value]
         if analyzer_energy:
             print(
-                f"Best analyzer to use at {energy} keV: {d_best[1][0]}_"
+                f"Best analyzer to use at {energy}: {d_best[1][0]}_"
                 f"{d_best[1][1]}{d_best[1][2]}{d_best[1][3]}"
             )
         else:
@@ -284,7 +322,6 @@ class AnalyzerDevice(PseudoPositioner):
             if anum in d_dict:
                 ana = d_dict[anum]
                 cryst = f"{ana[0]}_{ana[1]}{ana[2]}{ana[3]}"
-                print(f"Using {cryst}")
             else:
                 ana = d_best[1:][0]
                 cryst = f"{ana[0]}_{ana[1]}{ana[2]}{ana[3]}"
@@ -295,27 +332,14 @@ class AnalyzerDevice(PseudoPositioner):
             self.crystal.put(cryst)
 
 
-class SixCircleDiffractometer(ApsPolar):
+class DiffractometerMixin(Device):
     """
-    ApsPolar: Huber diffractometer in 6-circle horizontal geometry with energy.
-
-    HKL engine.
+    Mixin adding table, area-detector, filter, slit, and analyzer components to
+    a diffractometer.
     """
 
-    # HKL and 6C motors
-    h = Component(PseudoSingle, "", labels=("hkl",))
-    k = Component(PseudoSingle, "", labels=("hkl",))
-    l = Component(PseudoSingle, "", labels=("hkl",))
-
-    # 03/16/2025 - Tau is the whole diffractometer "theta" angle, but
-    # it is not currently setup. m73 is a simulated motor.
-    tau = Component(EpicsMotor, "m73", labels=("motor",))
-    mu = Component(EpicsMotor, "m4", labels=("motor",))
-    gamma = Component(EpicsMotor, "m19", labels=("motor",))
-    delta = Component(EpicsMotor, "m20", labels=("motor",))
-
-    # Explicitly selects the real motors
-    _real = "tau mu chi phi gamma delta".split()
+    # Subscribable signal wrapping sample.UB for UB-matrix sync
+    _ub_sync = Component(UBMatrixSignal, "", kind="omitted")
 
     # Table vertical/horizontal
     tablex = Component(EpicsMotor, "m3", labels=("motor",))
@@ -343,19 +367,15 @@ class SixCircleDiffractometer(ApsPolar):
     # Analyzer
     ana = Component(AnalyzerDevice, "", labels=("track_energy",))
 
-    # Energy
-    energy = FormattedComponent(
-        EpicsSignalRO, "4idVDCM:BraggERdbkAO", kind="config"
-    )
-    energy_update_calc_flag = Component(Signal, value=1, kind="config")
-    energy_offset = Component(Signal, value=0, kind="config")
-
-    # TODO: This is needed to prevent busy plotting.
     @property
     def hints(self):
-        """
-        Return hinted fields, excluding non-hinted components to prevent busy
-        plotting.
+        """Return only explicitly-hinted sub-components to avoid busy plotting.
+
+        ``Kind`` is a bitfield: ``Kind.hinted`` (0b101) shares the
+        ``Kind.normal`` bit (0b001). ``_get_components_of_kind(Kind.hinted)``
+        therefore yields *both* normal and hinted components. The mask
+        ``(~Kind.normal & Kind.hinted)`` isolates the "hinted-only" bit so
+        only components explicitly tagged ``Kind.hinted`` contribute fields.
         """
         fields = []
         for _, component in self._get_components_of_kind(Kind.hinted):
@@ -364,31 +384,145 @@ class SixCircleDiffractometer(ApsPolar):
                 fields.extend(c_hints.get("fields", []))
         return {"fields": fields}
 
+    @property
+    def auxiliary_axis_names(self):
+        """Drop nested PseudoPositioner sub-devices from auxiliaries.
+
+        hklpy2's ``wh(full=True)``/``pa()`` formats each auxiliary axis with
+        ``round(component.position, ndigits=...)``. ``PseudoPositioner``
+        sub-devices (e.g. ``ana``) return a ``PseudoPosition`` namedtuple,
+        which has no ``__round__`` and crashes the print step. Filter them
+        out here; scalar single-axis auxiliaries (the case hklpy2 was
+        designed for) still pass through.
+        """
+        names = super().auxiliary_axis_names
+        return [
+            n
+            for n in names
+            if not isinstance(getattr(self, n), PseudoPositioner)
+        ]
+
     def default_settings(self):
         """
-        Update the HKL calc engine energy from the EPICS monochromator readback.
+        Apply default settings for the diffractometer mixin (no-op; subclasses
+        override).
         """
-        self._update_calc_energy()
+        pass
+        # self._update_calc_energy()
 
 
-class CradleDiffractometer(SixCircleDiffractometer):
+class _DeferredEpicsSignalRO(EpicsSignalRO):
+    """EpicsSignalRO that returns a fallback value before EPICS is connected.
+
+    Why: hklpy2's ``DiffractometerBase.__init__`` calls
+    ``beam.wavelength.get()`` (and indirectly ``beam.energy``) while seeding
+    the solver. With a plain ``EpicsSignalRO`` this triggers
+    ``wait_for_connection()``, which times out after 60 s when the IOC is
+    off and breaks ``make_devices(connect=False)``. This subclass returns
+    the fallback only while the signal is unconnected; once EPICS connects,
+    the normal ``EpicsSignalRO.get()`` path takes over.
+
+    How to apply: set ``_fallback_value`` to a sane default for the PV (a
+    plausible wavelength in angstroms / energy in keV). The value is only
+    ever returned during the disconnected-startup window.
     """
-    SixCircleDiffractometer with cradle chi/phi motors and sample XYZ
-    positioning.
+
+    _fallback_value = 1.0
+
+    def get(self, *args, **kwargs):
+        """Return the fallback value if not yet connected, else read EPICS."""
+        if not self.connected:
+            return self._fallback_value
+        return super().get(*args, **kwargs)
+
+
+class _DeferredEnergySignalRO(_DeferredEpicsSignalRO):
+    """Deferred wavelength signal with an X-ray-like fallback (8 keV)."""
+
+    _fallback_value = 8.0
+
+
+class DeferredEpicsMonochromatorRO(EpicsMonochromatorRO):
+    """``EpicsMonochromatorRO`` whose wavelength/energy don't block on init.
+
+    See ``_DeferredEpicsSignalRO`` for the rationale. Used as the ``beam``
+    component for the POLAR diffractometers so they can be instantiated
+    while the VDCM IOC is offline.
     """
 
-    chi = Component(EpicsMotor, "m37", labels=("motor",))
-    phi = Component(EpicsMotor, "m38", labels=("motor",))
+    wavelength = FormattedComponent(
+        _DeferredEpicsSignalRO,
+        "{prefix}{_pv_wavelength}",
+        kind="hinted",
+    )
+    energy = FormattedComponent(
+        _DeferredEnergySignalRO,
+        "{prefix}{_pv_energy}",
+        kind="hinted",
+    )
+
+
+mono_kwargs = {
+    "class": (
+        "id4_common.devices.polar_diffractometer."
+        "DeferredEpicsMonochromatorRO"
+    ),
+    "prefix": "4idVDCM:",
+    "source_type": "Simulated read-only EPICS Monochromator",
+    "pv_energy": "BraggERdbkAO",  # the energy readback PV
+    "energy_units": "keV",
+    "pv_wavelength": "BraggLambdaRdbkAO",  # the wavelength readback PV
+    "wavelength_units": "angstrom",
+    "wavelength_deadband": 0.000_150,
+    "kind": "config",
+}
+
+
+CradleDiffractometerBase = diffractometer_class_factory(
+    solver="hkl_soleil",
+    geometry="APS POLAR",
+    motor_labels=["motor"],
+    reals=dict(
+        tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"
+    ),
+    _real="tau mu chi phi gamma delta".split(),
+    beam_kwargs=mono_kwargs.copy(),
+)
+
+# Changes the positioners kind to config or normal. This will prevent busy
+# plotting.
+for pos in CradleDiffractometerBase._real + CradleDiffractometerBase._pseudo:
+    getattr(CradleDiffractometerBase, pos).kind = Kind.config | Kind.normal
+
+
+class CradleDiffractometer(DiffractometerMixin, CradleDiffractometerBase):
+    """hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation."""
 
     x = Component(EpicsMotor, "m40", labels=("motor",))
     y = Component(EpicsMotor, "m41", labels=("motor",))
     z = Component(EpicsMotor, "m42", labels=("motor",))
 
 
-class HPDiffractometer(SixCircleDiffractometer):
+HPDiffractometerBase = diffractometer_class_factory(
+    solver="hkl_soleil",
+    geometry="APS POLAR",
+    motor_labels=["motor"],
+    reals=dict(
+        tau="m73", mu="m4", gamma="m19", delta="m20", chi="m5", phi="m6"
+    ),
+    _real="tau mu chi phi gamma delta".split(),
+    beam_kwargs=mono_kwargs.copy(),
+)
+
+# Changes the positioners kind to config or normal. This will prevent busy
+# plotting.
+for pos in HPDiffractometerBase._real + HPDiffractometerBase._pseudo:
+    getattr(HPDiffractometerBase, pos).kind = Kind.config | Kind.normal
+
+
+class HPDiffractometer(DiffractometerMixin, HPDiffractometerBase):
     """
-    SixCircleDiffractometer for the HP press setup with base and nano-
-    positioning motors.
+    hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
     """
 
     chi = Component(EpicsMotor, "m5", labels=("motor",))
@@ -415,35 +549,32 @@ class HPDiffractometer(SixCircleDiffractometer):
     nanoz = FormattedComponent(
         EpicsMotor, "4idgSoftX:jena:m3", labels=("motor",)
     )
+    xeryon = FormattedComponent(
+        EpicsMotor, "4idgSoftX:xeryon:m1", labels=("motor",)
+    )
 
 
-class PolarPSI(ApsPolar):
-    """
-    ApsPolar: Huber diffractometer in 6-circle horizontal geometry with energy.
-
-    Psi engine.
-    """
-
-    # the reciprocal axes are called "pseudo" in hklpy
-    psi = Component(PseudoSingle, "")
-
-    # 03/16/2025 - Tau is the whole diffractometer "theta" angle, but
-    # it is not currently setup. m73 is a simulated motor.
-    tau = Component(EpicsMotor, "m73", labels=("motor",))
-    mu = Component(EpicsMotor, "m4", labels=("motor",))
-    gamma = Component(EpicsMotor, "m19", labels=("motor",))
-    delta = Component(EpicsMotor, "m20", labels=("motor",))
+CradleDiffractometerPSI = diffractometer_class_factory(
+    solver="hkl_soleil",
+    solver_kwargs={"engine": "psi"},
+    geometry="APS POLAR",
+    motor_labels=["motor"],
+    reals=dict(
+        tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"
+    ),
+    _real="tau mu chi phi gamma delta".split(),
+    beam_kwargs=mono_kwargs.copy(),
+)
 
 
-class CradlePSI(PolarPSI):
-    """PolarPSI diffractometer with cradle chi and phi motors."""
-
-    chi = Component(EpicsMotor, "m37", labels=("motor",))
-    phi = Component(EpicsMotor, "m38", labels=("motor",))
-
-
-class HPPSI(PolarPSI):
-    """PolarPSI diffractometer for the HP press with its chi and phi motors."""
-
-    chi = Component(EpicsMotor, "m5", labels=("motor",))
-    phi = Component(EpicsMotor, "m6", labels=("motor",))
+HPDiffractometerPSI = diffractometer_class_factory(
+    solver="hkl_soleil",
+    solver_kwargs={"engine": "psi"},
+    geometry="APS POLAR",
+    motor_labels=["motor"],
+    reals=dict(
+        tau="m73", mu="m4", gamma="m19", delta="m20", chi="m5", phi="m6"
+    ),
+    _real="tau mu chi phi gamma delta".split(),
+    beam_kwargs=mono_kwargs.copy(),
+)

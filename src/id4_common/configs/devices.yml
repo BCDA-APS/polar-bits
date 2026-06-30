@@ -310,22 +310,22 @@ apstools.devices.LakeShore340Device:
 #   engine: psi
 #   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer:
+id4_common.devices.polar_diffractometer.CradleDiffractometer:
 - name: huber_euler
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer:
+id4_common.devices.polar_diffractometer.HPDiffractometer:
 - name: huber_hp
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerPSI:
+id4_common.devices.polar_diffractometer.CradleDiffractometerPSI:
 - name: huber_euler_psi
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometerPSI:
+id4_common.devices.polar_diffractometer.HPDiffractometerPSI:
 - name: huber_hp_psi
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
