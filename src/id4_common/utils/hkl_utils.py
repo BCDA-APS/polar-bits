@@ -107,9 +107,9 @@ __all__ = """
     analyzer_set
     analyzer_get
     update_lattice
-    write_config
-    read_config
-    restore_diffractometer_from_scan
+    write_diffractometer_config_file
+    read_diffractometer_config_file
+    read_diffractometer_config_scan
     set_detector
     theta0
     geometries
