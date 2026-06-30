@@ -7,7 +7,7 @@ Two configurations are available depending on which insert is mounted:
 - `huber_euler` — Huber Eulerian cradle
 - `huber_hp` — high-precision goniometer
 
-The HKL utility functions are provided by `hkl_utils_hklpy2.py` and cover
+The HKL utility functions are provided by `hkl_utils.py` and cover
 sample management, orientation, forward/inverse calculations, mode selection,
 constraint management, and configuration save/restore.
 

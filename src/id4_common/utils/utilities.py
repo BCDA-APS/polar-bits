@@ -12,7 +12,7 @@ import pathlib
 from inspect import getmembers
 from inspect import isfunction
 
-from id4_common.utils import hkl_utils_hklpy2
+from id4_common.utils import hkl_utils
 from id4_common.utils.counters_class import counters
 
 try:
@@ -147,7 +147,7 @@ def list_functions(select=None):
         packages = [user, util]
     else:
         packages = [
-            hkl_utils_hklpy2,
+            hkl_utils,
             load_data,
             diffraction,
             absorption,
