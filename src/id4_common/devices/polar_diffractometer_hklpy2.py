@@ -91,8 +91,8 @@ class AnalyzerDevice(PseudoPositioner):
         """Guard move_single to require analyzer setup before moving energy."""
         if self.d_spacing.get() == 1e4:
             raise RuntimeError(
-                "The analyzer has not been setup, please run the .setup() "
-                "function before moving the energy"
+                "The analyzer has not been setup, please run the "
+                "analyzer_configuration() function before moving the energy"
             )
         return super().move_single(pseudo, position, **kwargs)
 
@@ -136,6 +136,19 @@ class AnalyzerDevice(PseudoPositioner):
         )
         return tth_trans
 
+    def convert_energy_to_tth_pseudo(self, energy):
+        """
+        Convert photon energy (keV) to the two-theta translation stage position
+        (mm).
+        """
+        # lambda in angstroms, theta in degrees, energy in keV
+        th = self.convert_energy_to_theta(energy)
+        tth = 2 * th
+        tth_trans = self.tth_detector_distance.get() * tan(
+            (tth - 45 - th) * pi / 180.0
+        )
+        return tth_trans
+
     def convert_theta_to_energy(self, theta):
         """
         Convert Bragg angle (degrees) to photon energy (keV) using the crystal
@@ -161,6 +174,9 @@ class AnalyzerDevice(PseudoPositioner):
         return self.PseudoPosition(
             energy=self.convert_theta_to_energy(real_pos.th)
         )
+    
+    def ath_reset_offset(self):
+        self.th_motor.user_offset.put(45, wait=True, force=True)
 
     def set_energy(self, energy):
         """
@@ -169,6 +185,10 @@ class AnalyzerDevice(PseudoPositioner):
         # energy in keV, theta in degrees.
         theta = self.convert_energy_to_theta(energy)
         self.th_motor.set_current_position(theta)
+
+        tth_trans = self.tth_detector_distance.get() * tan((theta-45) * pi / 180.0)
+        offset = tth_trans - self.tth_trans.position 
+        self.tth_trans.user_offset.put(offset, wait=True, force=True)
 
     def calc(self, acal="No"):
         """
