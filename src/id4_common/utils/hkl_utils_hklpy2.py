@@ -34,9 +34,9 @@ Auxilary HKL functions.
     ~analyzer_set
     ~analyzer_get
     ~update_lattice
-    ~write_config
-    ~read_config
-    ~restore_diffractometer_from_scan
+    ~write_diffractometer_config_file
+    ~read_diffractometer_config_file
+    ~read_diffractometer_config_scan
     ~set_detector
     ~theta0
 
@@ -1770,7 +1770,7 @@ def update_lattice(lattice_constant=None):
     )
 
 
-def write_config(filename="default", overwrite=False):
+def write_diffractometer_config_file(filename="default", overwrite=False):
     """
     Write diffractometer configuration to file in current directory.
 
@@ -1834,7 +1834,7 @@ def _prompt_clear_mode(config, source="file"):
     return None
 
 
-def read_config():
+def read_diffractometer_config_file():
     """
     Read diffractometer configuration from file in current directory.
 
@@ -1890,7 +1890,7 @@ def read_config():
     compute_UB()
 
 
-def restore_diffractometer_from_scan(
+def read_diffractometer_config_scan(
     scan_id, diffractometer=None, clear=None
 ):
     """
