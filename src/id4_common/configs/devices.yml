@@ -343,7 +343,7 @@ id4_common.devices.gh_i0_motors.I04idg:
 id4_common.devices.ringlight.Ringlight:
 - name: ringlight
   prefix: "RINGLIGHT:"
-  labels: ["4idg", "baseline"]
+  labels: ["4idg",]
 
 id4_common.devices.piezo_jena.PiezoJena:
 - name: piezo_jena
