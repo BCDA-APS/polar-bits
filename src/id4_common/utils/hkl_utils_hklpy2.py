@@ -32,10 +32,11 @@ Auxilary HKL functions.
     ~set_constraints
     ~analyzer_configuration
     ~analyzer_set
+    ~analyzer_get
     ~update_lattice
     ~write_config
     ~read_config
-    ~restore_huber_from_scan
+    ~restore_diffractometer_from_scan
     ~set_detector
     ~theta0
 
@@ -61,11 +62,8 @@ try:
     from bluesky.utils import ProgressBarManager
     from epics import caget
     from epics import caput
-    from hkl.util import restore_constraints
-    from hkl.util import restore_reflections
-    from hkl.util import restore_sample
-    from hkl.util import run_orientation_info
     from hklpy2 import ConfigurationRunWrapper
+    from hklpy2.run_utils import get_run_orientation
     from hklpy2.user import add_sample
     from hklpy2.user import cahkl
     from hklpy2.user import get_diffractometer
@@ -107,10 +105,11 @@ __all__ = """
     set_constraints
     analyzer_configuration
     analyzer_set
+    analyzer_get
     update_lattice
     write_config
     read_config
-    restore_huber_from_scan
+    restore_diffractometer_from_scan
     set_detector
     theta0
     geometries
@@ -544,8 +543,28 @@ def compute_UB():
     first_ref = sample.reflections[sample.reflections.order[0]]
     h, k, l = list(first_ref.pseudos.values())
     _geom_.forward(h, k, l)
+    # TODO: prefer to not use caput to a specific PV, hard to maintain, verify,
+    # etc...
+    caput(
+        "4idgSoftX:Bluesky:UB_matrix",
+        [
+            sample.UB[0][0],
+            sample.UB[0][1],
+            sample.UB[0][2],
+            sample.UB[1][0],
+            sample.UB[1][1],
+            sample.UB[1][2],
+            sample.UB[2][0],
+            sample.UB[2][1],
+            sample.UB[2][2]
+        ]
+    )
+    eiger_x = caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX")/2
+    eiger_y = caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY")/2
+    caput("4idgSoftX:Eiger:Center", [eiger_x,eiger_y])
 
-
+# TODO: Do we really need this? Could put the UB matrix as part of the
+# diffractometer, then sync with a callback.
 class Sync_UB_Matrix:
     """
     Keep the UB matrix of target in sync with source via an ophyd subscription.
@@ -1428,11 +1447,12 @@ def setlat(*args):
 
     # Recompute UB if orienting reflections exist
     if len(sample.reflections.order) > 1:
-        print("Computing UB...")
-        sample.core.calc_UB(
-            sample.reflections.order[0], sample.reflections.order[1]
-        )
-        _geom_.forward(1, 0, 0)
+        compute_UB()
+        #print("Computing UB...")
+        #sample.core.calc_UB(
+        #    sample.reflections.order[0], sample.reflections.order[1]
+        #)
+        #_geom_.forward(1, 0, 0)
 
     # Final confirmation
     print("\nUpdated lattice parameters:")
@@ -1612,7 +1632,7 @@ def set_constraints(*args):
     show_constraints()
 
 
-def analyzer_configuration(energy=None):
+def analyzer_configuration(energy=None, d_spacing=None, crystal=None):
     """
     Configure analyzer
         - Select analyzer crystal and determine d-spacing
@@ -1622,7 +1642,17 @@ def analyzer_configuration(energy=None):
 
     """
     _geom_ = get_diffractometer()
-    _geom_.ana.setup(energy)
+    d_ana = _geom_.ana.d_spacing.get()
+    crystal_current = _geom_.ana.crystal.get()
+
+    if d_ana != 1e4 or d_spacing:
+        print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
+        print(f"change to: {crystal} with d_spacing = {d_spacing}")
+        _geom_.ana.d_spacing.put(d_spacing)
+        if crystal:
+            _geom_.ana.crystal.put(crystal)
+    else:
+        _geom_.ana.setup(energy)
 
 
 def analyzer_set():
@@ -1636,6 +1666,23 @@ def analyzer_set():
     _geom_ = get_diffractometer()
     _geom_.ana.calc()
 
+
+def analyzer_get():
+    """
+    Get current analyzer
+
+    Parameters
+    ----------
+
+    """
+    _geom_ = get_diffractometer()
+    d_ana = _geom_.ana.d_spacing.get()
+    crystal = _geom_.ana.crystal.get()
+
+    if d_ana != 1e4:
+        print(f"Current analyzer: {crystal} with d_spacing = {d_ana}")
+    else:
+        print("Aanalyzer not selected yet. Run analyzer_configuration() first!")
 
 def update_lattice(lattice_constant=None):
     """
@@ -1697,12 +1744,13 @@ def update_lattice(lattice_constant=None):
     sample.lattice.beta = float(beta)
     sample.lattice.gamma = float(gamma)
     if len(sample.reflections.order) > 1:
-        print("Computing UB...")
-        sample.core.calc_UB(
-            sample.reflections.order[0],
-            sample.reflections.order[1],
-        )
-        _geom_.forward(1, 0, 0)
+        compute_UB()
+        #print("Computing UB...")
+        #sample.core.calc_UB(
+        #    sample.reflections.order[0],
+        #    sample.reflections.order[1],
+        #)
+        #_geom_.forward(1, 0, 0)
     print(
         "\n   H K L = {:5.4f} {:5.4f} {:5.4f}".format(
             _geom_.h.position,
@@ -1744,6 +1792,48 @@ def write_config(filename="default", overwrite=False):
     print(f"Configuration written to '{file}'.")
 
 
+def _prompt_clear_mode(config, source="file"):
+    """
+    List user-defined samples and ask whether to overwrite or append.
+
+    Parameters
+    ----------
+    config : dict
+        Configuration mapping (expects an optional ``"samples"`` key).
+    source : str
+        Noun used in the "samples in this ..." message (e.g. ``"file"`` or
+        ``"configuration"``).
+
+    Returns
+    -------
+    bool or None
+        ``True`` to overwrite, ``False`` to append, or ``None`` if the user
+        cancelled (caller should abort without loading).
+    """
+    file_samples = [k for k in config.get("samples", {}) if k != "sample"]
+    if file_samples:
+        print(f"\nSamples in this {source}:")
+        for s in file_samples:
+            print(f"  {s}")
+    else:
+        print("\nNo user-defined samples found in this file.")
+
+    mode = (
+        input(
+            "\nOverwrite current configuration or append? "
+            "([o]verwrite/[a]ppend): "
+        )
+        .strip()
+        .lower()
+    )
+    if mode == "a":
+        return False
+    elif mode == "o":
+        return True
+    print("Configuration not loaded.")
+    return None
+
+
 def read_config():
     """
     Read diffractometer configuration from file in current directory.
@@ -1756,12 +1846,15 @@ def read_config():
     if not files:
         print("No *_polar_config.yml files found in current directory.")
         return
+
     default_file = pathlib.Path("default_polar_config.yml")
     default_idx = next((i for i, f in enumerate(files) if f == default_file), 0)
+
     print("\nAvailable configuration files:")
     for i, f in enumerate(files):
         marker = " (default)" if f == default_file else ""
         print(f"  {i}: {f}{marker}")
+
     answer = input(f"\nSelect file to load [{default_idx}]: ").strip()
     try:
         idx = int(answer) if answer else default_idx
@@ -1769,29 +1862,14 @@ def read_config():
     except (ValueError, IndexError):
         print("Invalid selection. Configuration not loaded.")
         return
+
     with open(file) as f:
         config = yaml.safe_load(f)
-    file_samples = [k for k in config.get("samples", {}) if k != "sample"]
-    if file_samples:
-        print("\nSamples in this file:")
-        for s in file_samples:
-            print(f"  {s}")
-    else:
-        print("\nNo user-defined samples found in this file.")
-    mode = (
-        input(
-            "\nOverwrite current configuration or append? ([o]verwrite/[a]ppend): "
-        )
-        .strip()
-        .lower()
-    )
-    if mode == "a":
-        clear = False
-    elif mode == "o":
-        clear = True
-    else:
-        print("Configuration not loaded.")
+
+    clear = _prompt_clear_mode(config, source="file")
+    if clear is None:
         return
+
     print(f"Loading '{file}'...")
     # hklpy2 changed restore() defaults: on hardware-backed diffractometers
     # `restore_samples` / `restore_extras` default to False. Pass them
@@ -1812,8 +1890,8 @@ def read_config():
     compute_UB()
 
 
-def restore_huber_from_scan(
-    scan_id, diffractometer=None, sample_name=None, force=False
+def restore_diffractometer_from_scan(
+    scan_id, diffractometer=None, clear=None
 ):
     """
     Restore diffractometer orientation from a previous scan.
@@ -1824,44 +1902,62 @@ def restore_huber_from_scan(
         Scan ID to restore orientation from.
     diffractometer : diffractometer object, optional
         Diffractometer to restore. Defaults to the current diffractometer.
-    sample_name : string, optional
-        Override the sample name stored in the scan.
-    force : bool, optional
-        If True, use the first available diffractometer info even if the
-        name does not match. Defaults to False.
+    clear : bool or None
+        Option to clear any previous diffractometer setup or append it. User
+        will be asked if None.
     """
-    info = run_orientation_info(cat[scan_id])
+
+    info = get_run_orientation(cat[scan_id])
 
     if diffractometer is None:
         diffractometer = get_diffractometer()
 
-    if diffractometer.name not in info.keys():
-        if force:
-            print(
-                "WARNING: could not find information on the "
-                f"{diffractometer.name} in the scan {scan_id}. "
-                "Since force = True, then will try to setup using "
-                f"{list(info.keys())[0]}."
-            )
-        else:
-            raise NameError(
-                f"Could not find a setup for {diffractometer.name} in scan {scan_id}."
-            )
-        inp = list(info.items())[0]
-    else:
-        inp = info[diffractometer.name]
+    name = diffractometer.name
+    labels = list(info.keys())
 
-    if sample_name is not None:
-        inp["sample_name"] = sample_name
-
-    try:
-        restore_sample(inp, diffractometer)
-    except ValueError as exc:
+    if not labels:
+        uid = cat[scan_id].metadata["start"]["uid"]
         raise ValueError(
-            f"{exc} Use the sample_name keyword argument to change the name."
-        ) from exc
-    restore_constraints(inp, diffractometer)
-    restore_reflections(inp, diffractometer)
+            f"The scan #{scan_id} ({uid = }) does not have any hklpy2 "
+            "configuration saved."
+        )
+
+    if name not in labels:
+        uid = cat[scan_id].metadata["start"]["uid"]
+
+        print(f"{name} was not found in the scan #{scan_id} ({uid = }).")
+
+        print("Available options are: ")
+        for label in labels:
+            print(label)
+
+        name = input(f"Enter diffractometer name ({labels[0]}): ") or labels[0]
+        if name not in labels:
+            raise ValueError(
+                f"'{name}' is not in scan #{scan_id}. "
+                f"Available: {', '.join(labels)}."
+            )
+
+    config = info[name]
+
+    if clear is None:
+        clear = _prompt_clear_mode(config, source="configuration")
+        if clear is None:
+            return
+
+    diffractometer.restore(
+        config,
+        clear=clear,
+        restore_samples=True,
+        restore_extras=True,
+        restore_constraints=True,
+    )
+
+    # Mirror read_config(): surface a missing psi-mode geometry here and
+    # recompute the UB from the restored reflections rather than trusting the
+    # stored matrix.
+    _ = oregistry.find(diffractometer.name + "_psi")
+    compute_UB()
 
 
 def set_detector():
