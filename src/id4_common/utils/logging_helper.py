@@ -5,6 +5,7 @@ import io
 import logging
 import os
 import pathlib
+import shutil
 import tempfile
 
 import yaml
@@ -16,12 +17,32 @@ import yaml
 # Both are immediately replaced by the centralized override below, so
 # silence the import-time print/log output here and tear down the stray
 # handler in `setup_logging()`.
+#
+# apsbits resolves that wrong location to `<cwd>/.logs` (its package-root
+# helper falls back to the cwd in an interactive session).  At the beamline
+# the cwd is the read-only DM experiment directory (e.g.
+# `/gdata/dm/4ID/<cycle>/`), so the import-time `os.makedirs()` raises
+# `PermissionError` and aborts the whole import before we can redirect it.
+# Run the import from a private temp dir so the throwaway `.logs` lands
+# somewhere writable; `setup_logging()` removes the handler and the temp dir.
 _silenced_init = io.StringIO()
+_init_cwd = os.getcwd()
+_init_tmp = tempfile.mkdtemp(prefix="polar-apsbits-init-")
 with (
     contextlib.redirect_stdout(_silenced_init),
     contextlib.redirect_stderr(_silenced_init),
 ):
-    from apsbits.utils.logging_setup import configure_logging
+    try:
+        os.chdir(_init_tmp)
+    except OSError:
+        pass
+    try:
+        from apsbits.utils.logging_setup import configure_logging
+    finally:
+        try:
+            os.chdir(_init_cwd)
+        except OSError:
+            pass
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +97,9 @@ def setup_logging():
     # `%logstart` actually lands on our override path.
     _drop_apsbits_init_file_handlers()
     _stop_active_ipython_log()
+    # The throwaway `.logs` apsbits created during import (under the temp dir
+    # used while importing) is now orphaned; remove the temp tree.
+    shutil.rmtree(_init_tmp, ignore_errors=True)
 
     cfg = _read_iconfig_logging_block()
     log_path = cfg.get("LOG_PATH")
@@ -84,15 +108,16 @@ def setup_logging():
         try:
             _apply_overrides(log_path=log_path, cfg=cfg)
         except (PermissionError, OSError) as exc:
+            fallback = _fallback_log_dir()
             print(
                 "POLAR centralized log directory unavailable "
-                f"({exc}); falling back to <cwd>/.logs/."
+                f"({exc}); falling back to {fallback}."
             )
             # Tear down whatever partial handlers the failed run left behind
-            # and try again with the apsbits default directory.
+            # and try again with a guaranteed-writable directory.
             _drop_apsbits_init_file_handlers()
             _stop_active_ipython_log()
-            _apply_overrides(log_path=None, cfg=cfg)
+            _apply_overrides(log_path=fallback, cfg=cfg)
     else:
         _apply_overrides(log_path=None, cfg=cfg)
 
@@ -135,6 +160,20 @@ def _build_overrides(log_path, cfg):
     if file_logs:
         overrides["file_logs"] = file_logs
     return overrides
+
+
+def _fallback_log_dir():
+    """Return a guaranteed-writable directory for logs.
+
+    Prefer ``<cwd>/.logs`` (apsbits' historical default, convenient on a
+    developer machine).  At the beamline the cwd is the read-only DM
+    experiment directory, so when it isn't writable fall back to a private
+    temp directory instead of letting ``os.makedirs`` raise PermissionError.
+    """
+    cwd = pathlib.Path.cwd()
+    if os.access(cwd, os.W_OK):
+        return str(cwd / ".logs")
+    return tempfile.mkdtemp(prefix="polar-logs-")
 
 
 def _read_iconfig_logging_block():
