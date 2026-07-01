@@ -250,6 +250,18 @@ the helper falls back to apsbits' default `<cwd>/.logs/`. Add a new
 user-friendly key here by extending the `_FILE_LOGS_KEY_MAP` dict in
 `logging_helper.py`.
 
+Each session writes its **own** files in `LOG_PATH`
+(`logging.<host>.<pid>.log` and `ipython_logs.<host>.<pid>.log`), not a shared
+`logging.log`. Sharing one file across sessions is unsafe: apsbits uses a
+`RotatingFileHandler` with `rotate_on_startup`, so on NFS a new (or rotating)
+session renames the file others hold open, staling their handle and producing
+repeating `OSError: [Errno 116] Stale file handle` tracebacks. Per-session
+filenames keep each rotation self-contained. The helper also silences noisy
+third-party loggers via the apsbits `modules` override — see `_SILENCED_MODULES`
+in `logging_helper.py` (e.g. `pymongo`, whose monitor thread logs a heartbeat
+every few seconds; the explicit level survives the `root`→`DEBUG` that startup
+sets later). Add more noisy-at-DEBUG libraries there.
+
 ### Temperature controllers
 
 There are several temperature controllers across the four 4-ID stations
