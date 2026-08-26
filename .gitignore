@@ -192,7 +192,8 @@ qserver/existing_plans_and_devices.yaml
 .ruff_cache
 
 # Claude code
-.claude
+.claude/*
+!.claude/docs/
 
 # old logs
 .usage_logs
