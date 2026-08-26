@@ -20,6 +20,7 @@ Auxilary HKL functions.
     ~setmode
     ~ca
     ~wh
+    ~pa_new
     ~ubr
     ~br
     ~uan
@@ -65,7 +66,6 @@ try:
     from hklpy2 import ConfigurationRunWrapper
     from hklpy2.run_utils import get_run_orientation
     from hklpy2.user import add_sample
-    from hklpy2.user import cahkl
     from hklpy2.user import get_diffractometer
     from hklpy2.user import set_diffractometer as hklpy2_set_diffract
 
@@ -93,6 +93,7 @@ __all__ = """
     setmode
     ca
     wh
+    pa_new
     ubr
     br
     uan
@@ -471,6 +472,7 @@ def list_reflections(all_samples=False):
                 for m in _geom_.pseudo_positioners._fields
             ).upper()
             + "".join(f"{k:>{real_width}}" for k in real_headers)
+            + f"{'Lambda':>{real_width}}"
             + "   orienting"
         )
         print(header)
@@ -501,6 +503,7 @@ def list_reflections(all_samples=False):
                 f"{key:>{refl_width}}"
                 f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}{l:{pseudo_width}.3f}"
                 + "".join(f"{v:{real_width}.3f}" for v in pos_vals)
+                + f"{ref.wavelength:{real_width}.4f}"
                 + (f"   {tag}" if tag else "")
             )
             print(row)
@@ -562,6 +565,10 @@ def compute_UB():
     eiger_x = caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX")/2
     eiger_y = caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY")/2
     caput("4idgSoftX:Eiger:Center", [eiger_x,eiger_y])
+    caput("4idEiger:cam1:BeamX_RBV", eiger_x)
+    caput("4idEiger:cam1:BeamY_RBV", eiger_y)
+    eiger_distance = caget("4idgSoft:m21.RBV")
+    caput("4idEiger:cam1:DetDist", eiger_distance)
 
 # TODO: Do we really need this? Could put the UB matrix as part of the
 # diffractometer, then sync with a callback.
@@ -1189,57 +1196,95 @@ def freeze_general():
         print(f"  {axis} = {val}")
 
 
-def ca(h, k, l):
+def ca(h, k, l, energy=None):  # noqa: E741
     """
     Calculate the motors position of a reflection.
+
+    Accepts an optional ``energy`` used only for this single calculation.  The
+    diffractometer beam (monochromator) is never modified: the solver
+    wavelength is temporarily overridden for the forward calculation and then
+    restored to the live beamline value, so subsequent ``ca``/``cahkl`` calls
+    are unaffected.
 
     Parameters
     ----------
     h, k, l : float
         H, K, and L values.
+    energy : float, optional
+        Energy in keV to use for this calculation.  When ``None`` (default)
+        the current beamline energy is used.
     """
     _geom_ = get_diffractometer()
-    pos = cahkl(h, k, l)
-    if "No solutions" in pos:
-        print(pos)
+
+    if energy is None:
+        # Use the live beamline wavelength/energy for the calculation.
+        wavelength = _geom_.beam.wavelength.get()
+        energy = _geom_.beam.energy.get()
     else:
-        # print(pos)
-        print("\n   Calculated Positions:")
-        print(
-            "\n   H K L = {:5f}, {:5f}, {:5f}".format(
-                h,
-                k,
-                l,
-            )
+        # hc in keV*angstrom, converting the requested energy to a wavelength.
+        wavelength = 12.398_419_843_320_026 / energy
+
+    try:
+        solutions = _geom_.core.forward(
+            pseudos=(h, k, l), wavelength=wavelength
         )
-        print(
-            f"\n   Lambda (Energy) = {_geom_.beam.wavelength.get():6.4f} \u212b"
-            f" ({_geom_.beam.energy.get():6.4f}) keV"
-        )
-        if len(_geom_.real_positioners) == 6:
-            pos_dict = dict(
-                zip(_geom_.real_positioners._fields, pos, strict=False)
-            )
-            print(
-                "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
-                    "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
-                )
-            )
-            print(
-                "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
-                    pos_dict["gamma"],
-                    pos_dict["mu"],
-                    pos_dict["chi"],
-                    pos_dict["phi"],
-                    pos_dict["delta"],
-                    pos_dict["tau"],
-                )
+        if not solutions:
+            pos = (
+                f"No solutions for ({h}, {k}, {l}) at "
+                f"lambda = {wavelength:.4f} Å. The solver found no solutions "
+                "or all were rejected by constraints. Check constraint limits."
             )
         else:
-            print(
-                f"\n{''.join(f'{k:>10}' for k in _geom_.real_positioners._fields)}"
-                f"\n{''.join(f'{v:>10.3f}' for v in pos)}"
+            pos = _geom_._forward_solution(_geom_.real_position, solutions)
+    except Exception as exc:  # e.g. NoForwardSolutions
+        pos = str(exc)
+    finally:
+        # Restore the solver wavelength to the live beamline value so that
+        # later calculations are not affected by this temporary override.
+        _geom_.core.update_solver(
+            wavelength=_geom_.beam.wavelength.get()
+        )
+
+    if isinstance(pos, str):
+        print(pos)
+        return
+
+    print("\n   Calculated Positions:")
+    print(
+        "\n   H K L = {:5f}, {:5f}, {:5f}".format(
+            h,
+            k,
+            l,
+        )
+    )
+    print(
+        f"\n   Lambda (Energy) = {wavelength:6.4f} Å"
+        f" ({energy:6.4f}) keV"
+    )
+    if len(_geom_.real_positioners) == 6:
+        pos_dict = dict(
+            zip(_geom_.real_positioners._fields, pos, strict=False)
+        )
+        print(
+            "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
+                "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
             )
+        )
+        print(
+            "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
+                pos_dict["gamma"],
+                pos_dict["mu"],
+                pos_dict["chi"],
+                pos_dict["phi"],
+                pos_dict["delta"],
+                pos_dict["tau"],
+            )
+        )
+    else:
+        print(
+            f"\n{''.join(f'{k:>10}' for k in _geom_.real_positioners._fields)}"
+            f"\n{''.join(f'{v:>10.3f}' for v in pos)}"
+        )
 
 
 def _wh():
@@ -1308,6 +1353,158 @@ def _wh():
             _l2,
         )
     )
+
+
+def _reciprocal_lattice(lattice):
+    """
+    Return the reciprocal lattice constants for a hklpy2 ``Lattice``.
+
+    Parameters
+    ----------
+    lattice : hklpy2.blocks.lattice.Lattice
+        The direct-space lattice (``a, b, c`` in length units, ``alpha, beta,
+        gamma`` in degrees).
+
+    Returns
+    -------
+    tuple
+        ``(a*, b*, c*, alpha*, beta*, gamma*)`` using the crystallographic
+        convention (no 2*pi factor); reciprocal angles are in degrees.
+    """
+    a, b, c = lattice.a, lattice.b, lattice.c
+    alpha = math.radians(lattice.alpha)
+    beta = math.radians(lattice.beta)
+    gamma = math.radians(lattice.gamma)
+    ca, cb, cg = math.cos(alpha), math.cos(beta), math.cos(gamma)
+    sa, sb, sg = math.sin(alpha), math.sin(beta), math.sin(gamma)
+    vol = a * b * c * math.sqrt(
+        max(0.0, 1 - ca**2 - cb**2 - cg**2 + 2 * ca * cb * cg)
+    )
+    a_r = b * c * sa / vol
+    b_r = a * c * sb / vol
+    c_r = a * b * sg / vol
+    alpha_r = math.degrees(math.acos((cb * cg - ca) / (sb * sg)))
+    beta_r = math.degrees(math.acos((ca * cg - cb) / (sa * sg)))
+    gamma_r = math.degrees(math.acos((ca * cb - cg) / (sa * sb)))
+    return a_r, b_r, c_r, alpha_r, beta_r, gamma_r
+
+
+def pa_new(full=False):
+    """
+    Print a full summary of the diffractometer and sample configuration.
+
+    Reports the diffractometer class / geometry / mode, the primary and
+    secondary orienting reflections (with the wavelength each was measured
+    at), the sample lattice constants in real and reciprocal space, the U and
+    UB orientation matrices, the azimuthal reference (psi and reference
+    vector), the real-axis constraints, and the monochromator
+    energy/wavelength.
+
+    Parameters
+    ----------
+    full : bool, optional
+        If True, also list every reflection defined for the current sample
+        (see :func:`list_reflections`). Defaults to False.
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    geometry = _geom_.core.geometry
+    current_mode = _geom_.core.mode
+    orienting_refl = sample.reflections.order
+    six_circle = len(_geom_.real_positioners) == 6
+
+    print(
+        f"{_geom_.__class__.__name__},  {geometry} geometry, "
+        f"{_geom_.name} diffractometer"
+    )
+    print(f"{current_mode} mode")
+    print(f"\nSample = {sample.name}")
+
+    for label, key in zip(
+        ["Primary", "Secondary"], orienting_refl[:2], strict=False
+    ):
+        if key not in sample.reflections:
+            continue
+        ref = sample.reflections[key]
+        h, k, l = list(ref.pseudos.values())  # noqa: E741
+        print(f"\n{label} reflection (lambda = {ref.wavelength:.4f} Å):")
+        if six_circle:
+            reals = ref.reals
+            angle_label = "     Gamma, Mu, Chi, Phi, Delta, Tau"
+            angle_vals = (
+                "{:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}".format(
+                    reals["gamma"],
+                    reals["mu"],
+                    reals["chi"],
+                    reals["phi"],
+                    reals["delta"],
+                    reals["tau"],
+                )
+            )
+        else:
+            angle_label = "     " + ", ".join(ref.reals.keys())
+            angle_vals = ", ".join(f"{v:.3f}" for v in ref.reals.values())
+        # Pad the H K L label so its '=' lines up under the angles' '='.
+        width = len(angle_label)
+        print(f"{angle_label} = {angle_vals}")
+        print(f"{'     H K L':>{width}} = {h:.3f}, {k:.3f}, {l:.3f}")
+
+    if full:
+        print("\nAll reflections:")
+        list_reflections()
+
+    lat = sample.lattice
+    print("\nLattice constants:")
+    print(
+        "          real space = "
+        "{:.4f}, {:.4f}, {:.4f}, {:.4f}, {:.4f}, {:.4f}".format(
+            lat.a, lat.b, lat.c, lat.alpha, lat.beta, lat.gamma
+        )
+    )
+    ra, rb, rc, ral, rbe, rga = _reciprocal_lattice(lat)
+    print(
+        "    reciprocal space = "
+        "{:.4f}, {:.4f}, {:.4f}, {:.4f}, {:.4f}, {:.4f}".format(
+            ra, rb, rc, ral, rbe, rga
+        )
+    )
+
+    print("\nU matrix:")
+    for row in sample.U:
+        print("     " + "  ".join(f"{v:>12.6f}" for v in row))
+
+    print("\nUB matrix:")
+    for row in sample.UB:
+        print("     " + "  ".join(f"{v:>12.6f}" for v in row))
+
+    _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
+    _geom_for_psi_.sample.UB = _geom_.sample.UB
+    _h2, _k2, _l2 = _geom_for_psi_.core.extras.values()
+    print("\nAzimuthal reference:")
+    psi_label = "     H K L"
+    width = len(psi_label)
+    print(f"{psi_label} = {_h2:.3f}, {_k2:.3f}, {_l2:.3f}")
+    print(f"{'     Psi':>{width}} = {_geom_for_psi_.inverse(0).psi:.4f}")
+
+    print("\nConstraints:")
+    for axis in _geom_.real_axis_names:
+        c = _geom_.core.constraints[axis]
+        print(
+            "     {:>6} - [{:>9.3f}, {:>9.3f}] cut = {:>9.3f}".format(
+                axis, c.low_limit, c.high_limit, c.cut_point
+            )
+        )
+
+    print("\nMonochromator:")
+    mono_width = len("     Wavelength")
+    two_d = caget("4idVDCM:Bragg2dSpacingAO")
+    d_str = f"{two_d / 2:.4f} Å" if two_d is not None else "N/A"
+    print(f"{'     Energy':>{mono_width}} = {_geom_.beam.energy.get():.4f} keV")
+    print(
+        f"{'     Wavelength':>{mono_width}} = "
+        f"{_geom_.beam.wavelength.get():.4f} Å"
+    )
+    print(f"{'     d-spacing':>{mono_width}} = {d_str}")
 
 
 def _ensure_idle():
@@ -1632,7 +1829,7 @@ def set_constraints(*args):
     show_constraints()
 
 
-def analyzer_configuration(energy=None, d_spacing=None, crystal=None):
+def analyzer_configuration():
     """
     Configure analyzer
         - Select analyzer crystal and determine d-spacing
@@ -1642,17 +1839,17 @@ def analyzer_configuration(energy=None, d_spacing=None, crystal=None):
 
     """
     _geom_ = get_diffractometer()
-    d_ana = _geom_.ana.d_spacing.get()
-    crystal_current = _geom_.ana.crystal.get()
+    #d_ana = _geom_.ana.d_spacing.get()
+    #crystal_current = _geom_.ana.crystal.get()
 
-    if d_ana != 1e4 or d_spacing:
-        print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
-        print(f"change to: {crystal} with d_spacing = {d_spacing}")
-        _geom_.ana.d_spacing.put(d_spacing)
-        if crystal:
-            _geom_.ana.crystal.put(crystal)
-    else:
-        _geom_.ana.setup(energy)
+    #if d_ana != 1e4 or d_spacing:
+    ##    print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
+    #    print(f"change to: {crystal} with d_spacing = {d_spacing}")
+    #    _geom_.ana.d_spacing.put(d_spacing)
+    #    if crystal:
+    #        _geom_.ana.crystal.put(crystal)
+    #else:
+    _geom_.ana.setup()
 
 
 def analyzer_set():

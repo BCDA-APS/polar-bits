@@ -451,6 +451,15 @@ def _setup_file_io(detectors):
             )
             if _fp is not None:
                 _predicted[det.name] = (_fp, det)
+            else:
+                logger.warning(
+                    f"{det.name} has setup_images() and save_image_flag=True "
+                    "(it intends to save images) but predict_save_path() "
+                    "returned None. It will be excluded from this scan's "
+                    "NeXus master file 'externals' link. This usually means "
+                    "the detector class is missing hdf1_name_format/"
+                    "hdf1_file_format (see CountersMixin.predict_save_path)."
+                )
 
     # Phase 2: validate — raise before any PV writes
     for _fname in [_master_fullpath] + [

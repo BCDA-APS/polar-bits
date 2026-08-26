@@ -413,6 +413,7 @@ def flyscan(
             f"nanoy: {y0_um:+.3f} -> {target_y_um:+.3f} um "
             f"(shift {shift_y:+.3f})"
         )
+        #commented out fpr test. Need to comment in again
         yield from mv(
             nanox, target_x_um * NANO_EGU_PER_UM,
             nanoy, target_y_um * NANO_EGU_PER_UM,
@@ -619,6 +620,7 @@ def flyscan(
 
         # --- Restore piezo positions ---
 
+        #commented out fpr test. Need to comment in again
         logger.debug("Returning piezos to original positions.")
         yield from mv(
             nanox, x0_um * NANO_EGU_PER_UM,

@@ -154,7 +154,12 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             for det in counters.detectors:
                 hints = det.hints["fields"]
                 for name in hints:
-                    dev = oregistry.find(name.replace("_", "."))
+                    if det in oregistry.findall("scaler"):
+                        dev = getattr(
+                            det.channels, det.channels_name_map[name]
+                        ).s
+                    else:
+                        dev = oregistry.find(name.replace("_", "."))
                     _hinted_devices.append(dev)
                     dev.kind = "normal"
 

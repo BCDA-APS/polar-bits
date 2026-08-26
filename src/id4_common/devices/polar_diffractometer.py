@@ -205,17 +205,18 @@ class AnalyzerDevice(PseudoPositioner):
         th_angle = math.degrees(math.asin(wavelength / (2 * d_ana)))
         tth_angle = 2 * th_angle
         print(
-            f"[ath, atth] = [{th_angle:.2f}, {tth_angle:.2f}] for {cryst} "
-            f"analyzer at {energy:.2f} keV"
+            f"[ath, atth] = [{th_angle:.4f}, {tth_angle:.4f}] for {cryst} "
+            f"analyzer at {energy:.4f} keV"
         )
         if acal == "No":
             acal = input(f"Calibrate ath position (y/n/r)? [{acal}]: ") or acal
         if acal in ["Yes", "yes", "Y", "y"]:
-            print(f"Calibrating ath to {th_angle:.2f}")
+            print(f"Calibrating ath to {th_angle:.4f}")
             self.set_energy(energy)
         elif acal == "r":
             print("Releasing calibration for ath!")
             self.th_motor.user_offset.put(45)
+            self.tth_trans.user_offset.put(0, wait=True, force=True)
 
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
