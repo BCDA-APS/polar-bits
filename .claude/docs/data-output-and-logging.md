@@ -17,10 +17,13 @@ setup_logging()` (called from each beamline's `__init__.py`) reads the block,
 translates `LOG_PATH`/`MAX_BYTES`/`NUMBER_OF_PREVIOUS_BACKUPS` to the apsbits
 `file_logs`/`ipython_logs` schema, writes a temp YAML, and passes it via
 `configure_logging(extra_logging_configs_path=...)`. If the centralized log
-directory cannot be created (developer machine without `/net/...` access)
-the helper falls back to apsbits' default `<cwd>/.logs/`. Add a new
-user-friendly key here by extending the `_FILE_LOGS_KEY_MAP` dict in
-`logging_helper.py`.
+directory cannot be created (developer machine without `/net/...` access),
+the helper falls back to apsbits' default `<cwd>/.logs/` if `cwd` is
+writable, and if it isn't (the real beamline case — DM working directories
+are often read-only) falls back further still to a private
+`tempfile.mkdtemp(prefix="polar-logs-")` (`_fallback_log_dir()` in
+`logging_helper.py`). Add a new user-friendly key here by extending the
+`_FILE_LOGS_KEY_MAP` dict in `logging_helper.py`.
 
 Each session writes its **own** files in `LOG_PATH`
 (`logging.<host>.<pid>.log` and `ipython_logs.<host>.<pid>.log`), not a shared
@@ -37,8 +40,11 @@ sets later). Add more noisy-at-DEBUG libraries there.
 ## Temperature Controllers
 
 There are several temperature controllers across the four 4-ID stations
-(LakeShore 336/340 at 4IDG, the 9-Tesla magnet's VTI sensors and needle
-valve at 4IDH, …).  `id4_common.utils.temperature_setup.temperature_setup
+(LakeShore 336/340 at 4IDG, the 9-Tesla magnet's VTI setpoints at 4IDH, …).
+Note: the magnet's `needle_valve` component exists on `Magnet911` but is
+**not** wired into any `TEMPERATURE_CONTROLLERS` entry — only the VTI
+setpoints (`temps.setpoint1`/`setpoint2`) are reachable through
+`temperature_setup()`. `id4_common.utils.temperature_setup.temperature_setup
 (label)` picks one and binds three names into the session:
 
 - ``tc`` — the **control** signal (movable, the loop setpoint)

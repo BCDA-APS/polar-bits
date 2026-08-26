@@ -104,9 +104,11 @@ priority order — **do not start with raw `pyepics`**:
    **Whenever this path is taken, explicitly tell the user** which PV and why
    none of steps 1-3 fit; never use pyepics silently.
 
-Existing raw `caget`/`caput` calls in `hkl_utils.py` and
-`attenuator_utils.py` are known tech debt, not a pattern to imitate — don't
-add more of them when touching that code; migrate opportunistically if a
+A handful of modules (at last check: `hkl_utils.py`, `attenuator_utils.py`)
+already have raw `caget`/`caput` calls; run
+`grep -rn "caget(\|caput(\|from epics import" src/` to see the current extent
+before trusting this list — it's known tech debt, not a pattern to imitate.
+Don't add more of it when touching that code; migrate opportunistically if a
 change already touches it, but don't scope-creep an unrelated task into a
 refactor.
 
@@ -118,7 +120,7 @@ for the local build command, deploy workflow, and page structure.
 
 ## Code Style
 
-- Line length: 80 (both ruff and black configs in `pyproject.toml`)
+- Line length: 80 (both ruff and black configs in `pyproject.toml`). Note `E501` is in ruff's `ignore` list, so a long line inside a string/comment that `ruff format` won't auto-wrap can slip past lint — don't rely on CI to catch it, keep lines under 80 by hand in those cases.
 - Python 3.11+
 - Linting: ruff (replaces flake8/isort/black in pre-commit)
 - Docstrings required for all public classes/functions/methods/modules (ruff rules D100-D107)
