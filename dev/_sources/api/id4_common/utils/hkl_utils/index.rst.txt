@@ -26,6 +26,7 @@ id4_common.utils.hkl_utils
        ~setmode
        ~ca
        ~wh
+       ~pa_new
        ~ubr
        ~br
        ~uan
@@ -326,9 +327,15 @@ Module Contents
    (showing the current preset as default). Updates ``_geom_.core.presets``.
 
 
-.. py:function:: ca(h, k, l)
+.. py:function:: ca(h, k, l, energy=None)
 
    Calculate the motors position of a reflection.
+
+   Accepts an optional ``energy`` used only for this single calculation.  The
+   diffractometer beam (monochromator) is never modified: the solver
+   wavelength is temporarily overridden for the forward calculation and then
+   restored to the live beamline value, so subsequent ``ca``/``cahkl`` calls
+   are unaffected.
 
    :param h: H, K, and L values.
    :type h: float
@@ -336,6 +343,25 @@ Module Contents
    :type k: float
    :param l: H, K, and L values.
    :type l: float
+   :param energy: Energy in keV to use for this calculation.  When ``None`` (default)
+                  the current beamline energy is used.
+   :type energy: float, optional
+
+
+.. py:function:: pa_new(full=False)
+
+   Print a full summary of the diffractometer and sample configuration.
+
+   Reports the diffractometer class / geometry / mode, the primary and
+   secondary orienting reflections (with the wavelength each was measured
+   at), the sample lattice constants in real and reciprocal space, the U and
+   UB orientation matrices, the azimuthal reference (psi and reference
+   vector), the real-axis constraints, and the monochromator
+   energy/wavelength.
+
+   :param full: If True, also list every reflection defined for the current sample
+                (see :func:`list_reflections`). Defaults to False.
+   :type full: bool, optional
 
 
 .. py:function:: ubr(h, k, l)
@@ -465,7 +491,7 @@ Module Contents
    the current values.
 
 
-.. py:function:: analyzer_configuration(energy=None, d_spacing=None, crystal=None)
+.. py:function:: analyzer_configuration()
 
    Configure analyzer
        - Select analyzer crystal and determine d-spacing

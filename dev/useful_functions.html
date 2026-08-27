@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
@@ -494,7 +494,8 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
   </svg>
   <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
@@ -586,9 +587,9 @@ injects three names into the session: <code class="docutils literal notranslate"
 (sample readback), and <code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLER</span></code> (the active label).
 Adds <code class="docutils literal notranslate"><span class="pre">ts</span></code> to the baseline so the sample temperature lands in every
 scan.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>        <span class="c1"># 4IDG LakeShore 336 (default loop)</span>
-<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g-340&quot;</span><span class="p">)</span>    <span class="c1"># 4IDG LakeShore 340</span>
-<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;h-9T&quot;</span><span class="p">)</span>     <span class="c1"># 4IDH 9 T magnet VTI</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>        <span class="c1"># 4IDG LakeShore 336 (default loop)</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"g-340"</span><span class="p">)</span>    <span class="c1"># 4IDG LakeShore 340</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"h-9T"</span><span class="p">)</span>     <span class="c1"># 4IDH 9 T magnet VTI</span>
 <span class="n">temperature_setup</span><span class="p">()</span>           <span class="c1"># interactive prompt — shows known labels</span>
 
 <span class="n">mv</span> <span class="n">tc</span> <span class="mi">295</span>                     <span class="c1"># set the setpoint to 295 K</span>
@@ -611,8 +612,8 @@ walk through every PR in the registry:</p>
 </div>
 <p>Or set the three exposed attributes directly when you already know
 what you want:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pr_setup</span><span class="o">.</span><span class="n">positioner</span>    <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;pr2_pzt_localdc&quot;</span><span class="p">)</span>
-<span class="n">pr_setup</span><span class="o">.</span><span class="n">offset</span>        <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;pr2_pzt_offset_microns&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pr_setup</span><span class="o">.</span><span class="n">positioner</span>    <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"pr2_pzt_localdc"</span><span class="p">)</span>
+<span class="n">pr_setup</span><span class="o">.</span><span class="n">offset</span>        <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"pr2_pzt_offset_microns"</span><span class="p">)</span>
 <span class="n">pr_setup</span><span class="o">.</span><span class="n">oscillate_pzt</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
@@ -625,8 +626,8 @@ current configuration with <code class="docutils literal notranslate"><span clas
 regions for the <code class="docutils literal notranslate"><span class="pre">qxscan</span></code> plan. Energies are stored relative to the
 absorption edge.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qxscan_setup</span><span class="p">()</span>                              <span class="c1"># interactive</span>
-<span class="n">qxscan_setup</span><span class="o">.</span><span class="n">save_params_json</span><span class="p">(</span><span class="s2">&quot;my.json&quot;</span><span class="p">)</span>    <span class="c1"># snapshot to disk</span>
-<span class="n">qxscan_setup</span><span class="o">.</span><span class="n">load_params_json</span><span class="p">(</span><span class="s2">&quot;my.json&quot;</span><span class="p">)</span>    <span class="c1"># restore from disk</span>
+<span class="n">qxscan_setup</span><span class="o">.</span><span class="n">save_params_json</span><span class="p">(</span><span class="s2">"my.json"</span><span class="p">)</span>    <span class="c1"># snapshot to disk</span>
+<span class="n">qxscan_setup</span><span class="o">.</span><span class="n">load_params_json</span><span class="p">(</span><span class="s2">"my.json"</span><span class="p">)</span>    <span class="c1"># restore from disk</span>
 <span class="n">qxscan_setup</span><span class="o">.</span><span class="n">load_from_scan</span><span class="p">(</span><span class="n">scan_id</span><span class="p">)</span>        <span class="c1"># restore from a previous run</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">qxscan_setup</span><span class="p">)</span>                         <span class="c1"># show current setup</span>
@@ -655,7 +656,7 @@ separately via <code class="docutils literal notranslate"><span class="pre">ener
 monochromator energy changes (typically the undulators and one phase
 retarder).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">()</span>                              <span class="c1"># interactive table</span>
-<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">&quot;undulators_ds&quot;</span><span class="p">,</span> <span class="s2">&quot;pr2&quot;</span><span class="p">])</span>      <span class="c1"># explicit list</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">"undulators_ds"</span><span class="p">,</span> <span class="s2">"pr2"</span><span class="p">])</span>      <span class="c1"># explicit list</span>
 <span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([])</span>                            <span class="c1"># disable all</span>
 <span class="n">energy</span><span class="o">.</span><span class="n">tracking</span>                                      <span class="c1"># print current state</span>
 </pre></div>
@@ -679,8 +680,8 @@ reads. Accepts indices, single device objects, or lists of either.</p>
 </section>
 <section id="crl-setup-hutch-and-crl-size-focal-size-crl-focusing">
 <h3><code class="docutils literal notranslate"><span class="pre">crl_setup(hutch)</span></code> and <code class="docutils literal notranslate"><span class="pre">crl_size(focal_size)</span></code> — CRL focusing<a class="headerlink" href="#crl-setup-hutch-and-crl-size-focal-size-crl-focusing" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crl_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>           <span class="c1"># apply the 4IDG sample-position offset</span>
-<span class="n">crl_setup</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>           <span class="c1"># apply the 4IDH offset</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crl_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>           <span class="c1"># apply the 4IDG sample-position offset</span>
+<span class="n">crl_setup</span><span class="p">(</span><span class="s2">"h"</span><span class="p">)</span>           <span class="c1"># apply the 4IDH offset</span>
 <span class="n">crl_setup</span><span class="p">()</span>              <span class="c1"># interactive prompt</span>
 
 <span class="n">crl_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>             <span class="c1"># focal size in µm; &lt; 5 triggers crl.minimize_button</span>
@@ -710,8 +711,8 @@ restore never raises — a missing device or single failed <code class="docutils
 logged and the rest of the restore continues.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">status</span> <span class="o">=</span> <span class="n">restore_session_state</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">knob</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">status</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">knob</span><span class="si">:</span><span class="s2">18</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="c1"># &quot;applied&quot; / &quot;skipped: &lt;reason&gt;&quot; / &quot;failed: &lt;Exception&gt;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">knob</span><span class="si">:</span><span class="s2">18</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="c1"># "applied" / "skipped: &lt;reason&gt;" / "failed: &lt;Exception&gt;"</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">restore_session_state</span></code> is imported into the interactive namespace by
@@ -739,11 +740,11 @@ args) or non-interactively (all kwargs):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_setup</span><span class="p">()</span>                          <span class="c1"># prompts</span>
 <span class="n">experiment_setup</span><span class="p">(</span>
     <span class="n">esaf_id</span><span class="o">=</span><span class="mi">281924</span><span class="p">,</span>
-    <span class="n">proposal_id</span><span class="o">=</span><span class="s2">&quot;1014446&quot;</span><span class="p">,</span>
-    <span class="n">base_name</span><span class="o">=</span><span class="s2">&quot;scan&quot;</span><span class="p">,</span>
-    <span class="n">sample</span><span class="o">=</span><span class="s2">&quot;EuAl4&quot;</span><span class="p">,</span>
-    <span class="n">server</span><span class="o">=</span><span class="s2">&quot;dserv&quot;</span><span class="p">,</span>
-    <span class="n">experiment_name</span><span class="o">=</span><span class="s2">&quot;Frontini_26-1&quot;</span><span class="p">,</span>
+    <span class="n">proposal_id</span><span class="o">=</span><span class="s2">"1014446"</span><span class="p">,</span>
+    <span class="n">base_name</span><span class="o">=</span><span class="s2">"scan"</span><span class="p">,</span>
+    <span class="n">sample</span><span class="o">=</span><span class="s2">"EuAl4"</span><span class="p">,</span>
+    <span class="n">server</span><span class="o">=</span><span class="s2">"dserv"</span><span class="p">,</span>
+    <span class="n">experiment_name</span><span class="o">=</span><span class="s2">"Frontini_26-1"</span><span class="p">,</span>
     <span class="n">reset_scan_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -755,7 +756,7 @@ full parameter description and the <code class="docutils literal notranslate"><s
 <section id="experiment-resume-path-none-restore-from-the-yaml-snapshot">
 <h3><code class="docutils literal notranslate"><span class="pre">experiment_resume(path=None)</span></code> — restore from the YAML snapshot<a class="headerlink" href="#experiment-resume-path-none-restore-from-the-yaml-snapshot" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_resume</span><span class="p">()</span>              <span class="c1"># auto-discover (cwd or cat[-1])</span>
-<span class="n">experiment_resume</span><span class="p">(</span><span class="s2">&quot;/path/to/dir&quot;</span><span class="p">)</span>  <span class="c1"># explicit base path or .yml file</span>
+<span class="n">experiment_resume</span><span class="p">(</span><span class="s2">"/path/to/dir"</span><span class="p">)</span>  <span class="c1"># explicit base path or .yml file</span>
 </pre></div>
 </div>
 <p>Does not contact DM; works even when DM is down.</p>
@@ -771,7 +772,7 @@ full parameter description and the <code class="docutils literal notranslate"><s
 </section>
 <section id="experiment-change-sample-sample-name-rotate-sample-mid-experiment">
 <h3><code class="docutils literal notranslate"><span class="pre">experiment_change_sample(sample_name=...)</span></code> — rotate sample mid-experiment<a class="headerlink" href="#experiment-change-sample-sample-name-rotate-sample-mid-experiment" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_change_sample</span><span class="p">(</span><span class="n">sample_name</span><span class="o">=</span><span class="s2">&quot;Fe3O4&quot;</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="s2">&quot;scan&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_change_sample</span><span class="p">(</span><span class="n">sample_name</span><span class="o">=</span><span class="s2">"Fe3O4"</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="s2">"scan"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Rotates the SPEC file and writes a fresh snapshot to disk.</p>
@@ -784,14 +785,14 @@ full parameter description and the <code class="docutils literal notranslate"><s
 See <a class="reference internal" href="devices_guide.html"><span class="std std-doc">Devices Guide</span></a> for the full pattern and the
 deferred-EPICS-connection rule.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">find_loadable_devices</span><span class="p">()</span>                      <span class="c1"># all entries from devices.yml</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;4idg&quot;</span><span class="p">)</span>          <span class="c1"># filter by label</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;kb&quot;</span><span class="p">)</span>             <span class="c1"># substring match on name</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;crl&quot;</span><span class="p">,</span> <span class="n">exact_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"4idg"</span><span class="p">)</span>          <span class="c1"># filter by label</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"kb"</span><span class="p">)</span>             <span class="c1"># substring match on name</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"crl"</span><span class="p">,</span> <span class="n">exact_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">load_device</span><span class="p">(</span><span class="s2">&quot;crl&quot;</span><span class="p">)</span>                           <span class="c1"># connect (or reconnect) one device</span>
-<span class="n">remove_device</span><span class="p">(</span><span class="s2">&quot;crl&quot;</span><span class="p">)</span>                         <span class="c1"># disconnect + drop from baseline</span>
+<span class="n">load_device</span><span class="p">(</span><span class="s2">"crl"</span><span class="p">)</span>                           <span class="c1"># connect (or reconnect) one device</span>
+<span class="n">remove_device</span><span class="p">(</span><span class="s2">"crl"</span><span class="p">)</span>                         <span class="c1"># disconnect + drop from baseline</span>
 <span class="n">reload_all_devices</span><span class="p">()</span>                         <span class="c1"># everything in devices.yml</span>
-<span class="n">reload_all_devices</span><span class="p">(</span><span class="n">stations</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="s2">&quot;4idh&quot;</span><span class="p">])</span>  <span class="c1"># one beamline only</span>
+<span class="n">reload_all_devices</span><span class="p">(</span><span class="n">stations</span><span class="o">=</span><span class="p">[</span><span class="s2">"core"</span><span class="p">,</span> <span class="s2">"4idh"</span><span class="p">])</span>  <span class="c1"># one beamline only</span>
 </pre></div>
 </div>
 <section id="load-vortex-electronics-pick-the-vortex-electronics-at-runtime">
@@ -801,10 +802,10 @@ chosen per session rather than hardcoded in <code class="docutils literal notran
 loading, the device is added to <code class="docutils literal notranslate"><span class="pre">__main__</span></code> regardless of whether the
 EPICS connection succeeded so the user can still call configuration
 methods.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_vortex</span><span class="p">(</span><span class="s2">&quot;xspress4&quot;</span><span class="p">)</span>             <span class="c1"># 4-element xspress3</span>
-<span class="n">load_vortex</span><span class="p">(</span><span class="s2">&quot;xspress7&quot;</span><span class="p">)</span>             <span class="c1"># 7-element xspress3</span>
-<span class="n">load_vortex</span><span class="p">(</span><span class="s2">&quot;dante1&quot;</span><span class="p">)</span>               <span class="c1"># 1-element dante</span>
-<span class="n">load_vortex</span><span class="p">(</span><span class="s2">&quot;dante4&quot;</span><span class="p">)</span>               <span class="c1"># 4-element dante</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_vortex</span><span class="p">(</span><span class="s2">"xspress4"</span><span class="p">)</span>             <span class="c1"># 4-element xspress3</span>
+<span class="n">load_vortex</span><span class="p">(</span><span class="s2">"xspress7"</span><span class="p">)</span>             <span class="c1"># 7-element xspress3</span>
+<span class="n">load_vortex</span><span class="p">(</span><span class="s2">"dante1"</span><span class="p">)</span>               <span class="c1"># 1-element dante</span>
+<span class="n">load_vortex</span><span class="p">(</span><span class="s2">"dante4"</span><span class="p">)</span>               <span class="c1"># 4-element dante</span>
 </pre></div>
 </div>
 </section>
@@ -812,11 +813,11 @@ methods.</p>
 <hr class="docutils" />
 <section id="spec-files-and-annotations">
 <h2>SPEC files and annotations<a class="headerlink" href="#spec-files-and-annotations" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newSpecFile</span><span class="p">(</span><span class="s2">&quot;my_experiment&quot;</span><span class="p">)</span>        <span class="c1"># creates 04_09_my_experiment.dat</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newSpecFile</span><span class="p">(</span><span class="s2">"my_experiment"</span><span class="p">)</span>        <span class="c1"># creates 04_09_my_experiment.dat</span>
                                     <span class="c1"># (mm_dd_&lt;title&gt;.dat; resets scan_id</span>
                                     <span class="c1"># to last in file if file already exists)</span>
 
-<span class="n">spec_comment</span><span class="p">(</span><span class="s2">&quot;Sample aligned, beam 50x50 µm&quot;</span><span class="p">)</span>
+<span class="n">spec_comment</span><span class="p">(</span><span class="s2">"Sample aligned, beam 50x50 µm"</span><span class="p">)</span>
                                     <span class="c1"># writes a #C line to the active SPEC file</span>
 </pre></div>
 </div>
@@ -831,10 +832,10 @@ if you need to introspect or rotate it manually.</p>
                      <span class="c1"># (equivalent to: mv tc 295)</span>
 
 <span class="n">opt</span><span class="p">()</span>                <span class="c1"># move positioner of last scan to its center-of-mass</span>
-<span class="n">opt</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">)</span>           <span class="c1"># … or to its maximum</span>
+<span class="n">opt</span><span class="p">(</span><span class="s2">"max"</span><span class="p">)</span>           <span class="c1"># … or to its maximum</span>
 
-<span class="n">crl_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>      <span class="c1"># see &quot;CRL focusing&quot; above</span>
-<span class="n">crl_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>        <span class="c1"># see &quot;CRL focusing&quot; above</span>
+<span class="n">crl_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>      <span class="c1"># see "CRL focusing" above</span>
+<span class="n">crl_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>        <span class="c1"># see "CRL focusing" above</span>
 </pre></div>
 </div>
 </section>
@@ -854,7 +855,7 @@ if you need to introspect or rotate it manually.</p>
 <section id="listing-what-s-available">
 <h2>Listing what’s available<a class="headerlink" href="#listing-what-s-available" title="Link to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>list_functions()                 # print every callable in __main__
-list_functions(&quot;scan&quot;)           # filter by substring
+list_functions("scan")           # filter by substring
 %whos                            # IPython: list all variables with types
 
 ascan?                           # show ascan() docstring
@@ -983,8 +984,8 @@ counters?                        # show CountersClass docstring
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">

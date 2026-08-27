@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="../_static/documentation_options.js?v=f539c95a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
@@ -494,7 +494,8 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
   </svg>
   <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
@@ -846,8 +847,8 @@ constraint management, and configuration save/restore.</p>
 This sets the active diffractometer for all HKL utility functions, applies the
 appropriate axis constraints, and injects motor aliases into the session
 namespace:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">change_diffractometer</span><span class="p">(</span><span class="s2">&quot;huber_euler&quot;</span><span class="p">)</span>   <span class="c1"># Eulerian cradle</span>
-<span class="n">change_diffractometer</span><span class="p">(</span><span class="s2">&quot;huber_hp&quot;</span><span class="p">)</span>      <span class="c1"># High-precision goniometer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">change_diffractometer</span><span class="p">(</span><span class="s2">"huber_euler"</span><span class="p">)</span>   <span class="c1"># Eulerian cradle</span>
+<span class="n">change_diffractometer</span><span class="p">(</span><span class="s2">"huber_hp"</span><span class="p">)</span>      <span class="c1"># High-precision goniometer</span>
 <span class="n">change_diffractometer</span><span class="p">()</span>                <span class="c1"># interactive prompt</span>
 </pre></div>
 </div>
@@ -917,7 +918,7 @@ load experiment-specific settings:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">run</span> <span class="n">startup_4idg</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">change_diffractometer</span><span class="p">(</span><span class="s2">&quot;huber_euler&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">change_diffractometer</span><span class="p">(</span><span class="s2">"huber_euler"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">change_diffractometer()</span></code> injects motor aliases and the reciprocal-space
@@ -942,9 +943,9 @@ needed.</p>
 <section id="list-switch-and-remove-samples">
 <h3>List, switch, and remove samples<a class="headerlink" href="#list-switch-and-remove-samples" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampleList</span><span class="p">()</span>                  <span class="c1"># list all defined samples; mark current one</span>
-<span class="n">sampleChange</span><span class="p">(</span><span class="s2">&quot;Si&quot;</span><span class="p">)</span>            <span class="c1"># switch to sample named &quot;Si&quot;</span>
+<span class="n">sampleChange</span><span class="p">(</span><span class="s2">"Si"</span><span class="p">)</span>            <span class="c1"># switch to sample named "Si"</span>
 <span class="n">sampleChange</span><span class="p">()</span>                <span class="c1"># interactive selection</span>
-<span class="n">sampleRemove</span><span class="p">(</span><span class="s2">&quot;old_sample&quot;</span><span class="p">)</span>    <span class="c1"># remove a sample by name</span>
+<span class="n">sampleRemove</span><span class="p">(</span><span class="s2">"old_sample"</span><span class="p">)</span>    <span class="c1"># remove a sample by name</span>
 <span class="n">sampleRemove</span><span class="p">()</span>                <span class="c1"># interactive selection</span>
 </pre></div>
 </div>
@@ -959,7 +960,7 @@ needed.</p>
 <p>Refine a single lattice constant from the current HKL position
 (auto-detects which parameter to refine based on position):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">update_lattice</span><span class="p">()</span>        <span class="c1"># auto: refines a, b, or c depending on current HKL</span>
-<span class="n">update_lattice</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>     <span class="c1"># refine only c</span>
+<span class="n">update_lattice</span><span class="p">(</span><span class="s2">"c"</span><span class="p">)</span>     <span class="c1"># refine only c</span>
 </pre></div>
 </div>
 </section>
@@ -1069,7 +1070,7 @@ each reflection), and the corrected 2θ values.</p></li>
 <span class="n">RE</span><span class="p">(</span><span class="n">mvr</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>                       <span class="c1"># step l by +0.01</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>       <span class="c1"># relative L-scan</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">ascan</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>       <span class="c1"># absolute K-scan</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>                             <span class="c1"># center l on the last scan&#39;s COM</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>                             <span class="c1"># center l on the last scan's COM</span>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="#scans-in-reciprocal-space"><span class="std std-ref">Scans in reciprocal space</span></a> for the
@@ -1081,9 +1082,9 @@ dedicated <code class="docutils literal notranslate"><span class="pre">hscan</sp
 <p><code class="docutils literal notranslate"><span class="pre">setmode()</span></code> lists all available modes (1-indexed). Selecting a mode
 automatically freezes the unused detector angle at 0:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">setmode</span><span class="p">()</span>       <span class="c1"># interactive selection (shows numbered list)</span>
-<span class="n">setmode</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>      <span class="c1"># e.g. &quot;4-circles constant phi horizontal&quot; → freezes delta=0</span>
-<span class="n">setmode</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>      <span class="c1"># e.g. &quot;4-circles bissecting horizontal&quot;</span>
-<span class="n">setmode</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>     <span class="c1"># e.g. &quot;psi constant horizontal&quot;</span>
+<span class="n">setmode</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>      <span class="c1"># e.g. "4-circles constant phi horizontal" → freezes delta=0</span>
+<span class="n">setmode</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>      <span class="c1"># e.g. "4-circles bissecting horizontal"</span>
+<span class="n">setmode</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>     <span class="c1"># e.g. "psi constant horizontal"</span>
 </pre></div>
 </div>
 <p>Available modes include (geometry-dependent):</p>
@@ -1127,9 +1128,9 @@ defines the wrap-around for the axis: solutions are reported in the interval
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_constraints</span><span class="p">()</span>          <span class="c1"># print low/high limits and cut point for each axis</span>
 <span class="n">reset_constraints</span><span class="p">()</span>         <span class="c1"># reset all limits to defaults</span>
 <span class="n">set_constraints</span><span class="p">()</span>           <span class="c1"># interactive: set limits/cut for each axis</span>
-<span class="n">set_constraints</span><span class="p">(</span><span class="s2">&quot;phi&quot;</span><span class="p">)</span>      <span class="c1"># interactive: set limits/cut for one axis</span>
-<span class="n">set_constraints</span><span class="p">(</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>         <span class="c1"># set limits only</span>
-<span class="n">set_constraints</span><span class="p">(</span><span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">)</span>   <span class="c1"># set limits and cut point</span>
+<span class="n">set_constraints</span><span class="p">(</span><span class="s2">"phi"</span><span class="p">)</span>      <span class="c1"># interactive: set limits/cut for one axis</span>
+<span class="n">set_constraints</span><span class="p">(</span><span class="s2">"phi"</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>         <span class="c1"># set limits only</span>
+<span class="n">set_constraints</span><span class="p">(</span><span class="s2">"phi"</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">)</span>   <span class="c1"># set limits and cut point</span>
 
 <span class="c1"># Set all 6 axes at once (limits only — 12 args):</span>
 <span class="n">set_constraints</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">140</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
@@ -1260,7 +1261,7 @@ detector channel.</p>
 scan:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peak_pos</span><span class="p">()</span>                          <span class="c1"># last scan, all hinted detectors</span>
 <span class="n">peak_pos</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>                        <span class="c1"># 3 scans back</span>
-<span class="n">peak_pos</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>    <span class="c1"># specific scan, single detector</span>
+<span class="n">peak_pos</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">"scaler1_ch14"</span><span class="p">)</span>    <span class="c1"># specific scan, single detector</span>
 </pre></div>
 </div>
 <p>Move to a peak feature. Wrap in <code class="docutils literal notranslate"><span class="pre">RE()</span></code>:</p>
@@ -1271,7 +1272,7 @@ scan:</p>
 <span class="n">RE</span><span class="p">(</span><span class="n">mini</span><span class="p">())</span>                          <span class="c1"># move delta to x at peak minimum</span>
 
 <span class="c1"># Pick a specific detector channel:</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">detector</span><span class="o">=</span><span class="s2">"scaler1_ch14"</span><span class="p">))</span>
 
 <span class="c1"># Operate on an older scan:</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">scan_id</span><span class="o">=</span><span class="mi">1234</span><span class="p">))</span>
@@ -1341,7 +1342,7 @@ the current energy. Pass <code class="docutils literal notranslate"><span class=
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analyzer_configuration</span><span class="p">()</span>      <span class="c1"># select crystal, set d-spacing; optionally pass energy (keV)</span>
 <span class="n">analyzer_configuration</span><span class="p">(</span><span class="mf">7.0</span><span class="p">)</span>   <span class="c1"># configure for 7.0 keV</span>
 <span class="n">analyzer_set</span><span class="p">()</span>                <span class="c1"># calibrate ath/atth offset to calculated Bragg angles (must be on peak)</span>
-<span class="n">analyzer_set</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>             <span class="c1"># release calibration; restore raw motor positions</span>
+<span class="n">analyzer_set</span><span class="p">(</span><span class="s2">"r"</span><span class="p">)</span>             <span class="c1"># release calibration; restore raw motor positions</span>
 </pre></div>
 </div>
 </section>
@@ -1368,10 +1369,10 @@ through convenience methods or <code class="docutils literal notranslate"><span 
 <span class="n">ringlight</span><span class="o">.</span><span class="n">rainbow</span><span class="p">()</span>     <span class="c1"># RAINBOW</span>
 
 <span class="n">ringlight</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>        <span class="c1"># by index (0-5)</span>
-<span class="n">ringlight</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s2">&quot;half&quot;</span><span class="p">)</span>   <span class="c1"># by short name</span>
-<span class="n">ringlight</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s2">&quot;100%&quot;</span><span class="p">)</span>   <span class="c1"># by raw IOC label</span>
+<span class="n">ringlight</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s2">"half"</span><span class="p">)</span>   <span class="c1"># by short name</span>
+<span class="n">ringlight</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s2">"100%"</span><span class="p">)</span>   <span class="c1"># by raw IOC label</span>
 
-<span class="n">ringlight</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>         <span class="c1"># read current state (&quot;OFF&quot;, &quot;100&quot;, &quot;50&quot;, ...)</span>
+<span class="n">ringlight</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>         <span class="c1"># read current state ("OFF", "100", "50", ...)</span>
 </pre></div>
 </div>
 </section>
@@ -1383,8 +1384,8 @@ through convenience methods or <code class="docutils literal notranslate"><span 
 <p>Save the current diffractometer state (sample, reflections, UB matrix,
 constraints, mode) to a YAML file in the current directory:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">write_config</span><span class="p">()</span>              <span class="c1"># saves to default_polar_config.yml</span>
-<span class="n">write_config</span><span class="p">(</span><span class="s2">&quot;EuAl4_run1&quot;</span><span class="p">)</span>  <span class="c1"># saves to EuAl4_run1_polar_config.yml</span>
-<span class="n">write_config</span><span class="p">(</span><span class="s2">&quot;EuAl4_run1&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># skip confirmation prompt</span>
+<span class="n">write_config</span><span class="p">(</span><span class="s2">"EuAl4_run1"</span><span class="p">)</span>  <span class="c1"># saves to EuAl4_run1_polar_config.yml</span>
+<span class="n">write_config</span><span class="p">(</span><span class="s2">"EuAl4_run1"</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># skip confirmation prompt</span>
 </pre></div>
 </div>
 </section>
@@ -1406,7 +1407,7 @@ silently retargeting motors.</p>
 databroker scan:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>                           <span class="c1"># most recent scan</span>
 <span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>                         <span class="c1"># scan ID 1234</span>
-<span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="n">sample_name</span><span class="o">=</span><span class="s2">&quot;EuAl4&quot;</span><span class="p">)</span>    <span class="c1"># override sample name</span>
+<span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="n">sample_name</span><span class="o">=</span><span class="s2">"EuAl4"</span><span class="p">)</span>    <span class="c1"># override sample name</span>
 <span class="n">restore_huber_from_scan</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>             <span class="c1"># use first available info</span>
 </pre></div>
 </div>
@@ -1429,14 +1430,14 @@ the full <code class="docutils literal notranslate"><span class="pre">counters.p
 session globals (<code class="docutils literal notranslate"><span class="pre">tc</span></code> for the setpoint, <code class="docutils literal notranslate"><span class="pre">ts</span></code> for the readback, and
 <code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLER</span></code> for the active label) and adds <code class="docutils literal notranslate"><span class="pre">ts</span></code> to the
 baseline so the sample temperature lands in every scan automatically:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>        <span class="c1"># LakeShore 336 (default)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>        <span class="c1"># LakeShore 336 (default)</span>
 <span class="n">mv</span> <span class="n">tc</span> <span class="mi">295</span>                     <span class="c1"># set the loop-1 setpoint to 295 K</span>
 <span class="n">te</span><span class="p">(</span><span class="mi">295</span><span class="p">)</span>                       <span class="c1"># equivalent shortcut</span>
 
 <span class="n">ts</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>                      <span class="c1"># current loop-2 readback</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">detectors</span><span class="o">=</span><span class="p">[</span><span class="n">ts</span><span class="p">]))</span>  <span class="c1"># explicit count</span>
 
-<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g-340&quot;</span><span class="p">)</span>    <span class="c1"># switch to the LakeShore 340</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"g-340"</span><span class="p">)</span>    <span class="c1"># switch to the LakeShore 340</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLERS</span></code> lists every supported label — see
@@ -1447,7 +1448,7 @@ inspection or non-standard channels:</p>
 <span class="n">temp_336_4idg</span><span class="o">.</span><span class="n">loop1</span><span class="o">.</span><span class="n">setpoint</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>    <span class="c1"># set loop-1 setpoint</span>
 <span class="n">temp_336_4idg</span><span class="o">.</span><span class="n">loop2</span><span class="o">.</span><span class="n">readback</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>       <span class="c1"># sensor B readback (K)</span>
 
-<span class="n">temp_340_4idg</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>               <span class="c1"># readback of LS340 &quot;sample&quot; channel</span>
+<span class="n">temp_340_4idg</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>               <span class="c1"># readback of LS340 "sample" channel</span>
 <span class="n">temp_340_4idg</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">setpoint</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">295</span><span class="p">)</span>  <span class="c1"># set LS340 control loop</span>
 </pre></div>
 </div>
@@ -1457,11 +1458,11 @@ inspection or non-standard channels:</p>
 <h2>Saving Data<a class="headerlink" href="#saving-data" title="Link to this heading">#</a></h2>
 <p>SPEC files are enabled by default. Use <code class="docutils literal notranslate"><span class="pre">newSpecFile</span></code> to start a new file and
 <code class="docutils literal notranslate"><span class="pre">spec_comment</span></code> to annotate the logbook:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newSpecFile</span><span class="p">(</span><span class="s2">&quot;EuAl4_experiment&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">newSpecFile</span><span class="p">(</span><span class="s2">"EuAl4_experiment"</span><span class="p">)</span>
 <span class="c1"># → creates e.g. 0410_EuAl4_experiment.dat</span>
 
-<span class="n">spec_comment</span><span class="p">(</span><span class="s2">&quot;Sample: EuAl4, oriented (001), T = 300 K&quot;</span><span class="p">)</span>
-<span class="n">spec_comment</span><span class="p">(</span><span class="s2">&quot;Aligned at (2 0 0), phi frozen at 5 deg&quot;</span><span class="p">)</span>
+<span class="n">spec_comment</span><span class="p">(</span><span class="s2">"Sample: EuAl4, oriented (001), T = 300 K"</span><span class="p">)</span>
+<span class="n">spec_comment</span><span class="p">(</span><span class="s2">"Aligned at (2 0 0), phi frozen at 5 deg"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Access recent runs from the databroker catalog:</p>
@@ -1472,12 +1473,12 @@ inspection or non-standard channels:</p>
 <p><a class="reference external" href="https://github.com/APS-4ID-POLAR/polartools">polartools</a> provides higher-level
 routines for diffraction data analysis, available in the session namespace:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">load_table</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cat</span><span class="p">)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">fit_peak</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;delta&quot;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">])</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">fit_peak</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"delta"</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">"scaler1_ch14"</span><span class="p">])</span>
 
-<span class="n">plot_fit</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">cat</span><span class="p">,</span> <span class="n">positioner</span><span class="o">=</span><span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>
-<span class="n">fit_series</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">cat</span><span class="p">,</span> <span class="n">positioner</span><span class="o">=</span><span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>
+<span class="n">plot_fit</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">cat</span><span class="p">,</span> <span class="n">positioner</span><span class="o">=</span><span class="s2">"delta"</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">"scaler1_ch14"</span><span class="p">)</span>
+<span class="n">fit_series</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">cat</span><span class="p">,</span> <span class="n">positioner</span><span class="o">=</span><span class="s2">"delta"</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">"scaler1_ch14"</span><span class="p">)</span>
 
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">load_mesh</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cat</span><span class="p">,</span> <span class="n">xmotor</span><span class="o">=</span><span class="s2">&quot;cryox&quot;</span><span class="p">,</span> <span class="n">ymotor</span><span class="o">=</span><span class="s2">&quot;cryoy&quot;</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">&quot;scaler1_ch14&quot;</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">load_mesh</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cat</span><span class="p">,</span> <span class="n">xmotor</span><span class="o">=</span><span class="s2">"cryox"</span><span class="p">,</span> <span class="n">ymotor</span><span class="o">=</span><span class="s2">"cryoy"</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="s2">"scaler1_ch14"</span><span class="p">)</span>
 <span class="n">plot_2d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1632,8 +1633,8 @@ routines for diffraction data analysis, available in the session namespace:</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">

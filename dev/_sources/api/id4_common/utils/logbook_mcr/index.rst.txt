@@ -79,7 +79,7 @@ Module Contents
 
 
 
-.. py:function:: fetch_shift_events(n=3)
+.. py:function:: fetch_shift_events(n=5)
 
    Fetch and display the last n shift events from the APS logbook.
 
