@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="../_static/documentation_options.js?v=f539c95a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
@@ -494,7 +494,8 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
   </svg>
   <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
@@ -615,11 +616,11 @@ script if you need it.</p>
 <p>Pass all values as keyword arguments — useful for startup scripts:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_setup</span><span class="p">(</span>
     <span class="n">esaf_id</span>       <span class="o">=</span> <span class="mi">281924</span><span class="p">,</span>
-    <span class="n">proposal_id</span>   <span class="o">=</span> <span class="s2">&quot;dev&quot;</span><span class="p">,</span>
-    <span class="n">base_name</span>     <span class="o">=</span> <span class="s2">&quot;scan&quot;</span><span class="p">,</span>
-    <span class="n">sample</span>        <span class="o">=</span> <span class="s2">&quot;EuAl4&quot;</span><span class="p">,</span>
-    <span class="n">server</span>        <span class="o">=</span> <span class="s2">&quot;dserv&quot;</span><span class="p">,</span>
-    <span class="n">experiment_name</span> <span class="o">=</span> <span class="s2">&quot;Miao_25-3&quot;</span><span class="p">,</span>
+    <span class="n">proposal_id</span>   <span class="o">=</span> <span class="s2">"dev"</span><span class="p">,</span>
+    <span class="n">base_name</span>     <span class="o">=</span> <span class="s2">"scan"</span><span class="p">,</span>
+    <span class="n">sample</span>        <span class="o">=</span> <span class="s2">"EuAl4"</span><span class="p">,</span>
+    <span class="n">server</span>        <span class="o">=</span> <span class="s2">"dserv"</span><span class="p">,</span>
+    <span class="n">experiment_name</span> <span class="o">=</span> <span class="s2">"Miao_25-3"</span><span class="p">,</span>
     <span class="n">reset_scan_id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>     <span class="c1"># -1 = do not reset</span>
 <span class="p">)</span>
 </pre></div>
@@ -666,7 +667,7 @@ than inherited.</p>
 during the previous <code class="docutils literal notranslate"><span class="pre">experiment_setup()</span></code>. Does <strong>not</strong> contact DM, so it
 works even when DM is down.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_resume</span><span class="p">()</span>              <span class="c1"># auto-discover the snapshot</span>
-<span class="n">experiment_resume</span><span class="p">(</span><span class="s2">&quot;/path/to/dir&quot;</span><span class="p">)</span> <span class="c1"># explicit base path or .yml file</span>
+<span class="n">experiment_resume</span><span class="p">(</span><span class="s2">"/path/to/dir"</span><span class="p">)</span> <span class="c1"># explicit base path or .yml file</span>
 </pre></div>
 </div>
 <p>With no arguments, <code class="docutils literal notranslate"><span class="pre">resume()</span></code> looks first in the current working
@@ -687,7 +688,7 @@ from a different run.</p>
 </section>
 <section id="changing-sample-mid-experiment">
 <h3>Changing sample mid-experiment<a class="headerlink" href="#changing-sample-mid-experiment" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_change_sample</span><span class="p">(</span><span class="n">sample_name</span><span class="o">=</span><span class="s2">&quot;Fe3O4&quot;</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="s2">&quot;scan&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_change_sample</span><span class="p">(</span><span class="n">sample_name</span><span class="o">=</span><span class="s2">"Fe3O4"</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="s2">"scan"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This rotates the SPEC file and writes a fresh snapshot to disk.</p>
@@ -702,13 +703,13 @@ Calling each of these once per experiment auto-saves the values into
 <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">id4_common.macros.startup_common</span></code>) can re-apply them after a
 bluesky restart.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Active temperature controller (injects tc / ts / TEMPERATURE_CONTROLLER)</span>
-<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>           <span class="c1"># 4IDG LakeShore 336</span>
-<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;h-9T&quot;</span><span class="p">)</span>        <span class="c1"># 4IDH 9 T magnet VTI</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>           <span class="c1"># 4IDG LakeShore 336</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"h-9T"</span><span class="p">)</span>        <span class="c1"># 4IDH 9 T magnet VTI</span>
 <span class="n">mv</span> <span class="n">tc</span> <span class="mi">295</span>                        <span class="c1"># use the resulting setpoint</span>
 <span class="n">te</span><span class="p">(</span><span class="mi">295</span><span class="p">)</span>                          <span class="c1"># equivalent shortcut</span>
 
 <span class="c1"># CRL focusing</span>
-<span class="n">crl_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>                   <span class="c1"># switch CRL offset to 4IDG</span>
+<span class="n">crl_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>                   <span class="c1"># switch CRL offset to 4IDG</span>
 <span class="n">crl_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>                     <span class="c1"># set focal size to 50 µm</span>
 <span class="n">mov</span> <span class="n">crl</span><span class="o">.</span><span class="n">beamsize</span> <span class="mi">10</span>              <span class="c1"># write 10 µm directly to focalSize PV</span>
 
@@ -716,8 +717,8 @@ bluesky restart.</p>
 <span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Energy tracking + undulator offsets</span>
-<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">&quot;undulators_ds&quot;</span><span class="p">,</span> <span class="s2">&quot;pr2&quot;</span><span class="p">])</span>
-<span class="n">undulator_setup</span><span class="p">(</span><span class="n">ds</span><span class="o">=</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="n">ds_off</span><span class="o">=-</span><span class="mf">0.063</span><span class="p">)</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">"undulators_ds"</span><span class="p">,</span> <span class="s2">"pr2"</span><span class="p">])</span>
+<span class="n">undulator_setup</span><span class="p">(</span><span class="n">ds</span><span class="o">=</span><span class="s2">"Y"</span><span class="p">,</span> <span class="n">ds_off</span><span class="o">=-</span><span class="mf">0.063</span><span class="p">)</span>
 
 <span class="c1"># Phase-retarder setup (4IDH XMCD workflows)</span>
 <span class="n">pr_setup</span><span class="p">()</span>                       <span class="c1"># interactive</span>
@@ -808,10 +809,10 @@ a table of available channels and prompts interactively:</p>
 <span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">tabx</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
 
 <span class="c1"># 5. Start new SPEC file</span>
-<span class="n">newSpecFile</span><span class="p">(</span><span class="s2">&quot;TbFe_300K&quot;</span><span class="p">)</span>
+<span class="n">newSpecFile</span><span class="p">(</span><span class="s2">"TbFe_300K"</span><span class="p">)</span>
 
 <span class="c1"># 6. Add a comment</span>
-<span class="n">spec_comment</span><span class="p">(</span><span class="s2">&quot;Sample: TbFe, T = 300 K, field = 0 T&quot;</span><span class="p">)</span>
+<span class="n">spec_comment</span><span class="p">(</span><span class="s2">"Sample: TbFe, T = 300 K, field = 0 T"</span><span class="p">)</span>
 
 <span class="c1"># 7. Scan</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">ascan</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="mf">7.4</span><span class="p">,</span> <span class="mf">7.7</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
@@ -825,19 +826,19 @@ a table of available channels and prompts interactively:</p>
 <span class="n">find_loadable_devices</span><span class="p">()</span>
 
 <span class="c1"># Filter by hutch or function</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;4idg&quot;</span><span class="p">)</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;detector&quot;</span><span class="p">)</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;kb&quot;</span><span class="p">)</span>       <span class="c1"># substring match</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"4idg"</span><span class="p">)</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"detector"</span><span class="p">)</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"kb"</span><span class="p">)</span>       <span class="c1"># substring match</span>
 
 <span class="c1"># Connect a device not loaded at startup</span>
-<span class="n">load_device</span><span class="p">(</span><span class="s2">&quot;eiger&quot;</span><span class="p">)</span>
+<span class="n">load_device</span><span class="p">(</span><span class="s2">"eiger"</span><span class="p">)</span>
 
 <span class="c1"># Disconnect and remove from baseline</span>
-<span class="n">remove_device</span><span class="p">(</span><span class="s2">&quot;eiger&quot;</span><span class="p">)</span>
+<span class="n">remove_device</span><span class="p">(</span><span class="s2">"eiger"</span><span class="p">)</span>
 
 <span class="c1"># Access a device by name using the registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">apsbits.core.instrument_init</span><span class="w"> </span><span class="kn">import</span> <span class="n">oregistry</span>
-<span class="n">dev</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;huber_euler&quot;</span><span class="p">)</span>
+<span class="n">dev</span> <span class="o">=</span> <span class="n">oregistry</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"huber_euler"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -851,12 +852,12 @@ a table of available channels and prompts interactively:</p>
 
 <span class="c1"># Read primary data stream</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">primary</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># returns xarray Dataset</span>
-<span class="n">ds</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span>             <span class="c1"># energy axis</span>
-<span class="n">ds</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>        <span class="c1"># detector channel</span>
+<span class="n">ds</span><span class="p">[</span><span class="s2">"energy"</span><span class="p">]</span>             <span class="c1"># energy axis</span>
+<span class="n">ds</span><span class="p">[</span><span class="s2">"scaler1_ch9"</span><span class="p">]</span>        <span class="c1"># detector channel</span>
 
 <span class="c1"># Quick plot</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;scaler1_ch8&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"energy"</span><span class="p">],</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"scaler1_ch9"</span><span class="p">]</span> <span class="o">/</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"scaler1_ch8"</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Peak finding from the last scan — recommended path is the
@@ -883,7 +884,7 @@ data loading and inspection utilities available in the session namespace:</p>
 <span class="n">show_meta</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">cat</span><span class="p">)</span>               <span class="c1"># all runs in catalog</span>
 
 <span class="c1"># Query runs matching metadata fields</span>
-<span class="n">db_query</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="s2">&quot;Fe3O4&quot;</span><span class="p">,</span> <span class="s2">&quot;proposal_id&quot;</span><span class="p">:</span> <span class="s2">&quot;GUP-12345&quot;</span><span class="p">})</span>
+<span class="n">db_query</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="p">{</span><span class="s2">"sample"</span><span class="p">:</span> <span class="s2">"Fe3O4"</span><span class="p">,</span> <span class="s2">"proposal_id"</span><span class="p">:</span> <span class="s2">"GUP-12345"</span><span class="p">})</span>
 
 <span class="c1"># Load a scan as a pandas DataFrame</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">load_table</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cat</span><span class="p">)</span>
@@ -899,7 +900,7 @@ data loading and inspection utilities available in the session namespace:</p>
 <span class="c1"># numbers.  Enter `0` to disable tracking on every device.</span>
 <span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">()</span>
 <span class="c1"># Or not interactive:</span>
-<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">&quot;undulators_ds&quot;</span><span class="p">,</span> <span class="s2">&quot;pr2&quot;</span><span class="p">])</span>
+<span class="n">energy</span><span class="o">.</span><span class="n">tracking_setup</span><span class="p">([</span><span class="s2">"undulators_ds"</span><span class="p">,</span> <span class="s2">"pr2"</span><span class="p">])</span>
 
 <span class="c1"># Check which devices are currently tracked</span>
 <span class="n">energy</span><span class="o">.</span><span class="n">tracking</span>
@@ -914,8 +915,8 @@ data loading and inspection utilities available in the session namespace:</p>
 <section id="runengine-status">
 <h2>RunEngine Status<a class="headerlink" href="#runengine-status" title="Link to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="o">.</span><span class="n">md</span>                     <span class="c1"># view all persistent metadata</span>
-<span class="n">RE</span><span class="o">.</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;scan_id&quot;</span><span class="p">]</span>          <span class="c1"># current scan counter</span>
-<span class="n">RE</span><span class="o">.</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;proposal_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;GUP-12345&quot;</span>   <span class="c1"># set metadata</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">md</span><span class="p">[</span><span class="s2">"scan_id"</span><span class="p">]</span>          <span class="c1"># current scan counter</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">md</span><span class="p">[</span><span class="s2">"proposal_id"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"GUP-12345"</span>   <span class="c1"># set metadata</span>
 
 <span class="n">RE</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>    <span class="c1"># abort current plan (cleanup may not run)</span>
 <span class="n">RE</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>     <span class="c1"># graceful stop (cleanup runs)</span>
@@ -1034,8 +1035,8 @@ data loading and inspection utilities available in the session namespace:</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">

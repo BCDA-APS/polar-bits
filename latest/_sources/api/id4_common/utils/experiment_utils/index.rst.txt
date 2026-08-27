@@ -39,7 +39,7 @@ Module Contents
    :value: -1
 
 
-.. py:class:: ExperimentClass(*, prompt: Callable[[str], str] = input, printer: Callable[Ellipsis, None] = print)
+.. py:class:: ExperimentClass(*, prompt: Callable[[str], str] = input, printer: Callable[..., None] = print)
 
    Drives interactive experiment setup, server/path resolution, and
    optional Data Management (DM) integration.

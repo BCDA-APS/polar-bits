@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
@@ -494,7 +494,8 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
   </svg>
   <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
@@ -595,10 +596,10 @@ every scan, providing a passive log of instrument state.</p>
 <h3>Persistent change (recommended)<a class="headerlink" href="#persistent-change-recommended" title="Link to this heading">#</a></h3>
 <p>Add or remove the <code class="docutils literal notranslate"><span class="pre">&quot;baseline&quot;</span></code> label from the device entry in <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code>,
 then reload devices:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># devices.yml — add &quot;baseline&quot; to make a device part of the baseline</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># devices.yml — add "baseline" to make a device part of the baseline</span>
 <span class="nt">id4_common.devices.my_device.MyDevice</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mydev</span>
-<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;core&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;4idb&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;baseline&quot;</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># &lt;-- add &quot;baseline&quot; here</span>
+<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"core"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"4idb"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"baseline"</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># &lt;-- add "baseline" here</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">reload_all_devices</span><span class="p">()</span>   <span class="c1"># re-reads devices.yml and reconnects everything</span>
@@ -609,11 +610,11 @@ then reload devices:</p>
 <h3>Runtime change (current session only)<a class="headerlink" href="#runtime-change-current-session-only" title="Link to this heading">#</a></h3>
 <p>Load a device and it will be added to the baseline automatically if its
 <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code> entry carries the <code class="docutils literal notranslate"><span class="pre">&quot;baseline&quot;</span></code> label:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_device</span><span class="p">(</span><span class="s2">&quot;mydev&quot;</span><span class="p">)</span>      <span class="c1"># connects device; adds to baseline if labelled</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_device</span><span class="p">(</span><span class="s2">"mydev"</span><span class="p">)</span>      <span class="c1"># connects device; adds to baseline if labelled</span>
 </pre></div>
 </div>
 <p>Remove a device from both the registry and the baseline:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">remove_device</span><span class="p">(</span><span class="s2">&quot;mydev&quot;</span><span class="p">)</span>    <span class="c1"># disconnects and removes from baseline</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">remove_device</span><span class="p">(</span><span class="s2">"mydev"</span><span class="p">)</span>    <span class="c1"># disconnects and removes from baseline</span>
 </pre></div>
 </div>
 <p>To inspect which devices are currently in the baseline:</p>
@@ -629,7 +630,7 @@ then reload devices:</p>
 RunEngine finishes the current step before stopping. Then:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>   <span class="c1"># continue from where the scan paused</span>
 <span class="n">RE</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>     <span class="c1"># end the scan cleanly; data collected so far is saved</span>
-<span class="n">RE</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>    <span class="c1"># end the scan; run is marked exit_status=&#39;aborted&#39;</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>    <span class="c1"># end the scan; run is marked exit_status='aborted'</span>
 <span class="n">RE</span><span class="o">.</span><span class="n">halt</span><span class="p">()</span>     <span class="c1"># emergency stop — no cleanup, use as a last resort</span>
 </pre></div>
 </div>
@@ -673,7 +674,7 @@ shutter closes mid-scan (e.g. due to a beam dump, interlock trip, or manual
 close), the RunEngine automatically suspends rather than continuing with no
 beam. It will resume automatically once the shutter re-opens.</p>
 <p>If you need to check the current RunEngine state:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="o">.</span><span class="n">state</span>      <span class="c1"># &#39;running&#39;, &#39;paused&#39;, &#39;idle&#39;, etc.</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="o">.</span><span class="n">state</span>      <span class="c1"># 'running', 'paused', 'idle', etc.</span>
 </pre></div>
 </div>
 <p>If the beam has returned but the scan has not resumed after a minute, you
@@ -713,8 +714,8 @@ updated after every scan:</p>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">peaks</span></code> reports results per detector signal — index by signal name:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peaks</span><span class="o">.</span><span class="n">com</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>    <span class="c1"># centroid for channel 9</span>
-<span class="n">peaks</span><span class="o">.</span><span class="n">cen</span><span class="p">[</span><span class="s2">&quot;scaler1_ch9&quot;</span><span class="p">]</span>    <span class="c1"># FWHM midpoint for channel 9</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">peaks</span><span class="o">.</span><span class="n">com</span><span class="p">[</span><span class="s2">"scaler1_ch9"</span><span class="p">]</span>    <span class="c1"># centroid for channel 9</span>
+<span class="n">peaks</span><span class="o">.</span><span class="n">cen</span><span class="p">[</span><span class="s2">"scaler1_ch9"</span><span class="p">]</span>    <span class="c1"># FWHM midpoint for channel 9</span>
 </pre></div>
 </div>
 <p>Or use the diagnostic helpers (<code class="docutils literal notranslate"><span class="pre">peak_pos()</span></code>, <code class="docutils literal notranslate"><span class="pre">pmax()</span></code>, <code class="docutils literal notranslate"><span class="pre">pmin()</span></code>) which
@@ -740,13 +741,13 @@ to see its full source code:</p>
 </div>
 <p>To list available scan plans specifically, filter by type:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plans are generator functions — search by name pattern</span>
-<span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;scan&quot;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">]</span>
+<span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">()</span> <span class="k">if</span> <span class="s2">"scan"</span> <span class="ow">in</span> <span class="n">k</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>To explore devices available for loading:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">find_loadable_devices</span><span class="p">()</span>              <span class="c1"># all devices in devices.yml</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;4idg&quot;</span><span class="p">)</span>  <span class="c1"># filter by label</span>
-<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;kb&quot;</span><span class="p">)</span>     <span class="c1"># substring match on name</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"4idg"</span><span class="p">)</span>  <span class="c1"># filter by label</span>
+<span class="n">find_loadable_devices</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"kb"</span><span class="p">)</span>     <span class="c1"># substring match on name</span>
 </pre></div>
 </div>
 </section>
@@ -759,9 +760,9 @@ and injects three names into the session: <code class="docutils literal notransl
 <code class="docutils literal notranslate"><span class="pre">ts</span></code> (sample readback), and <code class="docutils literal notranslate"><span class="pre">TEMPERATURE_CONTROLLER</span></code> (the active
 label string). <code class="docutils literal notranslate"><span class="pre">ts</span></code> is added to the baseline so the sample
 temperature lands in every scan automatically.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>        <span class="c1"># 4IDG LakeShore 336 (default loop)</span>
-<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;g-340&quot;</span><span class="p">)</span>    <span class="c1"># 4IDG LakeShore 340</span>
-<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">&quot;h-9T&quot;</span><span class="p">)</span>     <span class="c1"># 4IDH 9 T magnet VTI</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>        <span class="c1"># 4IDG LakeShore 336 (default loop)</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"g-340"</span><span class="p">)</span>    <span class="c1"># 4IDG LakeShore 340</span>
+<span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"h-9T"</span><span class="p">)</span>     <span class="c1"># 4IDH 9 T magnet VTI</span>
 
 <span class="n">mv</span> <span class="n">tc</span> <span class="mi">295</span>                     <span class="c1"># set the setpoint to 295 K</span>
 <span class="n">te</span><span class="p">(</span><span class="mi">295</span><span class="p">)</span>                       <span class="c1"># equivalent shortcut</span>
@@ -784,7 +785,7 @@ restart. After restarting bluesky, call <code class="docutils literal notranslat
 re-apply every saved knob in one go:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">status</span> <span class="o">=</span> <span class="n">restore_session_state</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">knob</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">status</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">knob</span><span class="si">:</span><span class="s2">18</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">knob</span><span class="si">:</span><span class="s2">18</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">status</span></code> reports <code class="docutils literal notranslate"><span class="pre">applied</span></code> / <code class="docutils literal notranslate"><span class="pre">skipped:</span> <span class="pre">&lt;reason&gt;</span></code> / <code class="docutils literal notranslate"><span class="pre">failed:</span> <span class="pre">&lt;Exception&gt;</span></code>
@@ -803,7 +804,7 @@ for the full restart template.</p>
 <h2>How do I set the CRL focal size?<a class="headerlink" href="#how-do-i-set-the-crl-focal-size" title="Link to this heading">#</a></h2>
 <p>The recommended path is the <code class="docutils literal notranslate"><span class="pre">crl_size</span></code> shortcut, which handles the
 <code class="docutils literal notranslate"><span class="pre">&lt;</span> <span class="pre">5</span> <span class="pre">µm</span></code> “minimize” path and the µm → m conversion:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crl_setup</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>          <span class="c1"># switch the offset to the active hutch (g or h)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crl_setup</span><span class="p">(</span><span class="s2">"h"</span><span class="p">)</span>          <span class="c1"># switch the offset to the active hutch (g or h)</span>
 <span class="n">crl_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>            <span class="c1"># 50 µm focal size</span>
 <span class="n">crl_size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>             <span class="c1"># &lt; 5 µm triggers crl.minimize_button</span>
 </pre></div>
@@ -919,8 +920,8 @@ meter-valued PVs are still reachable as <code class="docutils literal notranslat
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
