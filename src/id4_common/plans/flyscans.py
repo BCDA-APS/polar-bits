@@ -76,7 +76,6 @@ import bluesky.plan_stubs as bps
 import bluesky.preprocessors as bpp
 import numpy as np
 from apsbits.core.instrument_init import oregistry
-from apstools.devices import AD_prime_plugin2
 from bluesky.plan_stubs import mv
 from bluesky.plan_stubs import sleep
 
@@ -91,12 +90,12 @@ logger.info(__file__)
 # 0..+40 um offset that is summed onto the EPICS-driven base position.
 DAC_MIN_UM = 0.0
 DAC_MAX_UM = 40.0
-DAC_SWING_UM = DAC_MAX_UM - DAC_MIN_UM         # 40 um
+DAC_SWING_UM = DAC_MAX_UM - DAC_MIN_UM  # 40 um
 DAC_CENTRE_UM = (DAC_MIN_UM + DAC_MAX_UM) / 2  # 20 um (= 2.5 V)
 # Maximum |x_min|, |x_max| the user can request. Half the DAC swing,
 # since the scan is centred on the DAC midpoint (20 um offset) and the
 # DAC sweep needs to fit within the 0..40 um window.
-PIEZO_HALF_RANGE_UM = DAC_SWING_UM / 2          # 20 um
+PIEZO_HALF_RANGE_UM = DAC_SWING_UM / 2  # 20 um
 # Mechanical full-range limit of the PiezoJena, used to validate that
 # the EPICS-side shift doesn't push the piezo past its endstops.
 PIEZO_MECHANICAL_RANGE_UM = 40.0
@@ -248,8 +247,14 @@ def flyscan(
 
     plan_args = {
         "detectors": [d.name for d in detectors],
-        "x_min": x_min, "x_max": x_max, "dx": dx_, "x_npts": x_npts_,
-        "y_min": y_min, "y_max": y_max, "dy": dy_, "y_npts": y_npts_,
+        "x_min": x_min,
+        "x_max": x_max,
+        "dx": dx_,
+        "x_npts": x_npts_,
+        "y_min": y_min,
+        "y_max": y_max,
+        "dy": dy_,
+        "y_npts": y_npts_,
         "acquire_time": acquire_time,
         "det_dead": det_dead,
         "F": F,
@@ -339,7 +344,6 @@ def flyscan(
     waveform_period = int(
         2 * acquire_period * 1e-3 * x_npts_ / (F * snake_npts * 1e-7)
     )
-    total_scan_points = max(y_npts_, 1) * snake_npts
 
     # If the total images is smaller than the number of triggers, the detector
     # is crashing!
@@ -382,12 +386,8 @@ def flyscan(
     @bpp.stage_decorator(list(detectors))
     @bpp.run_decorator(md=scan_md)
     def _inner():
-        eta_min = (
-            x_npts_ * y_npts_ * acquire_period / 1000
-        ) / 60
-        print(
-            f"\nStarting flyscan. ETA {np.around(eta_min, 2)} minutes"
-        )
+        eta_min = (x_npts_ * y_npts_ * acquire_period / 1000) / 60
+        print(f"\nStarting flyscan. ETA {np.around(eta_min, 2)} minutes")
         logger.info(
             "Starting a (%s, %s) flyscan. Ctrl+C twice to stop. "
             "Preparing piezos and detectors...",
@@ -413,10 +413,12 @@ def flyscan(
             f"nanoy: {y0_um:+.3f} -> {target_y_um:+.3f} um "
             f"(shift {shift_y:+.3f})"
         )
-        #commented out fpr test. Need to comment in again
+        # commented out fpr test. Need to comment in again
         yield from mv(
-            nanox, target_x_um * NANO_EGU_PER_UM,
-            nanoy, target_y_um * NANO_EGU_PER_UM,
+            nanox,
+            target_x_um * NANO_EGU_PER_UM,
+            nanoy,
+            target_y_um * NANO_EGU_PER_UM,
         )
 
         # --- Stopping softglue and cleaning ---
@@ -453,8 +455,10 @@ def flyscan(
             f"width <- {acquire_time * 1e4}"
         )
         yield from mv(
-            sg.gate_delay_1.input.signal, "ckeig",
-            sg.gate_delay_1.width, acquire_time * 1e4,
+            sg.gate_delay_1.input.signal,
+            "ckeig",
+            sg.gate_delay_1.width,
+            acquire_time * 1e4,
         )
 
         # --- Defining waveform clock ---
@@ -481,8 +485,10 @@ def flyscan(
             f"threshold_neg <- {_negative_threshold}"
         )
         yield from mv(
-            sg.threshold_pos, _positive_threshold,
-            sg.threshold_neg, _negative_threshold,
+            sg.threshold_pos,
+            _positive_threshold,
+            sg.threshold_neg,
+            _negative_threshold,
         )
 
         # --- Load fast-axis (X) snake waveform ---
@@ -527,11 +533,11 @@ def flyscan(
 
         yield from bps.checkpoint()
         logger.debug("Enabling piezo modulation input.")
-        yield from sleep(.1)
+        yield from sleep(0.1)
         pz.modulation_input_on("x")
-        yield from sleep(.1)
+        yield from sleep(0.1)
         pz.modulation_input_on("y")
-        yield from sleep(.1)
+        yield from sleep(0.1)
 
         # --- Switch DAC1 mux back to memDrive (waveform playback) ---
 
@@ -563,7 +569,7 @@ def flyscan(
             )
             yield from mv(pos_stream.cam.acquire, 1)
 
-        #yield from sleep(1)
+        # yield from sleep(1)
         # --- Start softglue ---
 
         print("[sg] prepare()")
@@ -589,9 +595,7 @@ def flyscan(
 
     def _restore():
         """Non-detector cleanup (runs after stage_decorator unstages)."""
-        logger.info(
-            "Flyscan done. Restoring softglue and piezo state."
-        )
+        logger.info("Flyscan done. Restoring softglue and piezo state.")
 
         if pos_stream is not None:
             # Stop position stream
@@ -612,24 +616,28 @@ def flyscan(
         # --- Disable modulation: piezos follow EPICS motor records ---
 
         logger.debug("Disabling piezo modulation input.")
-        yield from sleep(.1)
+        yield from sleep(0.1)
         pz.modulation_input_off("x")
-        yield from sleep(.1)
+        yield from sleep(0.1)
         pz.modulation_input_off("y")
-        yield from sleep(.1)
+        yield from sleep(0.1)
 
         # --- Restore piezo positions ---
 
-        #commented out fpr test. Need to comment in again
+        # commented out fpr test. Need to comment in again
         logger.debug("Returning piezos to original positions.")
         yield from mv(
-            nanox, x0_um * NANO_EGU_PER_UM,
-            nanoy, y0_um * NANO_EGU_PER_UM,
+            nanox,
+            x0_um * NANO_EGU_PER_UM,
+            nanoy,
+            y0_um * NANO_EGU_PER_UM,
         )
 
         # --- Redundant softglue cleanup for reliability ---
 
-        print("[sg] stop_softglue() / reset() / clear_output_fields()  (redundant)")
+        print(
+            "[sg] stop_softglue() / reset() / clear_output_fields()  (redundant)"
+        )
         sg.stop_softglue()
         sg.reset()
         # sg.clear_output_fields()

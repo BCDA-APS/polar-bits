@@ -174,8 +174,9 @@ class AnalyzerDevice(PseudoPositioner):
         return self.PseudoPosition(
             energy=self.convert_theta_to_energy(real_pos.th)
         )
-    
+
     def ath_reset_offset(self):
+        """Reset the analyzer theta motor offset to its nominal 45 degrees."""
         self.th_motor.user_offset.put(45, wait=True, force=True)
 
     def set_energy(self, energy):
@@ -186,8 +187,10 @@ class AnalyzerDevice(PseudoPositioner):
         theta = self.convert_energy_to_theta(energy)
         self.th_motor.set_current_position(theta)
 
-        tth_trans = self.tth_detector_distance.get() * tan((theta-45) * pi / 180.0)
-        offset = tth_trans - self.tth_trans.position 
+        tth_trans = self.tth_detector_distance.get() * tan(
+            (theta - 45) * pi / 180.0
+        )
+        offset = tth_trans - self.tth_trans.position
         self.tth_trans.user_offset.put(offset, wait=True, force=True)
 
     def calc(self, acal="No"):
@@ -465,8 +468,7 @@ class DeferredEpicsMonochromatorRO(EpicsMonochromatorRO):
 
 mono_kwargs = {
     "class": (
-        "id4_common.devices.polar_diffractometer."
-        "DeferredEpicsMonochromatorRO"
+        "id4_common.devices.polar_diffractometer.DeferredEpicsMonochromatorRO"
     ),
     "prefix": "4idVDCM:",
     "source_type": "Simulated read-only EPICS Monochromator",

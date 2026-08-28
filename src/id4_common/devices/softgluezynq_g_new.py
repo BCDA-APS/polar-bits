@@ -139,9 +139,7 @@ class SoftGlueZynq(Device):
 
     flip_flop_1 = Component(SGZDFF, "SG:DFF-1_")
 
-    scal_to_stream_1 = Component(
-        SoftGlueScalToStream, "SG:scalToStream-1_"
-    )
+    scal_to_stream_1 = Component(SoftGlueScalToStream, "SG:scalToStream-1_")
 
     # Fast-axis RAM (X piezo): mem + driveRAM. DAC1 (mux/val/write/init)
     # is wired to this channel and is used to switch between RAM-driven
@@ -184,9 +182,7 @@ class SoftGlueZynq(Device):
 
     if_tracker_1 = DynamicDeviceComponent(_interferometer_tracker(1))
     if_tracker_2 = DynamicDeviceComponent(_interferometer_tracker(2))
-    if_tracker_3 = DynamicDeviceComponent(
-        _interferometer_tracker(3, num=3)
-    )
+    if_tracker_3 = DynamicDeviceComponent(_interferometer_tracker(3, num=3))
 
     # Detector output mapping (instance-overridable via __init__ kwarg
     # or devices.yml entry).
@@ -246,6 +242,7 @@ class SoftGlueZynq(Device):
         edge (``0 -> 1``) of :attr:`ram_y_done`, the SoftGlue scan-
         complete indicator wired to ``4idgACQ:SG:driveRAMx_done``.
         """
+
         def check_done(*, old_value, value, **kwargs):
             return old_value == 0 and value == 1
 
@@ -303,8 +300,10 @@ class SoftGlueZynq(Device):
         # ``memDrive`` matches POLAR_scan.py; 19-ID's name was
         # ``funcGenPulse``.
         yield from mv(
-            self.dac1_man, "0",
-            self.dac1_write, "memDrive",
+            self.dac1_man,
+            "0",
+            self.dac1_write,
+            "memDrive",
         )
 
     def disable_waveform(self):
@@ -470,9 +469,12 @@ class SoftGlueZynq(Device):
         end_val = int(round(y_end))
 
         yield from mv(
-            self.ram_y_start, start_val,
-            self.ram_y_inc, inc_val,
-            self.ram_y_end, end_val,
+            self.ram_y_start,
+            start_val,
+            self.ram_y_inc,
+            inc_val,
+            self.ram_y_end,
+            end_val,
         )
 
         # Build the step "transition" waveform: a half period made of
@@ -523,8 +525,7 @@ class SoftGlueZynq(Device):
             # ``self.det_keymap`` (or pass ``det_keymap=``) to enable
             # per-detector FO routing.
             logger.debug(
-                "Softglue det_keymap is empty; skipping trigger wiring "
-                "for %s.",
+                "Softglue det_keymap is empty; skipping trigger wiring for %s.",
                 detector_name,
             )
             return

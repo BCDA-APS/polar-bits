@@ -559,16 +559,17 @@ def compute_UB():
             sample.UB[1][2],
             sample.UB[2][0],
             sample.UB[2][1],
-            sample.UB[2][2]
-        ]
+            sample.UB[2][2],
+        ],
     )
-    eiger_x = caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX")/2
-    eiger_y = caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY")/2
-    caput("4idgSoftX:Eiger:Center", [eiger_x,eiger_y])
+    eiger_x = caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX") / 2
+    eiger_y = caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY") / 2
+    caput("4idgSoftX:Eiger:Center", [eiger_x, eiger_y])
     caput("4idEiger:cam1:BeamX_RBV", eiger_x)
     caput("4idEiger:cam1:BeamY_RBV", eiger_y)
     eiger_distance = caget("4idgSoft:m21.RBV")
     caput("4idEiger:cam1:DetDist", eiger_distance)
+
 
 # TODO: Do we really need this? Could put the UB matrix as part of the
 # diffractometer, then sync with a callback.
@@ -1241,9 +1242,7 @@ def ca(h, k, l, energy=None):  # noqa: E741
     finally:
         # Restore the solver wavelength to the live beamline value so that
         # later calculations are not affected by this temporary override.
-        _geom_.core.update_solver(
-            wavelength=_geom_.beam.wavelength.get()
-        )
+        _geom_.core.update_solver(wavelength=_geom_.beam.wavelength.get())
 
     if isinstance(pos, str):
         print(pos)
@@ -1257,14 +1256,9 @@ def ca(h, k, l, energy=None):  # noqa: E741
             l,
         )
     )
-    print(
-        f"\n   Lambda (Energy) = {wavelength:6.4f} Å"
-        f" ({energy:6.4f}) keV"
-    )
+    print(f"\n   Lambda (Energy) = {wavelength:6.4f} Å ({energy:6.4f}) keV")
     if len(_geom_.real_positioners) == 6:
-        pos_dict = dict(
-            zip(_geom_.real_positioners._fields, pos, strict=False)
-        )
+        pos_dict = dict(zip(_geom_.real_positioners._fields, pos, strict=False))
         print(
             "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
                 "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
@@ -1377,8 +1371,11 @@ def _reciprocal_lattice(lattice):
     gamma = math.radians(lattice.gamma)
     ca, cb, cg = math.cos(alpha), math.cos(beta), math.cos(gamma)
     sa, sb, sg = math.sin(alpha), math.sin(beta), math.sin(gamma)
-    vol = a * b * c * math.sqrt(
-        max(0.0, 1 - ca**2 - cb**2 - cg**2 + 2 * ca * cb * cg)
+    vol = (
+        a
+        * b
+        * c
+        * math.sqrt(max(0.0, 1 - ca**2 - cb**2 - cg**2 + 2 * ca * cb * cg))
     )
     a_r = b * c * sa / vol
     b_r = a * c * sb / vol
@@ -1645,11 +1642,11 @@ def setlat(*args):
     # Recompute UB if orienting reflections exist
     if len(sample.reflections.order) > 1:
         compute_UB()
-        #print("Computing UB...")
-        #sample.core.calc_UB(
+        # print("Computing UB...")
+        # sample.core.calc_UB(
         #    sample.reflections.order[0], sample.reflections.order[1]
-        #)
-        #_geom_.forward(1, 0, 0)
+        # )
+        # _geom_.forward(1, 0, 0)
 
     # Final confirmation
     print("\nUpdated lattice parameters:")
@@ -1839,16 +1836,16 @@ def analyzer_configuration():
 
     """
     _geom_ = get_diffractometer()
-    #d_ana = _geom_.ana.d_spacing.get()
-    #crystal_current = _geom_.ana.crystal.get()
+    # d_ana = _geom_.ana.d_spacing.get()
+    # crystal_current = _geom_.ana.crystal.get()
 
-    #if d_ana != 1e4 or d_spacing:
+    # if d_ana != 1e4 or d_spacing:
     ##    print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
     #    print(f"change to: {crystal} with d_spacing = {d_spacing}")
     #    _geom_.ana.d_spacing.put(d_spacing)
     #    if crystal:
     #        _geom_.ana.crystal.put(crystal)
-    #else:
+    # else:
     _geom_.ana.setup()
 
 
@@ -1880,6 +1877,7 @@ def analyzer_get():
         print(f"Current analyzer: {crystal} with d_spacing = {d_ana}")
     else:
         print("Aanalyzer not selected yet. Run analyzer_configuration() first!")
+
 
 def update_lattice(lattice_constant=None):
     """
@@ -1942,12 +1940,12 @@ def update_lattice(lattice_constant=None):
     sample.lattice.gamma = float(gamma)
     if len(sample.reflections.order) > 1:
         compute_UB()
-        #print("Computing UB...")
-        #sample.core.calc_UB(
+        # print("Computing UB...")
+        # sample.core.calc_UB(
         #    sample.reflections.order[0],
         #    sample.reflections.order[1],
-        #)
-        #_geom_.forward(1, 0, 0)
+        # )
+        # _geom_.forward(1, 0, 0)
     print(
         "\n   H K L = {:5.4f} {:5.4f} {:5.4f}".format(
             _geom_.h.position,
@@ -2087,9 +2085,7 @@ def read_diffractometer_config_file():
     compute_UB()
 
 
-def read_diffractometer_config_scan(
-    scan_id, diffractometer=None, clear=None
-):
+def read_diffractometer_config_scan(scan_id, diffractometer=None, clear=None):
     """
     Restore diffractometer orientation from a previous scan.
 
@@ -2175,7 +2171,13 @@ def set_detector():
     else:
         dets = "undefined"
     det = input(f"(E)iger or (P)oint Detector/Analyzer [{dets}]: ") or dets
-    if det in ("Point detector/Analyzer", "Point detector", "point detector", "p", "P"):
+    if det in (
+        "Point detector/Analyzer",
+        "Point detector",
+        "point detector",
+        "p",
+        "P",
+    ):
         caput("4idgSoft:m20.OFF", 0)
         print("Current detector: Point detector/Aanalyzer")
     elif det in ("Eiger", "eiger", "e", "E"):
@@ -2329,6 +2331,5 @@ def theta0():
     print(f"\n   2*THETA ZERO-SHIFT      = {2 * xtet0:10.4f} deg")
     print(f"   A0 (from refl {i1}, {i2})  = {a01:10.5f}  {a02:10.5f} Å")
     print(
-        f"   CORRECTED 2*THETA       = {zt1_corr:10.4f}  "
-        f"{zt2_corr:10.4f} deg"
+        f"   CORRECTED 2*THETA       = {zt1_corr:10.4f}  {zt2_corr:10.4f} deg"
     )

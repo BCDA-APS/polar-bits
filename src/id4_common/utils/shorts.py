@@ -139,9 +139,11 @@ def piezo_jena_setup():
     for axis in ("x", "y", "z"):
         status = piezo.read_status(axis)
         current = _label(status)
-        ans = input(
-            f"  {axis} modulation input (ON/OFF) [{current}]? "
-        ).strip().lower()
+        ans = (
+            input(f"  {axis} modulation input (ON/OFF) [{current}]? ")
+            .strip()
+            .lower()
+        )
 
         if not ans:
             new_state = current

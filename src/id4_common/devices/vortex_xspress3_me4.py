@@ -585,7 +585,6 @@ class VortexXspress34(Trigger, ROICountersMixin, DetectorBase):
         _hdf1_on = True if self.hdf1.enable.get() == "Enable" else False
         return _hdf1_on or _hdf1_auto
 
-
     def setup_flyscan_mode(self, *, num_images, acq_time, hdf_images):
         """Configure stage_sigs for an external-gate fly-scan.
 
