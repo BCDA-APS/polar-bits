@@ -130,8 +130,8 @@ Real examples in the codebase:
 
 | Class | Module | Notes |
 |-------|--------|-------|
-| `CradleDiffractometer` / `HPDiffractometer` | `polar_diffractometer_hklpy2` | Huber Euler / HP cradles (hklpy2) |
-| `CradleDiffractometerPSI` / `HPDiffractometerPSI` | `polar_diffractometer_hklpy2` | Companion `_psi` engines |
+| `CradleDiffractometer` / `HPDiffractometer` | `polar_diffractometer` | Huber Euler / HP cradles (hklpy2) |
+| `CradleDiffractometerPSI` / `HPDiffractometerPSI` | `polar_diffractometer` | Companion `_psi` engines |
 
 ### Experiment Utilities
 

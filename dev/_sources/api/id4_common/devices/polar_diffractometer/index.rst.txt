@@ -162,6 +162,9 @@ Module Contents
 
    .. py:method:: ath_reset_offset()
 
+      Reset the analyzer theta motor offset to its nominal 45 degrees.
+
+
 
    .. py:method:: set_energy(energy)
 
