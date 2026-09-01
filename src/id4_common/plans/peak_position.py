@@ -664,9 +664,28 @@ def peak(
     """Backward-compat: dispatch by ``feature`` to :func:`cen` / :func:`com` /
     :func:`maxi` / :func:`mini`.
 
-    Accepts the PR-#54 feature names (``"centroid"`` / ``"x_at_max_y"`` /
-    ``"x_at_min_y"``) and the new short names (``"com"`` / ``"max"`` /
-    ``"min"`` / ``"cen"``).
+    Parameters
+    ----------
+    scan_id : int, optional
+        Catalog index of the scan. Default ``-1`` (last scan).
+    feature : str, optional
+        Which peak feature to move to. Accepts the PR-#54 names
+        (``"centroid"`` / ``"x_at_max_y"`` / ``"x_at_min_y"``) and the short
+        names (``"com"`` / ``"max"`` / ``"min"`` / ``"cen"``). Anything else
+        raises a ValueError. Default ``"centroid"``.
+    positioner : ophyd object or list, optional
+        Device(s) to move. See :func:`cen`.
+    detector : str, optional
+        Detector field name. See :func:`cen`.
+    confirm : bool, optional
+        Prompt behavior. See :func:`cen`.
+
+    See Also
+    --------
+    :func:`cen`
+    :func:`com`
+    :func:`maxi`
+    :func:`mini`
     """
     feature_map = {
         "centroid": "com",

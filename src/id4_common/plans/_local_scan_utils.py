@@ -111,6 +111,17 @@ def dichro_steps(devices_to_read, take_reading):
 
     This will increase the number of points in a scan by a factor that is equal
     to the length of the `pr_setup.dichro_steps` list.
+
+    Parameters
+    ----------
+    devices_to_read : list
+        Devices to read at every polarization step. The phase retarder
+        positioner is appended to this list.
+    take_reading : plan
+        Function that performs the acquisition, called once per polarization
+        step ::
+           def take_reading(dets, name='primary'):
+                yield from ...
     """
     devices_to_read += [pr_setup.positioner]
     center = 0 if pr_setup.oscillate_pzt else pr_setup.positioner.position
@@ -343,6 +354,12 @@ def reset_real_motors_decorator(motors):
     propagate as ``set`` messages on the underlying real motors), so
     ``reset_positions_decorator`` would never stash — and therefore never
     restore — their initial positions.
+
+    Parameters
+    ----------
+    motors : list
+        Real positioners to snapshot and restore. An empty list makes the
+        decorator a no-op.
     """
 
     def decorator(plan_func):

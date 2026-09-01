@@ -152,6 +152,10 @@ def list_scan(
         Measures the Vortex detector using the softgluezynq triggers. This is a
         special mode that requires the 'vortex' and 'sgz_vortex' devices to
         exist otherwise an error will be thrown.
+    g_sgz : boolean, optional
+        Adds the 'pos_stream' device to the scan so that motor positions are
+        captured through the 4IDG softgluezynq pipeline. Requires the 'gsgz'
+        and 'pos_stream' devices to exist otherwise an error will be thrown.
     per_step: callable, optional
         hook for customizing action of inner loop (messages per step).
         See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
@@ -269,6 +273,10 @@ def rel_list_scan(
         Measures the Vortex detector using the softgluezynq triggers. This is a
         special mode that requires the 'vortex' and 'sgz_vortex' devices to
         exist otherwise an error will be thrown.
+    g_sgz : boolean, optional
+        Adds the 'pos_stream' device to the scan so that motor positions are
+        captured through the 4IDG softgluezynq pipeline. Requires the 'gsgz'
+        and 'pos_stream' devices to exist otherwise an error will be thrown.
     per_step: callable, optional
         hook for customizing action of inner loop (messages per step).
         See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)

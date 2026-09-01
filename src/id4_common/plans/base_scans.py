@@ -94,6 +94,10 @@ def count(
         Measures the Vortex detector using the softgluezynq triggers. This is a
         special mode that requires the 'vortex' and 'sgz_vortex' devices to
         exist otherwise an error will be thrown.
+    g_sgz : boolean, optional
+        Adds the 'pos_stream' device to the scan so that motor positions are
+        captured through the 4IDG softgluezynq pipeline. Requires the 'gsgz'
+        and 'pos_stream' devices to exist otherwise an error will be thrown.
     delay : iterable or scalar, optional
         Time delay in seconds between successive readings; default is 0.
     per_shot: callable, optional
@@ -212,6 +216,10 @@ def ascan(
         Measures the Vortex detector using the softgluezynq triggers. This is a
         special mode that requires the 'vortex' and 'sgz_vortex' devices to
         exist otherwise an error will be thrown.
+    g_sgz : boolean, optional
+        Adds the 'pos_stream' device to the scan so that motor positions are
+        captured through the 4IDG softgluezynq pipeline. Requires the 'gsgz'
+        and 'pos_stream' devices to exist otherwise an error will be thrown.
     per_step: callable, optional
         hook for customizing action of inner loop (messages per step).
         See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
@@ -332,6 +340,10 @@ def lup(
         Measures the Vortex detector using the softgluezynq triggers. This is a
         special mode that requires the 'vortex' and 'sgz_vortex' devices to
         exist otherwise an error will be thrown.
+    g_sgz : boolean, optional
+        Adds the 'pos_stream' device to the scan so that motor positions are
+        captured through the 4IDG softgluezynq pipeline. Requires the 'gsgz'
+        and 'pos_stream' devices to exist otherwise an error will be thrown.
     per_step: callable, optional
         hook for customizing action of inner loop (messages per step).
         See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
@@ -412,6 +424,18 @@ def qxscan(
         Flag for fixQ scans. If True, it will fix the diffractometer hkl
         position during the scan. Note that hkl is moved ~after~ the other
         motors!
+    vortex_sgz : boolean, optional
+        Measures the Vortex detector using the softgluezynq triggers. This is a
+        special mode that requires the 'vortex' and 'sgz_vortex' devices to
+        exist otherwise an error will be thrown.
+    g_sgz : boolean, optional
+        Adds the 'pos_stream' device to the scan so that motor positions are
+        captured through the 4IDG softgluezynq pipeline. Requires the 'gsgz'
+        and 'pos_stream' devices to exist otherwise an error will be thrown.
+    per_step: callable, optional
+        hook for customizing action of inner loop (messages per step).
+        See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
+        for details.
     md : dictionary, optional
         Metadata to be added to the run start.
 
