@@ -96,7 +96,7 @@ STOP = {
 
 @pytest.fixture
 def written_file(tmp_path):
-    """Drive a full run through the writer and return the output file's lines."""
+    """Drive a full run through the writer; return the output file lines."""
     sw = SpecWriterCallback2()
     sw.file_name = tmp_path / "test.dat"
 
@@ -134,11 +134,7 @@ def test_column_count_consistent(written_file):
     n_line = next(x for x in lines if x.startswith("#N "))
     assert int(n_line.split()[1]) == len(labels) == 4
 
-    data_rows = [
-        x
-        for x in lines[li + 1 :]
-        if x and not x.startswith("#")
-    ]
+    data_rows = [x for x in lines[li + 1 :] if x and not x.startswith("#")]
     assert len(data_rows) == 2
     for row in data_rows:
         assert len(row.split()) == len(labels)

@@ -1840,7 +1840,7 @@ def analyzer_configuration():
     # crystal_current = _geom_.ana.crystal.get()
 
     # if d_ana != 1e4 or d_spacing:
-    ##    print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
+    #    print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
     #    print(f"change to: {crystal} with d_spacing = {d_spacing}")
     #    _geom_.ana.d_spacing.put(d_spacing)
     #    if crystal:
