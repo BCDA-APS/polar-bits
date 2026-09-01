@@ -92,7 +92,8 @@ def _split_list_scan_args(args):
 
     if len(set(lengths)) > 1:
         _detail = ", ".join(
-            f"{getattr(m, 'name', m)}={n}" for m, n in zip(motors, lengths)
+            f"{getattr(m, 'name', m)}={n}"
+            for m, n in zip(motors, lengths, strict=False)
         )
         raise ValueError(
             "All position lists must have the same length, but got "
