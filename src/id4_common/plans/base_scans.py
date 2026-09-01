@@ -19,7 +19,7 @@ from logging import getLogger
 from apsbits.core.instrument_init import oregistry
 from bluesky.plan_stubs import rd
 from bluesky.plans import count as bp_count
-from bluesky.plans import list_scan
+from bluesky.plans import list_scan as bp_list_scan
 from bluesky.plans import scan
 from bluesky.preprocessors import monitor_during_decorator
 from bluesky.preprocessors import relative_set_decorator
@@ -483,7 +483,7 @@ def qxscan(
     @extra_devices_decorator(extras)
     @subs_decorator(nxwriter.receiver)
     def _inner_qxscan():
-        yield from list_scan(
+        yield from bp_list_scan(
             detectors + extras, *args, per_step=per_step, md=_md
         )
         # put original times back.

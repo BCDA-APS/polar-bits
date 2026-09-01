@@ -41,6 +41,22 @@ class LocalFlag:
 flag = LocalFlag()
 
 
+def _args_contains(args, device):
+    """Test whether ``device`` is one of the objects in ``args``.
+
+    Uses identity rather than ``in`` (which falls back to ``==``) so that
+    array-valued arguments are safe.  ``list_scan`` puts whole position
+    lists into ``args``; comparing an ophyd object against a numpy array
+    broadcasts and makes ``bool()`` on the result raise "truth value of an
+    array with more than one element is ambiguous".
+
+    This matches the previous ``in`` behaviour for every caller: ophyd's
+    ``Device`` / ``Signal`` / ``PseudoSingle`` all inherit ``object.__eq__``,
+    so equality on them is already identity.
+    """
+    return any(item is device for item in args)
+
+
 def _collect_extras(args):
     """Collect all detectors that need to be read during a scan."""
 
@@ -51,7 +67,9 @@ def _collect_extras(args):
     extras = counters.extra_devices.copy()
 
     energy = oregistry.find("energy", allow_none=True)
-    escan_flag = False if energy is None or energy not in args else True
+    escan_flag = (
+        False if energy is None or not _args_contains(args, energy) else True
+    )
     if escan_flag:
         undulators = oregistry.find("undulators", allow_none=True)
         if undulators is None:
@@ -394,7 +412,9 @@ def _build_scan_md(
 def _check_magnet911(args):
     """Return True when the magnet911 field motor appears in scan args."""
     magnet911 = oregistry.find("magnet911", allow_none=True)
-    return False if magnet911 is None else (magnet911.ps.field in args)
+    return (
+        False if magnet911 is None else _args_contains(args, magnet911.ps.field)
+    )
 
 
 def _setup_file_io(detectors):
