@@ -176,6 +176,11 @@ class SoftGlueZynq(Device):
     dac1_write = Component(EpicsSignal, "SG:DAC_WRITE_Signal")
     dac1_init = Component(EpicsSignal, "SG:DAC_INIT_Signal")
 
+    # DAC2 (slow-axis manual control). Shares the DAC_WRITE_Signal
+    # strobe with DAC1 -- writing DAC2_VAL then pulsing dac1_write
+    # commits the value to DAC2.
+    dac2_val = Component(EpicsSignal, "SG:DAC2_VAL")
+
     # Fast-axis threshold trigger.
     threshold_pos = Component(EpicsSignal, "SG:threshTrig-1_POSTHR")
     threshold_neg = Component(EpicsSignal, "SG:threshTrig-1_NEGTHR")
@@ -509,6 +514,18 @@ class SoftGlueZynq(Device):
         yield from self.disable_waveform()
         yield from mv(self.dac1_init, "1!")
         yield from mv(self.dac1_val, x_bits)
+        yield from mv(self.dac1_write, "1!")
+
+    def move_y_analog(self, position):
+        """Set the slow-axis (Y piezo) manual DAC2 output to ``position`` um.
+
+        DAC2 has no mux/init signal of its own -- writes ``dac2_val``
+        and pulses the shared ``dac1_write`` strobe (PV
+        ``DAC_WRITE_Signal``) to commit it. Microns are converted via
+        :meth:`um_to_bits`.
+        """
+        y_bits = self.um_to_bits(position)
+        yield from mv(self.dac2_val, y_bits)
         yield from mv(self.dac1_write, "1!")
 
     def enable_detector_trigger(self, detector_name, det_keymap=None):

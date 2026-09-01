@@ -172,6 +172,8 @@ class PositionStreamDevice(MySingleTrigger, CountersMixin, DetectorBase):
         Set the HDF1 plugin warmup signal sequence for proper plugin
         initialization.
         """
+        self.hdf1.file_template.put(self.hdf1_name_format)
+
         self.hdf1.warmup_signals = [
             (self.hdf1.enable, 1),
             (self.hdf1.parent.cam.array_callbacks, 1),  # set by number
@@ -193,6 +195,14 @@ class PositionStreamDevice(MySingleTrigger, CountersMixin, DetectorBase):
 
         base_path = str(base_path) + f"/{self.name}/"
         self.hdf1.file_path.set(base_path).wait(timeout=10)
+
+        # Re-assert the expected naming template on the live PV.
+        # default_settings() only writes it once at connect time, so an
+        # IOC restart or an external caput can leave it stale/truncated,
+        # which make_write_read_paths() below would otherwise choke on
+        # (or silently diverge from the path predict_save_path()
+        # computed for the pre-scan collision check).
+        #self.hdf1.file_template.set(self.hdf1_name_format).wait(timeout=10)
 
         _, full_path, relative_path = self.hdf1.make_write_read_paths(base_path)
 

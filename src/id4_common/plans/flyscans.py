@@ -78,6 +78,7 @@ import numpy as np
 from apsbits.core.instrument_init import oregistry
 from bluesky.plan_stubs import mv
 from bluesky.plan_stubs import sleep
+from epics import caput, caget
 
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..utils.run_engine import RE
@@ -358,6 +359,19 @@ def flyscan(
     # Per-bit DAC step (~1.22 nm), unchanged by where the swing sits.
     dy_bits = abs(int(round(dy_ / DAC_SWING_UM * 32767)))
 
+    # snake_y's firmware end-comparison is strict-less-than (see
+    # SoftGlueZynq.snake_y), so passing the exact bit-value of the last
+    # requested line as y_end would exclude it. A full extra dy step
+    # overshoots (crosses a whole extra line-pair boundary and adds 2
+    # lines instead of the 1 that was missing) -- nudge by a single bit
+    # instead, just enough to flip the "< y_end" check true for the
+    # real last line without opening room for another one. Computed
+    # from y_min_bits/dy_bits (the same values driving
+    # ram_y_start/ram_y_inc) rather than y_max_bits, so it stays
+    # internally consistent even if independent DAC-um rounding of
+    # y_min_bits vs. y_max_bits would otherwise disagree by a bit or two.
+    y_end_bits = y_min_bits + (y_npts_ - 1) * dy_bits + 1
+
     _threshold_range = (x_dac_max - x_dac_min) * (1 - F)
     _positive_threshold = sg.um_to_bits(x_dac_max - _threshold_range / 2)
     _negative_threshold = sg.um_to_bits(x_dac_min + _threshold_range / 2)
@@ -510,14 +524,14 @@ def flyscan(
         yield from bps.checkpoint()
         print(
             f"[sg] snake_y: F={F}, dy={dy_bits}, npts={snake_npts}, "
-            f"y_start={y_min_bits}, y_end={y_max_bits}"
+            f"y_start={y_min_bits}, y_end={y_end_bits}"
         )
         yield from sg.snake_y(
             F=F,
             dy=dy_bits,
             npts=snake_npts,
             y_start=y_min_bits,
-            y_end=y_max_bits,
+            y_end=y_end_bits,
         )
 
         # --- Pre-set DAC1 to the scan-start DAC value so the piezo ---
@@ -534,10 +548,20 @@ def flyscan(
         yield from bps.checkpoint()
         logger.debug("Enabling piezo modulation input.")
         yield from sleep(0.1)
+        #print(caget("4idgSoftX:jena:m2.RBV"))
         pz.modulation_input_on("x")
         yield from sleep(0.1)
+
+        # --- Pre-set DAC2 to the scan-start DAC value (slow axis) so ---
+        # --- the Y piezo does not jump when modulation enables.      ---
+
+        yield from bps.checkpoint()
+        print(f"[sg] move_y_analog({y_dac_min} um  [DAC frame])")
+        yield from sg.move_y_analog(y_dac_min)
+
         pz.modulation_input_on("y")
         yield from sleep(0.1)
+        #print(caget("4idgSoftX:jena:m2.RBV"))
 
         # --- Switch DAC1 mux back to memDrive (waveform playback) ---
 
@@ -572,7 +596,10 @@ def flyscan(
         # yield from sleep(1)
         # --- Start softglue ---
 
+        #print(caget("4idgSoftX:jena:m2.RBV"))
         print("[sg] prepare()")
+        #print(caget("4idgSoftX:jena:m2.RBV"))
+        yield from sleep(1)
         sg.prepare()
         yield from sleep(1)
         logger.info("Takeoff!")
@@ -584,10 +611,12 @@ def flyscan(
         # --- finalises its HDF file.                                 ---
 
         print("[sg] scal_to_stream_1.flush.signal <- '1!'  (x11, draining DMA)")
-        for _ in range(11):
-            sg.scal_to_stream_1.flush.signal.put("1!")
-            yield from sleep(0.1)
-
+        # for _ in range(11):
+        #     sg.scal_to_stream_1.flush.signal.put("1!")
+        #     yield from sleep(0.1)
+        sg.scal_to_stream_1.flush.signal.put("1!")
+        yield from sleep(0.1)
+        
         sg.stop_softglue()
         sg.reset()
 

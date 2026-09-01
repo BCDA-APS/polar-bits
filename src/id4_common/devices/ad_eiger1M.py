@@ -117,11 +117,16 @@ class TriggerTime(TriggerBase):
 
             # The External Gate is for pump and probe. External Enable should
             # work better.
-            # self.cam.stage_sigs["trigger_mode"] = "External Gate"
-            self.cam.stage_sigs["trigger_mode"] = "External Enable"
+            self.cam.stage_sigs["trigger_mode"] = "External Series"
             self.cam.stage_sigs["manual_trigger"] = "Disable"
-            self.cam.stage_sigs["num_images"] = self.max_num_images
+            self.cam.stage_sigs["num_triggers"] = 1
             self.cam.stage_sigs["num_exposures"] = 1
+
+            #self.cam.stage_sigs["trigger_mode"] = "External Enable"
+            #self.cam.stage_sigs["manual_trigger"] = "Disable"
+            #self.cam.stage_sigs["num_images"] = self.max_num_images
+            #self.cam.stage_sigs["num_exposures"] = 1
+            #self.cam.stage_sigs["trigger_mode"] = "External Enable"
 
     def stage(self):
         """
@@ -130,8 +135,21 @@ class TriggerTime(TriggerBase):
         if self._flysetup:
             self.setup_external_trigger()
 
-        # Make sure that detector is not armed.
+        # Make sure that detector is not armed. Acquire=0 alone does not
+        # guarantee the Eiger has disarmed yet, and most acquisition
+        # parameters (including NumImages) are silently rejected by the
+        # IOC while armed -- staging would otherwise hang for the full PV
+        # write timeout on an unrelated signal.
         self.cam.acquire.set(0).wait(timeout=10)
+
+        def check_disarmed(*, old_value, value, **kwargs):
+            "Return True when detector has disarmed."
+            return value == 0
+
+        status_wait(
+            SubscriptionStatus(self.cam.armed, check_disarmed, timeout=15)
+        )
+
         super().stage()
         self.cam.acquire.set(1).wait(timeout=10)
 
@@ -152,7 +170,7 @@ class TriggerTime(TriggerBase):
             SubscriptionStatus(self.cam.status_message, check_value, timeout=10)
         )
         self._flysetup = False
-        # self.setup_manual_trigger()
+        self.setup_manual_trigger()
         super().unstage()
         # from ophyd import Staged
         # self._staged = Staged.no
@@ -372,6 +390,13 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
 
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.hdf1.file_name.set(name_template).wait(timeout=10)
+        # Re-assert the expected naming template on the live PV.
+        # default_settings() only writes it once at connect time, so an
+        # IOC restart or an external caput can leave it stale/truncated,
+        # which make_write_read_paths() below would otherwise choke on
+        # (or silently diverge from the path predict_save_path()
+        # computed for the pre-scan collision check).
+        self.hdf1.file_template.set(self.hdf1_name_format).wait(timeout=10)
         # Make sure eiger will save image
         self.auto_save_on()
         # Changes the stage_sigs to the external trigger mode
