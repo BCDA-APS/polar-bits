@@ -33,24 +33,64 @@ Module Contents
    Note the first motor in *args will step and the second will fly (by doing a
    two point step).
 
-   :param eiger: Currently sort of hardwired for the Eiger, but this will be removed in
-                 the future to match with the POLAR standard of defaulting to our
-                 `counters` class.
-   :type eiger: Eiger detector instance
-   :param \*args: The first motor is the outer loop that will step, with the second motor
-                  flying between the ends. Thus the first motor needs a number of steps.
-                  .. code-block:: python
-                      motor1, start1, stop1, number of point, motor2, start2, stop
-   :param speed: Velocity of the flying motor. This will be passed to `motor2.velocity`
-                 through staging.
-   :type speed: float, default to 10
-   :param trigger_time: Time between detector triggers.
-   :type trigger_time: float, default to 0.02 seconds
-   :param collection_time: Time that detector spend collecting the image. It must be smaller or
-                           equal to the trigger_time otherwise a ValueError is raised.
-   :type collection_time: float, default to 0.01 seconds
+   :param detectors: Detectors to trigger during the scan. A single detector is accepted
+                     and wrapped in a list; a string raises a TypeError.
+   :type detectors: list of ophyd detectors
+   :param stepping_motor: Outer-loop motor. It steps through its range while `flying_motor`
+                          flies across each row.
+   :type stepping_motor: ophyd motor object
+   :param stepping_motor_start: Initial position of the stepping motor.
+   :type stepping_motor_start: float
+   :param stepping_motor_end: Final position of the stepping motor.
+   :type stepping_motor_end: float
+   :param stepping_motor_number_of_points: Number of points measured along the stepping motor.
+   :type stepping_motor_number_of_points: int
+   :param flying_motor: Inner-loop motor. It flies between its two ends as a two-point step.
+                        Ideally a motor with a custom unstaging that removes "velocity" from
+                        the stage_sigs, see ../devices/nanopositioners.py
+   :type flying_motor: ophyd motor object
+   :param flying_motor_start: Initial position of the flying motor.
+   :type flying_motor_start: float
+   :param flying_motor_end: Final position of the flying motor.
+   :type flying_motor_end: float
+   :param flying_motor_speed: Velocity of the flying motor. This will be passed to
+                              `flying_motor.velocity` through staging.
+   :type flying_motor_speed: float
+   :param detector_trigger_period: Time between detector triggers, in seconds. Defaults to 0.02.
+   :type detector_trigger_period: float, optional
+   :param detector_collection_time: Time the detector spends collecting each image, in seconds. It must
+                                    be smaller than or equal to `detector_trigger_period`, otherwise a
+                                    ValueError is raised. Defaults to 0.01.
+   :type detector_collection_time: float, optional
+   :param file_name_base: Base name used for the detector and master file names. Defaults to
+                          "scan".
+   :type file_name_base: str, optional
+   :param master_file_templates: Extra NeXus template entries handed to the master file writer. If
+                                 None, an empty list is used.
+   :type master_file_templates: list, optional
    :param md: Metadata to be added to the run start.
    :type md: dictionary, optional
+   :param dm_concise: Use concise reporting in the APS Data Management workflow. Only has
+                      an effect when `wf_run` is True.
+   :type dm_concise: boolean, optional
+   :param dm_wait: Accepted for API compatibility, but currently unused.
+   :type dm_wait: boolean, optional
+   :param dm_reporting_period: How often the DM workflow reports progress, in seconds. Only has an
+                               effect when `wf_run` is True.
+   :type dm_reporting_period: float, optional
+   :param dm_reporting_time_limit: How long bluesky keeps reporting on the DM workflow, in seconds. Only
+                                   has an effect when `wf_run` is True.
+   :type dm_reporting_time_limit: float, optional
+   :param nxwriter_warn_missing: If True, the NeXus writer warns about missing content. Defaults to
+                                 False.
+   :type nxwriter_warn_missing: boolean, optional
+   :param wf_run: If True, an APS Data Management workflow is started once the scan
+                  files have been uploaded. Defaults to False.
+   :type wf_run: boolean, optional
+   :param wf_settings_file_path: Path to a YAML file holding the DM workflow kwargs. See
+                                 :func:`id4_common.plans.workflow_plan.run_workflow`.
+   :type wf_settings_file_path: str, optional
+   :param \*\*wf_kwargs: Any remaining keyword arguments are passed to the DM workflow.
 
    .. seealso:: :func:`bluesky.plan_patterns.outter_product`, :func:`flyscan_cycler`
 
@@ -59,12 +99,12 @@ Module Contents
 
    Flyscan in 1 dimension.
 
-   :param eiger: Currently sort of hardwired for the Eiger, but this will be removed in
-                 the future to match with the POLAR standard of defaulting to our
-                 `counters` class.
-   :type eiger: Eiger detector instance
-   :param motor: Ideally it is a motor with a custom unstaging that removes "velocity"
-                 from the stage_sigs, see ../devices/nanopositioners.py
+   :param detectors: Detectors to trigger during the scan. A single detector is accepted
+                     and wrapped in a list; a string raises a TypeError.
+   :type detectors: list of ophyd detectors
+   :param motor: The flying motor. Ideally it is a motor with a custom unstaging that
+                 removes "velocity" from the stage_sigs, see
+                 ../devices/nanopositioners.py
    :type motor: ophyd motor object
    :param start: Initial motor position
    :type start: float
@@ -72,14 +112,42 @@ Module Contents
    :type end: float
    :param speed: Velocity of the flying motor. This will be passed to `motor.velocity`
                  through staging.
-   :type speed: float, default to 10
-   :param trigger_time: Time between detector triggers.
-   :type trigger_time: float, default to 0.02 seconds
-   :param collection_time: Time that detector spend collecting the image. It must be smaller or
-                           equal to the trigger_time otherwise a ValueError is raised.
-   :type collection_time: float, default to 0.01 seconds
+   :type speed: float
+   :param detector_trigger_period: Time between detector triggers, in seconds. Defaults to 0.02.
+   :type detector_trigger_period: float, optional
+   :param detector_collection_time: Time the detector spends collecting each image, in seconds. It must
+                                    be smaller than or equal to `detector_trigger_period`, otherwise a
+                                    ValueError is raised. Defaults to 0.01.
+   :type detector_collection_time: float, optional
+   :param file_name_base: Base name used for the detector and master file names. Defaults to
+                          "scan".
+   :type file_name_base: str, optional
+   :param master_file_templates: Extra NeXus template entries handed to the master file writer. If
+                                 None, an empty list is used.
+   :type master_file_templates: list, optional
    :param md: Metadata to be added to the run start.
    :type md: dictionary, optional
+   :param dm_concise: Use concise reporting in the APS Data Management workflow. Only has
+                      an effect when `wf_run` is True.
+   :type dm_concise: boolean, optional
+   :param dm_wait: Accepted for API compatibility, but currently unused.
+   :type dm_wait: boolean, optional
+   :param dm_reporting_period: How often the DM workflow reports progress, in seconds. Only has an
+                               effect when `wf_run` is True.
+   :type dm_reporting_period: float, optional
+   :param dm_reporting_time_limit: How long bluesky keeps reporting on the DM workflow, in seconds. Only
+                                   has an effect when `wf_run` is True.
+   :type dm_reporting_time_limit: float, optional
+   :param nxwriter_warn_missing: If True, the NeXus writer warns about missing content. Defaults to
+                                 False.
+   :type nxwriter_warn_missing: boolean, optional
+   :param wf_run: If True, an APS Data Management workflow is started once the scan
+                  files have been uploaded. Defaults to False.
+   :type wf_run: boolean, optional
+   :param wf_settings_file_path: Path to a YAML file holding the DM workflow kwargs. See
+                                 :func:`id4_common.plans.workflow_plan.run_workflow`.
+   :type wf_settings_file_path: str, optional
+   :param \*\*wf_kwargs: Any remaining keyword arguments are passed to the DM workflow.
 
    .. seealso:: :func:`bluesky.plan_patterns.inner_product`, :func:`flyscan_cycler`
 
@@ -101,13 +169,41 @@ Module Contents
                   passed to `motor.velocity` through staging (see
                   ../devices/nanopositioners.py).
    :type speeds: list
-   :param trigger_time: Time between detector triggers.
-   :type trigger_time: float, default to 0.02 seconds
-   :param collection_time: Time that detector spend collecting the image. It must be smaller or
-                           equal to the trigger_time otherwise a ValueError is raised.
-   :type collection_time: float, default to 0.01 seconds
+   :param detector_trigger_period: Time between detector triggers, in seconds. Defaults to 0.02.
+   :type detector_trigger_period: float, optional
+   :param detector_collection_time: Time the detector spends collecting each image, in seconds. It must
+                                    be smaller than or equal to `detector_trigger_period`, otherwise a
+                                    ValueError is raised. Defaults to 0.01.
+   :type detector_collection_time: float, optional
+   :param file_name_base: Base name used for the detector and master file names. Defaults to
+                          "scan".
+   :type file_name_base: str, optional
+   :param master_file_templates: Extra NeXus template entries handed to the master file writer. If
+                                 None, an empty list is used.
+   :type master_file_templates: list, optional
    :param md: Metadata to be added to the run start.
    :type md: dictionary, optional
+   :param dm_concise: Use concise reporting in the APS Data Management workflow. Only has
+                      an effect when `wf_run` is True.
+   :type dm_concise: boolean, optional
+   :param dm_wait: Accepted for API compatibility, but currently unused.
+   :type dm_wait: boolean, optional
+   :param dm_reporting_period: How often the DM workflow reports progress, in seconds. Only has an
+                               effect when `wf_run` is True.
+   :type dm_reporting_period: float, optional
+   :param dm_reporting_time_limit: How long bluesky keeps reporting on the DM workflow, in seconds. Only
+                                   has an effect when `wf_run` is True.
+   :type dm_reporting_time_limit: float, optional
+   :param nxwriter_warn_missing: If True, the NeXus writer warns about missing content. Defaults to
+                                 False.
+   :type nxwriter_warn_missing: boolean, optional
+   :param wf_run: If True, an APS Data Management workflow is started once the scan
+                  files have been uploaded. Defaults to False.
+   :type wf_run: boolean, optional
+   :param wf_settings_file_path: Path to a YAML file holding the DM workflow kwargs. See
+                                 :func:`id4_common.plans.workflow_plan.run_workflow`.
+   :type wf_settings_file_path: str, optional
+   :param \*\*wf_kwargs: Any remaining keyword arguments are passed to the DM workflow.
 
    .. seealso:: :func:`bluesky.plan_patterns.outter_product`, :func:`bluesky.plan_patterns.inner_product`
 

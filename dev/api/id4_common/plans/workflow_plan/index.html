@@ -512,6 +512,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../flyscans/index.html">id4_common.plans.flyscans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../grid_scans/index.html">id4_common.plans.grid_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_scans/index.html">id4_common.plans.hkl_scans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../list_scans/index.html">id4_common.plans.list_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_preprocessors/index.html">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_scans/index.html">id4_common.plans.local_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../move_plans/index.html">id4_common.plans.move_plans</a></li>
@@ -605,6 +606,30 @@
 <dt class="sig sig-object py" id="id4_common.plans.workflow_plan.run_workflow">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.workflow_plan.</span></span><span class="sig-name descname"><span class="pre">run_workflow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bluesky_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dm_concise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dm_wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dm_reporting_period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span> <span class="pre">*</span> <span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dm_reporting_time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10**6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings_file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.workflow_plan.run_workflow" title="Link to this definition">#</a></dt>
 <dd><p>Submit a DM workflow plan and optionally share Bluesky run metadata with DM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bluesky_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><em>BlueskyRun</em><em>, </em><em>optional</em>) – Scan whose metadata is shared with DM. A str or int is looked up in
+the catalog and raises a KeyError if not found; a BlueskyRun is used
+directly. Anything else (including the default None) logs a warning
+and skips the metadata upload.</p></li>
+<li><p><strong>dm_concise</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Use concise reporting in the DM workflow. Defaults to False.</p></li>
+<li><p><strong>dm_wait</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, wait for the workflow job to finish before continuing.
+Defaults to False.</p></li>
+<li><p><strong>dm_reporting_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – How often the DM workflow reports progress, in seconds. Defaults to
+10 minutes.</p></li>
+<li><p><strong>dm_reporting_time_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – How long bluesky keeps reporting on the DM workflow, in seconds.</p></li>
+<li><p><strong>settings_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Path to a YAML file holding the workflow kwargs. Keyword arguments
+given in the function call take priority over the file. Raises a
+FileExistsError if the path does not exist.</p></li>
+<li><p><strong>**_kwargs</strong> – Arguments passed to the DM workflow. The <code class="docutils literal notranslate"><span class="pre">workflow</span></code> key is required
+and must be one of the keys of <code class="docutils literal notranslate"><span class="pre">EXPECTED_KWARGS</span></code>; every entry that
+<code class="docutils literal notranslate"><span class="pre">EXPECTED_KWARGS[workflow]</span></code> lists must be present, otherwise a
+ValueError is raised. The strings “None” and “none” are converted to
+None.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

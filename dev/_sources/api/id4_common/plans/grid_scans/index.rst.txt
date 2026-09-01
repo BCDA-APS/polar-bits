@@ -60,6 +60,10 @@ Module Contents
                       special mode that requires the 'vortex' and 'sgz_vortex' devices to
                       exist otherwise an error will be thrown.
    :type vortex_sgz: boolean, optional
+   :param g_sgz: Adds the 'pos_stream' device to the scan so that motor positions are
+                 captured through the 4IDG softgluezynq pipeline. Requires the 'gsgz'
+                 and 'pos_stream' devices to exist otherwise an error will be thrown.
+   :type g_sgz: boolean, optional
    :param per_step: hook for customizing action of inner loop (messages per step).
                     See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
                     for details.
@@ -111,6 +115,10 @@ Module Contents
                       special mode that requires the 'vortex' and 'sgz_vortex' devices to
                       exist otherwise an error will be thrown.
    :type vortex_sgz: boolean, optional
+   :param g_sgz: Adds the 'pos_stream' device to the scan so that motor positions are
+                 captured through the 4IDG softgluezynq pipeline. Requires the 'gsgz'
+                 and 'pos_stream' devices to exist otherwise an error will be thrown.
+   :type g_sgz: boolean, optional
    :param per_step: hook for customizing action of inner loop (messages per step).
                     See docstring of :func:`bluesky.plan_stubs.one_nd_step` (the default)
                     for details.

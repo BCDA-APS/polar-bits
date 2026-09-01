@@ -14,6 +14,7 @@ id4_common.plans.local_scans
      ``qxscan``
    - :mod:`id4_common.plans.move_plans`  — ``mv``, ``mvr``, ``abs_set``
    - :mod:`id4_common.plans.grid_scans`  — ``grid_scan``, ``rel_grid_scan``
+   - :mod:`id4_common.plans.list_scans`  — ``list_scan``, ``rel_list_scan``
    - :mod:`id4_common.plans.hkl_scans`   — ``th2th``, ``hklscan``, ``hscan``,
      ``kscan``, ``lscan``, ``psiscan``
 

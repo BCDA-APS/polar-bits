@@ -512,6 +512,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../flyscans/index.html">id4_common.plans.flyscans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../grid_scans/index.html">id4_common.plans.grid_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_scans/index.html">id4_common.plans.hkl_scans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../list_scans/index.html">id4_common.plans.list_scans</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_scans/index.html">id4_common.plans.local_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../move_plans/index.html">id4_common.plans.move_plans</a></li>
@@ -590,6 +591,22 @@
 <dt class="sig sig-object py" id="id4_common.plans.local_preprocessors.extra_devices_wrapper">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_preprocessors.</span></span><span class="sig-name descname"><span class="pre">extra_devices_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extras</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_preprocessors.extra_devices_wrapper" title="Link to this definition">#</a></dt>
 <dd><p>Stage extra devices during a plan without adding them to the plot hints.</p>
+<p>Every <code class="docutils literal notranslate"><span class="pre">Kind.hinted</span></code> component of the extra devices is demoted to
+<code class="docutils literal notranslate"><span class="pre">Kind.normal</span></code> for the duration of the plan and restored afterwards, so
+the devices are read into the data stream without showing up in the live
+plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plan</strong> (<em>iterable</em><em> or </em><em>iterator</em>) – a generator, list, or similar containing <cite>Msg</cite> objects</p></li>
+<li><p><strong>extras</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Devices to read during the plan but keep out of the plot hints. An
+empty list passes the plan through unchanged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>msg</strong> (<em>Msg</em>) – messages from plan, with the staging messages inserted and appended</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -601,7 +618,13 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>plan</strong> (<em>iterable</em><em> or </em><em>iterator</em>) – a generator, list, or similar containing <cite>Msg</cite> objects</p></li>
-<li><p><strong>monitor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>None</em>) – If None, the plan passes through unchanged.</p></li>
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Devices whose <cite>preset_monitor</cite> will be set to <cite>count_time</cite>. Their
+original presets are stashed and restored when the plan ends.</p></li>
+<li><p><strong>count_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>None</em>) – Preset to apply. If None, the plan passes through unchanged. If
+positive, it is written to each detector’s <cite>preset_monitor</cite>. If
+negative, its absolute value is used as the preset of the monitor
+scaler channel, which requires <cite>counters.monitor</cite> to be a scaler
+channel. Zero raises a ValueError.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
@@ -620,6 +643,10 @@
 <li><p><strong>plan</strong> (<em>iterable</em><em> or </em><em>iterator</em>) – a generator, list, or similar containing <cite>Msg</cite> objects</p></li>
 <li><p><strong>dichro</strong> (<em>boolean</em>) – Flag that triggers the stage/unstage process of dichro scans.</p></li>
 <li><p><strong>lockin</strong> (<em>boolean</em>) – Flag that triggers the stage/unstage process of lockin scans.</p></li>
+<li><p><strong>sgz</strong> (<em>boolean</em>) – Flag for softgluezynq-triggered scans. Like <cite>lockin</cite>, it switches the
+phase retarder into AC mode while the plan runs.</p></li>
+<li><p><strong>positioner</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Motors being scanned. Their names are passed to the dichro plotting
+settings as <code class="docutils literal notranslate"><span class="pre">positioner1</span></code>…``positionerN``. Entries may be None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
@@ -640,6 +667,9 @@ scan or move.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>plan</strong> (<em>iterable</em><em> or </em><em>iterator</em>) – a generator, list, or similar containing <cite>Msg</cite> objects</p></li>
 <li><p><strong>magnet</strong> (<em>boolean</em>) – Flag that triggers the stage/unstage.</p></li>
+<li><p><strong>persistent</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True (default), the persistence switch heater is turned back off
+when the plan ends, leaving the magnet in persistent mode. Set False
+to leave the heater on, e.g. between the moves of a field sequence.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
@@ -653,6 +683,22 @@ inserted and appended</p>
 <dt class="sig sig-object py" id="id4_common.plans.local_preprocessors.stage_4idg_softglue_wrapper">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.local_preprocessors.</span></span><span class="sig-name descname"><span class="pre">stage_4idg_softglue_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_sg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.local_preprocessors.stage_4idg_softglue_wrapper" title="Link to this definition">#</a></dt>
 <dd><p>Stage the 4IDG SoftGlue FPGA for fly-scan position streaming.</p>
+<p>Resets the SoftGlue buffers, enables DMA and starts the position stream
+before the plan, then flushes the circular buffer, disables DMA and stops
+the stream afterwards.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plan</strong> (<em>iterable</em><em> or </em><em>iterator</em>) – a generator, list, or similar containing <cite>Msg</cite> objects</p></li>
+<li><p><strong>use_sg</strong> (<em>boolean</em>) – Flag that triggers the stage/unstage. If False, the plan passes
+through unchanged. If True, the ‘gsgz’ and ‘pos_stream’ devices must
+be in the oregistry otherwise a ValueError is raised.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>msg</strong> (<em>Msg</em>) – messages from plan, with the staging messages inserted and appended</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py data">

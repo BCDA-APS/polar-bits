@@ -71,14 +71,6 @@ Module Contents
 
 .. py:function:: get_current_run()
 
-.. py:function:: get_current_run_info()
-
-   Like get_current_run(), but falls back to a synthetic run if DM is down.
-
-   Fallback run periods (used only when DM is unreachable):
-   run 1: Jan 1 - Apr 20, run 2: Apr 21 - Aug 4, run 3: Aug 5 - Dec 31.
-
-
 .. py:function:: get_current_run_name()
 
 .. py:function:: dm_experiment_setup(experiment_name, esaf_id=None, users_name_list: list = None, title: str = None, **kwargs)

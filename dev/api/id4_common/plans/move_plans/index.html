@@ -512,6 +512,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../flyscans/index.html">id4_common.plans.flyscans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../grid_scans/index.html">id4_common.plans.grid_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_scans/index.html">id4_common.plans.hkl_scans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../list_scans/index.html">id4_common.plans.list_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_preprocessors/index.html">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_scans/index.html">id4_common.plans.local_scans</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">id4_common.plans.move_plans</a></li>
@@ -638,12 +639,11 @@ device is specifed, the movements are done in parallel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<em>Device</em>)</p></li>
-<li><p><strong>group</strong> (<em>string</em><em> (or </em><em>any hashable object</em><em>)</em><em>, </em><em>optional</em>) – identifier used by ‘wait’</p></li>
-<li><p><strong>wait</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, wait for completion before processing any more messages.
-False by default.</p></li>
-<li><p><strong>args</strong> – passed to obj.set()</p></li>
-<li><p><strong>kwargs</strong> – passed to obj.set()</p></li>
+<li><p><strong>args</strong> – device1, value1, device2, value2, … passed to
+bluesky.plan_stubs.abs_set</p></li>
+<li><p><strong>kwargs</strong> – passed to bluesky.plan_stubs.abs_set. Notably <code class="docutils literal notranslate"><span class="pre">group</span></code> (identifier
+used by ‘wait’) and <code class="docutils literal notranslate"><span class="pre">wait</span></code> (if True, wait for completion before
+processing any more messages; False by default).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
