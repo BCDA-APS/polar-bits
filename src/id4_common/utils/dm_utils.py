@@ -134,6 +134,27 @@ def get_current_run():
     return bss_api.getCurrentRun()
 
 
+def dm_ds_reachable():
+    """Cheap, read-only probe of the DM Data Storage (experiment) service.
+
+    Raises on failure (same contract as ``get_current_run()``) so callers
+    can use their own try/except to decide DM is unreachable.
+
+    This calls the same ``getExperimentsByStation`` endpoint that
+    ``get_experiment()``/``dm_experiment_setup()`` use, so success here is a
+    direct predictor of whether ``experiment_setup(server="data
+    management")`` will be able to look up or create the DM experiment.
+
+    Deliberately NOT ``get_current_run()``: that hits a different backend
+    (the APS DB/BSS service, not the DS/experiment service) and raises
+    ``ObjectNotFound`` whenever *today* falls outside any scheduled run
+    period (e.g. between runs) -- a scheduling gap, not a DM outage. Using
+    it as an availability gauge produces false negatives that have nothing
+    to do with DM's health.
+    """
+    exp_api.getExperimentsByStation(STATION)
+
+
 def get_current_run_info():
     """Like get_current_run(), but falls back to a synthetic run if DM is down.
 

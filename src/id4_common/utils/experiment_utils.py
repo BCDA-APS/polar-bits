@@ -32,8 +32,8 @@ from dm import DmException
 from dm import ObjectNotFound
 
 from ..callbacks.spec_data_file_writer import specwriter
+from .dm_utils import dm_ds_reachable
 from .dm_utils import dm_experiment_setup as dm_create_experiment
-from .dm_utils import get_current_run
 from .dm_utils import get_current_run_name
 from .dm_utils import get_esaf_info
 from .dm_utils import get_experiment
@@ -72,10 +72,18 @@ def _dm_available() -> bool:
     failures plus OSError/timeouts for transport problems) and logs a
     single warning on failure so the user knows why ESAF/proposal
     prompts were skipped.
+
+    Probes the DS/experiment service via ``dm_ds_reachable()`` rather than
+    ``get_current_run()``: the latter hits a different backend and raises
+    even when DM is perfectly healthy but today falls between scheduled
+    runs, which would incorrectly skip DM prompts. ``dm_ds_reachable()``
+    calls the same endpoint ``dm_experiment_setup()`` needs, so it directly
+    predicts whether ``experiment_setup(server="data management")`` will
+    work.
     """
     try:
         dm_setup(get_config()["DM_SETUP_FILE"])
-        get_current_run()
+        dm_ds_reachable()
         return True
     except Exception as exc:  # noqa: BLE001 — explicitly any DM failure
         logger.warning("DM not reachable (%s); falling back to dserv.", exc)
