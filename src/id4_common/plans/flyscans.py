@@ -71,6 +71,7 @@ reports in mm.
 """
 
 import logging
+import time
 
 import bluesky.plan_stubs as bps
 import bluesky.preprocessors as bpp
@@ -244,6 +245,28 @@ def flyscan(
             f"y_npts={y_npts_ + 1} to scan that many lines."
         )
 
+    # --- Validate det_dead against each detector's real minimum ---
+    # --- dead time, instead of trusting a user-supplied guess.    ---
+
+    for detector in detectors:
+        cam = getattr(detector, "cam", None)
+        if cam is None or not hasattr(cam, "dead_time"):
+            continue
+        # dead_time (DeadTime_RBV) depends on the currently-configured
+        # acquire_time, so push it first and let the IOC settle before
+        # reading the readback back.
+        cam.acquire_time.set(acquire_time * 1e-3).wait(timeout=10)
+        time.sleep(0.1)
+        min_dead_time_ms = cam.dead_time.get() * 1e3
+        if det_dead < min_dead_time_ms:
+            raise ValueError(
+                f"det_dead={det_dead} ms is below {detector.name}'s "
+                f"reported minimum dead time of {min_dead_time_ms:.3f} ms "
+                f"at acquire_time={acquire_time} ms. Increase det_dead to "
+                f"at least {min_dead_time_ms:.3f} ms (or raise "
+                "acquire_time)."
+            )
+
     # --- Capturing plan arguments for metadata ---
 
     plan_args = {
@@ -363,14 +386,20 @@ def flyscan(
     # SoftGlueZynq.snake_y), so passing the exact bit-value of the last
     # requested line as y_end would exclude it. A full extra dy step
     # overshoots (crosses a whole extra line-pair boundary and adds 2
-    # lines instead of the 1 that was missing) -- nudge by a single bit
-    # instead, just enough to flip the "< y_end" check true for the
-    # real last line without opening room for another one. Computed
-    # from y_min_bits/dy_bits (the same values driving
-    # ram_y_start/ram_y_inc) rather than y_max_bits, so it stays
-    # internally consistent even if independent DAC-um rounding of
-    # y_min_bits vs. y_max_bits would otherwise disagree by a bit or two.
-    y_end_bits = y_min_bits + (y_npts_ - 1) * dy_bits + 1
+    # lines instead of the 1 that was missing). A single-bit nudge
+    # worked for one (y_npts=4) test case but was too thin a margin for
+    # another (y_npts=6, dy_bits=1638): it produced a partial extra
+    # (7th) line, meaning a 1-bit margin is too close to the real
+    # comparison boundary to reliably win against whatever quantization/
+    # timing the firmware's comparator has. Split the difference: nudge
+    # by half a dy step -- comfortably clear of the exact boundary, but
+    # well short of a full step (which would open room for a whole
+    # extra line-pair). Computed from y_min_bits/dy_bits (the same
+    # values driving ram_y_start/ram_y_inc) rather than y_max_bits, so
+    # it stays internally consistent even if independent DAC-um
+    # rounding of y_min_bits vs. y_max_bits would otherwise disagree by
+    # a bit or two.
+    y_end_bits = y_min_bits + (y_npts_ - 1) * dy_bits + max(dy_bits // 2, 1)
 
     _threshold_range = (x_dac_max - x_dac_min) * (1 - F)
     _positive_threshold = sg.um_to_bits(x_dac_max - _threshold_range / 2)
@@ -394,6 +423,9 @@ def flyscan(
             hdf_images=images_per_line,
         )
         # detector._flyscan = True
+        cam = getattr(detector, "cam", None)
+        if cam is not None and hasattr(cam, "acquire_period"):
+            cam.stage_sigs["acquire_period"] = acquire_period * 1e-3
 
     # --- Inner plan (wrapped with stage + run decorators) ---
 
@@ -606,17 +638,33 @@ def flyscan(
         print("[sg] trigger() — waiting for completion")
         yield from bps.trigger(sg, wait=True)
 
+        # --- Pause the AND-1 run gate IMMEDIATELY on ram_y_done, ---
+        # --- before the DMA flush below. and_1 gates the         ---
+        # --- fast-axis snake clock / gate_delay_1 / Eiger         ---
+        # --- triggering (started alongside buffers.in4 in         ---
+        # --- trigger()); it's narrower than stop_softglue()'s     ---
+        # --- buffers.in4, which the DMA/scal_to_stream_1 pipeline ---
+        # --- itself needs to stay high to drain during the flush  ---
+        # --- loop below (confirmed: cutting buffers.in4 here      ---
+        # --- first broke pos_stream saving entirely). Deferring   ---
+        # --- this pause until after the flush loop (7 x 0.1s =    ---
+        # --- 0.7s) let the fast axis keep oscillating and the     ---
+        # --- Eiger keep gating for that whole window, appending   ---
+        # --- extra fast-axis-only frames past the real last line. ---
+
+        sg.pause_softglue()
+
         # --- Flush DMA so the trailing buffer drains BEFORE the    ---
         # --- detector unstage (triggered by stage_decorator on exit)
-        # --- finalises its HDF file.                                 ---
+        # --- finalises its HDF file. buffers.in4 is still high     ---
+        # --- here (only and_1 was paused above), so the DMA/       ---
+        # --- scal_to_stream_1 pipeline can still drain.             ---
 
-        print("[sg] scal_to_stream_1.flush.signal <- '1!'  (x11, draining DMA)")
-        # for _ in range(11):
-        #     sg.scal_to_stream_1.flush.signal.put("1!")
-        #     yield from sleep(0.1)
-        sg.scal_to_stream_1.flush.signal.put("1!")
-        yield from sleep(0.1)
-        
+        print("[sg] scal_to_stream_1.flush.signal <- '1!'  (x7, draining DMA)")
+        for _ in range(7):
+            sg.scal_to_stream_1.flush.signal.put("1!")
+            yield from sleep(0.1)
+
         sg.stop_softglue()
         sg.reset()
 

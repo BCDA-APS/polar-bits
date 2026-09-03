@@ -108,25 +108,24 @@ class TriggerTime(TriggerBase):
             self.cam.stage_sigs["num_triggers"] = self.max_num_images
 
         elif trigger_type == "gate":
-            # Stage signals
-            self.cam.stage_sigs["num_triggers"] = 1
-            # The num_triggers need to be the first in the Ordered dict! This is
-            # because in EPICS, if trigger_mode = External Gate, then cannot
-            # change the num_triggers.
+            # Stage signals. In "External Enable" mode, num_triggers is
+            # the count of external enable pulses the detector waits for
+            # -- each pulse produces exactly one frame -- and num_images
+            # must stay 1 (confirmed on hardware: num_triggers=1 with a
+            # large num_images produced only a single image, regardless
+            # of num_images). Both must be staged before trigger_mode:
+            # the Eiger IOC locks/rejects writes to these once
+            # trigger_mode is already set to a gated External mode, so
+            # their position in this OrderedDict (stage() applies
+            # stage_sigs in order) has to precede it.
+            self.cam.stage_sigs["num_triggers"] = self.max_num_images
+            self.cam.stage_sigs["num_images"] = 1
             self.cam.stage_sigs.move_to_end("num_triggers", last=False)
+            self.cam.stage_sigs.move_to_end("num_images", last=False)
 
-            # The External Gate is for pump and probe. External Enable should
-            # work better.
-            self.cam.stage_sigs["trigger_mode"] = "External Series"
+            self.cam.stage_sigs["trigger_mode"] = "External Enable"
             self.cam.stage_sigs["manual_trigger"] = "Disable"
-            self.cam.stage_sigs["num_triggers"] = 1
             self.cam.stage_sigs["num_exposures"] = 1
-
-            #self.cam.stage_sigs["trigger_mode"] = "External Enable"
-            #self.cam.stage_sigs["manual_trigger"] = "Disable"
-            #self.cam.stage_sigs["num_images"] = self.max_num_images
-            #self.cam.stage_sigs["num_exposures"] = 1
-            #self.cam.stage_sigs["trigger_mode"] = "External Enable"
 
     def stage(self):
         """
@@ -354,10 +353,11 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
         self.plot_select([5])
 
     def setup_flyscan_mode(self, *, num_images, acq_time, hdf_images):
-        """Configure stage_sigs for an external-gate fly-scan.
+        """Configure stage_sigs for an External Enable (per-pulse) fly-scan.
 
         Wraps :meth:`setup_external_trigger` (``trigger_type="gate"``) to
-        get the default External Gate stage signals, then overrides the
+        get the default External Enable stage signals -- each SoftGlue
+        gate pulse triggers and paces one exposure -- then overrides the
         scan-specific image count, per-image acquire time, and HDF5
         capture chunk size. Call this *before* ``stage()`` so the new
         ``stage_sigs`` are applied when the RunEngine stages the
@@ -366,7 +366,9 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
         Parameters
         ----------
         num_images : int
-            Total number of frames the scan will collect.
+            Total number of frames the scan will collect -- staged as
+            ``num_triggers`` (the External Enable pulse count), since
+            ``num_images`` must stay 1 (one frame per pulse).
         acq_time : float
             Per-frame acquire time in seconds.
         hdf_images : int
@@ -374,7 +376,7 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
             ``hdf1.stage_sigs["num_capture"]``).
         """
         self.setup_external_trigger(trigger_type="gate")
-        self.cam.stage_sigs["num_images"] = int(num_images)
+        self.cam.stage_sigs["num_triggers"] = int(num_images)
         self.cam.stage_sigs["acquire_time"] = float(acq_time)
         # TODO: How to setup per line file like in ISN? Do we need it?
         # self.hdf1.stage_sigs["num_capture"] = int(hdf_images)
