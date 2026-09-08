@@ -62,11 +62,18 @@ target-version = "py311"
 [project.optional-dependencies]
 dev = [ "build", "isort", "mypy", "pre-commit", "pytest", "ruff",]
 doc = [ "babel", "ipykernel", "jinja2", "markupsafe", "myst_parser", "nbsphinx", "pydata-sphinx-theme", "pygments-ipython-console", "pygments", "sphinx-autoapi", "sphinx-design", "sphinx-tabs", "sphinx",]
-all = [ "polar-bits[dev,doc]",]
+gui = [ "qtconsole", "qtpy", "jupyter_client", "matplotlib", "pyepics",]
+gui3d = [ "vtk", "pyvista", "pyvistaqt", "pooch", "scooby",]
+mcp = [ "mcp",]
+all = [ "polar-bits[dev,doc,gui,mcp]",]
 
 [project.urls]
 Homepage = "https://BCDA-APS.github.io/BITS/"
 "Bug Tracker" = "https://github.com/BCDA-APS/BITS/issues"
+
+[project.scripts]
+polar-gui = "id4_common.gui.app:main"
+polar-mcp = "id4_common.mcp_server.server:main"
 
 [tool.pytest.ini_options]
 addopts = [ "--import-mode=importlib", "-x",]
