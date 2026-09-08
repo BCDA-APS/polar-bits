@@ -169,15 +169,67 @@ def _detector_fields(start, y):
     return list(y)
 
 
+def _suppress_dims_warning():
+    """Context manager silencing the FutureWarning about ``Dataset.dims``."""
+    ctx = warnings.catch_warnings()
+    ctx.__enter__()
+    warnings.filterwarnings(
+        "ignore",
+        category=FutureWarning,
+        message="The return type of `Dataset.dims`.*",
+    )
+    return ctx
+
+
+class _LazyTable:
+    """Column-at-a-time view of a run's primary stream.
+
+    ``run.primary.read()`` materialises the *whole* stream.  With an area
+    detector in ``counters.detectors`` that is every frame of the scan --
+    hundreds of megabytes pulled over the network so that ``cen()`` can look
+    at one scalar column, which makes ``cen()`` after an Eiger scan look hung.
+
+    Every consumer here (``_grid_shape``, ``_grid_axes``, ``_resolve_x_motor``
+    and the stats loops) only ever does ``table[field].values`` and
+    ``field in table``, so fetching one named column at a time is enough and
+    the image columns are never touched.  Columns are cached because
+    ``_grid_shape`` and ``_grid_axes`` both read the motor readbacks.
+
+    Falls back to the eager ``read()`` if the backend has no ``to_dask()``.
+    """
+
+    def __init__(self, run):
+        self._cache = {}
+        self._eager = None
+        ctx = _suppress_dims_warning()
+        try:
+            try:
+                self._dataset = run.primary.to_dask()
+            except (AttributeError, NotImplementedError):
+                self._eager = run.primary.read()
+                self._dataset = self._eager
+        finally:
+            ctx.__exit__(None, None, None)
+
+    def __contains__(self, field):
+        return field in self._dataset
+
+    def __getitem__(self, field):
+        if field not in self._cache:
+            column = self._dataset[field]
+            if self._eager is None:
+                ctx = _suppress_dims_warning()
+                try:
+                    column = column.compute()
+                finally:
+                    ctx.__exit__(None, None, None)
+            self._cache[field] = column
+        return self._cache[field]
+
+
 def _read_table(run):
-    """Read primary stream, suppressing the FutureWarning about Dataset.dims."""
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            category=FutureWarning,
-            message="The return type of `Dataset.dims`.*",
-        )
-        return run.primary.read()
+    """Return a lazy, column-at-a-time view of ``run``'s primary stream."""
+    return _LazyTable(run)
 
 
 # ---------------------------------------------------------------------------
