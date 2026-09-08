@@ -17,6 +17,7 @@ Auxilary HKL functions.
     ~or0
     ~or1
     ~compute_UB
+    ~update_eiger
     ~setmode
     ~ca
     ~wh
@@ -52,7 +53,7 @@ import asyncio
 import logging
 import math
 import pathlib
-
+import traceback
 import yaml
 
 try:
@@ -90,6 +91,7 @@ __all__ = """
     or0
     or1
     compute_UB
+    update_eiger
     setmode
     ca
     wh
@@ -542,10 +544,20 @@ def compute_UB():
     sample.core.calc_UB(
         sample.reflections.order[0], sample.reflections.order[1]
     )
-    Sync_UB_Matrix(_geom_, _geom_for_psi_)
+    try:
+        Sync_UB_Matrix(_geom_, _geom_for_psi_)
+    except Exception:
+        print("sync UB problem!")
+        traceback.print_exc()
+
     first_ref = sample.reflections[sample.reflections.order[0]]
     h, k, l = list(first_ref.pseudos.values())
-    _geom_.forward(h, k, l)
+    try:
+        _geom_.forward(h, k, l)
+    except Exception:
+        print("UB not calculated. Check geometry.")
+        traceback.print_exc()
+
     # TODO: prefer to not use caput to a specific PV, hard to maintain, verify,
     # etc...
     caput(
@@ -562,14 +574,57 @@ def compute_UB():
             sample.UB[2][2],
         ],
     )
+    update_eiger()
+
+
+def update_eiger():
     eiger_x = int(caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX") / 2)
     eiger_y = int(caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY") / 2)
     caput("4idgSoftX:Eiger:Center", [eiger_x, eiger_y])
-    caput("4idEiger:cam1:BeamX_RBV", eiger_x)
-    caput("4idEiger:cam1:BeamY_RBV", eiger_y)
+    caput("4idEiger:cam1:BeamX", eiger_x)
+    caput("4idEiger:cam1:BeamY", eiger_y)
     eiger_distance = caget("4idgSoft:m21.RBV")
     caput("4idEiger:cam1:DetDist", eiger_distance)
     caput("4idgSoftX:Eiger:Distance", eiger_distance)
+
+
+def _copy_sample_to_psi(source, target, ub=None):
+    """
+    Copy ``source``'s lattice and UB onto ``target``'s sample.
+
+    The psi geometry is a separate device with its own sample, so copying UB
+    alone leaves it on hklpy2's default 1 angstrom cubic lattice.  psi is
+    measured against ``UB . (h2, k2, l2)``, so the reference vector is then
+    computed for the wrong crystal -- silently, since nothing raises.
+
+    Lattice first: writing a lattice parameter flags the solver SAMPLE|UB
+    dirty, and hklpy2 warns that some backends discard U/UB as a side effect
+    of the sample write.
+
+    Parameter by parameter, not ``target.sample.lattice = source...``:
+    ``Sample.lattice``'s setter rebinds ``_on_change`` on whatever object it
+    is handed, so assigning the source's ``Lattice`` would redirect the
+    *source* sample's change notification to the target.
+
+    The equality guard matters because one caller is a subscription callback:
+    every assignment flags the solver dirty, and an unguarded copy would do
+    so on each UB update whether the lattice actually moved or not.
+
+    Parameters
+    ----------
+    source, target : Diffractometer
+        Devices whose ``.sample`` is read from and written to.
+    ub : array-like, optional
+        UB to write instead of ``source.sample.UB`` -- used by the sync
+        subscription, which is handed the new matrix as its payload.
+    """
+    _src = source.sample.lattice
+    _dst = target.sample.lattice
+    for _p in ("a", "b", "c", "alpha", "beta", "gamma"):
+        _v = getattr(_src, _p)
+        if getattr(_dst, _p) != _v:
+            setattr(_dst, _p, _v)
+    target.sample.UB = source.sample.UB if ub is None else ub
 
 
 # TODO: Do we really need this? Could put the UB matrix as part of the
@@ -599,7 +654,7 @@ class Sync_UB_Matrix:
         if value is None:
             return
         print(f"Copy UB from {self.source.name} to {self.target.name}")
-        self.target.sample.UB = value
+        _copy_sample_to_psi(self.source, self.target, ub=value)
 
         # Sync real motor positions if target has simulated motors
         for axis_name in self.source.real_axis_names:
@@ -1291,7 +1346,7 @@ def _wh():
     """
     _geom_ = get_diffractometer()
     _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
-    _geom_for_psi_.sample.UB = _geom_.sample.UB
+    _copy_sample_to_psi(_geom_, _geom_for_psi_)
     print(
         f"\n   {' '.join(_geom_.pseudo_positioners._fields).upper()}"
         f" = {', '.join([f'{v.position:5f}' for v in _geom_.pseudo_positioners])}"
@@ -1476,7 +1531,7 @@ def pa_new(full=False):
         print("     " + "  ".join(f"{v:>12.6f}" for v in row))
 
     _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
-    _geom_for_psi_.sample.UB = _geom_.sample.UB
+    _copy_sample_to_psi(_geom_, _geom_for_psi_)
     _h2, _k2, _l2 = _geom_for_psi_.core.extras.values()
     print("\nAzimuthal reference:")
     psi_label = "     H K L"
