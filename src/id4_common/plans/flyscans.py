@@ -660,10 +660,10 @@ def flyscan(
         # --- here (only and_1 was paused above), so the DMA/       ---
         # --- scal_to_stream_1 pipeline can still drain.             ---
 
-        print("[sg] scal_to_stream_1.flush.signal <- '1!'  (x7, draining DMA)")
-        for _ in range(7):
-            sg.scal_to_stream_1.flush.signal.put("1!")
-            yield from sleep(0.1)
+        print("[sg] scal_to_stream_1.flush.signal <- '1!'  (draining DMA)")
+        #for _ in range(7):
+        sg.scal_to_stream_1.flush.signal.put("1!")
+        yield from sleep(0.1)
 
         sg.stop_softglue()
         sg.reset()
