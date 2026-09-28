@@ -148,7 +148,13 @@ def flyscan(
     ----------
     detectors : list
         Area detectors that expose ``setup_flyscan_mode``, ``stage``,
-        ``unstage`` and an ``hdf1`` plugin.
+        ``unstage`` and an ``hdf1`` plugin. Supported today: ``eiger``
+        and ``vortex``, the four-element Xspress3 at ``S4QX4:`` (load it
+        with ``load_vortex("xspress4")``). Both are gated by hard-wired
+        SoftGlue FO outputs, so no trigger routing happens here. Keep
+        the Xspress3's name as ``vortex`` -- the flyscan GUI's live
+        viewer looks for its file under ``<experiment>/vortex/``.
+        Defaults to ``[eiger]``.
     x_min, x_max, x_npts : float / int, optional
         **Fast axis** (X piezo) bounds in microns **relative to the
         current** ``nanox`` position ``x0``. Scan physically covers
@@ -424,7 +430,10 @@ def flyscan(
         )
         # detector._flyscan = True
         cam = getattr(detector, "cam", None)
-        if cam is not None and hasattr(cam, "acquire_period"):
+        # VortexDetectorCam sets acquire_period = None (the Xspress3 has
+        # no such record), so hasattr() is not enough -- the key would be
+        # staged and stage() would then fail resolving the signal.
+        if cam is not None and getattr(cam, "acquire_period", None) is not None:
             cam.stage_sigs["acquire_period"] = acquire_period * 1e-3
 
     # --- Inner plan (wrapped with stage + run decorators) ---
