@@ -1,25 +1,31 @@
 """
-Local mesh-scan plans: ``grid_scan`` and ``rel_grid_scan``.
+Local list-scan plans: ``list_scan`` and ``rel_list_scan``.
 
-Polar-bits versions of :func:`bluesky.plans.grid_scan` /
-:func:`bluesky.plans.rel_grid_scan` that wire in the standard counters /
+Polar-bits versions of :func:`bluesky.plans.list_scan` /
+:func:`bluesky.plans.rel_list_scan` that wire in the standard counters /
 dichro / lockin / softgluezynq / NeXus / baseline machinery.
+
+Unlike ``ascan`` / ``grid_scan``, which build their trajectory from
+``start, stop, num``, these take an explicit list of positions per motor.
+Use them when the points are not evenly spaced -- a hand-picked set of
+setpoints, a log-spaced grid, or an energy list computed elsewhere.  For
+the XAFS-specific energy grid see :func:`id4_common.plans.base_scans.qxscan`.
 """
 
 __all__ = [
-    "grid_scan",
-    "rel_grid_scan",
+    "list_scan",
+    "rel_list_scan",
 ]
 
 from logging import getLogger
 
 from apsbits.core.instrument_init import oregistry
-from bluesky.plan_patterns import chunk_outer_product_args
-from bluesky.plans import grid_scan as bp_grid_scan
+from bluesky.plans import list_scan as bp_list_scan
 from bluesky.preprocessors import monitor_during_decorator
 from bluesky.preprocessors import relative_set_decorator
 from bluesky.preprocessors import reset_positions_decorator
 from bluesky.preprocessors import subs_decorator
+from toolz import partition
 
 from ..callbacks.dichro_stream import dichro as dichro_device
 from ..callbacks.nexus_data_file_writer import nxwriter
@@ -44,10 +50,62 @@ logger = getLogger(__name__)
 logger.info(__file__)
 
 
-def grid_scan(
+def _split_list_scan_args(args):
+    """
+    Validate ``list_scan`` positional arguments and split off the count time.
+
+    Parameters
+    ----------
+    args : tuple
+        ``motor1, list1, ..., motorN, listN, time``.
+
+    Returns
+    -------
+    scan_args : tuple
+        The ``motor1, list1, ..., motorN, listN`` portion, ready to hand to
+        :func:`bluesky.plans.list_scan`.
+    motors : list
+        The motor objects, in the order given.
+    time : float
+        The trailing count time.
+    """
+    if len(args) % 2 != 1:
+        raise ValueError(
+            "Invalid number of arguments provided. Expected a multiple of 2 "
+            f"plus 1, but got {len(args)}."
+        )
+
+    time = args[-1]
+    scan_args = args[:-1]
+
+    motors = []
+    lengths = []
+    for motor, positions in partition(2, scan_args):
+        motors.append(motor)
+        try:
+            lengths.append(len(positions))
+        except TypeError:
+            raise ValueError(
+                f"The positions for {getattr(motor, 'name', motor)} must be a "
+                f"sized iterable (list, tuple, array), got {positions!r}."
+            ) from None
+
+    if len(set(lengths)) > 1:
+        _detail = ", ".join(
+            f"{getattr(m, 'name', m)}={n}"
+            for m, n in zip(motors, lengths, strict=False)
+        )
+        raise ValueError(
+            "All position lists must have the same length, but got "
+            f"{_detail}."
+        )
+
+    return scan_args, motors, time
+
+
+def list_scan(
     *args,
     detectors=None,
-    snake_axes=None,
     lockin=False,
     dichro=False,
     fixq=False,
@@ -57,32 +115,27 @@ def grid_scan(
     md=None,
 ):
     """
-    Scan over a mesh; each motor is on an independent trajectory.
+    Scan over one or more motors using an explicit list of positions.
+
+    All motors move together, one list entry per scan point, so every
+    position list must have the same length.
 
     Parameters
     ----------
     ``*args``
-        patterned like (``motor1, start1, stop1, num1,``
-                        ``motor2, start2, stop2, num2,``
-                        ``motor3, start3, stop3, num3,`` ...
-                        ``motorN, startN, stopN, numN``)
-        The first motor is the "slowest", the outer loop. For all motors
-        except the first motor, there is a "snake" argument: a boolean
-        indicating whether to following snake-like, winding trajectory or a
-        simple left-to-right trajectory.
-    time : float, optional
+        patterned like (``motor1, list1,``
+                        ``motor2, list2,`` ...
+                        ``motorN, listN,``
+                        ``time``)
+        Motors can be any 'settable' object (motor, temp controller, etc.)
+        and each list is the sequence of positions that motor visits. The
+        lists may be Python lists, tuples or numpy arrays.
+    time : float
         If a number is passed, it will modify the counts over time. All
         detectors need to have a .preset_monitor signal.
     detectors : list, optional
         List of detectors to be used in the scan. If None, will use the
         detectors defined in `counters.detectors`.
-    snake_axes: boolean or iterable, optional
-        which axes should be snaked, either ``False`` (do not snake any axes),
-        ``True`` (snake all axes) or a list of axes to snake. "Snaking" an axis
-        is defined as following snake-like, winding trajectory instead of a
-        simple left-to-right trajectory. The elements of the list are motors
-        that are listed in `args`. The list must not contain the slowest
-        (first) motor, since it can't be snaked.
     lockin : boolean, optional
         Flag to do a lock-in scan. Please run pr_setup.config() prior do a
         lock-in scan.
@@ -112,20 +165,12 @@ def grid_scan(
 
     See Also
     --------
-    :func:`bluesky.plans.grid_scan`
-    :func:`bluesky.plans.rel_grid_scan`
-    :func:`bluesky.plans.inner_product_scan`
-    :func:`bluesky.plans.scan_nd`
+    :func:`bluesky.plans.list_scan`
+    :func:`rel_list_scan`
+    :func:`ascan`
     """
 
-    if len(args) % 4 != 1:
-        raise ValueError(
-            "Invalid number of arguments provided. Expected a multiple of 4 "
-            f"plus 1, but got {len(args)}."
-        )
-    else:
-        time = args[-1]
-        args = args[:-1]
+    args, motors, time = _split_list_scan_args(args)
 
     if g_sgz:
         pos_stream = oregistry.find("pos_stream")
@@ -156,10 +201,8 @@ def grid_scan(
     )
     for item in detectors:
         _md["hints"]["detectors"].extend(item.hints["fields"])
-    _md["hints"]["scan_type"] = "gridscan"
+    _md["hints"]["scan_type"] = "list_scan"
     _md.update(md or {})
-
-    motors = [m[0] for m in chunk_outer_product_args(args)]
 
     magnet_option = _check_magnet911(args)
 
@@ -170,23 +213,18 @@ def grid_scan(
     @stage_dichro_decorator(dichro, lockin, vortex_sgz, motors)
     @extra_devices_decorator(extras)
     @subs_decorator(nxwriter.receiver)
-    def _inner_grid_scan():
-        yield from bp_grid_scan(
-            detectors + extras,
-            *args,
-            snake_axes=snake_axes,
-            per_step=per_step,
-            md=_md,
+    def _inner_list_scan():
+        yield from bp_list_scan(
+            detectors + extras, *args, per_step=per_step, md=_md
         )
         yield from nxwriter.wait_writer_plan_stub()
 
-    return (yield from _inner_grid_scan())
+    return (yield from _inner_list_scan())
 
 
-def rel_grid_scan(
+def rel_list_scan(
     *args,
     detectors=None,
-    snake_axes=None,
     lockin=False,
     dichro=False,
     fixq=False,
@@ -196,34 +234,32 @@ def rel_grid_scan(
     md=None,
 ):
     """
-    Scan over a mesh relative to current position.
+    Scan over an explicit list of positions relative to the current position.
 
-    Each motor is on an independent trajectory.
+    All motors move together, one list entry per scan point, so every
+    position list must have the same length. The motors are returned to their
+    starting positions when the scan finishes.
 
     Parameters
     ----------
     ``*args``
-        patterned like (``motor1, start1, stop1, num1,``
-                        ``motor2, start2, stop2, num2,``
-                        ``motor3, start3, stop3, num3,`` ...
-                        ``motorN, startN, stopN, numN``)
-        The first motor is the "slowest", the outer loop. For all motors
-        except the first motor, there is a "snake" argument: a boolean
-        indicating whether to following snake-like, winding trajectory or a
-        simple left-to-right trajectory.
-    snake_axes: boolean or iterable, optional
-        which axes should be snaked, either ``False`` (do not snake any axes),
-        ``True`` (snake all axes) or a list of axes to snake. "Snaking" an axis
-        is defined as following snake-like, winding trajectory instead of a
-        simple left-to-right trajectory. The elements of the list are motors
-        that are listed in `args`. The list must not contain the slowest
-        (first) motor, since it can't be snaked.
+        patterned like (``motor1, list1,``
+                        ``motor2, list2,`` ...
+                        ``motorN, listN,``
+                        ``time``)
+        Motors can be any 'settable' object (motor, temp controller, etc.)
+        and each list is the sequence of offsets, relative to that motor's
+        current position, that it visits. The lists may be Python lists,
+        tuples or numpy arrays.
+    time : float
+        If a number is passed, it will modify the counts over time. All
+        detectors need to have a .preset_monitor signal.
     detectors : list, optional
         List of detectors to be used in the scan. If None, will use the
         detectors defined in `counters.detectors`.
     lockin : boolean, optional
         Flag to do a lock-in scan. Please run pr_setup.config() prior do a
-        lock-in scan
+        lock-in scan.
     dichro : boolean, optional
         Flag to do a dichro scan. Please run pr_setup.config() prior do a
         dichro scan. Note that this will switch the x-ray polarization at every
@@ -250,26 +286,24 @@ def rel_grid_scan(
 
     See Also
     --------
-    :func:`grid_scan`
-    :func:`bluesky.plans.grid_scan`
-    :func:`bluesky.plans.rel_grid_scan`
-    :func:`bluesky.plans.inner_product_scan`
-    :func:`bluesky.plans.scan_nd`
+    :func:`list_scan`
+    :func:`bluesky.plans.rel_list_scan`
+    :func:`lup`
     """
 
-    _md = {"plan_name": "rel_grid_scan"}
+    _md = {"plan_name": "rel_list_scan"}
     _md.update(md or {})
-    motors = [m[0] for m in chunk_outer_product_args(args)]
+
+    _, motors, _ = _split_list_scan_args(args)
 
     @reset_positions_decorator(motors)
     @reset_real_motors_decorator(_hkl_motors(fixq))
     @relative_set_decorator(motors)
-    def inner_rel_grid_scan():
+    def inner_rel_list_scan():
         return (
-            yield from grid_scan(
+            yield from list_scan(
                 *args,
                 detectors=detectors,
-                snake_axes=snake_axes,
                 lockin=lockin,
                 dichro=dichro,
                 fixq=fixq,
@@ -280,4 +314,4 @@ def rel_grid_scan(
             )
         )
 
-    return (yield from inner_rel_grid_scan())
+    return (yield from inner_rel_list_scan())
