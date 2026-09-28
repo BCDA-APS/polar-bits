@@ -48,6 +48,17 @@ MONITOR_COUNTS = "monitor counts"
 #: Rough per-point overhead used only for the duration estimate.
 OVERHEAD_S = 0.35
 
+#: What a scan starts out as, for every plan: an odd point count so the
+#: trajectory has a middle point, and a short count time.
+DEFAULT_POINTS = 21
+DEFAULT_TIME_S = 0.2
+
+#: Arrow-key and spin-button step for the count time, and the floor it steps
+#: down to.  A tenth of a second is the smallest count worth asking for here,
+#: so the arrows walk the useful range instead of nudging milliseconds.
+TIME_STEP_S = 0.1
+MIN_TIME_S = 0.1
+
 #: Keeps the numeric fields from sprawling when the window is wide; the label
 #: columns get no stretch, so a label stays next to the field it names.
 VALUE_WIDTH = 110
@@ -94,7 +105,7 @@ class _AxisRow:
             box.valueChanged.connect(lambda _v: on_change())
         self.points = QSpinBox()
         self.points.setRange(1, 1000000)
-        self.points.setValue(11)
+        self.points.setValue(DEFAULT_POINTS)
         self.points.setKeyboardTracking(False)
         self.points.valueChanged.connect(lambda _v: on_change())
         for box in (self.start, self.stop, self.points):
@@ -255,7 +266,7 @@ class ScanTab(BaseTab):
         self._shared_points = QDoubleSpinBox()
         self._shared_points.setRange(0.001, 1000000)
         self._shared_points.setDecimals(0)
-        self._shared_points.setValue(51)
+        self._shared_points.setValue(DEFAULT_POINTS)
         self._shared_points.setKeyboardTracking(False)
         self._shared_points.valueChanged.connect(self._update_preview)
         self._shared_points.setMaximumWidth(VALUE_WIDTH)
@@ -264,9 +275,10 @@ class ScanTab(BaseTab):
 
         grid.addWidget(QLabel("Time per point"), 0, 2)
         self._time = QDoubleSpinBox()
-        self._time.setRange(0.001, 1e6)
+        self._time.setRange(MIN_TIME_S, 1e6)
         self._time.setDecimals(3)
-        self._time.setValue(1.0)
+        self._time.setValue(DEFAULT_TIME_S)
+        self._time.setSingleStep(TIME_STEP_S)
         self._time.setKeyboardTracking(False)
         self._time.valueChanged.connect(self._update_preview)
         self._time.setMaximumWidth(VALUE_WIDTH)
