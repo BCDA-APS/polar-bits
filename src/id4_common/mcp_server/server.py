@@ -13,12 +13,18 @@ at all (:mod:`id4_common.mcp_server.motion`), so this is a property of the code
 rather than a promise in a docstring.
 
 Orientation tools take ``device``, defaulting to
-:data:`~id4_common.mcp_server.bridge.DEFAULT_DEVICE`.  **That default is a real
+:func:`~id4_common.mcp_server.bridge.default_device`.  **That default is a real
 machine.**  6-ID-B could default to a simulator, so touching hardware was
 always an explicit act; POLAR has no simulated diffractometer, so that layer
 does not exist here and the approval gate is the only thing in front of the
 motors.  The allow-list and the per-op scope are checked again in the kernel,
 so a bug here cannot address an op to a device it was not written for.
+
+**The tool set depends on the station.**  ``ID4_STATION`` picks a profile in
+:mod:`id4_common.gui.config`; at a station with no diffractometer (4IDB, 4IDH)
+the eighteen orientation tools are not declared at all and the instructions
+drop their half.  A client there sees only the eleven tools that work, rather
+than a menu of calls that fail once it tries them.
 
 Every tool returns ``{"ok", "message", "data"}``.  ``message`` is written to be
 read: when hklpy2 declines something -- a preset for an axis this mode does not
@@ -38,20 +44,28 @@ SDK generations are accepted: 2.0 calls the decorator-style server
 import argparse
 import sys
 
-from .bridge import ALLOWED_DEVICES
-from .bridge import DEFAULT_DEVICE
+from ..gui import config as _config
 from .bridge import SESSION_DEVICE
+from .bridge import allowed_devices
+from .bridge import default_device
 from .session import HklSession
 
-#: "huber_euler, huber_hp", for the instructions -- built from the allow-list
-#: rather than typed out, so adding a machine in ``gui/config.py`` reaches the
-#: text a client reads without a second edit here.
-_DEVICE_LIST = ", ".join(sorted(ALLOWED_DEVICES))
-
-_INSTRUCTIONS = """\
+_HEADER = """\
 Drive a POLAR diffractometer in a live Bluesky session: set up an orientation,
 propose moves, run scans, read what came back.
+"""
 
+_HEADER_NO_HKL = """\
+Drive a POLAR beamline station in a live Bluesky session: propose moves, run
+scans, read what came back.
+
+This is {display}, which has **no diffractometer**. There are no orientation
+or hkl tools here, and the reciprocal-space scan plans (hscan, kscan, lscan,
+hklscan, th2th, psiscan) will not run -- ask for a real-space scan instead
+(count, ascan, lup, grid_scan, rel_grid_scan).
+"""
+
+_DEVICES = """\
 Two diffractometers, {devices}, and **both are real** -- there is no
 simulator here, so there is nowhere to try something out first. `{default}` is
 the default; name the other one explicitly. Each has its own sample list,
@@ -64,11 +78,13 @@ made active. hkl_get_state reports that in its `active` field -- check it
 before asking for one of those scans. You cannot change it: switching also
 re-applies the axis constraints and rebinds the console's axis names, so it is
 the operator's to do from the HKL tab. Ask them if you need the other one.
+"""
 
-**You cannot change anything by yourself.** move_hkl, move_axes, set_signals
-and run_scan validate the request and then park it for the human operator, who
-approves or rejects it in the GUI. They return immediately, saying "awaiting
-approval"; that is success, not completion. After one:
+_APPROVAL = """\
+**You cannot change anything by yourself.** {movers} validate the request and
+then park it for the human operator, who approves or rejects it in the GUI.
+They return immediately, saying "awaiting approval"; that is success, not
+completion. After one:
 
   - Poll get_request_status. Do NOT send the request again -- a second one
     while the first is pending is refused, and re-asking is how a queue of
@@ -79,7 +95,9 @@ approval"; that is success, not completion. After one:
     reason to tell the operator what you wanted and why, not to retry with
     allow_large_move. Only use allow_large_move when the human has said the
     long move is intended.
+"""
 
+_ORIENTATION = """\
 Orientation setup, in this order -- each step depends on the one before:
 
 1. hkl_get_state -- always start here. It reports the current sample, lattice,
@@ -95,10 +113,12 @@ Orientation setup, in this order -- each step depends on the one before:
    "psi_constant_vertical". Copy them from hkl_get_state rather than typing
    them.
 6. hkl_calc_angles to solve an hkl into angles. Nothing moves.
+"""
 
+_TAIL = """\
 Two kinds of thing can be changed, and they do not overlap:
 
-  - Axes are *moved*: list_axes, then move_axes (or move_hkl, or run_scan).
+  - Axes are *moved*: list_axes, then move_axes{alt_movers}.
   - Everything else writable is *set*: list_signals, then set_signals. That is
     where a filter attenuation, a lock-in sensitivity, a temperature setpoint
     or a mode enum lives. Ask list_signals with no argument for the
@@ -111,11 +131,71 @@ read_axes, list_signals, get_counters, get_last_scan, get_session_status.
 If a call reports the session is busy, a scan or an approved move is running.
 get_session_status still answers -- it reads the motors over Channel Access
 rather than through the session -- so use it to follow progress, and wait.
-""".format(devices=_DEVICE_LIST, default=DEFAULT_DEVICE)
+"""
+
+
+def instructions(profile=None):
+    """Assemble the server instructions for *profile* (default: this station).
+
+    Two-thirds of the text is a diffractometer tutorial, and at a station with
+    no diffractometer none of the tools it describes exist.  Left whole it
+    would be the same lie the GUI's always-present HKL tab used to tell, only
+    to a reader that cannot look at the hutch and check.
+    """
+    profile = profile or _config.profile()
+    if profile.has_diffractometer:
+        head = (
+            _HEADER
+            + "\n"
+            + _DEVICES.format(
+                devices=", ".join(sorted(allowed_devices())),
+                default=default_device(),
+            )
+        )
+        movers = "move_hkl, move_axes, set_signals and run_scan"
+        alt_movers = " (or move_hkl, or run_scan)"
+        middle = "\n" + _ORIENTATION
+    else:
+        head = _HEADER_NO_HKL.format(display=profile.display)
+        movers = "move_axes, set_signals and run_scan"
+        alt_movers = " (or run_scan)"
+        middle = ""
+
+    return (
+        head
+        + "\n"
+        + _APPROVAL.format(movers=movers)
+        + middle
+        + "\n"
+        + _TAIL.format(alt_movers=alt_movers)
+    )
 
 
 def _add_tools(mcp, session):
-    """Declare every tool against *session*."""
+    """Declare every tool against *session*.
+
+    The diffractometer half is declared only where there is one: an MCP client
+    cannot be told "this tool exists but will not work", so a tool it must
+    never call is a tool it must never see.
+    """
+    profile = _config.profile()
+
+    #: Resolved here rather than written into each signature as a module
+    #: constant: a default argument is evaluated when the ``def`` runs, and
+    #: these run inside this function, which ``build`` calls long after
+    #: ``ID4_STATION`` is set.  A real device name also reaches the client's
+    #: tool schema, which a ``None`` placeholder would not.
+    fallback_device = default_device()
+
+    def hkl_tool(func):
+        """Register *func* only where there is a diffractometer to drive.
+
+        Stands in for ``@mcp.tool()`` on the eighteen orientation and
+        ``move_hkl`` tools.  Marking them one by one rather than wrapping the
+        block in an ``if`` keeps each tool's category visible where it is
+        written, so a new tool lands on the right side of the line.
+        """
+        return mcp.tool()(func) if profile.has_diffractometer else func
 
     def call(op, **args):
         return session.call(op, **args)
@@ -126,8 +206,8 @@ def _add_tools(mcp, session):
 
     # -- reading -----------------------------------------------------------
 
-    @mcp.tool()
-    def hkl_get_state(device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_get_state(device: str = fallback_device) -> dict:
         """Report the full orientation state of a diffractometer.
 
         *device* names one of the diffractometers listed in the server
@@ -147,8 +227,8 @@ def _add_tools(mcp, session):
         """
         return call("get_state", device=device)
 
-    @mcp.tool()
-    def hkl_get_position(device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_get_position(device: str = fallback_device) -> dict:
         """Report where a diffractometer is now: hkl, the six angles, 2theta, psi.
 
         Also the wavelength and energy the solver is using.  This is a
@@ -159,7 +239,7 @@ def _add_tools(mcp, session):
 
     # -- sample and lattice ------------------------------------------------
 
-    @mcp.tool()
+    @hkl_tool
     def hkl_add_sample(
         name: str,
         a: float,
@@ -168,7 +248,7 @@ def _add_tools(mcp, session):
         alpha: float = 90.0,
         beta: float = 90.0,
         gamma: float = 90.0,
-        device: str = DEFAULT_DEVICE,
+        device: str = fallback_device,
     ) -> dict:
         """Add a sample with a lattice, replacing one of the same name.
 
@@ -188,8 +268,8 @@ def _add_tools(mcp, session):
             gamma=gamma,
         )
 
-    @mcp.tool()
-    def hkl_select_sample(name: str, device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_select_sample(name: str, device: str = fallback_device) -> dict:
         """Make *name* the current sample.
 
         Reflections, UB and lattice all belong to the current sample, so every
@@ -197,8 +277,8 @@ def _add_tools(mcp, session):
         """
         return call("select_sample", device=device, sample=name)
 
-    @mcp.tool()
-    def hkl_set_lattice(values: dict, device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_set_lattice(values: dict, device: str = fallback_device) -> dict:
         """Change lattice parameters of the current sample.
 
         *values* maps parameter name to number, e.g. ``{"a": 5.431}``; only the
@@ -210,21 +290,21 @@ def _add_tools(mcp, session):
         """
         return call("set_lattice", device=device, values=values)
 
-    @mcp.tool()
-    def hkl_remove_sample(name: str, device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_remove_sample(name: str, device: str = fallback_device) -> dict:
         """Delete a sample.  The current one cannot be removed; select another
         first."""
         return call("remove_sample", device=device, sample=name)
 
     # -- reflections and UB -------------------------------------------------
 
-    @mcp.tool()
+    @hkl_tool
     def hkl_add_reflection(
         h: float,
         k: float,
         l: float,  # noqa: E741 - the Miller index is called l
         angles: dict = None,
-        device: str = DEFAULT_DEVICE,
+        device: str = fallback_device,
     ) -> dict:
         """Record a reflection: an hkl observed at a set of angles.
 
@@ -243,12 +323,12 @@ def _add_tools(mcp, session):
             reals=angles,
         )
 
-    @mcp.tool()
+    @hkl_tool
     def hkl_edit_reflection(
         key: str,
         hkl: dict = None,
         angles: dict = None,
-        device: str = DEFAULT_DEVICE,
+        device: str = fallback_device,
     ) -> dict:
         """Change an existing reflection in place.
 
@@ -260,8 +340,8 @@ def _add_tools(mcp, session):
             "edit_reflection", device=device, key=key, pseudos=hkl, reals=angles
         )
 
-    @mcp.tool()
-    def hkl_remove_reflection(key: str, device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_remove_reflection(key: str, device: str = fallback_device) -> dict:
         """Delete a reflection.
 
         An orienting reflection is refused -- point hkl_set_orienting at a
@@ -270,9 +350,9 @@ def _add_tools(mcp, session):
         """
         return call("remove_reflection", device=device, key=key)
 
-    @mcp.tool()
+    @hkl_tool
     def hkl_set_orienting(
-        first: str, second: str, device: str = DEFAULT_DEVICE
+        first: str, second: str, device: str = fallback_device
     ) -> dict:
         """Choose which two reflections define the orientation, and compute UB.
 
@@ -282,8 +362,8 @@ def _add_tools(mcp, session):
         """
         return call("set_orienting", device=device, first=first, second=second)
 
-    @mcp.tool()
-    def hkl_compute_ub(device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_compute_ub(device: str = fallback_device) -> dict:
         """Recompute UB from the current orienting pair.
 
         Needed after changing a reflection's angles by other means; the tools
@@ -291,8 +371,8 @@ def _add_tools(mcp, session):
         """
         return call("compute_ub", device=device)
 
-    @mcp.tool()
-    def hkl_restore_ub(device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_restore_ub(device: str = fallback_device) -> dict:
         """Put back the UB from before the last change.
 
         One level of undo, for UB only -- a computation on a mistyped
@@ -303,8 +383,8 @@ def _add_tools(mcp, session):
 
     # -- mode, fixed angles, psi -------------------------------------------
 
-    @mcp.tool()
-    def hkl_set_mode(mode: str, device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_set_mode(mode: str, device: str = fallback_device) -> dict:
         """Choose the geometry mode, i.e. how the solver picks among solutions.
 
         Valid names are in ``modes`` from hkl_get_state.  Each mode solves some
@@ -322,9 +402,9 @@ def _add_tools(mcp, session):
         """
         return call("set_mode", device=device, mode=mode)
 
-    @mcp.tool()
+    @hkl_tool
     def hkl_set_fixed_angles(
-        values: dict, device: str = DEFAULT_DEVICE
+        values: dict, device: str = fallback_device
     ) -> dict:
         """Fix (preset) the angles the current mode holds constant.
 
@@ -338,9 +418,9 @@ def _add_tools(mcp, session):
         """
         return call("set_fixed_angles", device=device, values=values)
 
-    @mcp.tool()
+    @hkl_tool
     def hkl_set_psi_reference(
-        h2: float, k2: float, l2: float, device: str = DEFAULT_DEVICE
+        h2: float, k2: float, l2: float, device: str = fallback_device
     ) -> dict:
         """Set the reciprocal-space vector psi is measured against.
 
@@ -350,8 +430,8 @@ def _add_tools(mcp, session):
         """
         return call("set_psi_reference", device=device, h2=h2, k2=k2, l2=l2)
 
-    @mcp.tool()
-    def hkl_set_psi(psi: float, device: str = DEFAULT_DEVICE) -> dict:
+    @hkl_tool
+    def hkl_set_psi(psi: float, device: str = fallback_device) -> dict:
         """Fix the azimuthal angle psi, in degrees.
 
         Only meaningful in a "psi constant horizontal" or "psi constant
@@ -363,14 +443,14 @@ def _add_tools(mcp, session):
 
     # -- solving -------------------------------------------------------------
 
-    @mcp.tool()
+    @hkl_tool
     def hkl_calc_angles(
         h: float,
         k: float,
         l: float,  # noqa: E741 - the Miller index is called l
         psi: float = None,
         fixed_angles: dict = None,
-        device: str = DEFAULT_DEVICE,
+        device: str = fallback_device,
     ) -> dict:
         """Compute the angles that would reach a given hkl.  Nothing moves.
 
@@ -393,12 +473,12 @@ def _add_tools(mcp, session):
 
     # -- motion: requested here, approved by the operator -------------------
 
-    @mcp.tool()
+    @hkl_tool
     def move_hkl(
         h: float,
         k: float,
         l: float,  # noqa: E741 - the Miller index is called l
-        device: str = DEFAULT_DEVICE,
+        device: str = fallback_device,
         allow_large_move: bool = False,
     ) -> dict:
         """Ask the operator to move a diffractometer to an hkl.
@@ -677,7 +757,7 @@ def build(connection_file=None):
     import inspect
 
     server_class = _server_class()
-    options = {"instructions": _INSTRUCTIONS}
+    options = {"instructions": instructions()}
     # ``version`` reaches ``serverInfo``, which clients display.  Only 2.0 takes
     # it as a constructor argument; on 1.x an unknown keyword lands in the
     # settings object and raises.

@@ -24,8 +24,11 @@ _BUSY_STATES = ("busy", "dead")
 
 #: Shared with ``app.py`` and ``tabs/macro.py``, which re-declare them for the
 #: same reason: importing from ``app`` would be circular.
+#: The application half is ``config.qsettings_app()``, per station and so
+#: called at each use.  It matters most here: ``LOG_PATH_KEY`` below is what
+#: ``app.MainWindow`` reads to auto-start the transcript, and a shared scope
+#: would have a 4IDB session appending its console to 4IDG's log file.
 SETTINGS_ORG = config.QSETTINGS_ORG
-SETTINGS_APP = config.QSETTINGS_APP
 LOG_PATH_KEY = "console/log_path"
 LOG_ENABLED_KEY = "console/log_enabled"
 
@@ -61,7 +64,7 @@ class StatusTab(BaseTab):
         self._re_state = None
         self._kernel_state = None
         self._kernel_cwd = None
-        self._settings = QSettings(SETTINGS_ORG, SETTINGS_APP)
+        self._settings = QSettings(SETTINGS_ORG, config.qsettings_app())
 
         layout = QVBoxLayout(self)
         layout.addWidget(

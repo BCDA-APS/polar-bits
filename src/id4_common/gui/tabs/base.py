@@ -4,11 +4,17 @@ To add a tab: subclass :class:`BaseTab`, set ``title``, override whichever
 update hooks you need, then add the class to ``TABS`` in ``id4_common.gui.app``.
 The window wires the poller signals to every tab automatically, so a tab only
 has to say what it does with the values.
+
+A tab that cannot work at every POLAR station also overrides
+:meth:`BaseTab.unavailable_reason`; the window then shows an
+:class:`UnavailableTab` in its place, carrying the reason it gave.
 """
 
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QFontDatabase
 from qtpy.QtWidgets import QLabel
+from qtpy.QtWidgets import QSizePolicy
+from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
 #: Shown when a value has not been read yet, so "pending" is visually distinct
@@ -84,6 +90,26 @@ class BaseTab(QWidget):
     #: ``transcript.active`` to report on it.
     transcript = None
 
+    @classmethod
+    def unavailable_reason(cls, profile):
+        """Why this tab cannot work at *profile*'s station, or None if it can.
+
+        Consulted once, before the tab is built.  A *reason* rather than a
+        bool because the window puts it on screen: a tab that is simply
+        absent, or present and grey with nothing said, is indistinguishable
+        from a dead IOC or a broken GUI, and that ambiguity is the thing this
+        exists to remove.
+
+        This is for what the *station* cannot do -- no diffractometer in this
+        hutch -- and is answered from the declared profile, not from the
+        registry: every station instantiates the same ``devices.yml``, so
+        finding a device proves nothing about whether it is here.  For
+        something that is applicable but not ready yet -- an IOC down, the
+        kernel still starting -- return None and let the real tab show its own
+        waiting state.
+        """
+        return None
+
     def run_in_console(self, code):
         """Run *code* in the console, as though the user had typed it."""
         if self.console_execute is None:
@@ -116,3 +142,56 @@ class BaseTab(QWidget):
 
     def on_kernel_state(self, state):
         """Handle a kernel state change: ``"idle"``, ``"busy"`` or ``"dead"``."""
+
+
+class UnavailableTab(BaseTab):
+    """Stands in for a tab that cannot run here, and says why.
+
+    Subclasses :class:`BaseTab` rather than being a bare ``QWidget`` because
+    MainWindow calls ``on_metadata``, ``on_kernel_values`` and
+    ``on_kernel_state`` on every tab without checking what it got; the
+    inherited no-ops are what make that safe.
+
+    Used for two different things, distinguished by *failed*: a tab the
+    station profile says does not apply, and a tab whose constructor raised.
+    The second keeps one broken tab from taking the window down with it, and
+    puts the traceback where the person who can act on it will see it.
+    """
+
+    #: The reason is often several lines; a scroll area would hide the point
+    #: behind a scrollbar on a panel with nothing else in it.
+    scrollable = False
+
+    def __init__(self, title, reason, failed=False):
+        """Show *reason* under *title*, as unavailable or as a failure."""
+        super().__init__()
+        self.title = title
+        self.reason = reason
+        self.failed = failed
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.addStretch(1)
+
+        heading = QLabel(
+            f"{title} did not load" if failed else f"{title} is not available"
+        )
+        font = heading.font()
+        font.setBold(True)
+        heading.setFont(font)
+        heading.setAlignment(Qt.AlignCenter)
+        layout.addWidget(heading)
+
+        body = QLabel(reason)
+        body.setWordWrap(True)
+        body.setAlignment(Qt.AlignCenter)
+        # Selectable so a traceback can be copied into a bug report rather
+        # than retyped off the screen.
+        body.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        if failed:
+            body.setFont(fixed_font(body))
+            body.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        body.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        layout.addWidget(body)
+
+        layout.addStretch(1)

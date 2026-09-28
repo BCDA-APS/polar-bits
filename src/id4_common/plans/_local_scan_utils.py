@@ -316,10 +316,22 @@ def _configure_dichro(dichro):
 
 
 def _configure_fixq(fixq):
-    """Set flag.fixq and snapshot current HKL position into flag.hkl_pos."""
+    """Set flag.fixq and snapshot current HKL position into flag.hkl_pos.
+
+    Refuses rather than raising ``AttributeError`` on ``None`` where no
+    diffractometer is active -- 4IDB and 4IDH never call
+    ``set_diffractometer()``.  This is the entry point: the per-step
+    dereference of ``.h``/``.k``/``.l`` further up only runs once ``flag.fixq``
+    is set, so guarding here covers both.
+    """
     flag.fixq = fixq
     if fixq:
         huber = get_diffractometer()
+        if huber is None:
+            raise ValueError(
+                "fixq=True needs an active diffractometer, and this session "
+                "has none -- run set_diffractometer() first, or drop fixq."
+            )
         flag.hkl_pos = {
             huber.h: huber.h.get().setpoint,
             huber.k: huber.k.get().setpoint,

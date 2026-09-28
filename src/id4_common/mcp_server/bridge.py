@@ -34,22 +34,39 @@ should not fill the console by doing so.
 
 from ..gui import config as _config
 
-#: Diffractometers the MCP layer may address.  The psi partners
-#: (``huber_euler_psi``, ``huber_hp_psi``) stay out: they are separate engines
-#: on the same motors and nothing here needs them.  The kernel copy below is
-#: generated from this set, which is what makes the allow-list a control rather
-#: than a comment.
-ALLOWED_DEVICES = _config.MCP_ALLOWED_DEVICES
 
-#: The device a tool acts on when the caller does not name one.
-#:
-#: **Both POLAR machines are real.**  6-ID-B defaulted to a simulator, so
-#: reaching real motors was always an explicit act; there is no simulator here,
-#: so that layer of protection does not exist and the approval gate is the only
-#: thing standing in front of the hardware.  The tool descriptions say so
-#: rather than repeating 6-ID-B's "try it on the simulator first", which here
-#: would be advice a client cannot follow.
-DEFAULT_DEVICE = _config.MCP_DEFAULT_DEVICE
+def allowed_devices():
+    """Diffractometers the MCP layer may address at this station.
+
+    The psi partners (``huber_euler_psi``, ``huber_hp_psi``) stay out: they
+    are separate engines on the same motors and nothing here needs them.  The
+    kernel copy in :func:`mcp_helpers_code` is generated from this set, which
+    is what makes the allow-list a control rather than a comment.
+
+    Empty at a station with no diffractometer, so every hkl op is refused in
+    the kernel there even if a client somehow reaches one.
+
+    Resolved per call, not bound at import: ``app.main`` sets ``ID4_STATION``
+    only after this module has been imported by way of ``gui.kernel``.
+    """
+    return _config.profile().mcp_allowed_devices
+
+
+def default_device():
+    """The device a tool acts on when the caller does not name one.
+
+    ``None`` at a station with no diffractometer -- where no tool that takes a
+    device is registered in the first place.
+
+    **Both POLAR machines are real.**  6-ID-B defaulted to a simulator, so
+    reaching real motors was always an explicit act; there is no simulator
+    here, so that layer of protection does not exist and the approval gate is
+    the only thing standing in front of the hardware.  The tool descriptions
+    say so rather than repeating 6-ID-B's "try it on the simulator first",
+    which here would be advice a client cannot follow.
+    """
+    return _config.profile().mcp_default_device
+
 
 #: Stand-in device for ops that belong to the session rather than to a
 #: diffractometer -- moving a slit, running a scan, reading the counters.  An
@@ -371,12 +388,30 @@ def _gui_mcp(payload):
     return _reply(ok, message)
 '''
 
-#: The code the GUI installs in the kernel.  Built by substitution rather than
-#: ``%`` formatting: :data:`~id4_common.gui.hkl_bridge.HKL_HELPERS_CODE` uses ``%``
-#: and the body below is full of ``%s``.
-MCP_HELPERS_CODE = (
-    _CODE.replace("__DEVICES__", repr(set(sorted(ALLOWED_DEVICES))))
-    .replace("__SESSION__", repr(SESSION_DEVICE))
-    .replace("__FAILURES__", repr(tuple(FAILURE_PREFIXES)))
-    .replace('"__PREFIX__"', repr(ECHO_PREFIX))
-)
+
+def _set_literal(names):
+    """Render *names* as a sorted Python set literal.
+
+    Not ``repr(set(...))``: a set's iteration order follows the string hash
+    seed, which is randomised per process, so the same station would emit a
+    different kernel source on every launch.  Harmless in the kernel -- it is
+    a set either way -- but it makes the emitted code impossible to diff or
+    to pin in a test, which is how the station profile is kept honest.
+    """
+    if not names:
+        return "set()"
+    return "{" + ", ".join(repr(name) for name in sorted(names)) + "}"
+
+
+def mcp_helpers_code():
+    """Return the code the GUI installs in the kernel, for this station.
+
+    Built by substitution rather than ``%`` formatting: the HKL helpers use
+    ``%`` and the body above is full of ``%s``.
+    """
+    return (
+        _CODE.replace("__DEVICES__", _set_literal(allowed_devices()))
+        .replace("__SESSION__", repr(SESSION_DEVICE))
+        .replace("__FAILURES__", repr(tuple(FAILURE_PREFIXES)))
+        .replace('"__PREFIX__"', repr(ECHO_PREFIX))
+    )

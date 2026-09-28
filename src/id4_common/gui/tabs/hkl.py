@@ -38,9 +38,9 @@ from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
 from .. import config
-from ..hkl_bridge import DIFFRACTOMETERS
 from ..hkl_bridge import POSITION_KEY
 from ..hkl_bridge import STATE_KEY
+from ..hkl_bridge import diffractometers
 from .base import PLACEHOLDER
 from .base import BaseTab
 from .base import value_label
@@ -90,6 +90,26 @@ class HklTab(BaseTab):
 
     #: Provides its own scroll area.
     scrollable = False
+
+    @classmethod
+    def unavailable_reason(cls, profile):
+        """There is nothing to orient at a station with no diffractometer.
+
+        Answered from the profile rather than from ``oregistry``: every
+        station instantiates the same ``devices.yml``, so ``huber_euler`` is
+        findable at 4IDB too -- disconnected, and belonging to another hutch.
+        """
+        if profile.has_diffractometer:
+            return None
+        return (
+            f"{profile.display} has no diffractometer.\n\n"
+            "Orientation, UB and hkl → angles belong to the 4IDG Huber "
+            "machines; nothing here has reciprocal-space coordinates to set "
+            "or read.\n\n"
+            "The reciprocal-space scan plans (th2th, hscan, kscan, lscan, "
+            "hklscan, psiscan) are disabled in the Scan tab for the same "
+            "reason."
+        )
 
     def __init__(self, parent=None):
         """Build the scrollable stack of orientation sections."""
@@ -165,7 +185,7 @@ class HklTab(BaseTab):
         row.setContentsMargins(0, 0, 0, 0)
         row.addWidget(QLabel("Diffractometer:"))
         self._device_combo = QComboBox()
-        self._device_combo.addItems(DIFFRACTOMETERS)
+        self._device_combo.addItems(diffractometers())
         self._device_combo.currentIndexChanged.connect(self._on_device_changed)
         row.addWidget(self._device_combo)
         self._device_banner = QLabel()
@@ -905,7 +925,7 @@ class HklTab(BaseTab):
         # at stations that do have one.
         warning = (
             "REAL MOTORS WILL MOVE.\n\n"
-            if self.device in config.REAL_MOTOR_DEVICES
+            if self.device in config.profile().real_motor_devices
             else ""
         )
         # A fixed angle decides which of many solutions this is, so it belongs

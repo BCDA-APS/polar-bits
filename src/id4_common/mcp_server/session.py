@@ -63,9 +63,9 @@ import queue
 from pathlib import Path
 
 from ..gui import config as _config
-from .bridge import DEFAULT_DEVICE
 from .bridge import READ_OPS
 from .bridge import SESSION_DEVICE
+from .bridge import default_device
 from .motion import MOTION_READ_OPS
 
 #: Every op that only reads, from both kernel-side modules.  Combined here
@@ -244,11 +244,18 @@ def resolve_connection_file(explicit=None, start=None):
 class HklSession:
     """A client for the ``_gui_mcp`` dispatcher in a live GUI kernel."""
 
-    def __init__(self, connection_file=None, start=None, device=DEFAULT_DEVICE):
-        """Prepare a session; nothing is opened until :meth:`connect`."""
+    def __init__(self, connection_file=None, start=None, device=None):
+        """Prepare a session; nothing is opened until :meth:`connect`.
+
+        *device* defaults to the station's own default diffractometer,
+        resolved here rather than in the signature: a default argument is
+        evaluated at import, which is before ``ID4_STATION`` is set.  It stays
+        ``None`` at a station that has no diffractometer, where no op that
+        needs one is reachable.
+        """
         self._explicit = connection_file
         self._start = start
-        self.device = device
+        self.device = device if device is not None else default_device()
         self.connection_file = None
         self.session_cwd = None
         self.client = None

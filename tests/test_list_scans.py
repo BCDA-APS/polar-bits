@@ -134,6 +134,32 @@ def test_args_contains_uses_identity_not_equality(scan_utils):
 
 
 # ---------------------------------------------------------------------------
+# _configure_fixq — stations with no diffractometer
+# ---------------------------------------------------------------------------
+
+
+def test_fixq_without_a_diffractometer_is_refused(scan_utils, monkeypatch):
+    """``fixq=True`` used to dereference ``None`` and raise ``AttributeError``.
+
+    The GUI hides the checkbox at 4IDB and 4IDH, but the console and the
+    queue server reach this the same way, so the guard belongs here too.
+    """
+    monkeypatch.setattr(scan_utils, "get_diffractometer", lambda: None)
+
+    with pytest.raises(ValueError, match="active diffractometer"):
+        scan_utils._configure_fixq(True)
+
+
+def test_fixq_false_needs_no_diffractometer(scan_utils, monkeypatch):
+    """Not asking for it is not an error, wherever the scan runs."""
+    monkeypatch.setattr(scan_utils, "get_diffractometer", lambda: None)
+
+    scan_utils._configure_fixq(False)
+
+    assert scan_utils.flag.fixq is False
+
+
+# ---------------------------------------------------------------------------
 # list_scans — argument parsing
 # ---------------------------------------------------------------------------
 

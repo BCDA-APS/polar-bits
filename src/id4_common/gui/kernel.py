@@ -41,11 +41,11 @@ from qtpy.QtCore import QObject
 from qtpy.QtCore import QTimer
 from qtpy.QtCore import Signal
 
-from ..mcp_server.bridge import MCP_HELPERS_CODE
+from ..mcp_server.bridge import mcp_helpers_code
 from ..mcp_server.motion import MOTION_HELPERS_CODE
 from ..mcp_server.session import pointer_name
 from . import config
-from .hkl_bridge import HKL_HELPERS_CODE
+from .hkl_bridge import hkl_helpers_code
 from .session_setup import SESSION_SETUP_CODE
 
 logger = logging.getLogger(__name__)
@@ -852,10 +852,13 @@ class KernelSession(QObject):
         #
         # Nothing is shadowed by doing this: every name these blocks bind
         # starts with an underscore, which ``import *`` never rebinds.
+        # Called, not read: each of these carries the station's own devices,
+        # and this module is imported long before ``app.main`` has parsed
+        # ``--station``.  Same reason ``bootstrap_code()`` is a call.
         parts = [
             HELPERS_CODE,
-            HKL_HELPERS_CODE,
-            MCP_HELPERS_CODE,
+            hkl_helpers_code(),
+            mcp_helpers_code(),
             MOTION_HELPERS_CODE,
             bootstrap_code(),
         ]
@@ -947,6 +950,9 @@ class StatusPoller(QObject):
         self._state = None
         self._pending = None
         self._once = {}
+        #: Expression key -> the error last logged for it, so a failure that
+        #: repeats every poll is logged once rather than every second.
+        self._failed_expressions = {}
         # msg_ids of requests this poller sent.  Bounded because one goes out
         # every second: only the most recent can still have replies in flight.
         self._own_requests = deque(maxlen=OWN_REQUEST_MEMORY)
@@ -1093,9 +1099,34 @@ class StatusPoller(QObject):
                 for key, result in expressions.items()
                 if result.get("status") == "ok"
             }
+            self._log_failed(expressions)
             self._publish_metadata(values.pop("session_md", None))
             self.kernel_values_changed.emit(values)
             return
+
+    def _log_failed(self, expressions):
+        """Log the expressions that raised, once per distinct error.
+
+        The contract is unchanged -- a key that raised stays out of *values*,
+        as ``BaseTab.on_kernel_values`` documents -- but until now nothing
+        recorded *why*, so a tab reading permanent absence as "not ready yet"
+        waited forever with no trace anywhere of what it was waiting for.
+
+        Deduplicated per key because this is a one-second timer: an
+        expression that raises every poll would otherwise fill the log at
+        86400 lines a day.  Logging again when the *message* changes is the
+        point -- that is a different failure, not the same one repeating --
+        and a key that recovers is forgotten, so its next failure is reported.
+        """
+        for key, result in expressions.items():
+            if result.get("status") == "ok":
+                self._failed_expressions.pop(key, None)
+                continue
+            error = f"{result.get('ename')}: {result.get('evalue')}"
+            if self._failed_expressions.get(key) == error:
+                continue
+            self._failed_expressions[key] = error
+            logger.warning("Kernel expression %r failed -- %s", key, error)
 
     def _publish_metadata(self, metadata):
         """Emit ``metadata_changed`` when the session identity has moved.

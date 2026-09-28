@@ -104,7 +104,6 @@ def {name}():
 #: Where the last-used macro directory is remembered, alongside the console
 #: font and background (see ``app.py``).
 SETTINGS_ORG = config.QSETTINGS_ORG
-SETTINGS_APP = config.QSETTINGS_APP
 MACRO_DIR_KEY = "macro/directory"
 
 #: Generated lines longer than this are wrapped inside their brackets, so a
@@ -1149,14 +1148,14 @@ class MacroTab(BaseTab):
     # -- files ------------------------------------------------------------
 
     def _macro_dir(self):
-        settings = QSettings(SETTINGS_ORG, SETTINGS_APP)
+        settings = QSettings(SETTINGS_ORG, config.qsettings_app())
         remembered = settings.value(MACRO_DIR_KEY, "", type=str)
         if remembered and Path(remembered).is_dir():
             return Path(remembered)
         return Path(self.session_cwd or Path.cwd()) / "macros"
 
     def _remember_dir(self, path):
-        QSettings(SETTINGS_ORG, SETTINGS_APP).setValue(
+        QSettings(SETTINGS_ORG, config.qsettings_app()).setValue(
             MACRO_DIR_KEY, str(Path(path).parent)
         )
 

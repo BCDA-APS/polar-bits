@@ -24,7 +24,9 @@ from qtpy.QtWidgets import QPushButton
 from qtpy.QtWidgets import QSpinBox
 from qtpy.QtWidgets import QVBoxLayout
 
+from .. import config
 from ..scancode import AXIS_ORDINALS
+from ..scancode import HKL_PLANS
 from ..scancode import MAX_TRAJECTORY_AXES
 from ..scancode import PLANS
 from ..scancode import active_axes
@@ -179,6 +181,7 @@ class ScanTab(BaseTab):
         self._kernel_idle = False
         self._options = {}
         self._detector_boxes = {}
+        self._profile = config.profile()
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._build_plan_row())
@@ -199,6 +202,7 @@ class ScanTab(BaseTab):
         row = QHBoxLayout(box)
         self._plan_combo = QComboBox()
         self._plan_combo.addItems(list(PLANS))
+        self._disable_hkl_plans()
         self._plan_combo.setCurrentText("ascan")
         self._plan_combo.currentIndexChanged.connect(self._on_plan_changed)
         row.addWidget(self._plan_combo)
@@ -207,6 +211,27 @@ class ScanTab(BaseTab):
         self._refresh_button.clicked.connect(self.refresh)
         row.addWidget(self._refresh_button)
         return box
+
+    def _disable_hkl_plans(self):
+        """Grey out the reciprocal-space plans where there is no machine.
+
+        Listed but unselectable, rather than dropped: someone who has run
+        ``th2th`` at 4IDG and goes looking for it here gets an answer instead
+        of a shorter list and a doubt about their memory.  The tooltip carries
+        the reason, since a disabled row on its own says nothing.
+        """
+        if self._profile.has_diffractometer:
+            return
+        reason = (
+            f"{self._profile.display} has no diffractometer, so this plan "
+            "cannot run here."
+        )
+        model = self._plan_combo.model()
+        for row in range(model.rowCount()):
+            item = model.item(row)
+            if item is not None and item.text() in HKL_PLANS:
+                item.setEnabled(False)
+                item.setToolTip(reason)
 
     def _build_detector_group(self):
         box = QGroupBox("Detectors")
@@ -431,7 +456,12 @@ class ScanTab(BaseTab):
         shared = (not spec.has_rows) or (not spec.per_axis_points)
         self._shared_points_label.setVisible(shared)
         self._shared_points.setVisible(shared)
-        self._fixq.setVisible(takes_fixq(name))
+        # Holding hkl fixed needs something to hold it on, so the checkbox
+        # goes away entirely at a station with no diffractometer rather than
+        # offering a flag whose plan would raise.
+        self._fixq.setVisible(
+            takes_fixq(name) and self._profile.has_diffractometer
+        )
         self._update_preview()
 
     def _on_unit_changed(self, *_args):
