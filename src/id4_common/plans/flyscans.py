@@ -665,8 +665,9 @@ def flyscan(
         sg.scal_to_stream_1.flush.signal.put("1!")
         yield from sleep(0.1)
 
+        # No sg.reset() here: pulsing buffer-1 while the pipeline is
+        # still draining crashes SoftGlue. The setup-path reset is enough.
         sg.stop_softglue()
-        sg.reset()
 
         yield from sleep(1)
 
@@ -681,12 +682,8 @@ def flyscan(
 
         # --- Stop softglue and switch DAC1 mux back to manual ---
 
-        print(
-            "[sg] stop_softglue() / reset() / clear_output_fields() / "
-            "disable_waveform()"
-        )
+        print("[sg] stop_softglue() / disable_waveform()")
         sg.stop_softglue()
-        sg.reset()
         # sg.clear_output_fields()
         yield from sg.disable_waveform()
 
@@ -712,11 +709,8 @@ def flyscan(
 
         # --- Redundant softglue cleanup for reliability ---
 
-        print(
-            "[sg] stop_softglue() / reset() / clear_output_fields()  (redundant)"
-        )
+        print("[sg] stop_softglue()  (redundant)")
         sg.stop_softglue()
-        sg.reset()
         # sg.clear_output_fields()
 
     @bpp.subs_decorator(nxwriter.receiver)

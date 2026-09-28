@@ -23,6 +23,7 @@ underlying EPICS PV names (``SG:mem_*``, ``SG:mem2_*``,
 do *not* reflect the physical axis.
 """
 
+import time
 from collections import OrderedDict
 from logging import getLogger
 
@@ -236,9 +237,9 @@ class SoftGlueZynq(Device):
 
     def prepare(self):
         """Arm and clear DMA in preparation for triggering."""
-        self.dma.enable.set(1).wait()
-        self.dma.clear_button.set(1).wait()
-        self.dma.clear_buffer.set(1).wait()
+        self.dma.enable.set(1).wait(timeout=10)
+        self.dma.clear_button.set(1).wait(timeout=10)
+        self.dma.clear_buffer.set(1).wait(timeout=10)
 
     def trigger(self):
         """Issue a software trigger.
@@ -262,23 +263,32 @@ class SoftGlueZynq(Device):
     def stop_softglue(self):
         """Latch the OR-1 reset path and de-assert the enable buffer."""
         self.or_1.in2.signal.put("1!")
-        self.buffers.in4.signal.set("0").wait()
+        self.buffers.in4.signal.set("0").wait(timeout=10)
 
     def pause_softglue(self):
         """Pause the AND-1 gate (in2 -> "0")."""
         # Renamed from ``pause`` so it does not shadow ``Device.pause``.
-        self.and_1.in2.signal.set("0").wait()
+        self.and_1.in2.signal.set("0").wait(timeout=10)
 
     def resume_softglue(self):
         """Resume the AND-1 gate (in2 -> "1")."""
         # Renamed from ``resume`` so it does not shadow ``Device.resume``.
-        self.and_1.in2.signal.set("1").wait()
+        self.and_1.in2.signal.set("1").wait(timeout=10)
 
     def reset(self):
-        """Pulse buffer-1 twice to clear the ScalToStream-1 FIFO."""
-        # Repeated on purpose to clear ScalToStream 1 FIFO CT.
-        self.buffers.in1.signal.set("1!").wait()
-        self.buffers.in1.signal.set("1!").wait()
+        """Pulse buffer-1 once to clear the ScalToStream-1 FIFO."""
+        # One pulse, fenced by 0.2 s on either side. This used to fire
+        # twice back to back: set().wait() returns as soon as the record
+        # echoes "1!" back, which says nothing about the FPGA having
+        # consumed the pulse, so two pulses landed microseconds apart and
+        # crashed SoftGlue. One paced pulse clears the FIFO CT.
+        #
+        # Plain method, not a plan stub: every caller invokes it as
+        # ``sg.reset()``. A ``yield from`` in here makes it a generator
+        # function and the body silently never runs.
+        time.sleep(0.2)
+        self.buffers.in1.signal.set("1!").wait(timeout=10)
+        time.sleep(0.2)
 
     def reset_interferometers(self):
         """Bluesky plan stub to pulse buffer-2 (interferometer reset)."""
