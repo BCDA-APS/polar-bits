@@ -739,6 +739,7 @@ def setor0():
         )
     except Exception as e:
         print(f"Error adding reflection: {e}")
+        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(0)
@@ -796,6 +797,7 @@ def setor1():
         _geom_.add_reflection((float(h), float(k), float(l)), or0pos)
     except Exception as e:
         print(f"Error adding reflection: {e}")
+        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(1)
@@ -831,7 +833,14 @@ def or0(h=None, k=None, l=None):
         h = (input("H ({})? ".format(hr)) if not h else h) or hr
         k = (input("K ({})? ".format(kr)) if not k else k) or kr
         l = (input("L ({})? ".format(lr)) if not l else l) or lr
-    _geom_.add_reflection((float(h), float(k), float(l)), _geom_.real_position)
+    try:
+        _geom_.add_reflection(
+            (float(h), float(k), float(l)),
+            _geom_.real_position,
+        )
+    except Exception as e:
+        print(f"Error adding reflection: {e}")
+        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(0)
@@ -867,7 +876,15 @@ def or1(h=None, k=None, l=None):
         h = (input("H ({})? ".format(hr)) if not h else h) or hr
         k = (input("K ({})? ".format(kr)) if not k else k) or kr
         l = (input("L ({})? ".format(lr)) if not l else l) or lr
-    _geom_.add_reflection((float(h), float(k), float(l)), _geom_.real_position)
+    try:
+        _geom_.add_reflection(
+            (float(h), float(k), float(l)),
+            _geom_.real_position,
+        )
+    except Exception as e:
+        print(f"Error adding reflection: {e}")
+        print("Use del_reflection() and/or set_orienting() if needed.")
+
 
     if len(orienting_refl) > 2:
         sample.reflections.order.pop(1)
@@ -1403,6 +1420,7 @@ def _wh():
             _l2,
         )
     )
+    update_eiger()
 
 
 def _reciprocal_lattice(lattice):
@@ -2229,8 +2247,8 @@ def set_detector():
     det = input(f"(E)iger or (P)oint Detector/Analyzer [{dets}]: ") or dets
     if det in (
         "Point detector/Analyzer",
-        "Point detector",
         "point detector",
+        "point",
         "p",
         "P",
     ):
