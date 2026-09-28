@@ -17,7 +17,6 @@ Auxilary HKL functions.
     ~or0
     ~or1
     ~compute_UB
-    ~update_eiger
     ~setmode
     ~ca
     ~wh
@@ -53,7 +52,7 @@ import asyncio
 import logging
 import math
 import pathlib
-import traceback
+
 import yaml
 
 try:
@@ -91,7 +90,6 @@ __all__ = """
     or0
     or1
     compute_UB
-    update_eiger
     setmode
     ca
     wh
@@ -544,20 +542,10 @@ def compute_UB():
     sample.core.calc_UB(
         sample.reflections.order[0], sample.reflections.order[1]
     )
-    try:
-        Sync_UB_Matrix(_geom_, _geom_for_psi_)
-    except Exception:
-        print("sync UB problem!")
-        traceback.print_exc()
-
+    Sync_UB_Matrix(_geom_, _geom_for_psi_)
     first_ref = sample.reflections[sample.reflections.order[0]]
     h, k, l = list(first_ref.pseudos.values())
-    try:
-        _geom_.forward(h, k, l)
-    except Exception:
-        print("UB not calculated. Check geometry.")
-        traceback.print_exc()
-
+    _geom_.forward(h, k, l)
     # TODO: prefer to not use caput to a specific PV, hard to maintain, verify,
     # etc...
     caput(
@@ -571,62 +559,29 @@ def compute_UB():
             sample.UB[1][2],
             sample.UB[2][0],
             sample.UB[2][1],
-            sample.UB[2][2],
-        ],
+            sample.UB[2][2]
+        ]
     )
-    update_eiger()
-
-
-def update_eiger():
-    eiger_x = int(caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX") / 2)
-    eiger_y = int(caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY") / 2)
-    caput("4idgSoftX:Eiger:Center", [eiger_x, eiger_y])
-    caput("4idEiger:cam1:BeamX", eiger_x)
-    caput("4idEiger:cam1:BeamY", eiger_y)
+    eiger_x = caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX")/2
+    eiger_y = caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY")/2
+    caput("4idgSoftX:Eiger:Center", [eiger_x,eiger_y])
+    caput("4idEiger:cam1:BeamX_RBV", eiger_x)
+    caput("4idEiger:cam1:BeamY_RBV", eiger_y)
     eiger_distance = caget("4idgSoft:m21.RBV")
     caput("4idEiger:cam1:DetDist", eiger_distance)
-    caput("4idgSoftX:Eiger:Distance", eiger_distance)
 
+def setup_eiger():
+    
+    eiger_x = caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX")/2
+    eiger_y = caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY")/2
+    caput("4idgSoftX:Eiger:Center", [eiger_x,eiger_y])
+    caput("4idEiger:cam1:BeamX_RBV", eiger_x)
+    caput("4idEiger:cam1:BeamY_RBV", eiger_y)
+    eiger_distance = caget("4idgSoft:m21.RBV")
+    caput("4idEiger:cam1:DetDist", eiger_distance)
+    
 
-def _copy_sample_to_psi(source, target, ub=None):
-    """
-    Copy ``source``'s lattice and UB onto ``target``'s sample.
-
-    The psi geometry is a separate device with its own sample, so copying UB
-    alone leaves it on hklpy2's default 1 angstrom cubic lattice.  psi is
-    measured against ``UB . (h2, k2, l2)``, so the reference vector is then
-    computed for the wrong crystal -- silently, since nothing raises.
-
-    Lattice first: writing a lattice parameter flags the solver SAMPLE|UB
-    dirty, and hklpy2 warns that some backends discard U/UB as a side effect
-    of the sample write.
-
-    Parameter by parameter, not ``target.sample.lattice = source...``:
-    ``Sample.lattice``'s setter rebinds ``_on_change`` on whatever object it
-    is handed, so assigning the source's ``Lattice`` would redirect the
-    *source* sample's change notification to the target.
-
-    The equality guard matters because one caller is a subscription callback:
-    every assignment flags the solver dirty, and an unguarded copy would do
-    so on each UB update whether the lattice actually moved or not.
-
-    Parameters
-    ----------
-    source, target : Diffractometer
-        Devices whose ``.sample`` is read from and written to.
-    ub : array-like, optional
-        UB to write instead of ``source.sample.UB`` -- used by the sync
-        subscription, which is handed the new matrix as its payload.
-    """
-    _src = source.sample.lattice
-    _dst = target.sample.lattice
-    for _p in ("a", "b", "c", "alpha", "beta", "gamma"):
-        _v = getattr(_src, _p)
-        if getattr(_dst, _p) != _v:
-            setattr(_dst, _p, _v)
-    target.sample.UB = source.sample.UB if ub is None else ub
-
-
+    
 # TODO: Do we really need this? Could put the UB matrix as part of the
 # diffractometer, then sync with a callback.
 class Sync_UB_Matrix:
@@ -654,7 +609,7 @@ class Sync_UB_Matrix:
         if value is None:
             return
         print(f"Copy UB from {self.source.name} to {self.target.name}")
-        _copy_sample_to_psi(self.source, self.target, ub=value)
+        self.target.sample.UB = value
 
         # Sync real motor positions if target has simulated motors
         for axis_name in self.source.real_axis_names:
@@ -739,7 +694,6 @@ def setor0():
         )
     except Exception as e:
         print(f"Error adding reflection: {e}")
-        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(0)
@@ -797,7 +751,6 @@ def setor1():
         _geom_.add_reflection((float(h), float(k), float(l)), or0pos)
     except Exception as e:
         print(f"Error adding reflection: {e}")
-        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(1)
@@ -833,14 +786,7 @@ def or0(h=None, k=None, l=None):
         h = (input("H ({})? ".format(hr)) if not h else h) or hr
         k = (input("K ({})? ".format(kr)) if not k else k) or kr
         l = (input("L ({})? ".format(lr)) if not l else l) or lr
-    try:
-        _geom_.add_reflection(
-            (float(h), float(k), float(l)),
-            _geom_.real_position,
-        )
-    except Exception as e:
-        print(f"Error adding reflection: {e}")
-        print("Use del_reflection() and/or set_orienting() if needed.")
+    _geom_.add_reflection((float(h), float(k), float(l)), _geom_.real_position)
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(0)
@@ -876,15 +822,7 @@ def or1(h=None, k=None, l=None):
         h = (input("H ({})? ".format(hr)) if not h else h) or hr
         k = (input("K ({})? ".format(kr)) if not k else k) or kr
         l = (input("L ({})? ".format(lr)) if not l else l) or lr
-    try:
-        _geom_.add_reflection(
-            (float(h), float(k), float(l)),
-            _geom_.real_position,
-        )
-    except Exception as e:
-        print(f"Error adding reflection: {e}")
-        print("Use del_reflection() and/or set_orienting() if needed.")
-
+    _geom_.add_reflection((float(h), float(k), float(l)), _geom_.real_position)
 
     if len(orienting_refl) > 2:
         sample.reflections.order.pop(1)
@@ -1315,7 +1253,9 @@ def ca(h, k, l, energy=None):  # noqa: E741
     finally:
         # Restore the solver wavelength to the live beamline value so that
         # later calculations are not affected by this temporary override.
-        _geom_.core.update_solver(wavelength=_geom_.beam.wavelength.get())
+        _geom_.core.update_solver(
+            wavelength=_geom_.beam.wavelength.get()
+        )
 
     if isinstance(pos, str):
         print(pos)
@@ -1329,9 +1269,14 @@ def ca(h, k, l, energy=None):  # noqa: E741
             l,
         )
     )
-    print(f"\n   Lambda (Energy) = {wavelength:6.4f} Å ({energy:6.4f}) keV")
+    print(
+        f"\n   Lambda (Energy) = {wavelength:6.4f} Å"
+        f" ({energy:6.4f}) keV"
+    )
     if len(_geom_.real_positioners) == 6:
-        pos_dict = dict(zip(_geom_.real_positioners._fields, pos, strict=False))
+        pos_dict = dict(
+            zip(_geom_.real_positioners._fields, pos, strict=False)
+        )
         print(
             "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
                 "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
@@ -1363,7 +1308,7 @@ def _wh():
     """
     _geom_ = get_diffractometer()
     _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
-    _copy_sample_to_psi(_geom_, _geom_for_psi_)
+    _geom_for_psi_.sample.UB = _geom_.sample.UB
     print(
         f"\n   {' '.join(_geom_.pseudo_positioners._fields).upper()}"
         f" = {', '.join([f'{v.position:5f}' for v in _geom_.pseudo_positioners])}"
@@ -1420,7 +1365,6 @@ def _wh():
             _l2,
         )
     )
-    update_eiger()
 
 
 def _reciprocal_lattice(lattice):
@@ -1445,11 +1389,8 @@ def _reciprocal_lattice(lattice):
     gamma = math.radians(lattice.gamma)
     ca, cb, cg = math.cos(alpha), math.cos(beta), math.cos(gamma)
     sa, sb, sg = math.sin(alpha), math.sin(beta), math.sin(gamma)
-    vol = (
-        a
-        * b
-        * c
-        * math.sqrt(max(0.0, 1 - ca**2 - cb**2 - cg**2 + 2 * ca * cb * cg))
+    vol = a * b * c * math.sqrt(
+        max(0.0, 1 - ca**2 - cb**2 - cg**2 + 2 * ca * cb * cg)
     )
     a_r = b * c * sa / vol
     b_r = a * c * sb / vol
@@ -1549,7 +1490,7 @@ def pa_new(full=False):
         print("     " + "  ".join(f"{v:>12.6f}" for v in row))
 
     _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
-    _copy_sample_to_psi(_geom_, _geom_for_psi_)
+    _geom_for_psi_.sample.UB = _geom_.sample.UB
     _h2, _k2, _l2 = _geom_for_psi_.core.extras.values()
     print("\nAzimuthal reference:")
     psi_label = "     H K L"
@@ -1716,11 +1657,11 @@ def setlat(*args):
     # Recompute UB if orienting reflections exist
     if len(sample.reflections.order) > 1:
         compute_UB()
-        # print("Computing UB...")
-        # sample.core.calc_UB(
+        #print("Computing UB...")
+        #sample.core.calc_UB(
         #    sample.reflections.order[0], sample.reflections.order[1]
-        # )
-        # _geom_.forward(1, 0, 0)
+        #)
+        #_geom_.forward(1, 0, 0)
 
     # Final confirmation
     print("\nUpdated lattice parameters:")
@@ -1900,7 +1841,7 @@ def set_constraints(*args):
     show_constraints()
 
 
-def analyzer_configuration():
+def analyzer_configuration(energy=None, d_spacing=None, crystal=None):
     """
     Configure analyzer
         - Select analyzer crystal and determine d-spacing
@@ -1910,17 +1851,17 @@ def analyzer_configuration():
 
     """
     _geom_ = get_diffractometer()
-    # d_ana = _geom_.ana.d_spacing.get()
-    # crystal_current = _geom_.ana.crystal.get()
+    d_ana = _geom_.ana.d_spacing.get()
+    crystal_current = _geom_.ana.crystal.get()
 
-    # if d_ana != 1e4 or d_spacing:
-    #    print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
-    #    print(f"change to: {crystal} with d_spacing = {d_spacing}")
-    #    _geom_.ana.d_spacing.put(d_spacing)
-    #    if crystal:
-    #        _geom_.ana.crystal.put(crystal)
-    # else:
-    _geom_.ana.setup()
+    if d_ana != 1e4 or d_spacing:
+        print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
+        print(f"change to: {crystal} with d_spacing = {d_spacing}")
+        _geom_.ana.d_spacing.put(d_spacing)
+        if crystal:
+            _geom_.ana.crystal.put(crystal)
+    else:
+        _geom_.ana.setup(energy)
 
 
 def analyzer_set():
@@ -1951,7 +1892,6 @@ def analyzer_get():
         print(f"Current analyzer: {crystal} with d_spacing = {d_ana}")
     else:
         print("Aanalyzer not selected yet. Run analyzer_configuration() first!")
-
 
 def update_lattice(lattice_constant=None):
     """
@@ -2014,12 +1954,12 @@ def update_lattice(lattice_constant=None):
     sample.lattice.gamma = float(gamma)
     if len(sample.reflections.order) > 1:
         compute_UB()
-        # print("Computing UB...")
-        # sample.core.calc_UB(
+        #print("Computing UB...")
+        #sample.core.calc_UB(
         #    sample.reflections.order[0],
         #    sample.reflections.order[1],
-        # )
-        # _geom_.forward(1, 0, 0)
+        #)
+        #_geom_.forward(1, 0, 0)
     print(
         "\n   H K L = {:5.4f} {:5.4f} {:5.4f}".format(
             _geom_.h.position,
@@ -2159,7 +2099,9 @@ def read_diffractometer_config_file():
     compute_UB()
 
 
-def read_diffractometer_config_scan(scan_id, diffractometer=None, clear=None):
+def read_diffractometer_config_scan(
+    scan_id, diffractometer=None, clear=None
+):
     """
     Restore diffractometer orientation from a previous scan.
 
@@ -2245,13 +2187,7 @@ def set_detector():
     else:
         dets = "undefined"
     det = input(f"(E)iger or (P)oint Detector/Analyzer [{dets}]: ") or dets
-    if det in (
-        "Point detector/Analyzer",
-        "point detector",
-        "point",
-        "p",
-        "P",
-    ):
+    if det in ("Point detector/Analyzer", "Point detector", "point detector", "p", "P"):
         caput("4idgSoft:m20.OFF", 0)
         print("Current detector: Point detector/Aanalyzer")
     elif det in ("Eiger", "eiger", "e", "E"):
@@ -2405,5 +2341,6 @@ def theta0():
     print(f"\n   2*THETA ZERO-SHIFT      = {2 * xtet0:10.4f} deg")
     print(f"   A0 (from refl {i1}, {i2})  = {a01:10.5f}  {a02:10.5f} Å")
     print(
-        f"   CORRECTED 2*THETA       = {zt1_corr:10.4f}  {zt2_corr:10.4f} deg"
+        f"   CORRECTED 2*THETA       = {zt1_corr:10.4f}  "
+        f"{zt2_corr:10.4f} deg"
     )

@@ -71,6 +71,7 @@ reports in mm.
 """
 
 import logging
+import time
 
 import bluesky.plan_stubs as bps
 import bluesky.preprocessors as bpp
@@ -78,6 +79,7 @@ import numpy as np
 from apsbits.core.instrument_init import oregistry
 from bluesky.plan_stubs import mv
 from bluesky.plan_stubs import sleep
+from epics import caput, caget
 
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..utils.run_engine import RE
@@ -146,7 +148,13 @@ def flyscan(
     ----------
     detectors : list
         Area detectors that expose ``setup_flyscan_mode``, ``stage``,
-        ``unstage`` and an ``hdf1`` plugin.
+        ``unstage`` and an ``hdf1`` plugin. Supported today: ``eiger``
+        and ``vortex``, the four-element Xspress3 at ``S4QX4:`` (load it
+        with ``load_vortex("xspress4")``). Both are gated by hard-wired
+        SoftGlue FO outputs, so no trigger routing happens here. Keep
+        the Xspress3's name as ``vortex`` -- the flyscan GUI's live
+        viewer looks for its file under ``<experiment>/vortex/``.
+        Defaults to ``[eiger]``.
     x_min, x_max, x_npts : float / int, optional
         **Fast axis** (X piezo) bounds in microns **relative to the
         current** ``nanox`` position ``x0``. Scan physically covers
@@ -243,6 +251,28 @@ def flyscan(
             f"y_npts={y_npts_ + 1} to scan that many lines."
         )
 
+    # --- Validate det_dead against each detector's real minimum ---
+    # --- dead time, instead of trusting a user-supplied guess.    ---
+
+    for detector in detectors:
+        cam = getattr(detector, "cam", None)
+        if cam is None or not hasattr(cam, "dead_time"):
+            continue
+        # dead_time (DeadTime_RBV) depends on the currently-configured
+        # acquire_time, so push it first and let the IOC settle before
+        # reading the readback back.
+        cam.acquire_time.set(acquire_time * 1e-3).wait(timeout=10)
+        time.sleep(0.1)
+        min_dead_time_ms = cam.dead_time.get() * 1e3
+        if det_dead < min_dead_time_ms:
+            raise ValueError(
+                f"det_dead={det_dead} ms is below {detector.name}'s "
+                f"reported minimum dead time of {min_dead_time_ms:.3f} ms "
+                f"at acquire_time={acquire_time} ms. Increase det_dead to "
+                f"at least {min_dead_time_ms:.3f} ms (or raise "
+                "acquire_time)."
+            )
+
     # --- Capturing plan arguments for metadata ---
 
     plan_args = {
@@ -281,6 +311,19 @@ def flyscan(
         "hints": {
             "detectors": [],
             "motors": [nanox.name, nanoy.name],
+            # A dimensions hint, even though this plan emits no events.
+            # Without one, BestEffortCallback.start() sets its legacy
+            # _cleanup_motor_heuristic flag and only clears it on seeing a
+            # 'primary' descriptor -- which this plan never emits. BEC.clear()
+            # does not reset it, so the flag survives into the NEXT scan and
+            # makes BEC misread that scan's dimension hint (field names) as
+            # object names, raising KeyError in descriptor(). Both entries
+            # must name the same stream, or BEC falls back to the guess and
+            # sets the flag anyway.
+            "dimensions": [
+                ([nanox.name], "primary"),
+                ([nanoy.name], "primary"),
+            ],
         },
         "plan_args": plan_args,
         "master_file_path": str(_master_fullpath),
@@ -358,6 +401,25 @@ def flyscan(
     # Per-bit DAC step (~1.22 nm), unchanged by where the swing sits.
     dy_bits = abs(int(round(dy_ / DAC_SWING_UM * 32767)))
 
+    # snake_y's firmware end-comparison is strict-less-than (see
+    # SoftGlueZynq.snake_y), so passing the exact bit-value of the last
+    # requested line as y_end would exclude it. A full extra dy step
+    # overshoots (crosses a whole extra line-pair boundary and adds 2
+    # lines instead of the 1 that was missing). A single-bit nudge
+    # worked for one (y_npts=4) test case but was too thin a margin for
+    # another (y_npts=6, dy_bits=1638): it produced a partial extra
+    # (7th) line, meaning a 1-bit margin is too close to the real
+    # comparison boundary to reliably win against whatever quantization/
+    # timing the firmware's comparator has. Split the difference: nudge
+    # by half a dy step -- comfortably clear of the exact boundary, but
+    # well short of a full step (which would open room for a whole
+    # extra line-pair). Computed from y_min_bits/dy_bits (the same
+    # values driving ram_y_start/ram_y_inc) rather than y_max_bits, so
+    # it stays internally consistent even if independent DAC-um
+    # rounding of y_min_bits vs. y_max_bits would otherwise disagree by
+    # a bit or two.
+    y_end_bits = y_min_bits + (y_npts_ - 1) * dy_bits + max(dy_bits // 2, 1)
+
     _threshold_range = (x_dac_max - x_dac_min) * (1 - F)
     _positive_threshold = sg.um_to_bits(x_dac_max - _threshold_range / 2)
     _negative_threshold = sg.um_to_bits(x_dac_min + _threshold_range / 2)
@@ -380,6 +442,12 @@ def flyscan(
             hdf_images=images_per_line,
         )
         # detector._flyscan = True
+        cam = getattr(detector, "cam", None)
+        # VortexDetectorCam sets acquire_period = None (the Xspress3 has
+        # no such record), so hasattr() is not enough -- the key would be
+        # staged and stage() would then fail resolving the signal.
+        if cam is not None and getattr(cam, "acquire_period", None) is not None:
+            cam.stage_sigs["acquire_period"] = acquire_period * 1e-3
 
     # --- Inner plan (wrapped with stage + run decorators) ---
 
@@ -510,14 +578,14 @@ def flyscan(
         yield from bps.checkpoint()
         print(
             f"[sg] snake_y: F={F}, dy={dy_bits}, npts={snake_npts}, "
-            f"y_start={y_min_bits}, y_end={y_max_bits}"
+            f"y_start={y_min_bits}, y_end={y_end_bits}"
         )
         yield from sg.snake_y(
             F=F,
             dy=dy_bits,
             npts=snake_npts,
             y_start=y_min_bits,
-            y_end=y_max_bits,
+            y_end=y_end_bits,
         )
 
         # --- Pre-set DAC1 to the scan-start DAC value so the piezo ---
@@ -534,10 +602,20 @@ def flyscan(
         yield from bps.checkpoint()
         logger.debug("Enabling piezo modulation input.")
         yield from sleep(0.1)
+        #print(caget("4idgSoftX:jena:m2.RBV"))
         pz.modulation_input_on("x")
         yield from sleep(0.1)
+
+        # --- Pre-set DAC2 to the scan-start DAC value (slow axis) so ---
+        # --- the Y piezo does not jump when modulation enables.      ---
+
+        yield from bps.checkpoint()
+        print(f"[sg] move_y_analog({y_dac_min} um  [DAC frame])")
+        yield from sg.move_y_analog(y_dac_min)
+
         pz.modulation_input_on("y")
         yield from sleep(0.1)
+        #print(caget("4idgSoftX:jena:m2.RBV"))
 
         # --- Switch DAC1 mux back to memDrive (waveform playback) ---
 
@@ -572,24 +650,46 @@ def flyscan(
         # yield from sleep(1)
         # --- Start softglue ---
 
+        #print(caget("4idgSoftX:jena:m2.RBV"))
         print("[sg] prepare()")
+        #print(caget("4idgSoftX:jena:m2.RBV"))
+        yield from sleep(1)
         sg.prepare()
         yield from sleep(1)
         logger.info("Takeoff!")
         print("[sg] trigger() — waiting for completion")
         yield from bps.trigger(sg, wait=True)
 
+        # --- Pause the AND-1 run gate IMMEDIATELY on ram_y_done, ---
+        # --- before the DMA flush below. and_1 gates the         ---
+        # --- fast-axis snake clock / gate_delay_1 / Eiger         ---
+        # --- triggering (started alongside buffers.in4 in         ---
+        # --- trigger()); it's narrower than stop_softglue()'s     ---
+        # --- buffers.in4, which the DMA/scal_to_stream_1 pipeline ---
+        # --- itself needs to stay high to drain during the flush  ---
+        # --- loop below (confirmed: cutting buffers.in4 here      ---
+        # --- first broke pos_stream saving entirely). Deferring   ---
+        # --- this pause until after the flush loop (7 x 0.1s =    ---
+        # --- 0.7s) let the fast axis keep oscillating and the     ---
+        # --- Eiger keep gating for that whole window, appending   ---
+        # --- extra fast-axis-only frames past the real last line. ---
+
+        sg.pause_softglue()
+
         # --- Flush DMA so the trailing buffer drains BEFORE the    ---
         # --- detector unstage (triggered by stage_decorator on exit)
-        # --- finalises its HDF file.                                 ---
+        # --- finalises its HDF file. buffers.in4 is still high     ---
+        # --- here (only and_1 was paused above), so the DMA/       ---
+        # --- scal_to_stream_1 pipeline can still drain.             ---
 
-        print("[sg] scal_to_stream_1.flush.signal <- '1!'  (x11, draining DMA)")
-        for _ in range(11):
-            sg.scal_to_stream_1.flush.signal.put("1!")
-            yield from sleep(0.1)
+        print("[sg] scal_to_stream_1.flush.signal <- '1!'  (draining DMA)")
+        #for _ in range(7):
+        sg.scal_to_stream_1.flush.signal.put("1!")
+        yield from sleep(0.1)
 
+        # No sg.reset() here: pulsing buffer-1 while the pipeline is
+        # still draining crashes SoftGlue. The setup-path reset is enough.
         sg.stop_softglue()
-        sg.reset()
 
         yield from sleep(1)
 
@@ -604,12 +704,8 @@ def flyscan(
 
         # --- Stop softglue and switch DAC1 mux back to manual ---
 
-        print(
-            "[sg] stop_softglue() / reset() / clear_output_fields() / "
-            "disable_waveform()"
-        )
+        print("[sg] stop_softglue() / disable_waveform()")
         sg.stop_softglue()
-        sg.reset()
         # sg.clear_output_fields()
         yield from sg.disable_waveform()
 
@@ -635,11 +731,8 @@ def flyscan(
 
         # --- Redundant softglue cleanup for reliability ---
 
-        print(
-            "[sg] stop_softglue() / reset() / clear_output_fields()  (redundant)"
-        )
+        print("[sg] stop_softglue()  (redundant)")
         sg.stop_softglue()
-        sg.reset()
         # sg.clear_output_fields()
 
     @bpp.subs_decorator(nxwriter.receiver)

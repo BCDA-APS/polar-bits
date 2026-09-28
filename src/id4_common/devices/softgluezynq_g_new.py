@@ -23,6 +23,7 @@ underlying EPICS PV names (``SG:mem_*``, ``SG:mem2_*``,
 do *not* reflect the physical axis.
 """
 
+import time
 from collections import OrderedDict
 from logging import getLogger
 
@@ -176,6 +177,11 @@ class SoftGlueZynq(Device):
     dac1_write = Component(EpicsSignal, "SG:DAC_WRITE_Signal")
     dac1_init = Component(EpicsSignal, "SG:DAC_INIT_Signal")
 
+    # DAC2 (slow-axis manual control). Shares the DAC_WRITE_Signal
+    # strobe with DAC1 -- writing DAC2_VAL then pulsing dac1_write
+    # commits the value to DAC2.
+    dac2_val = Component(EpicsSignal, "SG:DAC2_VAL")
+
     # Fast-axis threshold trigger.
     threshold_pos = Component(EpicsSignal, "SG:threshTrig-1_POSTHR")
     threshold_neg = Component(EpicsSignal, "SG:threshTrig-1_NEGTHR")
@@ -231,9 +237,9 @@ class SoftGlueZynq(Device):
 
     def prepare(self):
         """Arm and clear DMA in preparation for triggering."""
-        self.dma.enable.set(1).wait()
-        self.dma.clear_button.set(1).wait()
-        self.dma.clear_buffer.set(1).wait()
+        self.dma.enable.set(1).wait(timeout=10)
+        self.dma.clear_button.set(1).wait(timeout=10)
+        self.dma.clear_buffer.set(1).wait(timeout=10)
 
     def trigger(self):
         """Issue a software trigger.
@@ -257,23 +263,32 @@ class SoftGlueZynq(Device):
     def stop_softglue(self):
         """Latch the OR-1 reset path and de-assert the enable buffer."""
         self.or_1.in2.signal.put("1!")
-        self.buffers.in4.signal.set("0").wait()
+        self.buffers.in4.signal.set("0").wait(timeout=10)
 
     def pause_softglue(self):
         """Pause the AND-1 gate (in2 -> "0")."""
         # Renamed from ``pause`` so it does not shadow ``Device.pause``.
-        self.and_1.in2.signal.set("0").wait()
+        self.and_1.in2.signal.set("0").wait(timeout=10)
 
     def resume_softglue(self):
         """Resume the AND-1 gate (in2 -> "1")."""
         # Renamed from ``resume`` so it does not shadow ``Device.resume``.
-        self.and_1.in2.signal.set("1").wait()
+        self.and_1.in2.signal.set("1").wait(timeout=10)
 
     def reset(self):
-        """Pulse buffer-1 twice to clear the ScalToStream-1 FIFO."""
-        # Repeated on purpose to clear ScalToStream 1 FIFO CT.
-        self.buffers.in1.signal.set("1!").wait()
-        self.buffers.in1.signal.set("1!").wait()
+        """Pulse buffer-1 once to clear the ScalToStream-1 FIFO."""
+        # One pulse, fenced by 0.2 s on either side. This used to fire
+        # twice back to back: set().wait() returns as soon as the record
+        # echoes "1!" back, which says nothing about the FPGA having
+        # consumed the pulse, so two pulses landed microseconds apart and
+        # crashed SoftGlue. One paced pulse clears the FIFO CT.
+        #
+        # Plain method, not a plan stub: every caller invokes it as
+        # ``sg.reset()``. A ``yield from`` in here makes it a generator
+        # function and the body silently never runs.
+        time.sleep(0.2)
+        self.buffers.in1.signal.set("1!").wait(timeout=10)
+        time.sleep(0.2)
 
     def reset_interferometers(self):
         """Bluesky plan stub to pulse buffer-2 (interferometer reset)."""
@@ -509,6 +524,18 @@ class SoftGlueZynq(Device):
         yield from self.disable_waveform()
         yield from mv(self.dac1_init, "1!")
         yield from mv(self.dac1_val, x_bits)
+        yield from mv(self.dac1_write, "1!")
+
+    def move_y_analog(self, position):
+        """Set the slow-axis (Y piezo) manual DAC2 output to ``position`` um.
+
+        DAC2 has no mux/init signal of its own -- writes ``dac2_val``
+        and pulses the shared ``dac1_write`` strobe (PV
+        ``DAC_WRITE_Signal``) to commit it. Microns are converted via
+        :meth:`um_to_bits`.
+        """
+        y_bits = self.um_to_bits(position)
+        yield from mv(self.dac2_val, y_bits)
         yield from mv(self.dac1_write, "1!")
 
     def enable_detector_trigger(self, detector_name, det_keymap=None):

@@ -30,6 +30,49 @@ logger.bsdev(__file__)
 MAIN_NAMESPACE = "__main__"
 
 
+def _run_coroutine(coro):
+    """Run ``coro`` to completion, in this thread, loop or no loop.
+
+    ``asyncio.run`` refuses to start a loop inside a running one.  The plain
+    IPython session and the queue server have no running loop and take that
+    path unchanged.  The GUI runs this inside a Jupyter kernel, which always
+    has one, and there the bare call raised ``RuntimeError: asyncio.run()
+    cannot be called from a running event loop`` -- caught and logged one
+    line below, so every device silently failed to load and the station
+    startup then died on ``ComponentNotFound``.
+
+    With a loop running, the coroutine is driven by hand rather than handed
+    to a worker thread.  Everything up to its first ``await`` then runs in
+    the calling thread, exactly as it does on the console path -- which
+    matters here because the body creates the ophyd devices and pyepics
+    binds its channel-access context to the thread that first touches it.
+
+    Every caller in this package passes ``connect=False``, so the body has
+    no ``await`` to reach and finishes on the first ``send``.  ``connect=
+    True`` inside a running loop is refused rather than guessed at: it needs
+    a loop to await ``instrument.connect()`` on, and quietly borrowing one
+    from another thread is how you get devices bound to a loop that is about
+    to be closed.
+    """
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        # No running loop -- the ordinary console/queue-server path.
+        return asyncio.run(coro)
+
+    try:
+        coro.send(None)
+    except StopIteration as finished:
+        return finished.value
+
+    coro.close()
+    raise RuntimeError(
+        "make_devices(connect=True) is not supported inside a running "
+        "event loop (the GUI's Jupyter kernel). Load with connect=False "
+        "and connect the devices with connect_device()."
+    )
+
+
 def make_devices(
     *,
     pause: float = 1,
@@ -107,7 +150,7 @@ def make_devices(
         logger.info("Loading device file: %s", device_path)
         if isinstance(device_manager, guarneri.Instrument):
             try:
-                asyncio.run(
+                _run_coroutine(
                     guarneri_namespace_loader(
                         yaml_device_file=device_path,
                         instrument=device_manager,

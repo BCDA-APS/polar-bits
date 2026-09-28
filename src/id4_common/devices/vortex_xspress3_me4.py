@@ -586,14 +586,18 @@ class VortexXspress34(Trigger, ROICountersMixin, DetectorBase):
         return _hdf1_on or _hdf1_auto
 
     def setup_flyscan_mode(self, *, num_images, acq_time, hdf_images):
-        """Configure stage_sigs for an external-gate fly-scan.
+        """Configure stage_sigs for a TTL-veto gated fly-scan.
 
-        Wraps :meth:`setup_external_trigger` (``trigger_type="gate"``) to
-        get the default External Gate stage signals, then overrides the
-        scan-specific image count, per-image acquire time, and HDF5
-        capture chunk size. Call this *before* ``stage()`` so the new
-        ``stage_sigs`` are applied when the RunEngine stages the
+        Wraps :meth:`setup_external_trigger` to get the default TTL Veto
+        Only stage signals, then overrides the scan-specific image count
+        and per-image acquire time. Call this *before* ``stage()`` so the
+        new ``stage_sigs`` are applied when the RunEngine stages the
         detector.
+
+        Unlike the Eiger's equivalent, this leaves ``_flysetup`` True
+        (:meth:`setup_external_trigger` sets it): :meth:`Trigger.stage`
+        keys the ``Acquire`` put off that flag, so clearing it here would
+        stage the detector without ever arming it.
 
         Parameters
         ----------
@@ -602,7 +606,24 @@ class VortexXspress34(Trigger, ROICountersMixin, DetectorBase):
         acq_time : float
             Per-frame acquire time in seconds.
         hdf_images : int
-            Frames per HDF5 capture chunk (sets
-            ``hdf1.stage_sigs["num_capture"]``).
+            Accepted for signature compatibility with the other flyscan
+            detectors, but unused -- the Xspress3 writes one HDF5 per
+            scan (``num_capture = 0``) rather than one file per line.
         """
+        if int(num_images) > MAX_IMAGES:
+            raise ValueError(
+                f"{self.name} cannot collect {int(num_images)} frames in "
+                f"one scan; the Xspress3 limit is {MAX_IMAGES}. Reduce "
+                "x_npts / y_npts."
+            )
+        # setup_external_trigger() stages num_images from self.max_images,
+        # and stage() calls it a *second* time while _flysetup is True --
+        # so the scan's count has to go through max_images, or that
+        # re-call puts MAX_IMAGES back.
+        self.max_images = int(num_images)
         self.setup_external_trigger()
+        self.cam.stage_sigs["num_images"] = int(num_images)
+        self.cam.stage_sigs["acquire_time"] = float(acq_time)
+        # One HDF5 per scan, unbounded capture -- matches the Eiger, and
+        # the <folder>/vortex/scan_<n>.h5 layout the flyscan GUI reads.
+        self.hdf1.stage_sigs["num_capture"] = 0
