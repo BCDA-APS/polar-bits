@@ -153,7 +153,7 @@ def _extract_shift_events(html_content, n=3):
     return parser.events[-n:][::-1]
 
 
-def fetch_shift_events(n=3):
+def fetch_shift_events(n=5):
     """
     Fetch and display the last n shift events from the APS logbook.
 

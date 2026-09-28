@@ -27,6 +27,24 @@ logger.info(__file__)
 def extra_devices_wrapper(plan, extras):
     """
     Stage extra devices during a plan without adding them to the plot hints.
+
+    Every ``Kind.hinted`` component of the extra devices is demoted to
+    ``Kind.normal`` for the duration of the plan and restored afterwards, so
+    the devices are read into the data stream without showing up in the live
+    plots.
+
+    Parameters
+    ----------
+    plan : iterable or iterator
+        a generator, list, or similar containing `Msg` objects
+    extras : list
+        Devices to read during the plan but keep out of the plot hints. An
+        empty list passes the plan through unchanged.
+
+    Yields
+    ------
+    msg : Msg
+        messages from plan, with the staging messages inserted and appended
     """
     hinted_stash = []
 
@@ -63,8 +81,15 @@ def configure_counts_wrapper(plan, detectors, count_time):
     ----------
     plan : iterable or iterator
         a generator, list, or similar containing `Msg` objects
-    monitor : float or None
-        If None, the plan passes through unchanged.
+    detectors : list
+        Devices whose `preset_monitor` will be set to `count_time`. Their
+        original presets are stashed and restored when the plan ends.
+    count_time : float or None
+        Preset to apply. If None, the plan passes through unchanged. If
+        positive, it is written to each detector's `preset_monitor`. If
+        negative, its absolute value is used as the preset of the monitor
+        scaler channel, which requires `counters.monitor` to be a scaler
+        channel. Zero raises a ValueError.
 
     Yields
     ------
@@ -135,6 +160,12 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
         Flag that triggers the stage/unstage process of dichro scans.
     lockin : boolean
         Flag that triggers the stage/unstage process of lockin scans.
+    sgz : boolean
+        Flag for softgluezynq-triggered scans. Like `lockin`, it switches the
+        phase retarder into AC mode while the plan runs.
+    positioner : list
+        Motors being scanned. Their names are passed to the dichro plotting
+        settings as ``positioner1``...``positionerN``. Entries may be None.
 
     Yields
     ------
@@ -154,7 +185,12 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             for det in counters.detectors:
                 hints = det.hints["fields"]
                 for name in hints:
-                    dev = oregistry.find(name.replace("_", "."))
+                    if det in oregistry.findall("scaler"):
+                        dev = getattr(
+                            det.channels, det.channels_name_map[name]
+                        ).s
+                    else:
+                        dev = oregistry.find(name.replace("_", "."))
                     _hinted_devices.append(dev)
                     dev.kind = "normal"
 
@@ -278,6 +314,10 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
         a generator, list, or similar containing `Msg` objects
     magnet : boolean
         Flag that triggers the stage/unstage.
+    persistent : boolean, optional
+        If True (default), the persistence switch heater is turned back off
+        when the plan ends, leaving the magnet in persistent mode. Set False
+        to leave the heater on, e.g. between the moves of a field sequence.
 
     Yields
     ------
@@ -326,7 +366,26 @@ def stage_magnet911_wrapper(plan, magnet, persistent=True):
 
 
 def stage_4idg_softglue_wrapper(plan, use_sg):
-    """Stage the 4IDG SoftGlue FPGA for fly-scan position streaming."""
+    """Stage the 4IDG SoftGlue FPGA for fly-scan position streaming.
+
+    Resets the SoftGlue buffers, enables DMA and starts the position stream
+    before the plan, then flushes the circular buffer, disables DMA and stops
+    the stream afterwards.
+
+    Parameters
+    ----------
+    plan : iterable or iterator
+        a generator, list, or similar containing `Msg` objects
+    use_sg : boolean
+        Flag that triggers the stage/unstage. If False, the plan passes
+        through unchanged. If True, the 'gsgz' and 'pos_stream' devices must
+        be in the oregistry otherwise a ValueError is raised.
+
+    Yields
+    ------
+    msg : Msg
+        messages from plan, with the staging messages inserted and appended
+    """
     sg = oregistry.find("gsgz", allow_none=True)
     pos_stream = oregistry.find("pos_stream", allow_none=True)
 

@@ -1,0 +1,234 @@
+"""Session defaults applied automatically when the GUI starts.
+
+``experiment_setup()`` and ``counters()`` have to be answered before the first
+scan of every session, and the answers are nearly always the same ones.  This
+module holds a kernel code string that applies them from the ``GUI.AUTO_SETUP``
+block of the station's ``configs/iconfig_extras.yml``, appended to the GUI's
+bootstrap cell next to the other ``_gui_*`` helper strings.
+
+Only the GUI does this.  The plain IPython workflow (``ipython -i -c "from
+id4_g.startup import *"``) is untouched, as is the queue server -- both still
+prompt, because neither reads this module.
+
+The configuration is read *in the kernel* rather than in the GUI process:
+``iconfig`` is already in the session namespace after the station's ``startup``
+import, so nothing here has to find or parse the file a second time.
+
+**Why this module is more careful at POLAR than a plain "call it with the
+config" would be.**  ``ExperimentClass.setup()`` prompts for *every* value it
+was not given -- ESAF, proposal, data server, experiment name, sample, base
+name, and whether to reset ``scan_id`` -- and ``counters.plotselect()`` falls
+back to ``input()`` the moment an argument does not validate.  Standard input
+does not exist in this kernel, so a single missing key would strand the tail of
+the bootstrap on a prompt nobody can answer.  Two things stop that:
+
+* ``experiment._prompt`` is swapped for one that **raises**, naming the prompt
+  it was asked for, so a gap in the configuration is a one-line message rather
+  than a wedged session; and
+* the counters rows are resolved and checked here, before ``plotselect`` is
+  given anything.
+
+The other POLAR-specific choice is ``MODE: resume``, which is the default.  A
+GUI restart mid-experiment does not want the whole setup run again -- the
+answers are already in ``RE.md``, which ``experiment.resume()`` reads back
+without asking anything.  ``MODE: setup`` is for the start of a beamtime, and
+needs the full ``EXPERIMENT`` block.
+
+**Where the counters selection comes from.**  Two places describe it:
+``RE.md['session_state']['counters']``, rewritten by every
+``counters.plotselect()``, and the ``COUNTERS`` block of ``AUTO_SETUP``.  The
+snapshot is the newer of the two by construction, so it wins; the config block
+is the seed for a station that has never made a selection, or whose saved
+channels are no longer in the plot-options table.  Editing the config
+therefore does not silently undo a selection the beamline made at the console
+-- which is the whole point, since ``MODE: resume`` restores the *experiment*
+from ``RE.md`` and it would be strange for the detectors to come from a file
+that was last touched a beamtime ago.
+"""
+
+#: Installed in the kernel by :meth:`~id4_common.gui.kernel.KernelSession.bootstrap`,
+#: which appends it to the startup cell and so runs it once the devices exist.
+SESSION_SETUP_CODE = '''\
+class _GuiNoPrompt(RuntimeError):
+    """Raised in place of an interactive prompt during the GUI bootstrap."""
+
+
+def _gui_no_prompt(question):
+    """Stand-in for ``input()`` that reports rather than waits.
+
+    ``ExperimentClass`` takes its prompt callable as a constructor argument so
+    it can be driven deterministically; this borrows that seam.  Standard input
+    is closed in this kernel, so the alternative to raising is a bootstrap that
+    never finishes and a GUI whose tabs stay empty with no message anywhere.
+    """
+    raise _GuiNoPrompt(
+        f"AUTO_SETUP is missing a value -- the session asked: {question.strip()!r}"
+    )
+
+
+def _gui_auto_experiment(cfg):
+    """Apply ``GUI.AUTO_SETUP.EXPERIMENT``, or resume the previous session."""
+    _mode = str(cfg.get("MODE", "resume")).strip().lower()
+    if _mode == "off":
+        return
+
+    _held = experiment._prompt
+    experiment._prompt = _gui_no_prompt
+    try:
+        if _mode == "resume":
+            # Reads back what the last session stored in RE.md; asks nothing,
+            # which is what makes it safe as the default after a restart.
+            experiment_resume()
+            print(f"AUTO_SETUP: resumed experiment -- sample {experiment.sample!r}.")
+            return
+
+        _exp = cfg.get("EXPERIMENT") or {}
+        experiment_setup(
+            esaf_id=_exp.get("ESAF"),
+            proposal_id=_exp.get("PROPOSAL"),
+            server=_exp.get("SERVER"),
+            experiment_name=_exp.get("EXPERIMENT_NAME"),
+            sample=_exp.get("SAMPLE"),
+            base_name=_exp.get("BASE_NAME"),
+            # Not None, which is the "ask me" value.  -1 is
+            # experiment_utils.RESET_SCAN_ID_NOOP -- spelled out because that
+            # name is not in the module's __all__ and so never reaches this
+            # namespace -- and keeps the stored scan_id, so a GUI restart
+            # cannot renumber an experiment's files.
+            reset_scan_id=_exp.get("RESET_SCAN_ID", -1),
+        )
+    except _GuiNoPrompt as _exc:
+        print(f"AUTO_SETUP: {_exc}")
+        print(
+            "AUTO_SETUP: run experiment_setup() in the console to finish "
+            "configuring this session."
+        )
+    except Exception as _exc:
+        print(f"AUTO_SETUP: experiment setup failed: {_exc!r}")
+    finally:
+        experiment._prompt = _held
+
+
+def _gui_restore_counters():
+    """Re-apply the counters selection saved by the last ``plotselect()``.
+
+    Returns the status string from ``session_state``; a failed import or a
+    missing ``RE.md`` is reported the same way rather than raised, so the
+    caller has one thing to test and the bootstrap cannot die here.
+    """
+    try:
+        from id4_common.utils.session_state import restore_counters_selection
+
+        return restore_counters_selection()
+    except Exception as _exc:
+        return f"failed: {_exc!r}"
+
+
+def _gui_auto_counters(cfg):
+    """Restore the saved counters selection, or seed it from ``COUNTERS``.
+
+    The snapshot in ``RE.md['session_state']`` wins when it still resolves:
+    it is rewritten on every ``plotselect()``, so it is the newer of the two
+    stores, and the config block is a seed rather than a second opinion.
+    """
+    _ctr = cfg.get("COUNTERS") or {}
+    _status = _gui_restore_counters()
+    if _status == "applied":
+        print(
+            "AUTO_SETUP: restored the counters selection of the last "
+            "session."
+        )
+        return
+    if not _ctr.get("DETECTORS"):
+        print(
+            f"AUTO_SETUP: counters left as they are -- {_status}, and "
+            "AUTO_SETUP.COUNTERS.DETECTORS is empty."
+        )
+        return
+    print(f"AUTO_SETUP: {_status}; taking counters from AUTO_SETUP.COUNTERS.")
+
+    try:
+        _options = counters.detectors_plot_options
+
+        def _row(value):
+            """Row index in the plot-options table, from a name or an index.
+
+            Names are the documented preference: a renamed channel fails here
+            and lists what is available, while a row index that has shifted --
+            one more scaler channel, a detector absent -- would quietly select
+            the *wrong* one.  A channel label is only unique within its
+            detector, so ``"scaler:Ion Ch 2"`` disambiguates and a bare label
+            that matches more than one row is refused rather than guessed.
+            """
+            if isinstance(value, int) and not isinstance(value, bool):
+                if value not in _options.index:
+                    raise ValueError(
+                        f"row {value} is not one of the "
+                        f"{len(_options)} plotting channels"
+                    )
+                return int(value)
+            _text = str(value)
+            if ":" in _text:
+                _det, _chan = (part.strip() for part in _text.split(":", 1))
+                _match = (_options["detectors"] == _det) & (
+                    _options["channels"] == _chan
+                )
+            else:
+                _match = _options["channels"] == _text
+            _hits = _options.index[_match].tolist()
+            if not _hits:
+                raise ValueError(
+                    f"no plotting channel named {_text!r}; available: "
+                    + ", ".join(
+                        f"{d}:{c}"
+                        for d, c in zip(_options["detectors"], _options["channels"])
+                    )
+                )
+            if len(_hits) > 1:
+                raise ValueError(
+                    f"{_text!r} matches {len(_hits)} channels; qualify it as "
+                    + " or ".join(
+                        f"{_options.loc[i]['detectors']}:{_text}" for i in _hits
+                    )
+                )
+            return int(_hits[0])
+
+        _dets = [_row(v) for v in _ctr["DETECTORS"]]
+        _mon = _row(_ctr.get("MONITOR", "Time"))
+        _extra = [_row(v) for v in (_ctr.get("EXTRA_READ") or [])]
+        if _mon in _dets:
+            raise ValueError(
+                f"the monitor {_options.loc[_mon]['channels']!r} is also "
+                "selected as a detector"
+            )
+        # Validated first because plotselect() falls back to input() on any
+        # argument it does not like, and stdin is closed in this kernel.
+        counters.plotselect(dets=_dets, mon=_mon, extra_read=_extra or None)
+    except Exception as _exc:
+        print(f"AUTO_SETUP: counters selection not applied: {_exc}")
+
+
+def _gui_auto_setup():
+    """Apply the session defaults from iconfig's ``GUI.AUTO_SETUP`` block.
+
+    Never raises.  A bad configuration is reported and the session continues:
+    this runs at the tail of the bootstrap cell, and letting it throw would
+    leave a session that is merely un-configured looking like one that failed
+    to start.
+    """
+    try:
+        _cfg = (globals().get("iconfig") or {}).get("GUI", {}).get("AUTO_SETUP", {})
+        if not _cfg.get("ENABLE", False):
+            return
+        print(
+            "\\nApplying GUI.AUTO_SETUP from iconfig -- run experiment_setup() "
+            "or counters() to change these for this session."
+        )
+        _gui_auto_experiment(_cfg)
+        _gui_auto_counters(_cfg)
+    except Exception as _exc:  # pragma: no cover - belt and braces
+        print(f"AUTO_SETUP: skipped ({_exc!r}).")
+
+
+_gui_auto_setup()
+'''

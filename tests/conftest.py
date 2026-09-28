@@ -191,6 +191,7 @@ def _stub_dm_utils() -> None:
     mod = _ensure_module("id4_common.utils.dm_utils")
     mod.get_current_run = MagicMock(return_value={"name": "2026-2"})
     mod.get_current_run_name = MagicMock(return_value="2026-2")
+    mod.dm_ds_reachable = MagicMock(return_value=None)
     mod.get_esaf_info = MagicMock()
     mod.get_proposal_info = MagicMock()
     mod.get_experiment = MagicMock()

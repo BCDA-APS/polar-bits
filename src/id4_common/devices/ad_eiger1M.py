@@ -108,16 +108,23 @@ class TriggerTime(TriggerBase):
             self.cam.stage_sigs["num_triggers"] = self.max_num_images
 
         elif trigger_type == "gate":
-            # Stage signals
-            self.cam.stage_sigs["num_triggers"] = 1
-            # The num_triggers need to be the first in the Ordered dict! This is
-            # because in EPICS, if trigger_mode = External Gate, then cannot
-            # change the num_triggers.
+            # Stage signals. In "External Enable" mode, num_triggers is
+            # the count of external enable pulses the detector waits for
+            # -- each pulse produces exactly one frame -- and num_images
+            # must stay 1 (confirmed on hardware: num_triggers=1 with a
+            # large num_images produced only a single image, regardless
+            # of num_images). Both must be staged before trigger_mode:
+            # the Eiger IOC locks/rejects writes to these once
+            # trigger_mode is already set to a gated External mode, so
+            # their position in this OrderedDict (stage() applies
+            # stage_sigs in order) has to precede it.
+            self.cam.stage_sigs["num_triggers"] = self.max_num_images
+            self.cam.stage_sigs["num_images"] = 1
             self.cam.stage_sigs.move_to_end("num_triggers", last=False)
+            self.cam.stage_sigs.move_to_end("num_images", last=False)
 
-            self.cam.stage_sigs["trigger_mode"] = "External Gate"
+            self.cam.stage_sigs["trigger_mode"] = "External Enable"
             self.cam.stage_sigs["manual_trigger"] = "Disable"
-            self.cam.stage_sigs["num_images"] = self.max_num_images
             self.cam.stage_sigs["num_exposures"] = 1
 
     def stage(self):
@@ -127,8 +134,21 @@ class TriggerTime(TriggerBase):
         if self._flysetup:
             self.setup_external_trigger()
 
-        # Make sure that detector is not armed.
+        # Make sure that detector is not armed. Acquire=0 alone does not
+        # guarantee the Eiger has disarmed yet, and most acquisition
+        # parameters (including NumImages) are silently rejected by the
+        # IOC while armed -- staging would otherwise hang for the full PV
+        # write timeout on an unrelated signal.
         self.cam.acquire.set(0).wait(timeout=10)
+
+        def check_disarmed(*, old_value, value, **kwargs):
+            "Return True when detector has disarmed."
+            return value == 0
+
+        status_wait(
+            SubscriptionStatus(self.cam.armed, check_disarmed, timeout=15)
+        )
+
         super().stage()
         self.cam.acquire.set(1).wait(timeout=10)
 
@@ -149,8 +169,10 @@ class TriggerTime(TriggerBase):
             SubscriptionStatus(self.cam.status_message, check_value, timeout=10)
         )
         self._flysetup = False
-        # self.setup_manual_trigger()
+        self.setup_manual_trigger()
         super().unstage()
+        # from ophyd import Staged
+        # self._staged = Staged.no
 
     def trigger(self):
         "Trigger one acquisition."
@@ -277,7 +299,8 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
         self.hdf1.file_path.put(str(self.default_folder))
         self.hdf1.num_capture.put(0)
 
-        self.hdf1.stage_sigs.pop("enable")
+        if self.hdf1.stage_sigs.get("enable") is not None:
+            self.hdf1.stage_sigs.pop("enable")
         self.hdf1.stage_sigs["num_capture"] = 0
         self.hdf1.stage_sigs["capture"] = 1
 
@@ -329,6 +352,39 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
         """Set only Stats5 total to be plotted."""
         self.plot_select([5])
 
+    def setup_flyscan_mode(self, *, num_images, acq_time, hdf_images):
+        """Configure stage_sigs for an External Enable (per-pulse) fly-scan.
+
+        Wraps :meth:`setup_external_trigger` (``trigger_type="gate"``) to
+        get the default External Enable stage signals -- each SoftGlue
+        gate pulse triggers and paces one exposure -- then overrides the
+        scan-specific image count, per-image acquire time, and HDF5
+        capture chunk size. Call this *before* ``stage()`` so the new
+        ``stage_sigs`` are applied when the RunEngine stages the
+        detector.
+
+        Parameters
+        ----------
+        num_images : int
+            Total number of frames the scan will collect -- staged as
+            ``num_triggers`` (the External Enable pulse count), since
+            ``num_images`` must stay 1 (one frame per pulse).
+        acq_time : float
+            Per-frame acquire time in seconds.
+        hdf_images : int
+            Frames per HDF5 capture chunk (sets
+            ``hdf1.stage_sigs["num_capture"]``).
+        """
+        self.setup_external_trigger(trigger_type="gate")
+        self.cam.stage_sigs["num_triggers"] = int(num_images)
+        self.cam.stage_sigs["acquire_time"] = float(acq_time)
+        # TODO: How to setup per line file like in ISN? Do we need it?
+        # self.hdf1.stage_sigs["num_capture"] = int(hdf_images)
+        self.hdf1.stage_sigs["num_capture"] = 0
+        # We configured stage_sigs explicitly; skip the auto-rewrite that
+        # stage() does when ``_flysetup`` is True.
+        self._flysetup = False
+
     def setup_images(
         self, base_path, name_template, file_number, flyscan=False
     ):
@@ -336,6 +392,13 @@ class Eiger1MDetector(TriggerTime, CountersMixin, DetectorBase):
 
         self.hdf1.file_number.set(file_number).wait(timeout=10)
         self.hdf1.file_name.set(name_template).wait(timeout=10)
+        # Re-assert the expected naming template on the live PV.
+        # default_settings() only writes it once at connect time, so an
+        # IOC restart or an external caput can leave it stale/truncated,
+        # which make_write_read_paths() below would otherwise choke on
+        # (or silently diverge from the path predict_save_path()
+        # computed for the pre-scan collision check).
+        self.hdf1.file_template.set(self.hdf1_name_format).wait(timeout=10)
         # Make sure eiger will save image
         self.auto_save_on()
         # Changes the stage_sigs to the external trigger mode

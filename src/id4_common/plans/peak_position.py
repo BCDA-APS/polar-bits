@@ -44,6 +44,8 @@ from .move_plans import mv
 
 __all__ = [
     "peak_pos",
+    "abs_pos",
+    "abs_cen",
     "cen",
     "com",
     "maxi",
@@ -169,15 +171,67 @@ def _detector_fields(start, y):
     return list(y)
 
 
+def _suppress_dims_warning():
+    """Context manager silencing the FutureWarning about ``Dataset.dims``."""
+    ctx = warnings.catch_warnings()
+    ctx.__enter__()
+    warnings.filterwarnings(
+        "ignore",
+        category=FutureWarning,
+        message="The return type of `Dataset.dims`.*",
+    )
+    return ctx
+
+
+class _LazyTable:
+    """Column-at-a-time view of a run's primary stream.
+
+    ``run.primary.read()`` materialises the *whole* stream.  With an area
+    detector in ``counters.detectors`` that is every frame of the scan --
+    hundreds of megabytes pulled over the network so that ``cen()`` can look
+    at one scalar column, which makes ``cen()`` after an Eiger scan look hung.
+
+    Every consumer here (``_grid_shape``, ``_grid_axes``, ``_resolve_x_motor``
+    and the stats loops) only ever does ``table[field].values`` and
+    ``field in table``, so fetching one named column at a time is enough and
+    the image columns are never touched.  Columns are cached because
+    ``_grid_shape`` and ``_grid_axes`` both read the motor readbacks.
+
+    Falls back to the eager ``read()`` if the backend has no ``to_dask()``.
+    """
+
+    def __init__(self, run):
+        self._cache = {}
+        self._eager = None
+        ctx = _suppress_dims_warning()
+        try:
+            try:
+                self._dataset = run.primary.to_dask()
+            except (AttributeError, NotImplementedError):
+                self._eager = run.primary.read()
+                self._dataset = self._eager
+        finally:
+            ctx.__exit__(None, None, None)
+
+    def __contains__(self, field):
+        return field in self._dataset
+
+    def __getitem__(self, field):
+        if field not in self._cache:
+            column = self._dataset[field]
+            if self._eager is None:
+                ctx = _suppress_dims_warning()
+                try:
+                    column = column.compute()
+                finally:
+                    ctx.__exit__(None, None, None)
+            self._cache[field] = column
+        return self._cache[field]
+
+
 def _read_table(run):
-    """Read primary stream, suppressing the FutureWarning about Dataset.dims."""
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            category=FutureWarning,
-            message="The return type of `Dataset.dims`.*",
-        )
-        return run.primary.read()
+    """Return a lazy, column-at-a-time view of ``run``'s primary stream."""
+    return _LazyTable(run)
 
 
 # ---------------------------------------------------------------------------
@@ -664,9 +718,28 @@ def peak(
     """Backward-compat: dispatch by ``feature`` to :func:`cen` / :func:`com` /
     :func:`maxi` / :func:`mini`.
 
-    Accepts the PR-#54 feature names (``"centroid"`` / ``"x_at_max_y"`` /
-    ``"x_at_min_y"``) and the new short names (``"com"`` / ``"max"`` /
-    ``"min"`` / ``"cen"``).
+    Parameters
+    ----------
+    scan_id : int, optional
+        Catalog index of the scan. Default ``-1`` (last scan).
+    feature : str, optional
+        Which peak feature to move to. Accepts the PR-#54 names
+        (``"centroid"`` / ``"x_at_max_y"`` / ``"x_at_min_y"``) and the short
+        names (``"com"`` / ``"max"`` / ``"min"`` / ``"cen"``). Anything else
+        raises a ValueError. Default ``"centroid"``.
+    positioner : ophyd object or list, optional
+        Device(s) to move. See :func:`cen`.
+    detector : str, optional
+        Detector field name. See :func:`cen`.
+    confirm : bool, optional
+        Prompt behavior. See :func:`cen`.
+
+    See Also
+    --------
+    :func:`cen`
+    :func:`com`
+    :func:`maxi`
+    :func:`mini`
     """
     feature_map = {
         "centroid": "com",
@@ -693,3 +766,256 @@ def pmax(scan_id=-1, positioner=None, detector=None, confirm=True):
 def pmin(scan_id=-1, positioner=None, detector=None, confirm=True):
     """Alias of :func:`mini` (PR #54 name)."""
     yield from mini(scan_id, positioner, detector, confirm)
+
+
+# ---------------------------------------------------------------------------
+# Absorption scans (transmission dips)
+# ---------------------------------------------------------------------------
+#
+# An absorption scan is a well, not a peak: the sample blocks the beam, so the
+# signal sits at the open-beam level at both ends and drops in the middle. The
+# peak helpers above do not transfer. ``_fwhm_midpoint_1d`` in particular finds
+# its reference with ``signal.find_peaks``, which sees only maxima -- on a well
+# it locks onto whatever ripple happens to be largest out in the open beam. On
+# scan 929 that put ``cen()`` 28 um away from the sample, silently, which is
+# almost the whole 32 um width of the sample.
+#
+# The centre here is the midpoint of the two half-absorbance crossings, so it
+# depends only on where the sample's edges are and not on how much open beam
+# was scanned on either side. Re-framing scan 929 by dropping up to five points
+# off either end moves it by <=0.6 um, where the centroid of the raw signal
+# moves by +-22 um.
+
+#: Below this ``max/min`` transmission ratio there is no dip worth centring on.
+MIN_ABS_CONTRAST = 1.2
+
+_OPEN_PERCENTILE = 90.0  # robust stand-in for the unobstructed beam
+_FLOOR_PERCENTILE = 10.0  # residual baseline of the absorbance
+_LOG_FLOOR = 1e-12
+
+
+def _absorption_profile(y, monitor=None):
+    """Return ``(transmission, absorbance)`` for one scan's detector row.
+
+    Absorbance is ``-ln(T / T_open)``, with ``T_open`` taken as a high
+    percentile of the transmission rather than its maximum, so a single hot
+    point cannot set the scale. A low percentile is then subtracted so the
+    open-beam stretches sit at zero.
+    """
+    y = np.asarray(y, dtype=float)
+    if monitor is None:
+        trans = y
+    else:
+        mon = np.asarray(monitor, dtype=float)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            trans = np.where(mon != 0, y / np.where(mon != 0, mon, 1.0), np.nan)
+
+    open_level = np.nanpercentile(trans, _OPEN_PERCENTILE)
+    if not np.isfinite(open_level) or open_level <= 0:
+        raise ValueError(
+            "Cannot establish an open-beam level for this scan: the "
+            f"{_OPEN_PERCENTILE:g}th percentile of the transmission is "
+            f"{open_level!r}."
+        )
+    absorbance = -np.log(np.clip(trans / open_level, _LOG_FLOOR, None))
+    absorbance = np.clip(
+        absorbance - np.nanpercentile(absorbance, _FLOOR_PERCENTILE), 0.0, None
+    )
+    return trans, absorbance
+
+
+def _absorption_stats(x, trans, absorbance):
+    """Centre, width and edges of the absorbing region along ``x``."""
+    x = np.asarray(x, dtype=float)
+    half = float(np.nanmax(absorbance)) / 2.0
+    above = absorbance >= half
+    if not above.any():
+        raise ValueError("No absorbing region found: absorbance is flat.")
+
+    first = int(np.argmax(above))
+    last = len(absorbance) - 1 - int(np.argmax(above[::-1]))
+
+    def _crossing(outside, inside):
+        """``x`` where the absorbance passes ``half`` between two samples."""
+        rise = absorbance[inside] - absorbance[outside]
+        if rise == 0:
+            return float(x[inside])
+        step = (half - absorbance[outside]) / rise
+        return float(x[outside] + step * (x[inside] - x[outside]))
+
+    # An edge that is already above half at the first or last point lies
+    # outside the scanned range, so the centre cannot be trusted.
+    open_sides = []
+    if first > 0:
+        low = _crossing(first - 1, first)
+    else:
+        low = float(x[0])
+        open_sides.append("low")
+    if last < len(absorbance) - 1:
+        high = _crossing(last + 1, last)
+    else:
+        high = float(x[-1])
+        open_sides.append("high")
+
+    total = float(np.nansum(absorbance))
+    centroid = float(np.nansum(x * absorbance) / total) if total > 0 else None
+    usable = trans[np.isfinite(trans) & (trans > 0)]
+    contrast = (
+        float(np.nanmax(usable) / np.nanmin(usable))
+        if usable.size
+        else float("nan")
+    )
+
+    return {
+        "center": 0.5 * (low + high),
+        "width": high - low,
+        "edges": (low, high),
+        "com": centroid,
+        "contrast": contrast,
+        "bracketed": not open_sides,
+        "open_sides": tuple(open_sides),
+    }
+
+
+def abs_pos(scan_id=-1, x=None, y=None, monitor=None):
+    """
+    Centre of an absorption scan (a transmission dip). No motion.
+
+    The counterpart of :func:`peak_pos` for scans where the sample *blocks*
+    the beam. Use this rather than :func:`cen` or :func:`com` on such scans:
+    ``cen`` chases open-beam ripples, and ``com`` shifts with how much open
+    beam sits on each side of the sample.
+
+    Parameters
+    ----------
+    scan_id : int, optional
+        Catalog index. Default ``-1`` (last scan).
+    x : str, optional
+        Motor field name. None → the scan's single motor, or the widest-moving
+        one for multi-motor scans.
+    y : str, optional
+        Detector field name. None → the first entry of the scan's hints.
+    monitor : str or False, optional
+        Monitor field to normalise by. None → the scan's ``hints["monitor"]``
+        if it is present in the stream. ``False`` → use the raw detector.
+
+    Returns
+    -------
+    dict
+        ``center``, ``width``, ``edges`` (low, high), ``com``, ``contrast``,
+        ``bracketed``, ``open_sides``, plus the ``scan``, ``motor``,
+        ``detector`` and ``monitor`` names used. Positions are in the motor's
+        own units.
+
+    Raises
+    ------
+    NotImplementedError
+        For 2-D grid scans.
+    ValueError
+        If the transmission contrast is below :data:`MIN_ABS_CONTRAST`, i.e.
+        there is no dip to centre on.
+
+    See Also
+    --------
+    :func:`abs_cen` : move the motor to this centre.
+    :func:`peak_pos` : the same idea for peaks rather than dips.
+    """
+    run = cat[scan_id]
+    start = run.metadata["start"]
+    if _is_grid_scan(start):
+        raise NotImplementedError(
+            "abs_pos handles 1-D absorption scans only; scan "
+            f"{start.get('scan_id')} is a grid scan."
+        )
+
+    table = _read_table(run)
+    x_field = _resolve_x_motor(start, table, x)
+    det_field = _detector_fields(start, y)[0]
+
+    mon_field = None if monitor is False else monitor
+    if mon_field is None and monitor is not False:
+        mon_field = start.get("hints", {}).get("monitor")
+    mon_values = None
+    if mon_field:
+        if mon_field in table:
+            mon_values = np.asarray(table[mon_field].values)
+        else:
+            # Named in the hints but not recorded -- fall back to the raw
+            # detector rather than failing the whole analysis.
+            mon_field = None
+
+    positions = np.asarray(table[x_field].values, dtype=float)
+    signal_values = np.asarray(table[det_field].values, dtype=float)
+    trans, absorbance = _absorption_profile(signal_values, mon_values)
+    stats = _absorption_stats(positions, trans, absorbance)
+
+    if stats["contrast"] < MIN_ABS_CONTRAST:
+        raise ValueError(
+            f"No absorption dip in scan {start.get('scan_id')}: transmission "
+            f"contrast is only {stats['contrast']:.2f} "
+            f"(need >= {MIN_ABS_CONTRAST}). Is this an absorption scan?"
+        )
+
+    stats.update(
+        scan=start.get("scan_id"),
+        motor=x_field,
+        detector=det_field,
+        monitor=mon_field,
+    )
+
+    source = det_field if mon_field is None else f"{det_field} / {mon_field}"
+    print(f"scan {stats['scan']}  {x_field}  ({source})")
+    print(
+        f"  center = {stats['center']:.5f}   width = {stats['width']:.5f}"
+        f"   edges = {stats['edges'][0]:.5f} .. {stats['edges'][1]:.5f}"
+    )
+    com_text = "n/a" if stats["com"] is None else f"{stats['com']:.5f}"
+    print(f"  com = {com_text}   contrast = {stats['contrast']:.1f}x")
+    if not stats["bracketed"]:
+        print(
+            f"  WARNING: the {' and '.join(stats['open_sides'])} edge of the "
+            "sample is outside the scan -- widen the scan; center is a lower "
+            "bound only."
+        )
+    return stats
+
+
+def abs_cen(scan_id=-1, positioner=None, detector=None, confirm=True):
+    """
+    Move to the centre of an absorption scan (a transmission dip).
+
+    The dip counterpart of :func:`cen`. Refuses to move when an edge of the
+    sample fell outside the scanned range, since the centre is not determined
+    in that case.
+
+    Parameters
+    ----------
+    scan_id : int, optional
+        Catalog index of the scan. Default ``-1`` (last scan).
+    positioner : ophyd object, optional
+        Device to move. None → the scan's motor, via ``oregistry``.
+    detector : str, optional
+        Detector field name. None → the first hint from the scan.
+    confirm : bool, optional
+        If True (default), prompts before moving for scans older than
+        5 minutes. False skips the prompt.
+
+    See Also
+    --------
+    :func:`abs_pos` : the same numbers without moving anything.
+    """
+    stats = abs_pos(scan_id, y=detector)
+
+    if not stats["bracketed"]:
+        print(
+            "No motion will be done: the sample is not bracketed by the scan."
+        )
+        yield from null()
+        return
+
+    run = cat[scan_id]
+    stop = run.metadata.get("stop")
+    if positioner is None:
+        positioner = oregistry.find(stats["motor"])
+
+    yield from _do_single_move(positioner, stats["center"], stop, confirm)

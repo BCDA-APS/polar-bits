@@ -310,22 +310,22 @@ apstools.devices.LakeShore340Device:
 #   engine: psi
 #   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometer:
+id4_common.devices.polar_diffractometer.CradleDiffractometer:
 - name: huber_euler
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometer:
+id4_common.devices.polar_diffractometer.HPDiffractometer:
 - name: huber_hp
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.CradleDiffractometerPSI:
+id4_common.devices.polar_diffractometer.CradleDiffractometerPSI:
 - name: huber_euler_psi
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
-id4_common.devices.polar_diffractometer_hklpy2.HPDiffractometerPSI:
+id4_common.devices.polar_diffractometer.HPDiffractometerPSI:
 - name: huber_hp_psi
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
@@ -343,12 +343,17 @@ id4_common.devices.gh_i0_motors.I04idg:
 id4_common.devices.ringlight.Ringlight:
 - name: ringlight
   prefix: "RINGLIGHT:"
-  labels: ["4idg", "baseline"]
+  labels: ["4idg",]
 
 id4_common.devices.piezo_jena.PiezoJena:
 - name: piezo_jena
   prefix: "4idgSoftX:asyn_MOXA_G:2"
   labels: ["4idg", "baseline"]
+
+id4_common.devices.softgluezynq_g_new.SoftGlueZynq:
+- name: gsgz_isn
+  prefix: "4idgACQ:"
+  labels: ["4idg"]
 
 ############
 ## 4-ID-H ##
@@ -464,6 +469,11 @@ id4_common.devices.softgluezynq_vortex.SGZVortex:
 - name: sgz_vortex
   prefix: "4iddMZ0:"
   labels: ["detector"]
+
+id4_common.devices.ad_positionstream.PositionStreamDevice:
+- name: pos_stream
+  prefix: "4idSGSocket:"
+  labels: []
 
 id4_common.devices.ge_controller.GEController:
 - name: comp

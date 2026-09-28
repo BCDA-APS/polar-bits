@@ -8,6 +8,7 @@ The scan implementations were split out per-category in May 2026 (issue
   ``qxscan``
 - :mod:`id4_common.plans.move_plans`  — ``mv``, ``mvr``, ``abs_set``
 - :mod:`id4_common.plans.grid_scans`  — ``grid_scan``, ``rel_grid_scan``
+- :mod:`id4_common.plans.list_scans`  — ``list_scan``, ``rel_list_scan``
 - :mod:`id4_common.plans.hkl_scans`   — ``th2th``, ``hklscan``, ``hscan``,
   ``kscan``, ``lscan``, ``psiscan``
 
@@ -23,6 +24,8 @@ __all__ = [
     "mvr",
     "grid_scan",
     "rel_grid_scan",
+    "list_scan",
+    "rel_list_scan",
     "qxscan",
     "count",
     "abs_set",
@@ -46,6 +49,8 @@ from .hkl_scans import kscan  # noqa: F401
 from .hkl_scans import lscan  # noqa: F401
 from .hkl_scans import psiscan  # noqa: F401
 from .hkl_scans import th2th  # noqa: F401
+from .list_scans import list_scan  # noqa: F401
+from .list_scans import rel_list_scan  # noqa: F401
 from .move_plans import abs_set  # noqa: F401
 from .move_plans import mv  # noqa: F401
 from .move_plans import mvr  # noqa: F401

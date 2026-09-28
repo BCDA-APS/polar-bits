@@ -28,3 +28,66 @@ RUN_ENGINE:
     ### except when it clutters the output in Jupyter notebooks.
     ### Default: True
     USE_PROGRESS_BAR: true
+
+### Settings the Qt session window (polar-gui) applies at startup.
+### GUI only -- the plain IPython session and the queue server never read
+### this block, and still prompt.
+GUI:
+    AUTO_SETUP:
+        ### Master switch.  False (or absent) leaves the GUI prompting.
+        ENABLE: true
+
+        ### resume | setup | off
+        ###   resume  reads back what the last session stored in RE.md and
+        ###           asks nothing -- the right default, because a GUI
+        ###           restart mid-experiment does not want the whole setup
+        ###           run again.
+        ###   setup   runs experiment_setup() from the EXPERIMENT block
+        ###           below, which must then be complete: every value it
+        ###           does not find is a prompt, and stdin is closed in the
+        ###           GUI's kernel.
+        ###   off     leaves the experiment alone entirely.
+        MODE: resume
+
+        ### Only read when MODE is 'setup'.  Left unset on purpose: these
+        ### differ per beamtime, and 'resume' never reads them.  Fill in
+        ### and uncomment only at the start of a run.
+        # EXPERIMENT:
+        #     ESAF: 123456
+        #     PROPOSAL: 78901
+        #     SERVER: polar
+        #     EXPERIMENT_NAME: 2026-2-smith
+        #     SAMPLE: DefaultSample
+        #     BASE_NAME: scan
+        #     ### -1 keeps the stored scan_id, so a GUI restart cannot
+        #     ### renumber an experiment's files.  Omit it and the session
+        #     ### asks; 0 restarts the numbering.
+        #     RESET_SCAN_ID: -1
+
+        ### A seed, not the source of truth.  Every counters.plotselect()
+        ### saves the selection to RE.md['session_state'], and the GUI
+        ### re-applies that first; this block is read only when there is no
+        ### saved selection yet, or when its channels are no longer in the
+        ### plot-options table.  So editing here will not override a
+        ### session that already has a selection -- change that one with
+        ### counters() or the Detectors tab.
+        ###
+        ### Names, not row numbers: a renamed channel fails loudly and
+        ### lists what is available, while a row index that has shifted --
+        ### one more scaler channel, a detector absent -- would quietly
+        ### select the wrong one.  A channel label is only unique within
+        ### its detector, so qualify it as 'device:channel' when two
+        ### detectors share a label.  The virtual all-scaler time row is
+        ### 'scalers:Time'.
+        ###
+        ### Empty means "apply nothing" -- with no saved selection to
+        ### restore either, the GUI leaves counters as they are.  The
+        ### channel labels are station- and beamtime-specific, so fill this
+        ### in per station, e.g.
+        ###     DETECTORS:
+        ###         - "scaler1:Ion Ch 2"
+        COUNTERS:
+            DETECTORS: []
+            MONITOR: "Time"
+            ### Recorded at every point but not plotted.  Optional.
+            EXTRA_READ: []

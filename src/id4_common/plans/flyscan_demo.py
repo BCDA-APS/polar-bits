@@ -79,25 +79,65 @@ def flyscan_snake(
 
     Parameters
     ----------
-    eiger : Eiger detector instance
-        Currently sort of hardwired for the Eiger, but this will be removed in
-        the future to match with the POLAR standard of defaulting to our
-        `counters` class.
-    *args :
-        The first motor is the outer loop that will step, with the second motor
-        flying between the ends. Thus the first motor needs a number of steps.
-        .. code-block:: python
-            motor1, start1, stop1, number of point, motor2, start2, stop
-    speed : float, default to 10
-        Velocity of the flying motor. This will be passed to `motor2.velocity`
-        through staging.
-    trigger_time : float, default to 0.02 seconds
-        Time between detector triggers.
-    collection_time : float, default to 0.01 seconds
-        Time that detector spend collecting the image. It must be smaller or
-        equal to the trigger_time otherwise a ValueError is raised.
+    detectors : list of ophyd detectors
+        Detectors to trigger during the scan. A single detector is accepted
+        and wrapped in a list; a string raises a TypeError.
+    stepping_motor : ophyd motor object
+        Outer-loop motor. It steps through its range while `flying_motor`
+        flies across each row.
+    stepping_motor_start : float
+        Initial position of the stepping motor.
+    stepping_motor_end : float
+        Final position of the stepping motor.
+    stepping_motor_number_of_points : int
+        Number of points measured along the stepping motor.
+    flying_motor : ophyd motor object
+        Inner-loop motor. It flies between its two ends as a two-point step.
+        Ideally a motor with a custom unstaging that removes "velocity" from
+        the stage_sigs, see ../devices/nanopositioners.py
+    flying_motor_start : float
+        Initial position of the flying motor.
+    flying_motor_end : float
+        Final position of the flying motor.
+    flying_motor_speed : float
+        Velocity of the flying motor. This will be passed to
+        `flying_motor.velocity` through staging.
+    detector_trigger_period : float, optional
+        Time between detector triggers, in seconds. Defaults to 0.02.
+    detector_collection_time : float, optional
+        Time the detector spends collecting each image, in seconds. It must
+        be smaller than or equal to `detector_trigger_period`, otherwise a
+        ValueError is raised. Defaults to 0.01.
+    file_name_base : str, optional
+        Base name used for the detector and master file names. Defaults to
+        "scan".
+    master_file_templates : list, optional
+        Extra NeXus template entries handed to the master file writer. If
+        None, an empty list is used.
     md : dictionary, optional
         Metadata to be added to the run start.
+    dm_concise : boolean, optional
+        Use concise reporting in the APS Data Management workflow. Only has
+        an effect when `wf_run` is True.
+    dm_wait : boolean, optional
+        Accepted for API compatibility, but currently unused.
+    dm_reporting_period : float, optional
+        How often the DM workflow reports progress, in seconds. Only has an
+        effect when `wf_run` is True.
+    dm_reporting_time_limit : float, optional
+        How long bluesky keeps reporting on the DM workflow, in seconds. Only
+        has an effect when `wf_run` is True.
+    nxwriter_warn_missing : boolean, optional
+        If True, the NeXus writer warns about missing content. Defaults to
+        False.
+    wf_run : boolean, optional
+        If True, an APS Data Management workflow is started once the scan
+        files have been uploaded. Defaults to False.
+    wf_settings_file_path : str, optional
+        Path to a YAML file holding the DM workflow kwargs. See
+        :func:`id4_common.plans.workflow_plan.run_workflow`.
+    **wf_kwargs :
+        Any remaining keyword arguments are passed to the DM workflow.
 
     See Also
     --------
@@ -200,27 +240,56 @@ def flyscan_1d(
 
     Parameters
     ----------
-    eiger : Eiger detector instance
-        Currently sort of hardwired for the Eiger, but this will be removed in
-        the future to match with the POLAR standard of defaulting to our
-        `counters` class.
+    detectors : list of ophyd detectors
+        Detectors to trigger during the scan. A single detector is accepted
+        and wrapped in a list; a string raises a TypeError.
     motor : ophyd motor object
-        Ideally it is a motor with a custom unstaging that removes "velocity"
-        from the stage_sigs, see ../devices/nanopositioners.py
+        The flying motor. Ideally it is a motor with a custom unstaging that
+        removes "velocity" from the stage_sigs, see
+        ../devices/nanopositioners.py
     start : float
         Initial motor position
     end : float
         Final motor position
-    speed : float, default to 10
+    speed : float
         Velocity of the flying motor. This will be passed to `motor.velocity`
         through staging.
-    trigger_time : float, default to 0.02 seconds
-        Time between detector triggers.
-    collection_time : float, default to 0.01 seconds
-        Time that detector spend collecting the image. It must be smaller or
-        equal to the trigger_time otherwise a ValueError is raised.
+    detector_trigger_period : float, optional
+        Time between detector triggers, in seconds. Defaults to 0.02.
+    detector_collection_time : float, optional
+        Time the detector spends collecting each image, in seconds. It must
+        be smaller than or equal to `detector_trigger_period`, otherwise a
+        ValueError is raised. Defaults to 0.01.
+    file_name_base : str, optional
+        Base name used for the detector and master file names. Defaults to
+        "scan".
+    master_file_templates : list, optional
+        Extra NeXus template entries handed to the master file writer. If
+        None, an empty list is used.
     md : dictionary, optional
         Metadata to be added to the run start.
+    dm_concise : boolean, optional
+        Use concise reporting in the APS Data Management workflow. Only has
+        an effect when `wf_run` is True.
+    dm_wait : boolean, optional
+        Accepted for API compatibility, but currently unused.
+    dm_reporting_period : float, optional
+        How often the DM workflow reports progress, in seconds. Only has an
+        effect when `wf_run` is True.
+    dm_reporting_time_limit : float, optional
+        How long bluesky keeps reporting on the DM workflow, in seconds. Only
+        has an effect when `wf_run` is True.
+    nxwriter_warn_missing : boolean, optional
+        If True, the NeXus writer warns about missing content. Defaults to
+        False.
+    wf_run : boolean, optional
+        If True, an APS Data Management workflow is started once the scan
+        files have been uploaded. Defaults to False.
+    wf_settings_file_path : str, optional
+        Path to a YAML file holding the DM workflow kwargs. See
+        :func:`id4_common.plans.workflow_plan.run_workflow`.
+    **wf_kwargs :
+        Any remaining keyword arguments are passed to the DM workflow.
 
     See Also
     --------
@@ -317,13 +386,42 @@ def flyscan_cycler(
         motor. If `None`, then the speed will not be changed. The speed will be
         passed to `motor.velocity` through staging (see
         ../devices/nanopositioners.py).
-    trigger_time : float, default to 0.02 seconds
-        Time between detector triggers.
-    collection_time : float, default to 0.01 seconds
-        Time that detector spend collecting the image. It must be smaller or
-        equal to the trigger_time otherwise a ValueError is raised.
+    detector_trigger_period : float, optional
+        Time between detector triggers, in seconds. Defaults to 0.02.
+    detector_collection_time : float, optional
+        Time the detector spends collecting each image, in seconds. It must
+        be smaller than or equal to `detector_trigger_period`, otherwise a
+        ValueError is raised. Defaults to 0.01.
+    file_name_base : str, optional
+        Base name used for the detector and master file names. Defaults to
+        "scan".
+    master_file_templates : list, optional
+        Extra NeXus template entries handed to the master file writer. If
+        None, an empty list is used.
     md : dictionary, optional
         Metadata to be added to the run start.
+    dm_concise : boolean, optional
+        Use concise reporting in the APS Data Management workflow. Only has
+        an effect when `wf_run` is True.
+    dm_wait : boolean, optional
+        Accepted for API compatibility, but currently unused.
+    dm_reporting_period : float, optional
+        How often the DM workflow reports progress, in seconds. Only has an
+        effect when `wf_run` is True.
+    dm_reporting_time_limit : float, optional
+        How long bluesky keeps reporting on the DM workflow, in seconds. Only
+        has an effect when `wf_run` is True.
+    nxwriter_warn_missing : boolean, optional
+        If True, the NeXus writer warns about missing content. Defaults to
+        False.
+    wf_run : boolean, optional
+        If True, an APS Data Management workflow is started once the scan
+        files have been uploaded. Defaults to False.
+    wf_settings_file_path : str, optional
+        Path to a YAML file holding the DM workflow kwargs. See
+        :func:`id4_common.plans.workflow_plan.run_workflow`.
+    **wf_kwargs :
+        Any remaining keyword arguments are passed to the DM workflow.
 
     See Also
     --------

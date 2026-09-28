@@ -41,9 +41,12 @@ class KepcoController(Device):
     control.
     """
 
+    # Inputs
     voltage = Component(LocalPositioner, "", progtype="V", tolerance=0.02)
     current = Component(LocalPositioner, "", progtype="C", tolerance=0.03)
 
+
+    # Control toggles
     mode = Component(
         EpicsSignal, "setMode", kind="config", string=True, auto_monitor=True
     )
@@ -52,8 +55,17 @@ class KepcoController(Device):
         EpicsSignal, "setRemote", kind="config", string=True, auto_monitor=True
     )
 
-    enable = Component(EpicsSignal, "Enable.VAL", kind="omitted", string=True)
+    enable_setpoint = Component(
+        EpicsSignal, "Enable", kind="config", string=True
+    )
+    enable_readback = Component(
+        EpicsSignalRO, "Output", kind="config", string=True
+    )
 
+    external_mode_setpoint = Component(EpicsSignal, "setExtMode", kind="config")
+    external_mode_readback = Component(EpicsSignal, "ExtModeStr", kind="config")
+
+    # Extras
     id = Component(EpicsSignalRO, "IDN", kind="config")
     id_read = Component(EpicsSignal, "IDN.PROC", kind="omitted")
 

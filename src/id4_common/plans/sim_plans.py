@@ -23,7 +23,17 @@ DEFAULT_MD = {"title": "test run with simulator(s)"}
 
 
 def sim_count_plan(num: int = 1, imax: float = 10_000, md: dict = DEFAULT_MD):
-    """Demonstrate the ``count()`` plan."""
+    """Demonstrate the ``count()`` plan.
+
+    Parameters
+    ----------
+    num : int, optional
+        Number of readings to take. Defaults to 1.
+    imax : float, optional
+        Peak intensity of the simulated detector. Defaults to 10,000.
+    md : dict, optional
+        Metadata to be added to the run start.
+    """
     logger.debug("sim_count_plan()")
     sim_det = oregistry["sim_det"]
     yield from bps.mv(sim_det.Imax, imax)
@@ -49,7 +59,27 @@ def sim_rel_scan_plan(
     noise: str = "uniform",  # none poisson uniform
     md: dict = DEFAULT_MD,
 ):
-    """Demonstrate the ``rel_scan()`` plan."""
+    """Demonstrate the ``rel_scan()`` plan.
+
+    Parameters
+    ----------
+    span : float, optional
+        Full width of the scan, centered on the current motor position. The
+        motor moves from ``-span / 2`` to ``+span / 2``. Defaults to 5.
+    num : int, optional
+        Number of points in the scan. Defaults to 11.
+    imax : float, optional
+        Peak intensity of the simulated detector. Defaults to 10,000.
+    center : float, optional
+        Center of the simulated peak. Defaults to 0.
+    sigma : float, optional
+        Width of the simulated peak. Defaults to 1.
+    noise : str, optional
+        Noise model of the simulated detector: "none", "poisson" or
+        "uniform". Defaults to "uniform".
+    md : dict, optional
+        Metadata to be added to the run start.
+    """
     logger.debug("sim_rel_scan_plan()")
     sim_det = oregistry["sim_det"]
     sim_motor = oregistry["sim_motor"]
