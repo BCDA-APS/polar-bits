@@ -60,6 +60,7 @@ class StatusTab(BaseTab):
         self._fields = {}
         self._re_state = None
         self._kernel_state = None
+        self._kernel_cwd = None
         self._settings = QSettings(SETTINGS_ORG, SETTINGS_APP)
 
         layout = QVBoxLayout(self)
@@ -171,9 +172,36 @@ class StatusTab(BaseTab):
         return box
 
     def _default_path(self):
-        """Where to log when nothing has been chosen yet."""
-        base = Path(self.session_cwd) if self.session_cwd else Path.cwd()
-        return base / DEFAULT_LOG_NAME
+        """Where to log when nothing has been chosen yet.
+
+        The polled ``cwd`` -- what the Working directory field shows -- is
+        preferred over ``session_cwd``, which is only a snapshot taken when the
+        window was built.  ``experiment_setup()`` chdirs the kernel into the
+        experiment folder, so the snapshot goes stale as soon as it runs and
+        would put the log next to the source checkout instead of the data.
+        """
+        base = self._kernel_cwd or self.session_cwd
+        return (Path(base) if base else Path.cwd()) / DEFAULT_LOG_NAME
+
+    def _follow_cwd(self, cwd):
+        """Move the default log file with the kernel's working directory.
+
+        Only an untouched default follows.  A path the user typed or browsed
+        to, one remembered from a previous session, and the file of a log that
+        is already running are all left where they are -- the point is to
+        default sensibly, not to move the log out from under anyone.
+        """
+        if cwd == self._kernel_cwd:
+            return
+        stale = str(self._default_path())
+        self._kernel_cwd = cwd
+        fresh = str(self._default_path())
+        self._log_path_edit.setPlaceholderText(fresh)
+        transcript = self.transcript
+        if transcript is not None and transcript.active:
+            return
+        if self._log_path_edit.text().strip() in ("", stale):
+            self._log_path_edit.setText(fresh)
 
     def sync_transcript(self):
         """Show the state of the shared transcript.
@@ -305,6 +333,7 @@ class StatusTab(BaseTab):
             self._set("spec_file", values["spec_file"])
         if "cwd" in values:
             self._set("cwd", values["cwd"])
+            self._follow_cwd(values["cwd"])
         # Absent whenever experiment_setup() has not been run yet.
         self._set("sample", values.get("sample"))
         self._set("exp_path", values.get("exp_path"))
