@@ -18,6 +18,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtCore import QTimer
 from qtpy.QtWidgets import QApplication
 from qtpy.QtWidgets import QComboBox
+from qtpy.QtWidgets import QDialog
 from qtpy.QtWidgets import QLabel
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
@@ -28,6 +29,7 @@ from qtpy.QtWidgets import QSpinBox
 from qtpy.QtWidgets import QSplitter
 from qtpy.QtWidgets import QTabWidget
 from qtpy.QtWidgets import QToolBar
+from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
 from ..mcp_server.bridge import ECHO_PREFIX as LLM_ECHO_PREFIX
@@ -38,9 +40,11 @@ from .kernel import StatusPoller
 from .tabs.agent import AgentTab
 from .tabs.detectors import DetectorsTab
 from .tabs.devices import DevicesTab
+from .tabs.flyscanplot import FlyscanPlotTab
 from .tabs.hkl import HklTab
 from .tabs.macro import MacroTab
 from .tabs.scan import ScanTab
+from .tabs.scanhistory import ScanHistoryTab
 from .tabs.scanplot import ScanPlotTab
 from .tabs.status import DEFAULT_LOG_NAME
 from .tabs.status import LOG_ENABLED_KEY
@@ -57,9 +61,11 @@ TABS = [
     ScanTab,
     MacroTab,
     ScanPlotTab,
+    ScanHistoryTab,
     HklTab,
     DetectorsTab,
     DevicesTab,
+    FlyscanPlotTab,
 ]
 
 #: Console font size limits, in points.
@@ -99,6 +105,37 @@ _STATE_TEXT = {
 }
 
 
+class _DetachedTab(QDialog):
+    """A tab pulled out of the tab bar, living in its own window.
+
+    A ``QDialog`` parented to the main window rather than a bare window, so it
+    stays associated with the session it belongs to and is destroyed with it --
+    quitting cannot leave a stray plot behind.  ``Qt.Window`` is what gives it
+    a real title bar and a taskbar entry despite the parent.
+    """
+
+    def __init__(self, holder, title, parent, on_close):
+        """Wrap *holder* in a window, calling *on_close* when it is closed."""
+        super().__init__(parent)
+        self.setWindowTitle(title)
+        self.setWindowFlags(Qt.Window)
+        self._on_close = on_close
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(holder)
+        # removeTab() hides the page on its way out, and an explicitly hidden
+        # child stays hidden when its new parent is shown -- without this the
+        # window comes up empty.
+        holder.show()
+        self.resize(900, 600)
+
+    def closeEvent(self, event):  # noqa: N802 - Qt naming
+        """Hand the tab back to the tab bar."""
+        self._on_close()
+        super().closeEvent(event)
+
+
 class MainWindow(QMainWindow):
     """Bluesky session window: parameter tabs above, IPython console below."""
 
@@ -118,6 +155,12 @@ class MainWindow(QMainWindow):
         # Set by _build_tabs() if the Agent tab is in TABS; the restart path
         # has to be able to disarm it whether or not it is.
         self._agent_tab = None
+        # Detached tabs, keyed by the BaseTab: its window, the widget actually
+        # taken out of the tab bar (the scroll-area holder, when there is one)
+        # and the position to put it back in.
+        self._detached = {}
+        self._holders = {}
+        self._closing = False
         self.console = self._build_console(manager, client)
         self.tabs, self._tab_widgets = self._build_tabs()
 
@@ -233,6 +276,11 @@ class MainWindow(QMainWindow):
         # The toolbar button runs its own confirmation dialog.
         console.confirm_restart = False
         console.clear_on_kernel_restart = True
+        # No signature popup on "(": it appears over the line being typed,
+        # which is exactly where the operator is looking while writing a move.
+        # Tab completion and ``?`` still work, so the help is a keystroke away
+        # when it is actually wanted.
+        console.enable_calltips = False
 
         # Apply the background before the window is shown, so a dark console
         # never flashes white on startup.
@@ -262,11 +310,58 @@ class MainWindow(QMainWindow):
                 holder.setFrameShape(QScrollArea.NoFrame)
                 tabs.addTab(holder, tab.title)
             else:
+                holder = tab
                 tabs.addTab(tab, tab.title)
+            self._holders[holder] = tab
+            if tab.detachable:
+                tabs.setTabToolTip(
+                    tabs.count() - 1,
+                    "Double-click to open in a separate window.",
+                )
             widgets.append(tab)
+        tabs.tabBarDoubleClicked.connect(self._detach_tab)
         # Let the splitter shrink the whole stack; each page scrolls instead.
         tabs.setMinimumHeight(120)
         return tabs, widgets
+
+    def _detach_tab(self, index):
+        """Move a detachable tab into its own window, on double-click.
+
+        The tab keeps receiving documents and poll results while it is out --
+        ``_tab_widgets`` is what the broadcasts iterate, and that does not
+        change with the widget's parent, which is the whole point of being able
+        to watch a plot while working in another tab.
+        """
+        if index < 0:
+            return
+        holder = self.tabs.widget(index)
+        tab = self._holders.get(holder)
+        if tab is None or not tab.detachable or tab in self._detached:
+            return
+        self.tabs.removeTab(index)
+        window = _DetachedTab(
+            holder,
+            f"{tab.title} — {self.windowTitle()}",
+            self,
+            lambda tab=tab: self._reattach_tab(tab),
+        )
+        self._detached[tab] = (window, holder, index)
+        window.show()
+
+    def _reattach_tab(self, tab):
+        """Put a detached tab back where it came from."""
+        entry = self._detached.pop(tab, None)
+        if entry is None or self._closing:
+            return
+        _window, holder, index = entry
+        # Out of the dialog's layout first, or insertTab inherits its parent.
+        holder.setParent(None)
+        index = min(index, self.tabs.count())
+        self.tabs.insertTab(index, holder, tab.title)
+        self.tabs.setTabToolTip(
+            index, "Double-click to open in a separate window."
+        )
+        self.tabs.setCurrentIndex(index)
 
     def _build_toolbar(self):
         toolbar = QToolBar("Session")
@@ -437,6 +532,9 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):  # noqa: N802 - Qt naming
         """Stop polling and shut the kernel down so none is left orphaned."""
+        # Detached windows are children, so Qt closes them with this one; the
+        # flag stops their closeEvent trying to dock back into a dying window.
+        self._closing = True
         self.poller.stop()
         self.transcript.stop()
         self.docstream.stop()
