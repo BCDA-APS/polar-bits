@@ -25,6 +25,7 @@ from qtpy.QtWidgets import QHBoxLayout
 from qtpy.QtWidgets import QLabel
 from qtpy.QtWidgets import QPushButton
 from qtpy.QtWidgets import QRadioButton
+from qtpy.QtWidgets import QScrollArea
 from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
@@ -38,6 +39,18 @@ logger = logging.getLogger(__name__)
 
 CURRENT = "current"
 CALCULATED = "calculated"
+
+#: Floor for the 3D view, in pixels.  Deliberately small: whatever this widget
+#: demands is a position the splitter divider cannot be dragged past, and a
+#: user narrowing the 3D view to give the controls the window should not be
+#: stopped part-way.  Not zero -- VTK wants some surface to render onto.
+MIN_VIEW_SIZE = (40, 40)
+
+#: Floor for the controls' scroller.  They scroll sideways below this.
+MIN_CONTROLS_WIDTH = 60
+
+#: Slack around the controls so the scroller does not clip them vertically.
+CONTROLS_PADDING = 4
 
 #: Model joint -> device axis, e.g. ``{"nu": "gamma"}``.
 MODEL_TO_DEVICE = dict(config.MODEL_AXIS_MAP)
@@ -78,14 +91,48 @@ class Diffract3DPanel(QWidget):
         self._model.build(self._plotter)
         self._plotter.set_background("#1a1a22", top="#2c2c3a")
         self._plotter.camera_position = list(DEFAULT_CAMERA)
-        # Keep the view usable when the tab only has half the window; the
-        # splitter still lets it be dragged larger.
-        self._plotter.interactor.setMinimumSize(260, 240)
+        # Small, not comfortable: this is a floor the splitter cannot be
+        # dragged past, and a user narrowing the 3D view to give the controls
+        # the window should not be stopped part-way.  240 px here used to be
+        # part of why the divider jammed.
+        self._plotter.interactor.setMinimumSize(*MIN_VIEW_SIZE)
         layout.addWidget(self._plotter.interactor, 1)
-        layout.addWidget(self._build_controls())
+        layout.addWidget(self._controls_area())
 
         self._status = QLabel("Showing current position.")
+        # A plain QLabel reports its whole text as its minimum width, which
+        # would floor the panel just as the controls did.
+        self._status.setWordWrap(True)
         layout.addWidget(self._status)
+
+    def _controls_area(self):
+        """The controls, in a scroller so they cannot floor the panel.
+
+        The group box wants 427 px -- two rows of radios, a button and three
+        check boxes -- and a widget's minimum width is the floor of everything
+        above it in the layout.  That, not the 3D view, was what stopped the
+        splitter: the panel could not be dragged narrower than its widest row.
+        Inside a scroll area the controls keep their size and the panel stops
+        demanding it, so the divider moves freely and the controls scroll
+        sideways when there is no room for them.
+        """
+        controls = self._build_controls()
+        area = QScrollArea()
+        area.setWidget(controls)
+        area.setWidgetResizable(True)
+        area.setFrameShape(QScrollArea.NoFrame)
+        area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        area.setMinimumWidth(MIN_CONTROLS_WIDTH)
+        # Only as tall as the controls need, so the 3D view keeps the rest --
+        # plus room for the horizontal scrollbar, which appears as soon as the
+        # panel is narrower than the controls.  Without that allowance the
+        # bar would eat into the controls instead of sitting under them.
+        area.setFixedHeight(
+            controls.sizeHint().height()
+            + area.horizontalScrollBar().sizeHint().height()
+            + CONTROLS_PADDING
+        )
+        return area
 
     def _build_controls(self):
         box = QGroupBox("3D view")
