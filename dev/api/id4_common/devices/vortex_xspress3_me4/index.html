@@ -1136,20 +1136,24 @@ upcoming scan.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.vortex_xspress3_me4.VortexXspress34.setup_flyscan_mode">
 <span class="sig-name descname"><span class="pre">setup_flyscan_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acq_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf_images</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.vortex_xspress3_me4.VortexXspress34.setup_flyscan_mode" title="Link to this definition">#</a></dt>
-<dd><p>Configure stage_sigs for an external-gate fly-scan.</p>
-<p>Wraps <code class="xref py py-meth docutils literal notranslate"><span class="pre">setup_external_trigger()</span></code> (<code class="docutils literal notranslate"><span class="pre">trigger_type=&quot;gate&quot;</span></code>) to
-get the default External Gate stage signals, then overrides the
-scan-specific image count, per-image acquire time, and HDF5
-capture chunk size. Call this <em>before</em> <code class="docutils literal notranslate"><span class="pre">stage()</span></code> so the new
-<code class="docutils literal notranslate"><span class="pre">stage_sigs</span></code> are applied when the RunEngine stages the
+<dd><p>Configure stage_sigs for a TTL-veto gated fly-scan.</p>
+<p>Wraps <code class="xref py py-meth docutils literal notranslate"><span class="pre">setup_external_trigger()</span></code> to get the default TTL Veto
+Only stage signals, then overrides the scan-specific image count
+and per-image acquire time. Call this <em>before</em> <code class="docutils literal notranslate"><span class="pre">stage()</span></code> so the
+new <code class="docutils literal notranslate"><span class="pre">stage_sigs</span></code> are applied when the RunEngine stages the
 detector.</p>
+<p>Unlike the Eiger’s equivalent, this leaves <code class="docutils literal notranslate"><span class="pre">_flysetup</span></code> True
+(<code class="xref py py-meth docutils literal notranslate"><span class="pre">setup_external_trigger()</span></code> sets it): <a class="reference internal" href="#id4_common.devices.vortex_xspress3_me4.Trigger.stage" title="id4_common.devices.vortex_xspress3_me4.Trigger.stage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Trigger.stage()</span></code></a>
+keys the <code class="docutils literal notranslate"><span class="pre">Acquire</span></code> put off that flag, so clearing it here would
+stage the detector without ever arming it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>num_images</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Total number of frames the scan will collect.</p></li>
 <li><p><strong>acq_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Per-frame acquire time in seconds.</p></li>
-<li><p><strong>hdf_images</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Frames per HDF5 capture chunk (sets
-<code class="docutils literal notranslate"><span class="pre">hdf1.stage_sigs[&quot;num_capture&quot;]</span></code>).</p></li>
+<li><p><strong>hdf_images</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Accepted for signature compatibility with the other flyscan
+detectors, but unused – the Xspress3 writes one HDF5 per
+scan (<code class="docutils literal notranslate"><span class="pre">num_capture</span> <span class="pre">=</span> <span class="pre">0</span></code>) rather than one file per line.</p></li>
 </ul>
 </dd>
 </dl>

@@ -150,3 +150,66 @@ Module Contents
    Alias of :func:`mini` (PR #54 name).
 
 
+.. py:function:: abs_pos(scan_id=-1, x=None, y=None, monitor=None)
+
+   Centre of an absorption scan (a transmission dip). No motion.
+
+   The counterpart of :func:`peak_pos` for scans where the sample *blocks*
+   the beam. Use this rather than :func:`cen` or :func:`com` on such scans:
+   ``cen`` chases open-beam ripples, and ``com`` shifts with how much open
+   beam sits on each side of the sample.
+
+   :param scan_id: Catalog index. Default ``-1`` (last scan).
+   :type scan_id: int, optional
+   :param x: Motor field name. None → the scan's single motor, or the widest-moving
+             one for multi-motor scans.
+   :type x: str, optional
+   :param y: Detector field name. None → the first entry of the scan's hints.
+   :type y: str, optional
+   :param monitor: Monitor field to normalise by. None → the scan's ``hints["monitor"]``
+                   if it is present in the stream. ``False`` → use the raw detector.
+   :type monitor: str or False, optional
+
+   :returns: ``center``, ``width``, ``edges`` (low, high), ``com``, ``contrast``,
+             ``bracketed``, ``open_sides``, plus the ``scan``, ``motor``,
+             ``detector`` and ``monitor`` names used. Positions are in the motor's
+             own units.
+   :rtype: dict
+
+   :raises NotImplementedError: For 2-D grid scans.
+   :raises ValueError: If the transmission contrast is below :data:`MIN_ABS_CONTRAST`, i.e.
+       there is no dip to centre on.
+
+   .. seealso::
+
+      :func:`abs_cen`
+          move the motor to this centre.
+
+      :func:`peak_pos`
+          the same idea for peaks rather than dips.
+
+
+.. py:function:: abs_cen(scan_id=-1, positioner=None, detector=None, confirm=True)
+
+   Move to the centre of an absorption scan (a transmission dip).
+
+   The dip counterpart of :func:`cen`. Refuses to move when an edge of the
+   sample fell outside the scanned range, since the centre is not determined
+   in that case.
+
+   :param scan_id: Catalog index of the scan. Default ``-1`` (last scan).
+   :type scan_id: int, optional
+   :param positioner: Device to move. None → the scan's motor, via ``oregistry``.
+   :type positioner: ophyd object, optional
+   :param detector: Detector field name. None → the first hint from the scan.
+   :type detector: str, optional
+   :param confirm: If True (default), prompts before moving for scans older than
+                   5 minutes. False skips the prompt.
+   :type confirm: bool, optional
+
+   .. seealso::
+
+      :func:`abs_pos`
+          the same numbers without moving anything.
+
+

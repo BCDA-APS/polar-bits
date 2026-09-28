@@ -511,16 +511,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../counters_class/index.html">id4_common.utils.counters_class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.utils.dm_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../eiger_setup/index.html">id4_common.utils.eiger_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_utils/index.html">id4_common.utils.hkl_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hkl_utils_bkp/index.html">id4_common.utils.hkl_utils_bkp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging_helper/index.html">id4_common.utils.logging_helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../peak_statistics/index.html">id4_common.utils.peak_statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
@@ -694,6 +697,24 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.dm_utils.dm_ds_reachable">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.dm_utils.</span></span><span class="sig-name descname"><span class="pre">dm_ds_reachable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.dm_utils.dm_ds_reachable" title="Link to this definition">#</a></dt>
+<dd><p>Cheap, read-only probe of the DM Data Storage (experiment) service.</p>
+<p>Raises on failure (same contract as <code class="docutils literal notranslate"><span class="pre">get_current_run()</span></code>) so callers
+can use their own try/except to decide DM is unreachable.</p>
+<p>This calls the same <code class="docutils literal notranslate"><span class="pre">getExperimentsByStation</span></code> endpoint that
+<code class="docutils literal notranslate"><span class="pre">get_experiment()</span></code>/<code class="docutils literal notranslate"><span class="pre">dm_experiment_setup()</span></code> use, so success here is a
+direct predictor of whether <code class="docutils literal notranslate"><span class="pre">experiment_setup(server=&quot;data</span>
+<span class="pre">management&quot;)</span></code> will be able to look up or create the DM experiment.</p>
+<p>Deliberately NOT <code class="docutils literal notranslate"><span class="pre">get_current_run()</span></code>: that hits a different backend
+(the APS DB/BSS service, not the DS/experiment service) and raises
+<code class="docutils literal notranslate"><span class="pre">ObjectNotFound</span></code> whenever <em>today</em> falls outside any scheduled run
+period (e.g. between runs) – a scheduling gap, not a DM outage. Using
+it as an availability gauge produces false negatives that have nothing
+to do with DM’s health.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.dm_utils.get_current_run_info">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.dm_utils.</span></span><span class="sig-name descname"><span class="pre">get_current_run_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.dm_utils.get_current_run_info" title="Link to this definition">#</a></dt>
 <dd><p>Like get_current_run(), but falls back to a synthetic run if DM is down.</p>
@@ -801,6 +822,7 @@ run 1: Jan 1 - Apr 20, run 2: Apr 21 - Aug 4, run 3: Aug 5 - Dec 31.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.dm_utils.get_esaf_info"><code class="docutils literal notranslate"><span class="pre">get_esaf_info()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.dm_utils.get_esaf_users_badge"><code class="docutils literal notranslate"><span class="pre">get_esaf_users_badge()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.dm_utils.get_current_run"><code class="docutils literal notranslate"><span class="pre">get_current_run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.dm_utils.dm_ds_reachable"><code class="docutils literal notranslate"><span class="pre">dm_ds_reachable()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.dm_utils.get_current_run_info"><code class="docutils literal notranslate"><span class="pre">get_current_run_info()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.dm_utils.get_current_run_name"><code class="docutils literal notranslate"><span class="pre">get_current_run_name()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.dm_utils.dm_experiment_setup"><code class="docutils literal notranslate"><span class="pre">dm_experiment_setup()</span></code></a></li>

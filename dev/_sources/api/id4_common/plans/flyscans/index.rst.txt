@@ -120,7 +120,13 @@ Module Contents
    Run a POLAR ISN 2D piezo fly-scan.
 
    :param detectors: Area detectors that expose ``setup_flyscan_mode``, ``stage``,
-                     ``unstage`` and an ``hdf1`` plugin.
+                     ``unstage`` and an ``hdf1`` plugin. Supported today: ``eiger``
+                     and ``vortex``, the four-element Xspress3 at ``S4QX4:`` (load it
+                     with ``load_vortex("xspress4")``). Both are gated by hard-wired
+                     SoftGlue FO outputs, so no trigger routing happens here. Keep
+                     the Xspress3's name as ``vortex`` -- the flyscan GUI's live
+                     viewer looks for its file under ``<experiment>/vortex/``.
+                     Defaults to ``[eiger]``.
    :type detectors: list
    :param x_min: **Fast axis** (X piezo) bounds in microns **relative to the
                  current** ``nanox`` position ``x0``. Scan physically covers
