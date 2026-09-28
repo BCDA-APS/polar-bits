@@ -511,6 +511,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../flyscans/index.html">id4_common.plans.flyscans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../grid_scans/index.html">id4_common.plans.grid_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_scans/index.html">id4_common.plans.hkl_scans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../list_scans/index.html">id4_common.plans.list_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_preprocessors/index.html">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_scans/index.html">id4_common.plans.local_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../move_plans/index.html">id4_common.plans.move_plans</a></li>
@@ -703,9 +704,24 @@ scans older than 5 minutes.  False skips every prompt.</p></li>
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.peak_position.</span></span><span class="sig-name descname"><span class="pre">peak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'centroid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positioner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.peak_position.peak" title="Link to this definition">#</a></dt>
 <dd><p>Backward-compat: dispatch by <code class="docutils literal notranslate"><span class="pre">feature</span></code> to <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a> / <a class="reference internal" href="#id4_common.plans.peak_position.com" title="id4_common.plans.peak_position.com"><code class="xref py py-func docutils literal notranslate"><span class="pre">com()</span></code></a> /
 <a class="reference internal" href="#id4_common.plans.peak_position.maxi" title="id4_common.plans.peak_position.maxi"><code class="xref py py-func docutils literal notranslate"><span class="pre">maxi()</span></code></a> / <a class="reference internal" href="#id4_common.plans.peak_position.mini" title="id4_common.plans.peak_position.mini"><code class="xref py py-func docutils literal notranslate"><span class="pre">mini()</span></code></a>.</p>
-<p>Accepts the PR-#54 feature names (<code class="docutils literal notranslate"><span class="pre">&quot;centroid&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;x_at_max_y&quot;</span></code> /
-<code class="docutils literal notranslate"><span class="pre">&quot;x_at_min_y&quot;</span></code>) and the new short names (<code class="docutils literal notranslate"><span class="pre">&quot;com&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;max&quot;</span></code> /
-<code class="docutils literal notranslate"><span class="pre">&quot;min&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;cen&quot;</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index of the scan. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
+<li><p><strong>feature</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Which peak feature to move to. Accepts the PR-#54 names
+(<code class="docutils literal notranslate"><span class="pre">&quot;centroid&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;x_at_max_y&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;x_at_min_y&quot;</span></code>) and the short
+names (<code class="docutils literal notranslate"><span class="pre">&quot;com&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;max&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;min&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;cen&quot;</span></code>). Anything else
+raises a ValueError. Default <code class="docutils literal notranslate"><span class="pre">&quot;centroid&quot;</span></code>.</p></li>
+<li><p><strong>positioner</strong> (<em>ophyd object</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Device(s) to move. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
+<li><p><strong>detector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
+<li><p><strong>confirm</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Prompt behavior. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>, <a class="reference internal" href="#id4_common.plans.peak_position.com" title="id4_common.plans.peak_position.com"><code class="xref py py-func docutils literal notranslate"><span class="pre">com()</span></code></a>, <a class="reference internal" href="#id4_common.plans.peak_position.maxi" title="id4_common.plans.peak_position.maxi"><code class="xref py py-func docutils literal notranslate"><span class="pre">maxi()</span></code></a>, <a class="reference internal" href="#id4_common.plans.peak_position.mini" title="id4_common.plans.peak_position.mini"><code class="xref py py-func docutils literal notranslate"><span class="pre">mini()</span></code></a></p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -718,80 +734,6 @@ scans older than 5 minutes.  False skips every prompt.</p></li>
 <dt class="sig sig-object py" id="id4_common.plans.peak_position.pmin">
 <span class="sig-prename descclassname"><span class="pre">id4_common.plans.peak_position.</span></span><span class="sig-name descname"><span class="pre">pmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positioner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.peak_position.pmin" title="Link to this definition">#</a></dt>
 <dd><p>Alias of <a class="reference internal" href="#id4_common.plans.peak_position.mini" title="id4_common.plans.peak_position.mini"><code class="xref py py-func docutils literal notranslate"><span class="pre">mini()</span></code></a> (PR #54 name).</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.plans.peak_position.abs_pos">
-<span class="sig-prename descclassname"><span class="pre">id4_common.plans.peak_position.</span></span><span class="sig-name descname"><span class="pre">abs_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.peak_position.abs_pos" title="Link to this definition">#</a></dt>
-<dd><p>Centre of an absorption scan (a transmission dip). No motion.</p>
-<p>The counterpart of <a class="reference internal" href="#id4_common.plans.peak_position.peak_pos" title="id4_common.plans.peak_position.peak_pos"><code class="xref py py-func docutils literal notranslate"><span class="pre">peak_pos()</span></code></a> for scans where the sample <em>blocks</em>
-the beam. Use this rather than <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a> or <a class="reference internal" href="#id4_common.plans.peak_position.com" title="id4_common.plans.peak_position.com"><code class="xref py py-func docutils literal notranslate"><span class="pre">com()</span></code></a> on such scans:
-<code class="docutils literal notranslate"><span class="pre">cen</span></code> chases open-beam ripples, and <code class="docutils literal notranslate"><span class="pre">com</span></code> shifts with how much open
-beam sits on each side of the sample.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
-<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Motor field name. None → the scan’s single motor, or the widest-moving
-one for multi-motor scans.</p></li>
-<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. None → the first entry of the scan’s hints.</p></li>
-<li><p><strong>monitor</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>False</em><em>, </em><em>optional</em>) – Monitor field to normalise by. None → the scan’s <code class="docutils literal notranslate"><span class="pre">hints[&quot;monitor&quot;]</span></code>
-if it is present in the stream. <code class="docutils literal notranslate"><span class="pre">False</span></code> → use the raw detector.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">center</span></code>, <code class="docutils literal notranslate"><span class="pre">width</span></code>, <code class="docutils literal notranslate"><span class="pre">edges</span></code> (low, high), <code class="docutils literal notranslate"><span class="pre">com</span></code>, <code class="docutils literal notranslate"><span class="pre">contrast</span></code>,
-<code class="docutils literal notranslate"><span class="pre">bracketed</span></code>, <code class="docutils literal notranslate"><span class="pre">open_sides</span></code>, plus the <code class="docutils literal notranslate"><span class="pre">scan</span></code>, <code class="docutils literal notranslate"><span class="pre">motor</span></code>,
-<code class="docutils literal notranslate"><span class="pre">detector</span></code> and <code class="docutils literal notranslate"><span class="pre">monitor</span></code> names used. Positions are in the motor’s
-own units.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – For 2-D grid scans.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the transmission contrast is below <code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_ABS_CONTRAST</span></code>, i.e.
-there is no dip to centre on.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#id4_common.plans.peak_position.abs_cen" title="id4_common.plans.peak_position.abs_cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">abs_cen()</span></code></a></dt><dd><p>move the motor to this centre.</p>
-</dd>
-<dt><a class="reference internal" href="#id4_common.plans.peak_position.peak_pos" title="id4_common.plans.peak_position.peak_pos"><code class="xref py py-func docutils literal notranslate"><span class="pre">peak_pos()</span></code></a></dt><dd><p>the same idea for peaks rather than dips.</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.plans.peak_position.abs_cen">
-<span class="sig-prename descclassname"><span class="pre">id4_common.plans.peak_position.</span></span><span class="sig-name descname"><span class="pre">abs_cen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positioner</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.plans.peak_position.abs_cen" title="Link to this definition">#</a></dt>
-<dd><p>Move to the centre of an absorption scan (a transmission dip).</p>
-<p>The dip counterpart of <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>. Refuses to move when an edge of the
-sample fell outside the scanned range, since the centre is not determined
-in that case.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index of the scan. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
-<li><p><strong>positioner</strong> (<em>ophyd object</em><em>, </em><em>optional</em>) – Device to move. None → the scan’s motor, via <code class="docutils literal notranslate"><span class="pre">oregistry</span></code>.</p></li>
-<li><p><strong>detector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. None → the first hint from the scan.</p></li>
-<li><p><strong>confirm</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True (default), prompts before moving for scans older than
-5 minutes. False skips the prompt.</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#id4_common.plans.peak_position.abs_pos" title="id4_common.plans.peak_position.abs_pos"><code class="xref py py-func docutils literal notranslate"><span class="pre">abs_pos()</span></code></a></dt><dd><p>the same numbers without moving anything.</p>
-</dd>
-</dl>
-</div>
 </dd></dl>
 
 </section>
@@ -835,8 +777,6 @@ in that case.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.peak_position.peak"><code class="docutils literal notranslate"><span class="pre">peak()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.peak_position.pmax"><code class="docutils literal notranslate"><span class="pre">pmax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.peak_position.pmin"><code class="docutils literal notranslate"><span class="pre">pmin()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.peak_position.abs_pos"><code class="docutils literal notranslate"><span class="pre">abs_pos()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.plans.peak_position.abs_cen"><code class="docutils literal notranslate"><span class="pre">abs_cen()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -940,11 +940,6 @@ do <em>not</em> reflect the physical axis.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac2_val">
-<span class="sig-name descname"><span class="pre">dac2_val</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac2_val" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g_new.SoftGlueZynq.threshold_pos">
 <span class="sig-name descname"><span class="pre">threshold_pos</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.threshold_pos" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1022,7 +1017,7 @@ complete indicator wired to <code class="docutils literal notranslate"><span cla
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g_new.SoftGlueZynq.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.reset" title="Link to this definition">#</a></dt>
-<dd><p>Pulse buffer-1 once to clear the ScalToStream-1 FIFO.</p>
+<dd><p>Pulse buffer-1 twice to clear the ScalToStream-1 FIFO.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1120,16 +1115,6 @@ Matches <code class="docutils literal notranslate"><span class="pre">snakeX</spa
 writes the bit value, and pulses the DAC write strobe. Microns
 are converted via <a class="reference internal" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.um_to_bits" title="id4_common.devices.softgluezynq_g_new.SoftGlueZynq.um_to_bits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">um_to_bits()</span></code></a> (19-ID 0-90 um piezo
 calibration).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g_new.SoftGlueZynq.move_y_analog">
-<span class="sig-name descname"><span class="pre">move_y_analog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.move_y_analog" title="Link to this definition">#</a></dt>
-<dd><p>Set the slow-axis (Y piezo) manual DAC2 output to <code class="docutils literal notranslate"><span class="pre">position</span></code> um.</p>
-<p>DAC2 has no mux/init signal of its own – writes <code class="docutils literal notranslate"><span class="pre">dac2_val</span></code>
-and pulses the shared <code class="docutils literal notranslate"><span class="pre">dac1_write</span></code> strobe (PV
-<code class="docutils literal notranslate"><span class="pre">DAC_WRITE_Signal</span></code>) to commit it. Microns are converted via
-<a class="reference internal" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.um_to_bits" title="id4_common.devices.softgluezynq_g_new.SoftGlueZynq.um_to_bits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">um_to_bits()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1240,7 +1225,6 @@ and pulses the shared <code class="docutils literal notranslate"><span class="pr
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac1_val"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac1_val</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac1_write"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac1_write</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac1_init"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac1_init</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.dac2_val"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac2_val</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.threshold_pos"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.threshold_pos</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.threshold_neg"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.threshold_neg</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.if_tracker_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.if_tracker_1</span></code></a></li>
@@ -1266,7 +1250,6 @@ and pulses the shared <code class="docutils literal notranslate"><span class="pr
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.snake_x"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.snake_x()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.snake_y"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.snake_y()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.move_x_analog"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.move_x_analog()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.move_y_analog"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.move_y_analog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.enable_detector_trigger"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.enable_detector_trigger()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g_new.SoftGlueZynq.clear_output_fields"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.clear_output_fields()</span></code></a></li>
 </ul>

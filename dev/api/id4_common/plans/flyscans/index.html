@@ -511,6 +511,7 @@
 <li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.plans.flyscans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../grid_scans/index.html">id4_common.plans.grid_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_scans/index.html">id4_common.plans.hkl_scans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../list_scans/index.html">id4_common.plans.list_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_preprocessors/index.html">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_scans/index.html">id4_common.plans.local_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../move_plans/index.html">id4_common.plans.move_plans</a></li>
@@ -699,13 +700,7 @@ reports in mm.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Area detectors that expose <code class="docutils literal notranslate"><span class="pre">setup_flyscan_mode</span></code>, <code class="docutils literal notranslate"><span class="pre">stage</span></code>,
-<code class="docutils literal notranslate"><span class="pre">unstage</span></code> and an <code class="docutils literal notranslate"><span class="pre">hdf1</span></code> plugin. Supported today: <code class="docutils literal notranslate"><span class="pre">eiger</span></code>
-and <code class="docutils literal notranslate"><span class="pre">vortex</span></code>, the four-element Xspress3 at <code class="docutils literal notranslate"><span class="pre">S4QX4:</span></code> (load it
-with <code class="docutils literal notranslate"><span class="pre">load_vortex(&quot;xspress4&quot;)</span></code>). Both are gated by hard-wired
-SoftGlue FO outputs, so no trigger routing happens here. Keep
-the Xspress3’s name as <code class="docutils literal notranslate"><span class="pre">vortex</span></code> – the flyscan GUI’s live
-viewer looks for its file under <code class="docutils literal notranslate"><span class="pre">&lt;experiment&gt;/vortex/</span></code>.
-Defaults to <code class="docutils literal notranslate"><span class="pre">[eiger]</span></code>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">unstage</span></code> and an <code class="docutils literal notranslate"><span class="pre">hdf1</span></code> plugin.</p></li>
 <li><p><strong>x_min</strong> (<em>float / int</em><em>, </em><em>optional</em>) – <strong>Fast axis</strong> (X piezo) bounds in microns <strong>relative to the
 current</strong> <code class="docutils literal notranslate"><span class="pre">nanox</span></code> position <code class="docutils literal notranslate"><span class="pre">x0</span></code>. Scan physically covers
 <code class="docutils literal notranslate"><span class="pre">[x0</span> <span class="pre">+</span> <span class="pre">x_min,</span> <span class="pre">x0</span> <span class="pre">+</span> <span class="pre">x_max]</span></code>. Each side is capped at +/- 20

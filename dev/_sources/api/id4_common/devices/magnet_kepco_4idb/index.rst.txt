@@ -49,16 +49,7 @@ Module Contents
    .. py:attribute:: remote
 
 
-   .. py:attribute:: enable_setpoint
-
-
-   .. py:attribute:: enable_readback
-
-
-   .. py:attribute:: external_mode_setpoint
-
-
-   .. py:attribute:: external_mode_readback
+   .. py:attribute:: enable
 
 
    .. py:attribute:: id

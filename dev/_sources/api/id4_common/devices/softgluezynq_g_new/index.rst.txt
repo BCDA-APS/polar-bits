@@ -220,9 +220,6 @@ Module Contents
    .. py:attribute:: dac1_init
 
 
-   .. py:attribute:: dac2_val
-
-
    .. py:attribute:: threshold_pos
 
 
@@ -291,7 +288,7 @@ Module Contents
 
    .. py:method:: reset()
 
-      Pulse buffer-1 once to clear the ScalToStream-1 FIFO.
+      Pulse buffer-1 twice to clear the ScalToStream-1 FIFO.
 
 
 
@@ -395,17 +392,6 @@ Module Contents
       writes the bit value, and pulses the DAC write strobe. Microns
       are converted via :meth:`um_to_bits` (19-ID 0-90 um piezo
       calibration).
-
-
-
-   .. py:method:: move_y_analog(position)
-
-      Set the slow-axis (Y piezo) manual DAC2 output to ``position`` um.
-
-      DAC2 has no mux/init signal of its own -- writes ``dac2_val``
-      and pulses the shared ``dac1_write`` strobe (PV
-      ``DAC_WRITE_Signal``) to commit it. Microns are converted via
-      :meth:`um_to_bits`.
 
 
 

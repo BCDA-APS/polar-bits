@@ -511,19 +511,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../counters_class/index.html">id4_common.utils.counters_class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device_loader/index.html">id4_common.utils.device_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dm_utils/index.html">id4_common.utils.dm_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../eiger_setup/index.html">id4_common.utils.eiger_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_utils/index.html">id4_common.utils.hkl_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hkl_utils_bkp/index.html">id4_common.utils.hkl_utils_bkp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging_helper/index.html">id4_common.utils.logging_helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../make_devices/index.html">id4_common.utils.make_devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../oregistry_auxiliar/index.html">id4_common.utils.oregistry_auxiliar</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../peak_statistics/index.html">id4_common.utils.peak_statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pr_setup/index.html">id4_common.utils.pr_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
@@ -641,19 +638,6 @@ auto-save hooks).</p>
 Never raises.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="id4_common.utils.session_state.restore_counters_selection">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.session_state.</span></span><span class="sig-name descname"><span class="pre">restore_counters_selection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#id4_common.utils.session_state.restore_counters_selection" title="Link to this definition">#</a></dt>
-<dd><p>Re-apply only the saved <code class="docutils literal notranslate"><span class="pre">counters</span></code> selection.</p>
-<p>Same contract as <a class="reference internal" href="#id4_common.utils.session_state.restore_session_state" title="id4_common.utils.session_state.restore_session_state"><code class="xref py py-func docutils literal notranslate"><span class="pre">restore_session_state()</span></code></a> — <code class="docutils literal notranslate"><span class="pre">&quot;applied&quot;</span></code> /
-<code class="docutils literal notranslate"><span class="pre">&quot;skipped:</span> <span class="pre">&lt;reason&gt;&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;failed:</span> <span class="pre">&lt;Exception&gt;&quot;</span></code>, and it never
-raises.</p>
-<p>Split out for the GUI bootstrap, which wants this one knob: the others
-belong to whatever ran at startup, and re-applying them from the GUI
-would be a second opinion on state the session may have changed on
-purpose.</p>
-</dd></dl>
-
 </section>
 </section>
 
@@ -689,7 +673,6 @@ purpose.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.session_state.save_session_state"><code class="docutils literal notranslate"><span class="pre">save_session_state()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.session_state.restore_session_state"><code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.session_state.restore_counters_selection"><code class="docutils literal notranslate"><span class="pre">restore_counters_selection()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -57,17 +57,3 @@ Module Contents
    Never raises.
 
 
-.. py:function:: restore_counters_selection() -> str
-
-   Re-apply only the saved ``counters`` selection.
-
-   Same contract as :func:`restore_session_state` — ``"applied"`` /
-   ``"skipped: <reason>"`` / ``"failed: <Exception>"``, and it never
-   raises.
-
-   Split out for the GUI bootstrap, which wants this one knob: the others
-   belong to whatever ran at startup, and re-applying them from the GUI
-   would be a second opinion on state the session may have changed on
-   purpose.
-
-

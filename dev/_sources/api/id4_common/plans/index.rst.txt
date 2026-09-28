@@ -22,6 +22,7 @@ Submodules
    /api/id4_common/plans/flyscans/index
    /api/id4_common/plans/grid_scans/index
    /api/id4_common/plans/hkl_scans/index
+   /api/id4_common/plans/list_scans/index
    /api/id4_common/plans/local_preprocessors/index
    /api/id4_common/plans/local_scans/index
    /api/id4_common/plans/move_plans/index

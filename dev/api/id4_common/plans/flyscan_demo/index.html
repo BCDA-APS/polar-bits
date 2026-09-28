@@ -511,6 +511,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../flyscans/index.html">id4_common.plans.flyscans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../grid_scans/index.html">id4_common.plans.grid_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_scans/index.html">id4_common.plans.hkl_scans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../list_scans/index.html">id4_common.plans.list_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_preprocessors/index.html">id4_common.plans.local_preprocessors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_scans/index.html">id4_common.plans.local_scans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../move_plans/index.html">id4_common.plans.move_plans</a></li>
@@ -614,22 +615,43 @@ two point step).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>eiger</strong> (<em>Eiger detector instance</em>) – Currently sort of hardwired for the Eiger, but this will be removed in
-the future to match with the POLAR standard of defaulting to our
-<cite>counters</cite> class.</p></li>
-<li><p><strong>*args</strong> – <p>The first motor is the outer loop that will step, with the second motor
-flying between the ends. Thus the first motor needs a number of steps.
-.. code-block:: python</p>
-<blockquote>
-<div><p>motor1, start1, stop1, number of point, motor2, start2, stop</p>
-</div></blockquote>
-</p></li>
-<li><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default to 10</em>) – Velocity of the flying motor. This will be passed to <cite>motor2.velocity</cite>
-through staging.</p></li>
-<li><p><strong>trigger_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default to 0.02 seconds</em>) – Time between detector triggers.</p></li>
-<li><p><strong>collection_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default to 0.01 seconds</em>) – Time that detector spend collecting the image. It must be smaller or
-equal to the trigger_time otherwise a ValueError is raised.</p></li>
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><em>ophyd detectors</em>) – Detectors to trigger during the scan. A single detector is accepted
+and wrapped in a list; a string raises a TypeError.</p></li>
+<li><p><strong>stepping_motor</strong> (<em>ophyd motor object</em>) – Outer-loop motor. It steps through its range while <cite>flying_motor</cite>
+flies across each row.</p></li>
+<li><p><strong>stepping_motor_start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial position of the stepping motor.</p></li>
+<li><p><strong>stepping_motor_end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Final position of the stepping motor.</p></li>
+<li><p><strong>stepping_motor_number_of_points</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points measured along the stepping motor.</p></li>
+<li><p><strong>flying_motor</strong> (<em>ophyd motor object</em>) – Inner-loop motor. It flies between its two ends as a two-point step.
+Ideally a motor with a custom unstaging that removes “velocity” from
+the stage_sigs, see ../devices/nanopositioners.py</p></li>
+<li><p><strong>flying_motor_start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial position of the flying motor.</p></li>
+<li><p><strong>flying_motor_end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Final position of the flying motor.</p></li>
+<li><p><strong>flying_motor_speed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Velocity of the flying motor. This will be passed to
+<cite>flying_motor.velocity</cite> through staging.</p></li>
+<li><p><strong>detector_trigger_period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Time between detector triggers, in seconds. Defaults to 0.02.</p></li>
+<li><p><strong>detector_collection_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Time the detector spends collecting each image, in seconds. It must
+be smaller than or equal to <cite>detector_trigger_period</cite>, otherwise a
+ValueError is raised. Defaults to 0.01.</p></li>
+<li><p><strong>file_name_base</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Base name used for the detector and master file names. Defaults to
+“scan”.</p></li>
+<li><p><strong>master_file_templates</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Extra NeXus template entries handed to the master file writer. If
+None, an empty list is used.</p></li>
 <li><p><strong>md</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – Metadata to be added to the run start.</p></li>
+<li><p><strong>dm_concise</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Use concise reporting in the APS Data Management workflow. Only has
+an effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>dm_wait</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Accepted for API compatibility, but currently unused.</p></li>
+<li><p><strong>dm_reporting_period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – How often the DM workflow reports progress, in seconds. Only has an
+effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>dm_reporting_time_limit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – How long bluesky keeps reporting on the DM workflow, in seconds. Only
+has an effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>nxwriter_warn_missing</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the NeXus writer warns about missing content. Defaults to
+False.</p></li>
+<li><p><strong>wf_run</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, an APS Data Management workflow is started once the scan
+files have been uploaded. Defaults to False.</p></li>
+<li><p><strong>wf_settings_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Path to a YAML file holding the DM workflow kwargs. See
+<a class="reference internal" href="../workflow_plan/index.html#id4_common.plans.workflow_plan.run_workflow" title="id4_common.plans.workflow_plan.run_workflow"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.plans.workflow_plan.run_workflow()</span></code></a>.</p></li>
+<li><p><strong>**wf_kwargs</strong> – Any remaining keyword arguments are passed to the DM workflow.</p></li>
 </ul>
 </dd>
 </dl>
@@ -646,19 +668,38 @@ equal to the trigger_time otherwise a ValueError is raised.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>eiger</strong> (<em>Eiger detector instance</em>) – Currently sort of hardwired for the Eiger, but this will be removed in
-the future to match with the POLAR standard of defaulting to our
-<cite>counters</cite> class.</p></li>
-<li><p><strong>motor</strong> (<em>ophyd motor object</em>) – Ideally it is a motor with a custom unstaging that removes “velocity”
-from the stage_sigs, see ../devices/nanopositioners.py</p></li>
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><em>ophyd detectors</em>) – Detectors to trigger during the scan. A single detector is accepted
+and wrapped in a list; a string raises a TypeError.</p></li>
+<li><p><strong>motor</strong> (<em>ophyd motor object</em>) – The flying motor. Ideally it is a motor with a custom unstaging that
+removes “velocity” from the stage_sigs, see
+../devices/nanopositioners.py</p></li>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Initial motor position</p></li>
 <li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Final motor position</p></li>
-<li><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default to 10</em>) – Velocity of the flying motor. This will be passed to <cite>motor.velocity</cite>
+<li><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Velocity of the flying motor. This will be passed to <cite>motor.velocity</cite>
 through staging.</p></li>
-<li><p><strong>trigger_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default to 0.02 seconds</em>) – Time between detector triggers.</p></li>
-<li><p><strong>collection_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default to 0.01 seconds</em>) – Time that detector spend collecting the image. It must be smaller or
-equal to the trigger_time otherwise a ValueError is raised.</p></li>
+<li><p><strong>detector_trigger_period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Time between detector triggers, in seconds. Defaults to 0.02.</p></li>
+<li><p><strong>detector_collection_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Time the detector spends collecting each image, in seconds. It must
+be smaller than or equal to <cite>detector_trigger_period</cite>, otherwise a
+ValueError is raised. Defaults to 0.01.</p></li>
+<li><p><strong>file_name_base</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Base name used for the detector and master file names. Defaults to
+“scan”.</p></li>
+<li><p><strong>master_file_templates</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Extra NeXus template entries handed to the master file writer. If
+None, an empty list is used.</p></li>
 <li><p><strong>md</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – Metadata to be added to the run start.</p></li>
+<li><p><strong>dm_concise</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Use concise reporting in the APS Data Management workflow. Only has
+an effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>dm_wait</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Accepted for API compatibility, but currently unused.</p></li>
+<li><p><strong>dm_reporting_period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – How often the DM workflow reports progress, in seconds. Only has an
+effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>dm_reporting_time_limit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – How long bluesky keeps reporting on the DM workflow, in seconds. Only
+has an effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>nxwriter_warn_missing</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the NeXus writer warns about missing content. Defaults to
+False.</p></li>
+<li><p><strong>wf_run</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, an APS Data Management workflow is started once the scan
+files have been uploaded. Defaults to False.</p></li>
+<li><p><strong>wf_settings_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Path to a YAML file holding the DM workflow kwargs. See
+<a class="reference internal" href="../workflow_plan/index.html#id4_common.plans.workflow_plan.run_workflow" title="id4_common.plans.workflow_plan.run_workflow"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.plans.workflow_plan.run_workflow()</span></code></a>.</p></li>
+<li><p><strong>**wf_kwargs</strong> – Any remaining keyword arguments are passed to the DM workflow.</p></li>
 </ul>
 </dd>
 </dl>
@@ -684,10 +725,29 @@ POLAR standard of defaulting to our <cite>counters</cite> class.</p></li>
 motor. If <cite>None</cite>, then the speed will not be changed. The speed will be
 passed to <cite>motor.velocity</cite> through staging (see
 ../devices/nanopositioners.py).</p></li>
-<li><p><strong>trigger_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default to 0.02 seconds</em>) – Time between detector triggers.</p></li>
-<li><p><strong>collection_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default to 0.01 seconds</em>) – Time that detector spend collecting the image. It must be smaller or
-equal to the trigger_time otherwise a ValueError is raised.</p></li>
+<li><p><strong>detector_trigger_period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Time between detector triggers, in seconds. Defaults to 0.02.</p></li>
+<li><p><strong>detector_collection_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – Time the detector spends collecting each image, in seconds. It must
+be smaller than or equal to <cite>detector_trigger_period</cite>, otherwise a
+ValueError is raised. Defaults to 0.01.</p></li>
+<li><p><strong>file_name_base</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Base name used for the detector and master file names. Defaults to
+“scan”.</p></li>
+<li><p><strong>master_file_templates</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Extra NeXus template entries handed to the master file writer. If
+None, an empty list is used.</p></li>
 <li><p><strong>md</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – Metadata to be added to the run start.</p></li>
+<li><p><strong>dm_concise</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Use concise reporting in the APS Data Management workflow. Only has
+an effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>dm_wait</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Accepted for API compatibility, but currently unused.</p></li>
+<li><p><strong>dm_reporting_period</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – How often the DM workflow reports progress, in seconds. Only has an
+effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>dm_reporting_time_limit</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – How long bluesky keeps reporting on the DM workflow, in seconds. Only
+has an effect when <cite>wf_run</cite> is True.</p></li>
+<li><p><strong>nxwriter_warn_missing</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the NeXus writer warns about missing content. Defaults to
+False.</p></li>
+<li><p><strong>wf_run</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, an APS Data Management workflow is started once the scan
+files have been uploaded. Defaults to False.</p></li>
+<li><p><strong>wf_settings_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Path to a YAML file holding the DM workflow kwargs. See
+<a class="reference internal" href="../workflow_plan/index.html#id4_common.plans.workflow_plan.run_workflow" title="id4_common.plans.workflow_plan.run_workflow"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.plans.workflow_plan.run_workflow()</span></code></a>.</p></li>
+<li><p><strong>**wf_kwargs</strong> – Any remaining keyword arguments are passed to the DM workflow.</p></li>
 </ul>
 </dd>
 </dl>
