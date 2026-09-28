@@ -54,7 +54,11 @@ line_length = 80
 include_trailing_comma = true
 
 [tool.ruff]
-exclude = [ ".eggs", ".git", ".git-rewrite", ".mypy_cache", ".pytype", ".ruff_cache", ".tox", ".venv", "__pypackages__", "_build", "build", "dist", "venv", ".venv", "docs",]
+exclude = [ ".eggs", ".git", ".git-rewrite", ".mypy_cache", ".pytype", ".ruff_cache", ".tox", ".venv", "__pypackages__", "_build", "build", "dist", "venv", ".venv", "docs",
+    # Vendored verbatim from the beamline analysis folder; kept
+    # diffable against its source rather than restyled.
+    "src/id4_common/gui/flyscan",
+]
 line-length = 80
 indent-width = 4
 target-version = "py311"
@@ -62,7 +66,7 @@ target-version = "py311"
 [project.optional-dependencies]
 dev = [ "build", "isort", "mypy", "pre-commit", "pytest", "ruff",]
 doc = [ "babel", "ipykernel", "jinja2", "markupsafe", "myst_parser", "nbsphinx", "pydata-sphinx-theme", "pygments-ipython-console", "pygments", "sphinx-autoapi", "sphinx-design", "sphinx-tabs", "sphinx",]
-gui = [ "qtconsole", "qtpy", "jupyter_client", "matplotlib", "pyepics",]
+gui = [ "qtconsole", "qtpy", "jupyter_client", "matplotlib", "pyepics", "h5py", "hdf5plugin",]
 gui3d = [ "vtk", "pyvista", "pyvistaqt", "pooch", "scooby",]
 mcp = [ "mcp",]
 all = [ "polar-bits[dev,doc,gui,mcp]",]
