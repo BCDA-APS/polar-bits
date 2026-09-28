@@ -363,3 +363,150 @@ def test_rel_list_scan_sets_its_plan_name(list_scans, monkeypatch):
     _drive(list_scans.rel_list_scan(motor, [-1, 0, 1], 0.5, detectors=[]))
 
     assert seen["md"]["plan_name"] == "rel_list_scan"
+
+
+# ---------------------------------------------------------------------------
+# list_grid_scans — argument parsing
+# ---------------------------------------------------------------------------
+
+
+def test_grid_split_rejects_even_arg_count(list_scans):
+    """``motor, list`` without a trailing time is rejected."""
+    motor = MagicMock(name="motor")
+    with pytest.raises(ValueError, match="multiple of 2 plus 1"):
+        list_scans._split_list_grid_scan_args((motor, [1, 2, 3]))
+
+
+def test_grid_split_rejects_scalar_positions(list_scans):
+    """A scalar where a list belongs gets a clear message."""
+    motor = MagicMock(name="motor")
+    motor.name = "motor"
+    with pytest.raises(ValueError, match="sized iterable"):
+        list_scans._split_list_grid_scan_args((motor, 1.0, 0.5))
+
+
+def test_grid_split_rejects_an_empty_axis(list_scans):
+    """An empty list would make bluesky's ``min()`` on extents blow up."""
+    motor = MagicMock(name="motor")
+    motor.name = "motor"
+    with pytest.raises(ValueError, match="empty"):
+        list_scans._split_list_grid_scan_args((motor, [], 0.5))
+
+
+def test_grid_split_allows_mismatched_list_lengths(list_scans):
+    """The lists are independent mesh axes, unlike ``list_scan``'s.
+
+    This is the one real difference between the two splitters: a 3x2 mesh
+    is perfectly legal, while ``list_scan`` would reject the same args.
+    """
+    m1, m2 = MagicMock(name="m1"), MagicMock(name="m2")
+    m1.name, m2.name = "m1", "m2"
+    args = (m1, [1, 2, 3], m2, [4, 5], 0.5)
+
+    scan_args, motors, time = list_scans._split_list_grid_scan_args(args)
+
+    assert motors == [m1, m2]
+    assert time == 0.5
+    assert scan_args == (m1, [1, 2, 3], m2, [4, 5])
+
+    # ...and the inner-product splitter still refuses it.
+    with pytest.raises(ValueError, match="same length"):
+        list_scans._split_list_scan_args(args)
+
+
+def test_grid_split_accepts_numpy_position_lists(list_scans):
+    """numpy arrays are valid mesh axes (issue #77)."""
+    motor = MagicMock(name="motor")
+    positions = np.linspace(-1, 1, 7)
+    scan_args, motors, time = list_scans._split_list_grid_scan_args(
+        (motor, positions, 0.5)
+    )
+
+    assert motors == [motor]
+    assert scan_args[1] is positions
+
+
+# ---------------------------------------------------------------------------
+# list_grid_scans — what reaches bluesky
+# ---------------------------------------------------------------------------
+
+
+def test_list_grid_scan_forwards_positions_to_bluesky(list_scans, monkeypatch):
+    """The trailing time is stripped and snake_axes is passed through."""
+    seen: dict = {}
+
+    def fake_bp_list_grid_scan(
+        detectors, *args, snake_axes=None, per_step=None, md=None
+    ):
+        seen["args"] = args
+        seen["snake_axes"] = snake_axes
+        seen["md"] = md
+        return
+        yield  # pragma: no cover - keeps this a generator
+
+    monkeypatch.setattr(list_scans, "bp_list_grid_scan", fake_bp_list_grid_scan)
+
+    m1, m2 = MagicMock(name="m1"), MagicMock(name="m2")
+    _drive(
+        list_scans.list_grid_scan(
+            m1, [0.0, 1.0], m2, [2.0, 3.0, 4.0], 0.5, detectors=[]
+        )
+    )
+
+    assert seen["args"] == (m1, [0.0, 1.0], m2, [2.0, 3.0, 4.0])
+    assert seen["snake_axes"] is False
+    assert seen["md"]["hints"]["scan_type"] == "list_grid_scan"
+
+
+def test_list_grid_scan_passes_snake_axes_through(list_scans, monkeypatch):
+    """``snake_axes`` is the one kwarg bluesky needs that ``list_scan`` lacks."""
+    seen: dict = {}
+
+    def fake_bp_list_grid_scan(
+        detectors, *args, snake_axes=None, per_step=None, md=None
+    ):
+        seen["snake_axes"] = snake_axes
+        return
+        yield  # pragma: no cover - keeps this a generator
+
+    monkeypatch.setattr(list_scans, "bp_list_grid_scan", fake_bp_list_grid_scan)
+
+    m1, m2 = MagicMock(name="m1"), MagicMock(name="m2")
+    _drive(
+        list_scans.list_grid_scan(
+            m1, [0, 1], m2, [2, 3], 0.5, detectors=[], snake_axes=True
+        )
+    )
+
+    assert seen["snake_axes"] is True
+
+
+def test_rel_list_grid_scan_sets_its_plan_name(list_scans, monkeypatch):
+    """``rel_list_grid_scan`` labels the run so SPEC/analysis can tell them
+    apart."""
+    seen: dict = {}
+
+    def fake_bp_list_grid_scan(
+        detectors, *args, snake_axes=None, per_step=None, md=None
+    ):
+        seen["md"] = md
+        return
+        yield  # pragma: no cover - keeps this a generator
+
+    monkeypatch.setattr(list_scans, "bp_list_grid_scan", fake_bp_list_grid_scan)
+    # The relative wrappers need real motors; bypass them for this check.
+    monkeypatch.setattr(
+        list_scans, "reset_positions_decorator", lambda motors: lambda f: f
+    )
+    monkeypatch.setattr(
+        list_scans, "relative_set_decorator", lambda motors: lambda f: f
+    )
+
+    m1, m2 = MagicMock(name="m1"), MagicMock(name="m2")
+    _drive(
+        list_scans.rel_list_grid_scan(
+            m1, [-1, 0, 1], m2, [-0.5, 0.5], 0.5, detectors=[]
+        )
+    )
+
+    assert seen["md"]["plan_name"] == "rel_list_grid_scan"

@@ -66,7 +66,16 @@ def _is_grid_scan(start):
     """Return True when the start doc is from a 2D-or-higher grid scan."""
     plan_name = start.get("plan_name", "")
     motors = start.get("motors") or []
-    return plan_name in {"grid_scan", "rel_grid_scan"} and len(motors) >= 2
+    return (
+        plan_name
+        in {
+            "grid_scan",
+            "rel_grid_scan",
+            "list_grid_scan",
+            "rel_list_grid_scan",
+        }
+        and len(motors) >= 2
+    )
 
 
 def _grid_axes(motors, shape, start, table):
