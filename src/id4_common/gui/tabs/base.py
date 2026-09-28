@@ -50,6 +50,13 @@ class BaseTab(QWidget):
     #: Text shown on the tab bar.
     title = "Tab"
 
+    #: When True, MainWindow lets the tab be pulled out into its own window by
+    #: double-clicking its label, and put back by closing that window.  Worth
+    #: setting for a tab you would want to watch while working in another one
+    #: -- a live plot, typically -- and not for the rest, where a stray
+    #: double-click on the tab bar would just be a surprise.
+    detachable = False
+
     #: When True, MainWindow puts the tab inside a scroll area.  Without this a
     #: tall page pins the whole splitter open -- the pages' minimum heights are
     #: what stop the console from getting its half of the window.  Set False
