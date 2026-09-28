@@ -32,13 +32,6 @@ Module Contents
 
    Demonstrate the ``count()`` plan.
 
-   :param num: Number of readings to take. Defaults to 1.
-   :type num: int, optional
-   :param imax: Peak intensity of the simulated detector. Defaults to 10,000.
-   :type imax: float, optional
-   :param md: Metadata to be added to the run start.
-   :type md: dict, optional
-
 
 .. py:function:: sim_print_plan()
 
@@ -48,22 +41,5 @@ Module Contents
 .. py:function:: sim_rel_scan_plan(span: float = 5, num: int = 11, imax: float = 10000, center: float = 0, sigma: float = 1, noise: str = 'uniform', md: dict = DEFAULT_MD)
 
    Demonstrate the ``rel_scan()`` plan.
-
-   :param span: Full width of the scan, centered on the current motor position. The
-                motor moves from ``-span / 2`` to ``+span / 2``. Defaults to 5.
-   :type span: float, optional
-   :param num: Number of points in the scan. Defaults to 11.
-   :type num: int, optional
-   :param imax: Peak intensity of the simulated detector. Defaults to 10,000.
-   :type imax: float, optional
-   :param center: Center of the simulated peak. Defaults to 0.
-   :type center: float, optional
-   :param sigma: Width of the simulated peak. Defaults to 1.
-   :type sigma: float, optional
-   :param noise: Noise model of the simulated detector: "none", "poisson" or
-                 "uniform". Defaults to "uniform".
-   :type noise: str, optional
-   :param md: Metadata to be added to the run start.
-   :type md: dict, optional
 
 

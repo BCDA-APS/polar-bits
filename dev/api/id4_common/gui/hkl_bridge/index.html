@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>id4_common.gui.hkl_bridge &#8212; polar-bits</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=69256293" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+    <script src="../../../../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/gui/hkl_bridge/index';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">polar-bits</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/general.html">
+    General Examples
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/general.html">
+    General Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../app/index.html">id4_common.gui.app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">id4_common.gui.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../diffract3d/index.html">id4_common.gui.diffract3d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docstream/index.html">id4_common.gui.docstream</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../flyscan/index.html">id4_common.gui.flyscan</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flyscan/flyscan_gui/index.html">id4_common.gui.flyscan.flyscan_gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flyscan/flyscan_live_gui/index.html">id4_common.gui.flyscan.flyscan_live_gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flyscan/live_flyscan/index.html">id4_common.gui.flyscan.live_flyscan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flyscan/process_flyscan/index.html">id4_common.gui.flyscan.process_flyscan</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.gui.hkl_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel/index.html">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scancode/index.html">id4_common.gui.scancode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scanreader/index.html">id4_common.gui.scanreader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../session_setup/index.html">id4_common.gui.session_setup</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tabs/index.html">id4_common.gui.tabs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/agent/index.html">id4_common.gui.tabs.agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/base/index.html">id4_common.gui.tabs.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/detectors/index.html">id4_common.gui.tabs.detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/devices/index.html">id4_common.gui.tabs.devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/diffract_panel/index.html">id4_common.gui.tabs.diffract_panel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/flyscanplot/index.html">id4_common.gui.tabs.flyscanplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/hkl/index.html">id4_common.gui.tabs.hkl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/macro/index.html">id4_common.gui.tabs.macro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/scan/index.html">id4_common.gui.tabs.scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/scanhistory/index.html">id4_common.gui.tabs.scanhistory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/scanplot/index.html">id4_common.gui.tabs.scanplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/status/index.html">id4_common.gui.tabs.status</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../transcript/index.html">id4_common.gui.transcript</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.gui.hkl_bridge</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-id4_common.gui.hkl_bridge">
+<span id="id4-common-gui-hkl-bridge"></span><h1>id4_common.gui.hkl_bridge<a class="headerlink" href="#module-id4_common.gui.hkl_bridge" title="Link to this heading">#</a></h1>
+<p>Kernel-side helpers for the HKL tab.</p>
+<p>These are installed in the kernel as part of the bootstrap cell.  They exist
+here rather than in the GUI because <code class="docutils literal notranslate"><span class="pre">user_expressions</span></code> evaluates expressions
+only – it cannot run a <code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">except</span></code> – and almost every hklpy2 call can
+raise on an unoriented or unreachable configuration.</p>
+<p>The API mirrors <code class="docutils literal notranslate"><span class="pre">id4_common.utils.hkl_utils</span></code>, which is the reference for the
+call sequences.  Its console entry points are not called from here, because
+almost all of them act on whichever diffractometer is <em>active</em> and prompt for
+what they were not told, while the tab has to be able to show either device and
+can never prompt.</p>
+<p>Everything returned is plain Python (floats coerced off numpy) so the poller’s
+<code class="docutils literal notranslate"><span class="pre">ast.literal_eval</span></code> round trip works.</p>
+<p><strong>Three things differ from a Eulerian six-circle</strong> and shape most of what
+follows.  POLAR’s <code class="docutils literal notranslate"><span class="pre">APS</span> <span class="pre">POLAR</span></code> geometry has six real axes <code class="docutils literal notranslate"><span class="pre">tau,</span> <span class="pre">mu,</span> <span class="pre">chi,</span> <span class="pre">phi,</span>
+<span class="pre">gamma,</span> <span class="pre">delta</span></code>; its mode names are <strong>space-separated</strong> (<code class="docutils literal notranslate"><span class="pre">&quot;psi</span> <span class="pre">constant</span>
+<span class="pre">horizontal&quot;</span></code>, not <code class="docutils literal notranslate"><span class="pre">psi_constant_horizontal</span></code>), so every test against a mode
+name goes through <code class="xref py py-func docutils literal notranslate"><span class="pre">_gui_hkl_mode_key()</span></code>; and there is <strong>no ``q``
+engine</strong> – <code class="docutils literal notranslate"><span class="pre">hkl-engine-list-error-quark:</span> <span class="pre">this</span> <span class="pre">engine</span> <span class="pre">list</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">contain</span>
+<span class="pre">this</span> <span class="pre">engine</span> <span class="pre">&quot;q&quot;</span></code> – so 2theta is computed here from <code class="docutils literal notranslate"><span class="pre">UB</span></code> rather than read off
+a helper geometry.</p>
+<p>The last one is worth stating precisely, because it is the sort of thing that
+is right by luck or wrong by a factor of 2π.  hklpy2’s <code class="docutils literal notranslate"><span class="pre">UB</span></code> is in the 2π
+convention: <code class="docutils literal notranslate"><span class="pre">|UB</span> <span class="pre">·</span> <span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)|</span> <span class="pre">=</span> <span class="pre">2π/d</span></code>, checked against Bragg’s law on a cubic
+lattice for (100), (110) and (200).  So <code class="docutils literal notranslate"><span class="pre">2θ</span> <span class="pre">=</span> <span class="pre">2·asin(|UB·hkl|·λ/4π)</span></code>.</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.hkl_bridge.DIFFRACTOMETERS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.hkl_bridge.</span></span><span class="sig-name descname"><span class="pre">DIFFRACTOMETERS</span></span><a class="headerlink" href="#id4_common.gui.hkl_bridge.DIFFRACTOMETERS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.hkl_bridge.PSI_GEOMETRY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.hkl_bridge.</span></span><span class="sig-name descname"><span class="pre">PSI_GEOMETRY</span></span><a class="headerlink" href="#id4_common.gui.hkl_bridge.PSI_GEOMETRY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.hkl_bridge.POSITION_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.hkl_bridge.</span></span><span class="sig-name descname"><span class="pre">POSITION_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'hkl_position'</span></span><a class="headerlink" href="#id4_common.gui.hkl_bridge.POSITION_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.hkl_bridge.STATE_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.hkl_bridge.</span></span><span class="sig-name descname"><span class="pre">STATE_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'hkl_state'</span></span><a class="headerlink" href="#id4_common.gui.hkl_bridge.STATE_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.hkl_bridge.HKL_HELPERS_CODE">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.hkl_bridge.</span></span><span class="sig-name descname"><span class="pre">HKL_HELPERS_CODE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Multiline-String</span></span><a class="headerlink" href="#id4_common.gui.hkl_bridge.HKL_HELPERS_CODE" title="Link to this definition">#</a></dt>
+<dd><details><summary>Show Value</summary><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">"""_GUI_HKL_PSI = Instance of builtins.dict</span>
+
+
+<span class="sd">def _gui_hkl_f(value, default=None):</span>
+<span class="sd">    """</span><span class="n">Coerce</span> <span class="n">a</span> <span class="n">possibly</span><span class="o">-</span><span class="n">numpy</span> <span class="n">value</span> <span class="n">to</span> <span class="n">a</span> <span class="n">plain</span> <span class="nb">float</span><span class="o">.</span><span class="s2">"""</span>
+<span class="s2">    try:</span>
+<span class="s2">        return float(value)</span>
+<span class="s2">    except Exception:</span>
+<span class="s2">        return default</span>
+
+
+<span class="s2">def _gui_hkl_dev(name):</span>
+<span class="s2">    """</span><span class="n">Return</span> <span class="n">the</span> <span class="n">named</span> <span class="n">diffractometer</span> <span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">registry</span><span class="o">.</span><span class="s2">"""</span>
+<span class="s2">    return oregistry.find(name)</span>
+
+
+<span class="s2">def _gui_hkl_psi_dev(name):</span>
+<span class="s2">    """</span><span class="n">Return</span> <span class="n">the</span> <span class="n">psi</span><span class="o">-</span><span class="n">engine</span> <span class="n">geometry</span> <span class="n">that</span> <span class="n">shares</span> <span class="o">*</span><span class="n">name</span><span class="o">*</span><span class="s1">'s motors."""</span>
+    <span class="k">return</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">_GUI_HKL_PSI</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_mode_key</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Normalise a mode name for matching.</span>
+
+<span class="sd">    POLAR's solver spells its modes with spaces -- ``"psi constant</span>
+<span class="sd">    horizontal"``, ``"4-circles bissecting horizontal"`` -- where the Eulerian</span>
+<span class="sd">    geometries use underscores.  Every test in this module compares against</span>
+<span class="sd">    this form, so a mode is recognised whichever way its geometry writes it.</span>
+<span class="sd">    Failing that test is silent in the worst way: a psi that reports "can only</span>
+<span class="sd">    be fixed in a psi_constant mode" while sitting in exactly such a mode.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"-"</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_psi_modes</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The device's psi_constant modes, whatever their spelling."""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">modes</span> <span class="k">if</span> <span class="s2">"psi_constant"</span> <span class="ow">in</span> <span class="n">_gui_hkl_mode_key</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_active</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Name of the *active* diffractometer, the one the plans act on.</span>
+
+<span class="sd">    POLAR keeps one selected device -- ``hklpy2.user``'s -- and the</span>
+<span class="sd">    reciprocal-space plans (``hscan``, ``hklscan``, ``psiscan``, ``th2th``)</span>
+<span class="sd">    find it themselves rather than taking it as an argument.  The tab can</span>
+<span class="sd">    display either device, so it has to be able to say which one is live.</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_diffractometer</span>
+
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">get_diffractometer</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">dev</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">dev</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_active</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Make *name* the active diffractometer.</span>
+
+<span class="sd">    Deliberately a separate, explicit action rather than a side effect of the</span>
+<span class="sd">    tab's selector: ``change_diffractometer`` also applies that device's axis</span>
+<span class="sd">    constraints and pushes its aliases (``mu``, ``chi``, ``h``, ``cryox``, ...)</span>
+<span class="sd">    into the session namespace, which is too much to happen because somebody</span>
+<span class="sd">    wanted to *look* at the other diffractometer.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_GUI_HKL_PSI</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Unknown diffractometer </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">."</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">change_diffractometer</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not switch diffractometer: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"Active diffractometer: </span><span class="si">{</span><span class="n">_gui_hkl_active</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_lattice</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The six lattice constants of *sample*, as plain floats."""</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">_p</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">_p</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">_p</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">,</span> <span class="s2">"alpha"</span><span class="p">,</span> <span class="s2">"beta"</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">)</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_mirror_sample</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Copy *src*'s lattice and UB onto *dst*, the psi helper geometry.</span>
+
+<span class="sd">    Both halves are needed.  The psi engine solves against *dst*'s own</span>
+<span class="sd">    sample, which starts life as a default cubic one, and hklpy2 pushes the</span>
+<span class="sd">    whole sample -- lattice included -- to the solver; a UB copied onto a</span>
+<span class="sd">    mismatched lattice gives a psi computed for the wrong crystal.</span>
+
+<span class="sd">    **Lattice before UB.**  Assigning a lattice parameter flags</span>
+<span class="sd">    ``_SolverDirty.SAMPLE | _SolverDirty.UB`` because some backends discard</span>
+<span class="sd">    U/UB when the sample is re-pushed, so the other order can throw the</span>
+<span class="sd">    matrix away again.</span>
+
+<span class="sd">    Each half is skipped when it already matches: this runs on the 1 Hz</span>
+<span class="sd">    position poll and every assignment flags the solver dirty, forcing a</span>
+<span class="sd">    re-sync that is pure cost when nothing changed.</span>
+
+<span class="sd">    The lattice is copied parameter by parameter rather than by assigning</span>
+<span class="sd">    ``src.sample.lattice`` itself: ``Sample.lattice``'s setter rebinds</span>
+<span class="sd">    ``_on_change`` on whatever object it is given, so sharing one Lattice</span>
+<span class="sd">    would redirect the source sample's own change notification to *dst*.</span>
+<span class="sd">    """</span>
+    <span class="n">want</span> <span class="o">=</span> <span class="n">_gui_hkl_lattice</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_gui_hkl_lattice</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span> <span class="o">!=</span> <span class="n">want</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_p</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">want</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">dst</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">_p</span><span class="p">,</span> <span class="n">_v</span><span class="p">)</span>
+    <span class="n">ub</span> <span class="o">=</span> <span class="p">[[</span><span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">_v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">_row</span><span class="p">]</span> <span class="k">for</span> <span class="n">_row</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">[[</span><span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">_v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">_row</span><span class="p">]</span> <span class="k">for</span> <span class="n">_row</span> <span class="ow">in</span> <span class="n">dst</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ub</span><span class="p">:</span>
+        <span class="n">dst</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="n">ub</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_two_theta</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Scattering angle at the current hkl, in degrees, from UB.</span>
+
+<span class="sd">    The Eulerian geometries carry a ``q`` engine and this is one ``inverse()``</span>
+<span class="sd">    call on it.  ``APS POLAR`` has no such engine -- libhkl answers *this</span>
+<span class="sd">    engine list does not contain this engine "q"* -- so |Q| is taken from the</span>
+<span class="sd">    orientation matrix instead:</span>
+
+<span class="sd">        |Q| = |UB . (h, k, l)| = 2*pi/d        2*theta = 2 asin(|Q| lambda / 4 pi)</span>
+
+<span class="sd">    The 2*pi is hklpy2's convention for UB, not an assumption: checked against</span>
+<span class="sd">    Bragg's law on a 4 A cubic lattice for (100), (110) and (200).</span>
+
+<span class="sd">    Written out rather than handed to numpy because the whole point of these</span>
+<span class="sd">    helpers is that they return plain Python across a ``literal_eval`` round</span>
+<span class="sd">    trip, and a 3x3 by 3 product is three lines.</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_ub</span> <span class="o">=</span> <span class="p">[[</span><span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">_v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">_row</span><span class="p">]</span> <span class="k">for</span> <span class="n">_row</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="p">]</span>
+        <span class="n">_hkl</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">_f</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_f</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">pseudo_positioners</span><span class="o">.</span><span class="n">_fields</span>
+        <span class="p">]</span>
+        <span class="n">_lambda</span> <span class="o">=</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_ub</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">_hkl</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">_lambda</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">_v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">_row</span> <span class="ow">in</span> <span class="n">_ub</span> <span class="k">for</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">_row</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span>
+        <span class="n">_v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">_hkl</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">_q</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">_ub</span><span class="p">[</span><span class="n">_i</span><span class="p">][</span><span class="n">_j</span><span class="p">]</span> <span class="o">*</span> <span class="n">_hkl</span><span class="p">[</span><span class="n">_j</span><span class="p">]</span> <span class="k">for</span> <span class="n">_j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+    <span class="n">_arg</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">_v</span> <span class="o">*</span> <span class="n">_v</span> <span class="k">for</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">_q</span><span class="p">))</span> <span class="o">*</span> <span class="n">_lambda</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">&lt;=</span> <span class="n">_arg</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">_arg</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_derived</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return (two_theta, psi, psi_reference) for the current position.</span>
+
+<span class="sd">    The psi half mirrors ``hkl_utils._wh()``: the psi geometry needs the main</span>
+<span class="sd">    diffractometer's sample copied onto it before ``inverse()`` means</span>
+<span class="sd">    anything.</span>
+<span class="sd">    """</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">reference</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">two_theta</span> <span class="o">=</span> <span class="n">_gui_hkl_two_theta</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_p</span> <span class="o">=</span> <span class="n">_gui_hkl_psi_dev</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">_gui_hkl_mirror_sample</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">_p</span><span class="p">)</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">_p</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">psi</span><span class="p">)</span>
+        <span class="n">reference</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_p</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">two_theta</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">reference</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_position</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Cheap, frequently-polled readout: angles, hkl, 2theta, psi."""</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"device"</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">"pseudos"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">f</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">pseudo_positioners</span><span class="o">.</span><span class="n">_fields</span>
+        <span class="p">}</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">"reals"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">f</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">real_positioners</span><span class="o">.</span><span class="n">_fields</span>
+        <span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">"error"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">"wavelength"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">"energy"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">two_theta</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">reference</span> <span class="o">=</span> <span class="n">_gui_hkl_derived</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">"two_theta"</span><span class="p">]</span> <span class="o">=</span> <span class="n">two_theta</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">"psi"</span><span class="p">]</span> <span class="o">=</span> <span class="n">psi</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">"psi_reference"</span><span class="p">]</span> <span class="o">=</span> <span class="n">reference</span>
+    <span class="n">out</span><span class="p">[</span><span class="s2">"mode"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_state</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Full orientation state: samples, reflections, modes, UB."""</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"device"</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
+    <span class="c1"># Which device the reciprocal-space plans will act on, which is not</span>
+    <span class="c1"># necessarily the one being displayed -- see _gui_hkl_set_active.</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"active"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_gui_hkl_active</span><span class="p">()</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"real_fields"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">real_positioners</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"pseudo_fields"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">pseudo_positioners</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">sname</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">system_parameter_names</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">samples</span><span class="p">[</span><span class="n">sname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">p</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">names</span>
+            <span class="p">}</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">samples</span><span class="p">[</span><span class="n">sname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"samples"</span><span class="p">]</span> <span class="o">=</span> <span class="n">samples</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"sample"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"lattice_names"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">system_parameter_names</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">reflections</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="s2">""</span>
+            <span class="k">if</span> <span class="n">order</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="s2">"first"</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="s2">"second"</span>
+            <span class="n">reflections</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">"key"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
+                <span class="s2">"pseudos"</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ref</span><span class="o">.</span><span class="n">pseudos</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+                <span class="s2">"reals"</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ref</span><span class="o">.</span><span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+                <span class="s2">"tag"</span><span class="p">:</span> <span class="n">tag</span><span class="p">,</span>
+            <span class="p">})</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"reflections"</span><span class="p">]</span> <span class="o">=</span> <span class="n">reflections</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"order"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span>
+
+    <span class="c1"># Readback PV per real axis, so the GUI can follow a move over Channel</span>
+    <span class="c1"># Access while the kernel's shell channel is blocked by the move itself.</span>
+    <span class="c1"># None for a soft axis, which has no PV to watch.  POLAR has no</span>
+    <span class="c1"># simulated diffractometer, so in practice every axis here has one.</span>
+    <span class="n">real_pvs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">_f</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">real_positioners</span><span class="o">.</span><span class="n">_fields</span><span class="p">:</span>
+        <span class="n">_ax</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">_f</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">_pv</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">_attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"user_readback"</span><span class="p">,</span> <span class="s2">"readback"</span><span class="p">):</span>
+            <span class="n">_sig</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_ax</span><span class="p">,</span> <span class="n">_attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">_pv</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_sig</span><span class="p">,</span> <span class="s2">"pvname"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_pv</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">real_pvs</span><span class="p">[</span><span class="n">_f</span><span class="p">]</span> <span class="o">=</span> <span class="n">_pv</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"real_pvs"</span><span class="p">]</span> <span class="o">=</span> <span class="n">real_pvs</span>
+
+    <span class="n">state</span><span class="p">[</span><span class="s2">"mode"</span><span class="p">]</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"modes"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">modes</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">"constant_axes"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constant_axis_names</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">"constant_axes"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">"presets"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">"presets"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">"extras"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">"extras"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># The mode's extra solver parameters, minus the psi reference vector,</span>
+    <span class="c1"># which has its own boxes.  In a psi_constant mode this is ['psi'] -- a</span>
+    <span class="c1"># value the mode holds constant just as surely as it holds mu and nu, but</span>
+    <span class="c1"># one that never appears in ``constant_axis_names`` because it is not a</span>
+    <span class="c1"># real axis.  The tab shows these alongside the fixed angles.</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"extra_axes"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">"extras"</span><span class="p">]</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"h2"</span><span class="p">,</span> <span class="s2">"k2"</span><span class="p">,</span> <span class="s2">"l2"</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">"ub"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[</span><span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">"ub"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">two_theta</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">reference</span> <span class="o">=</span> <span class="n">_gui_hkl_derived</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"two_theta"</span><span class="p">]</span> <span class="o">=</span> <span class="n">two_theta</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"psi"</span><span class="p">]</span> <span class="o">=</span> <span class="n">psi</span>
+    <span class="n">state</span><span class="p">[</span><span class="s2">"psi_reference"</span><span class="p">]</span> <span class="o">=</span> <span class="n">reference</span>
+    <span class="k">return</span> <span class="n">state</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_recompute_ub</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Recompute UB when two orienting reflections exist.</span>
+
+<span class="sd">    ``forward(1, 0, 0)`` afterwards is the workaround documented in</span>
+<span class="sd">    ``hkl_utils.compute_UB``: without one calculation, a later ``wh()``</span>
+<span class="sd">    fails.</span>
+<span class="sd">    """</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"UB not computed: needs two orienting reflections."</span>
+    <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">calc_UB</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">dev</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"UB computed from </span><span class="si">{</span><span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">."</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_select_sample</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Current sample: </span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not select sample: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_add_sample</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span>
+            <span class="n">sample</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span>
+            <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Added sample </span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">."</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not add sample: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_remove_sample</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sample</span> <span class="o">==</span> <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"The current sample cannot be removed."</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">remove_sample</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Removed sample </span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">."</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not remove sample: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_lattice</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""values: {parameter: number}."""</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not set lattice: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="s2">"Lattice updated. "</span> <span class="o">+</span> <span class="n">_gui_hkl_recompute_ub</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_add_reflection</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""pseudos/reals are dicts; reals=None uses the current angles."""</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">reals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">f</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">position</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">real_positioners</span><span class="o">.</span><span class="n">_fields</span>
+            <span class="p">}</span>
+        <span class="n">ordered</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">reals</span><span class="p">[</span><span class="n">f</span><span class="p">])</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">real_positioners</span><span class="o">.</span><span class="n">_fields</span><span class="p">]</span>
+        <span class="n">hkl</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">pseudos</span><span class="p">[</span><span class="n">f</span><span class="p">])</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">pseudo_positioners</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span><span class="n">hkl</span><span class="p">,</span> <span class="n">ordered</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Added reflection </span><span class="si">{</span><span class="n">ref</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">."</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not add reflection: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_edit_reflection</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Reflection.pseudos/.reals are settable, so this edits in place."""</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pseudos</span><span class="p">:</span>
+            <span class="n">ref</span><span class="o">.</span><span class="n">pseudos</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pseudos</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="n">reals</span><span class="p">:</span>
+            <span class="n">ref</span><span class="o">.</span><span class="n">reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not edit reflection: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Reflection </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> updated."</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]:</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">_gui_hkl_recompute_ub</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">message</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_remove_reflection</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="s2">"Cannot remove an orienting reflection; reassign it first."</span>
+        <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Removed reflection </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">."</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not remove reflection: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_orienting</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">refs</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span> <span class="ow">or</span> <span class="n">second</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"Unknown reflection key."</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="o">==</span> <span class="n">second</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"The two orienting reflections must differ."</span>
+        <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">first</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">second</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
+        <span class="n">refs</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not set orienting reflections: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"Orienting: </span><span class="si">{</span><span class="n">first</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">second</span><span class="si">}</span><span class="s2">. "</span> <span class="o">+</span> <span class="n">_gui_hkl_recompute_ub</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_compute_ub</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_gui_hkl_recompute_ub</span><span class="p">(</span><span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not compute UB: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_presets_text</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Render the current mode's presets the way the tab shows them."""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"unavailable"</span>
+    <span class="k">return</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="ow">or</span> <span class="s2">"none"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_presets</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Fix (preset) the angles the current mode holds constant.</span>
+
+<span class="sd">    ``values`` is ``{axis: number}``; an axis left out has no preset, so</span>
+<span class="sd">    ``forward()`` falls back to that motor's live position.  Presets change</span>
+<span class="sd">    *computed* solutions only -- nothing moves.</span>
+
+<span class="sd">    hklpy2's ``presets`` setter silently drops any axis that is not constant</span>
+<span class="sd">    in the current mode, so the names it would have dropped are checked here</span>
+<span class="sd">    and reported back rather than disappearing without a word.</span>
+<span class="sd">    """</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">constant</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constant_axis_names</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not read the constant axes: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">wanted</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">values</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Fixed angles must be numbers: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">ignored</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">wanted</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">constant</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">wanted</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">constant</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not set the fixed angles: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Fixed angles (</span><span class="si">{</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">_gui_hkl_presets_text</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="n">ignored</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="s2">" -- ignored "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ignored</span><span class="p">))</span>
+            <span class="o">+</span> <span class="s2">", not held constant in this mode"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">message</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_extras</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Set the current mode's extra solver parameters, e.g. psi.</span>
+
+<span class="sd">    An extra is not a preset.  A preset is optional -- an axis left out of</span>
+<span class="sd">    ``core.presets`` follows its motor -- whereas a mode that defines an</span>
+<span class="sd">    extra always uses it, so there is nothing to leave out and no checkbox</span>
+<span class="sd">    to untick.</span>
+
+<span class="sd">    hklpy2 *raises* ``ConfigurationError`` on an extra the current mode does</span>
+<span class="sd">    not define, so the names are filtered against ``core.extras`` first: a</span>
+<span class="sd">    psi sent in the wrong mode is reported rather than taking the whole</span>
+<span class="sd">    write down with it.</span>
+<span class="sd">    """</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">known</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not read the extra parameters: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">wanted</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">values</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Extra parameters must be numbers: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">ignored</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">wanted</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">known</span><span class="p">)</span>
+    <span class="n">accepted</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">wanted</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">known</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">accepted</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="n">accepted</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not set the extra parameters: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="s2">"Fixed "</span> <span class="o">+</span> <span class="p">(</span>
+        <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">accepted</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="ow">or</span> <span class="s2">"nothing"</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">ignored</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="s2">" -- ignored "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ignored</span><span class="p">)</span>
+            <span class="o">+</span> <span class="sa">f</span><span class="s2">", not used by mode </span><span class="si">{</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">message</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_fixed</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">presets</span><span class="p">,</span> <span class="n">extras</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Write the mode's fixed angles and its extra parameters together.</span>
+
+<span class="sd">    Two different things, written in one call because the tab shows them in</span>
+<span class="sd">    one block and applies them from one debounce timer -- two separate calls</span>
+<span class="sd">    would race for the same reply slot and only one message would survive.</span>
+<span class="sd">    """</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">_gui_hkl_set_presets</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">presets</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">extras</span><span class="p">:</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_gui_hkl_set_extras</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">extras</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s2">"  "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_mode</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Set the mode and freeze the unused detector angle.</span>
+
+<span class="sd">    The preset logic follows ``hkl_utils.setmode``: a 'vertical' mode</span>
+<span class="sd">    holds the horizontal detector (solver 'gamma') at 0 and vice versa,</span>
+<span class="sd">    translated from solver axis names to this diffractometer's own.</span>
+
+<span class="sd">    The detector angle is only defaulted when it has no preset yet.  hklpy2</span>
+<span class="sd">    keeps presets *per mode* and restores them when a mode is re-selected, so</span>
+<span class="sd">    assigning a fresh dict here would throw away an angle the user had fixed</span>
+<span class="sd">    in this mode earlier -- re-picking the mode in the tab would silently undo</span>
+<span class="sd">    their setting.</span>
+<span class="sd">    """</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not set mode: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="c1"># POLAR's constant axes agree with this rule: 'psi constant horizontal'</span>
+    <span class="c1"># holds tau and delta, 'psi constant vertical' holds mu and gamma.  An</span>
+    <span class="c1"># axis the mode does not hold constant would be dropped silently anyway.</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">_gui_hkl_mode_key</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+    <span class="n">solver_det</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="s2">"vertical"</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+        <span class="n">solver_det</span> <span class="o">=</span> <span class="s2">"gamma"</span>
+    <span class="k">elif</span> <span class="s2">"horizontal"</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+        <span class="n">solver_det</span> <span class="o">=</span> <span class="s2">"delta"</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">solver_det</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_real_axis_names</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">real_positioners</span><span class="o">.</span><span class="n">_fields</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">solver_det</span><span class="p">)</span>
+        <span class="n">presets</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">axis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">presets</span><span class="p">:</span>
+            <span class="n">presets</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="n">presets</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Mode: </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2"> (fixed: </span><span class="si">{</span><span class="n">_gui_hkl_presets_text</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Mode set to </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">, but presets failed: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_azimuth</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Write the psi reference vector.</span>
+
+<span class="sd">    ``core.extras`` only exists in a psi_constant mode, so this switches into</span>
+<span class="sd">    each of them, writes, mirrors onto the psi geometry, and restores the</span>
+<span class="sd">    original mode -- the same dance as ``hkl_utils.setaz``.  Written in every</span>
+<span class="sd">    such mode because extras are stored *per mode*: a reference set only in</span>
+<span class="sd">    the horizontal one would be missing the moment the operator picked the</span>
+<span class="sd">    vertical one.</span>
+
+<span class="sd">    The modes are found by matching rather than named, since POLAR spells them</span>
+<span class="sd">    with spaces and the Eulerian geometries with underscores.</span>
+<span class="sd">    """</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">original</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span>
+    <span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"h2"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">h2</span><span class="p">),</span> <span class="s2">"k2"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">k2</span><span class="p">),</span> <span class="s2">"l2"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">l2</span><span class="p">)}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">_gui_hkl_psi_modes</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">candidates</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> has no psi_constant mode to hold a reference."</span>
+        <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">candidate</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="n">extras</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_gui_hkl_psi_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="n">extras</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Psi reference = </span><span class="si">{</span><span class="n">h2</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">k2</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">l2</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not set psi reference: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">original</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_set_psi</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">psi</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Freeze psi for the psi_constant modes (``hkl_utils.freeze``)."""</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"psi_constant"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_gui_hkl_mode_key</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Psi can only be fixed in a psi_constant mode (now </span><span class="si">{</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">)."</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"psi"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">psi</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Psi fixed at </span><span class="si">{</span><span class="n">psi</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Could not fix psi: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gui_hkl_calc</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">presets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Compute real angles for an hkl, optionally fixing psi and angles first.</span>
+
+<span class="sd">    ``presets`` is re-sent with every calculation rather than relied upon from</span>
+<span class="sd">    an earlier write: the tab applies fixed angles on a debounce timer, so</span>
+<span class="sd">    pressing Calculate straight after typing could otherwise solve against the</span>
+<span class="sd">    previous value.</span>
+<span class="sd">    """</span>
+    <span class="n">dev</span> <span class="o">=</span> <span class="n">_gui_hkl_dev</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"device"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"h"</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s2">"k"</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="n">l</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">presets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">constant</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constant_axis_names</span><span class="p">)</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">_k</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">_v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_k</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">presets</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">constant</span>
+            <span class="p">}</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">"presets"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">_k</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="n">_v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_k</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">"error"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Could not fix the angles: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">return</span> <span class="n">out</span>
+    <span class="k">if</span> <span class="n">psi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">"psi_constant"</span> <span class="ow">in</span> <span class="n">_gui_hkl_mode_key</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"psi"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">psi</span><span class="p">)}</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">"psi"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="s2">"error"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Could not fix psi: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">return</span> <span class="n">out</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">"reals"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">f</span><span class="p">:</span> <span class="n">_gui_hkl_f</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dev</span><span class="o">.</span><span class="n">real_positioners</span><span class="o">.</span><span class="n">_fields</span>
+        <span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">out</span><span class="p">[</span><span class="s2">"error"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+<span class="s2">"""</span>
+</pre></div>
+</div>
+</details></dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.hkl_bridge.DIFFRACTOMETERS"><code class="docutils literal notranslate"><span class="pre">DIFFRACTOMETERS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.hkl_bridge.PSI_GEOMETRY"><code class="docutils literal notranslate"><span class="pre">PSI_GEOMETRY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.hkl_bridge.POSITION_KEY"><code class="docutils literal notranslate"><span class="pre">POSITION_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.hkl_bridge.STATE_KEY"><code class="docutils literal notranslate"><span class="pre">STATE_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.hkl_bridge.HKL_HELPERS_CODE"><code class="docutils literal notranslate"><span class="pre">HKL_HELPERS_CODE</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/gui/hkl_bridge/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../../_sources/api/id4_common/gui/hkl_bridge/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2014-2025, APS.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

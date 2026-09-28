@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>id4_common.gui.tabs.macro &#8212; polar-bits</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=69256293" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+    <script src="../../../../../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/gui/tabs/macro/index';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../../../../_static/searchtools.js"></script>
+    <script src="../../../../../_static/language_data.js"></script>
+    <script src="../../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">polar-bits</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/general.html">
+    General Examples
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/general.html">
+    General Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../app/index.html">id4_common.gui.app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config/index.html">id4_common.gui.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../diffract3d/index.html">id4_common.gui.diffract3d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docstream/index.html">id4_common.gui.docstream</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../flyscan/index.html">id4_common.gui.flyscan</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../flyscan/flyscan_gui/index.html">id4_common.gui.flyscan.flyscan_gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flyscan/flyscan_live_gui/index.html">id4_common.gui.flyscan.flyscan_live_gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flyscan/live_flyscan/index.html">id4_common.gui.flyscan.live_flyscan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../flyscan/process_flyscan/index.html">id4_common.gui.flyscan.process_flyscan</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hkl_bridge/index.html">id4_common.gui.hkl_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../kernel/index.html">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scancode/index.html">id4_common.gui.scancode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scanreader/index.html">id4_common.gui.scanreader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../session_setup/index.html">id4_common.gui.session_setup</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">id4_common.gui.tabs</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../agent/index.html">id4_common.gui.tabs.agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../base/index.html">id4_common.gui.tabs.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../detectors/index.html">id4_common.gui.tabs.detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devices/index.html">id4_common.gui.tabs.devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../diffract_panel/index.html">id4_common.gui.tabs.diffract_panel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flyscanplot/index.html">id4_common.gui.tabs.flyscanplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hkl/index.html">id4_common.gui.tabs.hkl</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.gui.tabs.macro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../scan/index.html">id4_common.gui.tabs.scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../scanhistory/index.html">id4_common.gui.tabs.scanhistory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../scanplot/index.html">id4_common.gui.tabs.scanplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../status/index.html">id4_common.gui.tabs.status</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../transcript/index.html">id4_common.gui.transcript</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.gui.tabs.macro</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-id4_common.gui.tabs.macro">
+<span id="id4-common-gui-tabs-macro"></span><h1>id4_common.gui.tabs.macro<a class="headerlink" href="#module-id4_common.gui.tabs.macro" title="Link to this heading">#</a></h1>
+<p>Macro tab: build, edit, save and run a multi-step Bluesky plan.</p>
+<p>An experiment is rarely one scan.  The usual shape is a loop – set a
+temperature, wait for it to settle, run a scan, move to the next temperature –
+and writing that by hand means getting every <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code> and every level of
+indentation right.</p>
+<p>A macro here is a <strong>Bluesky plan</strong>: one generator function, run as a single
+<code class="docutils literal notranslate"><span class="pre">RE(macro())</span></code>, so Ctrl-C, <code class="docutils literal notranslate"><span class="pre">RE.pause()</span></code> and resume apply to the whole loop
+rather than to whichever scan happens to be running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">temperature_series</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">temperature</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">200</span><span class="p">]:</span>
+        <span class="k">yield from</span> <span class="n">mv</span><span class="p">(</span><span class="n">lakeshore340</span><span class="o">.</span><span class="n">setpoint</span><span class="p">,</span> <span class="n">temperature</span><span class="p">)</span>
+        <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
+        <span class="k">yield from</span> <span class="n">ascan</span><span class="p">(</span><span class="n">huber_euler</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Everything it calls is already in the session namespace: the <code class="docutils literal notranslate"><span class="pre">local_scans</span></code>
+plans (<code class="docutils literal notranslate"><span class="pre">startup.py:141</span></code>) and <code class="docutils literal notranslate"><span class="pre">bps</span></code> (<code class="docutils literal notranslate"><span class="pre">startup.py:110</span></code>).</p>
+<p>Generation is <strong>one way</strong>.  The component chooser on the left writes code into
+the editor on the right and never reads it back, so nothing typed by hand is
+ever silently rewritten – what is saved and run is exactly what is on screen.</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.logger">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.logger" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.OPTIONS_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">OPTIONS_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scan_options'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.OPTIONS_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.OPTIONS_EXPR">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">OPTIONS_EXPR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_gui_scan_options()'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.OPTIONS_EXPR" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.DEVICES_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">DEVICES_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'device_table'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.DEVICES_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.DEVICES_EXPR">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">DEVICES_EXPR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_gui_device_table()'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.DEVICES_EXPR" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.TARGETS_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">TARGETS_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'macro_targets'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.TARGETS_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PEAK_FIELDS_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">PEAK_FIELDS_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'peak_fields'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.PEAK_FIELDS_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PEAK_FIELDS_EXPR">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">PEAK_FIELDS_EXPR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_gui_peak_fields()'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.PEAK_FIELDS_EXPR" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.INDENT">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">INDENT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'</span>&#160;&#160;&#160; <span class="pre">'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.INDENT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PLACEHOLDERS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">PLACEHOLDERS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('pass',</span> <span class="pre">'yield</span> <span class="pre">from</span> <span class="pre">bps.null()')</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.PLACEHOLDERS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.DEFAULT_MACRO_NAME">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_MACRO_NAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'my_macro'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.DEFAULT_MACRO_NAME" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.TEMPLATE">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">TEMPLATE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Multiline-String</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.TEMPLATE" title="Link to this definition">#</a></dt>
+<dd><details><summary>Show Value</summary><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">""""""</span><span class="n">Macro</span><span class="p">:</span> <span class="p">{</span><span class="n">name</span><span class="p">}</span><span class="o">.</span><span class="s2">"""</span>
+
+<span class="s2">import bluesky.plan_stubs as bps</span>
+
+
+<span class="s2">def </span><span class="si">{name}</span><span class="s2">():</span>
+<span class="s2">    """</span><span class="n">Describe</span> <span class="n">the</span> <span class="n">macro</span> <span class="n">here</span><span class="o">.</span><span class="s2">"""</span>
+<span class="s2">    yield from bps.null()</span>
+<span class="s2">"""</span>
+</pre></div>
+</div>
+</details></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.SETTINGS_ORG">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">SETTINGS_ORG</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'APS'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.SETTINGS_ORG" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.SETTINGS_APP">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">SETTINGS_APP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'polar-gui'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.SETTINGS_APP" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MACRO_DIR_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">MACRO_DIR_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'macro/directory'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.MACRO_DIR_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.WRAP_COLUMNS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">WRAP_COLUMNS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">76</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.WRAP_COLUMNS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MAX_LOOP_VALUES">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">MAX_LOOP_VALUES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.MAX_LOOP_VALUES" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.VALUE_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">VALUE_WIDTH</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">110</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.VALUE_WIDTH" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.AXIS_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">AXIS_WIDTH</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.AXIS_WIDTH" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PythonHighlighter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">PythonHighlighter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">document</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.PythonHighlighter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">qtpy.QtGui.QSyntaxHighlighter</span></code></p>
+<p>Minimal Python highlighting: keywords, strings, comments, numbers.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PythonHighlighter.KEYWORDS">
+<span class="sig-name descname"><span class="pre">KEYWORDS</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.PythonHighlighter.KEYWORDS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PythonHighlighter.highlightBlock">
+<span class="sig-name descname"><span class="pre">highlightBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.PythonHighlighter.highlightBlock" title="Link to this definition">#</a></dt>
+<dd><p>Apply every rule to one line.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroEditor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">MacroEditor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroEditor" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">qtpy.QtWidgets.QPlainTextEdit</span></code></p>
+<p>Plain text editor that never puts a literal tab into Python source.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroEditor.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroEditor.keyPressEvent" title="Link to this definition">#</a></dt>
+<dd><p>Turn Tab into four spaces; a real tab would raise <code class="docutils literal notranslate"><span class="pre">TabError</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.LoopForm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">LoopForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.LoopForm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_Form</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">&lt;var&gt;</span> <span class="pre">in</span> <span class="pre">[...]:</span></code> with a <code class="docutils literal notranslate"><span class="pre">pass</span></code> body.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.LoopForm.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Loop'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.LoopForm.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.LoopForm.VALUES">
+<span class="sig-name descname"><span class="pre">VALUES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'list</span> <span class="pre">of</span> <span class="pre">values'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.LoopForm.VALUES" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.LoopForm.RANGE">
+<span class="sig-name descname"><span class="pre">RANGE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'start</span> <span class="pre">/</span> <span class="pre">stop</span> <span class="pre">/</span> <span class="pre">steps'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.LoopForm.RANGE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.LoopForm.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.LoopForm.lines" title="Link to this definition">#</a></dt>
+<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">for</span></code> header plus an indented <code class="docutils literal notranslate"><span class="pre">pass</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.SetForm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">SetForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.SetForm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_Form</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span> <span class="pre">mv(target,</span> <span class="pre">value)</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.SetForm.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Set</span> <span class="pre">value'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.SetForm.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.SetForm.set_devices">
+<span class="sig-name descname"><span class="pre">set_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.SetForm.set_devices" title="Link to this definition">#</a></dt>
+<dd><p>Fill the device combo, keeping the current choice if still there.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.SetForm.set_targets">
+<span class="sig-name descname"><span class="pre">set_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.SetForm.set_targets" title="Link to this definition">#</a></dt>
+<dd><p>Fill the target combo from <code class="docutils literal notranslate"><span class="pre">_gui_macro_targets()</span></code> rows.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.SetForm.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.SetForm.lines" title="Link to this definition">#</a></dt>
+<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">mv</span></code> call.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.WaitForm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">WaitForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.WaitForm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_Form</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span> <span class="pre">bps.sleep(seconds)</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.WaitForm.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Wait'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.WaitForm.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.WaitForm.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.WaitForm.lines" title="Link to this definition">#</a></dt>
+<dd><p>Return the sleep call.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">ScanRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow" title="Link to this definition">#</a></dt>
+<dd><p>One axis / start / stop / points row inside <a class="reference internal" href="#id4_common.gui.tabs.macro.ScanForm" title="id4_common.gui.tabs.macro.ScanForm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScanForm</span></code></a>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow.label">
+<span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow.combo">
+<span class="sig-name descname"><span class="pre">combo</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow.combo" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow.start">
+<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow.start" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow.stop" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow.points">
+<span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow.points" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow.points_label">
+<span class="sig-name descname"><span class="pre">points_label</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow.points_label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow.set_visible">
+<span class="sig-name descname"><span class="pre">set_visible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow.set_visible" title="Link to this definition">#</a></dt>
+<dd><p>Show or hide the row, and its points field independently.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanRow.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanRow.values" title="Link to this definition">#</a></dt>
+<dd><p>Return the row as the string tuple <code class="docutils literal notranslate"><span class="pre">format_scan_call</span></code> wants.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanForm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">ScanForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanForm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_Form</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span> <span class="pre">ascan(...)</span></code> and the other <code class="docutils literal notranslate"><span class="pre">local_scans</span></code> plans.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanForm.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Scan'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanForm.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanForm.set_axes">
+<span class="sig-name descname"><span class="pre">set_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanForm.set_axes" title="Link to this definition">#</a></dt>
+<dd><p>Fill every axis combo, keeping any current choice.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.ScanForm.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.ScanForm.lines" title="Link to this definition">#</a></dt>
+<dd><p>Return the plan call, as a <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PeakForm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">PeakForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.PeakForm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_Form</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span> <span class="pre">cen()</span></code> and friends – move onto the last scan’s peak.</p>
+<p>The Scan plot tab’s buttons emit a literal <code class="docutils literal notranslate"><span class="pre">mv</span></code> because the value is
+already on screen.  Here the <em>plan</em> has to be emitted instead: a macro is
+written before the scan it will align on, so the peak position cannot be
+known at generation time.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PeakForm.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Go</span> <span class="pre">to</span> <span class="pre">peak'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.PeakForm.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PeakForm.STATISTICS">
+<span class="sig-name descname"><span class="pre">STATISTICS</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.PeakForm.STATISTICS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PeakForm.set_axes">
+<span class="sig-name descname"><span class="pre">set_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.PeakForm.set_axes" title="Link to this definition">#</a></dt>
+<dd><p>Fill the axis combo, keeping the current choice and the blank.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PeakForm.set_peak_fields">
+<span class="sig-name descname"><span class="pre">set_peak_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.PeakForm.set_peak_fields" title="Link to this definition">#</a></dt>
+<dd><p>Fill the detector (and monitor) suggestions from the last scan.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PeakForm.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.PeakForm.lines" title="Link to this definition">#</a></dt>
+<dd><p>Return the plan call, as a <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PrintForm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">PrintForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.PrintForm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_Form</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">print(f&quot;...&quot;)</span></code> – a progress note in the console.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PrintForm.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Print'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.PrintForm.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.PrintForm.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.PrintForm.lines" title="Link to this definition">#</a></dt>
+<dd><p>Return the print call.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.CodeForm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">CodeForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_change</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.CodeForm" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_Form</span></code></p>
+<p>Free text, inserted verbatim – the escape hatch.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.CodeForm.label">
+<span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Code'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.CodeForm.label" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.CodeForm.lines">
+<span class="sig-name descname"><span class="pre">lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.CodeForm.lines" title="Link to this definition">#</a></dt>
+<dd><p>Return the typed lines, with their common indentation removed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroTab">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.macro.</span></span><span class="sig-name descname"><span class="pre">MacroTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroTab" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../base/index.html#id4_common.gui.tabs.base.BaseTab" title="id4_common.gui.tabs.base.BaseTab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.gui.tabs.base.BaseTab</span></code></a></p>
+<p>Compose a macro on the left, edit the code on the right.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroTab.title">
+<span class="sig-name descname"><span class="pre">title</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Macro'</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroTab.title" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroTab.scrollable">
+<span class="sig-name descname"><span class="pre">scrollable</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroTab.scrollable" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroTab.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroTab.refresh" title="Link to this definition">#</a></dt>
+<dd><p>Re-read the axis, device and peak-field lists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroTab.on_kernel_state">
+<span class="sig-name descname"><span class="pre">on_kernel_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroTab.on_kernel_state" title="Link to this definition">#</a></dt>
+<dd><p>Load and Run are only safe while the kernel is idle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroTab.on_kernel_values">
+<span class="sig-name descname"><span class="pre">on_kernel_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroTab.on_kernel_values" title="Link to this definition">#</a></dt>
+<dd><p>Fill the axis, device, peak-field and target lists as replies arrive.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.macro.MacroTab.macro_name">
+<span class="sig-name descname"><span class="pre">macro_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.macro.MacroTab.macro_name" title="Link to this definition">#</a></dt>
+<dd><p>Return the name of the first top-level <code class="docutils literal notranslate"><span class="pre">def</span></code>, or None.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.OPTIONS_KEY"><code class="docutils literal notranslate"><span class="pre">OPTIONS_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.OPTIONS_EXPR"><code class="docutils literal notranslate"><span class="pre">OPTIONS_EXPR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.DEVICES_KEY"><code class="docutils literal notranslate"><span class="pre">DEVICES_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.DEVICES_EXPR"><code class="docutils literal notranslate"><span class="pre">DEVICES_EXPR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.TARGETS_KEY"><code class="docutils literal notranslate"><span class="pre">TARGETS_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PEAK_FIELDS_KEY"><code class="docutils literal notranslate"><span class="pre">PEAK_FIELDS_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PEAK_FIELDS_EXPR"><code class="docutils literal notranslate"><span class="pre">PEAK_FIELDS_EXPR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.INDENT"><code class="docutils literal notranslate"><span class="pre">INDENT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PLACEHOLDERS"><code class="docutils literal notranslate"><span class="pre">PLACEHOLDERS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.DEFAULT_MACRO_NAME"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MACRO_NAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.TEMPLATE"><code class="docutils literal notranslate"><span class="pre">TEMPLATE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.SETTINGS_ORG"><code class="docutils literal notranslate"><span class="pre">SETTINGS_ORG</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.SETTINGS_APP"><code class="docutils literal notranslate"><span class="pre">SETTINGS_APP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MACRO_DIR_KEY"><code class="docutils literal notranslate"><span class="pre">MACRO_DIR_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.WRAP_COLUMNS"><code class="docutils literal notranslate"><span class="pre">WRAP_COLUMNS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MAX_LOOP_VALUES"><code class="docutils literal notranslate"><span class="pre">MAX_LOOP_VALUES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.VALUE_WIDTH"><code class="docutils literal notranslate"><span class="pre">VALUE_WIDTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.AXIS_WIDTH"><code class="docutils literal notranslate"><span class="pre">AXIS_WIDTH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PythonHighlighter"><code class="docutils literal notranslate"><span class="pre">PythonHighlighter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PythonHighlighter.KEYWORDS"><code class="docutils literal notranslate"><span class="pre">PythonHighlighter.KEYWORDS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PythonHighlighter.highlightBlock"><code class="docutils literal notranslate"><span class="pre">PythonHighlighter.highlightBlock()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroEditor"><code class="docutils literal notranslate"><span class="pre">MacroEditor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroEditor.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">MacroEditor.keyPressEvent()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.LoopForm"><code class="docutils literal notranslate"><span class="pre">LoopForm</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.LoopForm.label"><code class="docutils literal notranslate"><span class="pre">LoopForm.label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.LoopForm.VALUES"><code class="docutils literal notranslate"><span class="pre">LoopForm.VALUES</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.LoopForm.RANGE"><code class="docutils literal notranslate"><span class="pre">LoopForm.RANGE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.LoopForm.lines"><code class="docutils literal notranslate"><span class="pre">LoopForm.lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.SetForm"><code class="docutils literal notranslate"><span class="pre">SetForm</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.SetForm.label"><code class="docutils literal notranslate"><span class="pre">SetForm.label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.SetForm.set_devices"><code class="docutils literal notranslate"><span class="pre">SetForm.set_devices()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.SetForm.set_targets"><code class="docutils literal notranslate"><span class="pre">SetForm.set_targets()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.SetForm.lines"><code class="docutils literal notranslate"><span class="pre">SetForm.lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.WaitForm"><code class="docutils literal notranslate"><span class="pre">WaitForm</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.WaitForm.label"><code class="docutils literal notranslate"><span class="pre">WaitForm.label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.WaitForm.lines"><code class="docutils literal notranslate"><span class="pre">WaitForm.lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow"><code class="docutils literal notranslate"><span class="pre">ScanRow</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow.label"><code class="docutils literal notranslate"><span class="pre">ScanRow.label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow.combo"><code class="docutils literal notranslate"><span class="pre">ScanRow.combo</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow.start"><code class="docutils literal notranslate"><span class="pre">ScanRow.start</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow.stop"><code class="docutils literal notranslate"><span class="pre">ScanRow.stop</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow.points"><code class="docutils literal notranslate"><span class="pre">ScanRow.points</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow.points_label"><code class="docutils literal notranslate"><span class="pre">ScanRow.points_label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow.set_visible"><code class="docutils literal notranslate"><span class="pre">ScanRow.set_visible()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanRow.values"><code class="docutils literal notranslate"><span class="pre">ScanRow.values()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanForm"><code class="docutils literal notranslate"><span class="pre">ScanForm</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanForm.label"><code class="docutils literal notranslate"><span class="pre">ScanForm.label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanForm.set_axes"><code class="docutils literal notranslate"><span class="pre">ScanForm.set_axes()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.ScanForm.lines"><code class="docutils literal notranslate"><span class="pre">ScanForm.lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PeakForm"><code class="docutils literal notranslate"><span class="pre">PeakForm</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PeakForm.label"><code class="docutils literal notranslate"><span class="pre">PeakForm.label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PeakForm.STATISTICS"><code class="docutils literal notranslate"><span class="pre">PeakForm.STATISTICS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PeakForm.set_axes"><code class="docutils literal notranslate"><span class="pre">PeakForm.set_axes()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PeakForm.set_peak_fields"><code class="docutils literal notranslate"><span class="pre">PeakForm.set_peak_fields()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PeakForm.lines"><code class="docutils literal notranslate"><span class="pre">PeakForm.lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PrintForm"><code class="docutils literal notranslate"><span class="pre">PrintForm</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PrintForm.label"><code class="docutils literal notranslate"><span class="pre">PrintForm.label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.PrintForm.lines"><code class="docutils literal notranslate"><span class="pre">PrintForm.lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.CodeForm"><code class="docutils literal notranslate"><span class="pre">CodeForm</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.CodeForm.label"><code class="docutils literal notranslate"><span class="pre">CodeForm.label</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.CodeForm.lines"><code class="docutils literal notranslate"><span class="pre">CodeForm.lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroTab"><code class="docutils literal notranslate"><span class="pre">MacroTab</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroTab.title"><code class="docutils literal notranslate"><span class="pre">MacroTab.title</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroTab.scrollable"><code class="docutils literal notranslate"><span class="pre">MacroTab.scrollable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroTab.refresh"><code class="docutils literal notranslate"><span class="pre">MacroTab.refresh()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroTab.on_kernel_state"><code class="docutils literal notranslate"><span class="pre">MacroTab.on_kernel_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroTab.on_kernel_values"><code class="docutils literal notranslate"><span class="pre">MacroTab.on_kernel_values()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.macro.MacroTab.macro_name"><code class="docutils literal notranslate"><span class="pre">MacroTab.macro_name()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/gui/tabs/macro/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../../../_sources/api/id4_common/gui/tabs/macro/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2014-2025, APS.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

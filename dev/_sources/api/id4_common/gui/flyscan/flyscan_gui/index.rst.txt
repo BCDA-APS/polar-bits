@@ -1,0 +1,330 @@
+id4_common.gui.flyscan.flyscan_gui
+==================================
+
+.. py:module:: id4_common.gui.flyscan.flyscan_gui
+
+.. autoapi-nested-parse::
+
+   Post-scan flyscan viewer.
+
+   Qt + matplotlib GUI that wraps the processing functions in
+   ``process_flyscan.py``. Two tabs:
+
+   * **Eiger**  — rectangular pixel ROI on the Eiger camera images, summed per
+     trigger.
+   * **Vortex** — energy-channel window on the Vortex fluorescence spectra,
+     summed per trigger.
+
+   Each tab has a sample-frame preview (with the current ROI overlaid) and a
+   2D map of the per-image scalar value. The map can be normalized by I0 and
+   switched between scatter and tricontourf rendering.
+
+   The Eiger tab can also browse frames: an owner that reports a frame count to
+   ``EigerTab.set_preview`` gets a frame slider under the preview (see
+   ``frame_requested`` / ``update_preview_frame``) and can mark the map position
+   of the shown frame with ``set_frame_marker``. The live viewer uses both; the
+   post-scan window here only ever shows frame 0, so its slider stays hidden.
+
+   Run with::
+
+       python flyscan_gui.py [--folder NdFeB] [--scan 238]
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: DEFAULT_EIGER_ROI
+   :value: ((299, 379), (310, 390))
+
+
+.. py:data:: DEFAULT_VORTEX_ROI
+   :value: (800, 900)
+
+
+.. py:data:: PROCESS_BATCH
+   :value: 100
+
+
+.. py:class:: ProcessWorker(func, args, kwargs)
+
+   Bases: :py:obj:`qtpy.QtCore.QThread`
+
+
+   Runs a processing function off the GUI thread.
+
+
+   .. py:attribute:: finished_ok
+
+
+   .. py:attribute:: failed
+
+
+   .. py:method:: run()
+
+
+.. py:class:: EigerTab(parent=None)
+
+   Bases: :py:obj:`_SquareStart`, :py:obj:`qtpy.QtWidgets.QWidget`
+
+
+   Open the plot panels square, then get out of the way.
+
+   A map and a detector frame both read better square, so the axes box starts
+   constrained to 1:1.  Keeping it that way would waste half of a wide panel,
+   so the constraint is dropped the first time the user deliberately resizes
+   the window or drags the splitter between the two plots.
+
+   Qt emits several resize events of its own while the layout settles, which
+   would look exactly like a user resize, so resizes only start counting a
+   moment after the widget is first shown.
+
+
+   .. py:attribute:: process_requested
+
+
+   .. py:attribute:: frame_requested
+
+
+   .. py:attribute:: redraw_requested
+
+
+   .. py:attribute:: x_cen
+
+
+   .. py:attribute:: y_cen
+
+
+   .. py:attribute:: x_width
+
+
+   .. py:attribute:: y_width
+
+
+   .. py:attribute:: follow_beam_chk
+
+
+   .. py:attribute:: process_btn
+
+
+   .. py:attribute:: scale_combo
+
+
+   .. py:attribute:: vmax_spin
+
+
+   .. py:attribute:: preview_canvas
+
+
+   .. py:attribute:: map_canvas
+
+
+   .. py:attribute:: geometry_panel
+
+
+   .. py:attribute:: partial_panel
+
+
+   .. py:method:: get_roi()
+
+      Current ROI as ``((x0, x1), (y0, y1))``, from centre and width.
+
+      An odd width puts the extra pixel on the high side, and the low edges
+      are clamped at 0 so a centre near the edge can't produce a negative
+      slice bound.
+
+
+
+   .. py:method:: set_partial_report(records, n_groups=0, dropped=0)
+
+
+   .. py:method:: drop_incomplete()
+
+      Whether incomplete-position points should be left off the map.
+
+
+
+   .. py:method:: set_scan_geometry(geo)
+
+      Show the scan's geometry and, if asked, follow its beam centre.
+
+
+
+   .. py:method:: apply_beam_center(geo)
+
+      Recentre the ROI on ``geo``'s beam centre, if it records one.
+
+      Returns True when the centre moved. A scan with no geometry, or one
+      whose beam-centre parameters were never written (they read 0, which
+      would drag the ROI into the corner), leaves the spin boxes alone —
+      so they keep the previous scan's centre, or a hand-typed one.
+
+
+
+   .. py:method:: set_preview(frame, frame_count=0)
+
+      Cache the frame, reset spinbox bounds, and render with current controls.
+
+      ``frame_count`` is how many frames the scan has; the frame slider is
+      shown (and `frame_requested` becomes live) once that exceeds one.
+
+
+
+   .. py:method:: set_frame_count(frame_count)
+
+      Update the slider's range, keeping the currently selected index.
+
+      The live viewer calls this on every tick as frames land on disk, so it
+      must not disturb whichever frame the user is looking at.
+
+
+
+   .. py:method:: update_preview_frame(frame, index)
+
+      Swap in another frame without resetting the preview's pan/zoom.
+
+
+
+   .. py:method:: set_frame_marker(xy, index=None)
+
+      Mark the map position at which the previewed frame was taken.
+
+      ``xy`` is an ``(x, y)`` pair in map coordinates, or None to clear the
+      marker. The position is remembered, so it is re-drawn after every
+      `draw_map` (which clears the axes).
+
+
+
+   .. py:method:: clear_map()
+
+
+   .. py:method:: draw_map(x, y, z, i0=None, scatter=True, trigs=None, partial=None, drop_partial=False)
+
+      Draw the position map, coloured by ``z``.
+
+      ``drop_partial`` leaves out the points whose position record is
+      incomplete. They carry a correct intensity at a position that can be
+      the better part of a step off, which a scatter shows as one slightly
+      misplaced dot but tricontourf smears across the triangles around it.
+
+
+
+.. py:class:: VortexTab(parent=None)
+
+   Bases: :py:obj:`_SquareStart`, :py:obj:`qtpy.QtWidgets.QWidget`
+
+
+   Open the plot panels square, then get out of the way.
+
+   A map and a detector frame both read better square, so the axes box starts
+   constrained to 1:1.  Keeping it that way would waste half of a wide panel,
+   so the constraint is dropped the first time the user deliberately resizes
+   the window or drags the splitter between the two plots.
+
+   Qt emits several resize events of its own while the layout settles, which
+   would look exactly like a user resize, so resizes only start counting a
+   moment after the widget is first shown.
+
+
+   .. py:attribute:: process_requested
+
+
+   .. py:attribute:: redraw_requested
+
+
+   .. py:attribute:: e_start
+
+
+   .. py:attribute:: e_stop
+
+
+   .. py:attribute:: process_btn
+
+
+   .. py:attribute:: geometry_panel
+
+
+   .. py:attribute:: partial_panel
+
+
+   .. py:attribute:: scale_combo
+
+
+   .. py:attribute:: preview_canvas
+
+
+   .. py:attribute:: map_canvas
+
+
+   .. py:method:: get_roi()
+
+
+   .. py:method:: set_partial_report(records, n_groups=0, dropped=0)
+
+
+   .. py:method:: drop_incomplete()
+
+      Whether incomplete-position points should be left off the map.
+
+
+
+   .. py:method:: set_scan_geometry(geo)
+
+
+   .. py:method:: set_preview(spectrum)
+
+      Cache the spectrum, reset spinbox bounds, render with current scale.
+
+
+
+   .. py:method:: clear_map()
+
+
+   .. py:method:: draw_map(x, y, z, i0=None, scatter=True, trigs=None, partial=None, drop_partial=False)
+
+      Draw the position map, coloured by ``z``.
+
+      ``drop_partial`` leaves out the points whose position record is
+      incomplete. They carry a correct intensity at a position that can be
+      the better part of a step off, which a scatter shows as one slightly
+      misplaced dot but tricontourf smears across the triangles around it.
+
+
+
+.. py:class:: MainWindow(initial_folder=None)
+
+   Bases: :py:obj:`qtpy.QtWidgets.QMainWindow`
+
+
+   .. py:attribute:: folder_label
+
+
+   .. py:attribute:: scan_spin
+
+
+   .. py:attribute:: norm_chk
+
+
+   .. py:attribute:: style_combo
+
+
+   .. py:attribute:: tabs
+
+
+   .. py:attribute:: eiger_tab
+
+
+   .. py:attribute:: vortex_tab
+
+
+   .. py:attribute:: status
+
+
+.. py:function:: main()
+

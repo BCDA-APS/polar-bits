@@ -1,0 +1,146 @@
+id4_common.gui.tabs.scanplot
+============================
+
+.. py:module:: id4_common.gui.tabs.scanplot
+
+.. autoapi-nested-parse::
+
+   Live scan plot, fed by documents streamed from the kernel.
+
+   Every plottable detector field in the run gets a curve and a check box, so a
+   scan with several detectors can be filtered down to the interesting ones.  The
+   fields hinted by the run -- which is what ``counters`` controls -- are ticked
+   by default, matching what BestEffortCallback draws inline in the console.
+
+   The selectors sit in a panel down the right-hand side of the canvas: a **Plot**
+   column of check boxes and a **Mon** column of radio buttons.  Picking a monitor
+   divides every curve by that field point by point, which is how a detector is
+   normalised against I0 -- the usual way to take the incident-flux drift of a
+   scan out of the data.
+
+   Data is retained **raw** for all fields regardless of tick state, so enabling a
+   curve part-way through a scan shows its full history, and changing the monitor
+   recomputes every curve from the values already recorded rather than only
+   affecting points from there on.
+
+   Under the plot is the **peak row**: ``cen``/``com``/``max``/``min``/``fwhm`` for
+   one chosen curve, a dotted vertical marker on the plot for each of the four that
+   has a position, and a button that moves the scanned axis onto each.  The
+   statistics come from
+   :func:`~id4_common.utils.peak_statistics.peak_statistics` fed the *plotted* arrays,
+   so a monitor selection is inherited for free -- what the markers show and the
+   buttons move to is the peak of the curve on screen, not of the raw detector.
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: PRIMARY
+   :value: 'primary'
+
+
+.. py:data:: FLYSCAN_PREFIX
+   :value: 'flyscan'
+
+
+.. py:data:: DICHRO_STREAM
+   :value: 'dichro_monitor'
+
+
+.. py:data:: DICHRO_SLOW
+   :value: 'dichro_positioner1'
+
+
+.. py:data:: DICHRO_FAST
+   :value: 'dichro_positioner2'
+
+
+.. py:data:: DICHRO_XAS
+   :value: 'dichro_xas'
+
+
+.. py:data:: DICHRO_XMCD
+   :value: 'dichro_xmcd'
+
+
+.. py:data:: DICHRO_COLOURS
+
+.. py:function:: is_flyscan(doc)
+
+   Whether *doc* is the start document of a flyscan.
+
+
+.. py:data:: SELECTOR_WIDTH
+   :value: 260
+
+
+.. py:data:: OPTIONS_KEY
+   :value: 'scan_options'
+
+
+.. py:data:: OPTIONS_EXPR
+   :value: '_gui_scan_options()'
+
+
+.. py:data:: MARKER_STYLES
+   :value: (('cen', '#d62728'), ('com', '#1f9e5a'), ('max', '#7b3fb5'), ('min', '#c77f00'))
+
+
+.. py:data:: MARKER_TOOLTIPS
+
+.. py:class:: ScanPlotTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Plot the running scan, point by point, one curve per detector field.
+
+
+   .. py:attribute:: title
+      :value: 'Live plot'
+
+
+
+   .. py:attribute:: scrollable
+      :value: False
+
+
+
+   .. py:attribute:: detachable
+      :value: True
+
+
+
+   .. py:method:: on_document(name, doc)
+
+      Consume one Bluesky document.
+
+
+
+   .. py:method:: refresh()
+
+      Re-read the axis list, which is how a hinted field becomes a path.
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Pick up the hinted-field to dotted-path map.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Note when the kernel is gone, so a stalled plot is explicable.
+
+
+

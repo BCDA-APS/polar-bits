@@ -1,0 +1,115 @@
+id4_common.gui.tabs.scan
+========================
+
+.. py:module:: id4_common.gui.tabs.scan
+
+.. autoapi-nested-parse::
+
+   Scan tab: build and run a local_scans plan from a form.
+
+   The tab composes the exact command it will run and shows it before you press
+   Scan, then executes it **in the console** via ``BaseTab.run_in_console()``.
+   That keeps a scan an ordinary Bluesky command: session RunEngine, visible in
+   history, drawn live by the Scan plot tab, and interruptible with Ctrl-C.
+
+   Argument order differs between the plans and is easy to get wrong by hand --
+   ``ascan`` takes ``motor, start, stop, ..., num_points, time`` while
+   ``grid_scan`` takes ``motor, start, stop, num, ..., time`` -- so the form
+   encodes the difference rather than leaving it to memory.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: OPTIONS_KEY
+   :value: 'scan_options'
+
+
+.. py:data:: OPTIONS_EXPR
+   :value: '_gui_scan_options()'
+
+
+.. py:data:: SECONDS
+   :value: 'seconds'
+
+
+.. py:data:: MONITOR_COUNTS
+   :value: 'monitor counts'
+
+
+.. py:data:: OVERHEAD_S
+   :value: 0.35
+
+
+.. py:data:: DEFAULT_POINTS
+   :value: 21
+
+
+.. py:data:: DEFAULT_TIME_S
+   :value: 0.2
+
+
+.. py:data:: TIME_STEP_S
+   :value: 0.1
+
+
+.. py:data:: MIN_TIME_S
+   :value: 0.1
+
+
+.. py:data:: VALUE_WIDTH
+   :value: 110
+
+
+.. py:data:: AXIS_WIDTH
+   :value: 220
+
+
+.. py:data:: AXIS_COUNT_NOTE
+   :value: 'A third axis is available for ascan and lup. The grid plans keep two, because the live image is 2D.'
+
+
+.. py:class:: ScanTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Compose a scan and run it in the console.
+
+
+   .. py:attribute:: title
+      :value: 'Scan'
+
+
+
+   .. py:method:: refresh()
+
+      Re-read the axis and detector lists.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Nothing may be launched or edited while a plan is running.
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Populate axis combos and detector checkboxes.
+
+
+
+   .. py:method:: on_document(name, doc)
+
+      A finished run may have changed the counters selection.
+
+
+

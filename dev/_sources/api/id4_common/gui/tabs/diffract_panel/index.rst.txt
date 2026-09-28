@@ -1,0 +1,88 @@
+id4_common.gui.tabs.diffract_panel
+==================================
+
+.. py:module:: id4_common.gui.tabs.diffract_panel
+
+.. autoapi-nested-parse::
+
+   3D diffractometer panel for the right-hand side of the HKL tab.
+
+   Shows either the *current* angles or the ones from the last Calculate, with
+   optional overlays for the scattering plane, the psi reference vector and Q.
+
+   Degrades to a message if vtk/pyvista/pyvistaqt are missing, so the GUI still
+   runs without them.
+
+   **The model's joint names are not the solver's axis names.**  The drawing calls
+   the horizontal detector rotation ``nu``; hklpy2's APS POLAR geometry calls it
+   ``gamma``.  Every angle that arrives here is therefore translated through
+   :data:`id4_common.gui.config.MODEL_AXIS_MAP` rather than matched by name, and
+   :data:`~id4_common.gui.config.UNMODELLED_AXES` names the real axes the drawing
+   does not show at all -- ``tau`` moves nothing on screen, and a panel that
+   silently ignored it would look like one that was not updating.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: CURRENT
+   :value: 'current'
+
+
+.. py:data:: CALCULATED
+   :value: 'calculated'
+
+
+.. py:data:: MIN_VIEW_SIZE
+   :value: (40, 40)
+
+
+.. py:data:: MIN_CONTROLS_WIDTH
+   :value: 60
+
+
+.. py:data:: CONTROLS_PADDING
+   :value: 4
+
+
+.. py:data:: MODEL_TO_DEVICE
+
+.. py:class:: Diffract3DPanel(parent=None)
+
+   Bases: :py:obj:`qtpy.QtWidgets.QWidget`
+
+
+   The 3D view plus its source selector and overlay toggles.
+
+
+   .. py:method:: set_current(reals)
+
+      Update the live angles.
+
+
+
+   .. py:method:: set_calculated(reals)
+
+      Update the angles from the last successful Calculate.
+
+
+
+   .. py:method:: set_orientation(ub, reference)
+
+      Set UB and the psi reference (h2, k2, l2) for the reference arrow.
+
+
+
+   .. py:method:: shutdown()
+
+      Release the VTK render window; leaking it can hang exit.
+
+
+

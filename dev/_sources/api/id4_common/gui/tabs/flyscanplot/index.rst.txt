@@ -1,0 +1,75 @@
+id4_common.gui.tabs.flyscanplot
+===============================
+
+.. py:module:: id4_common.gui.tabs.flyscanplot
+
+.. autoapi-nested-parse::
+
+   Flyscan live viewer, embedded as a tab.
+
+   The viewer itself is :class:`~id4_common.gui.flyscan.flyscan_live_gui.
+   LiveMainWindow`, vendored from the beamline analysis folder -- this module only
+   hosts it and tells it where the data is.  It reads the scan's HDF5 files in
+   SWMR mode on its own timer, so it needs nothing from the RunEngine and cannot
+   disturb an acquisition.
+
+   Two things are deliberately not eager.  The viewer is built the first time the
+   tab is shown rather than at start-up, so the h5py/matplotlib import and two
+   matplotlib canvases are not paid for by a session that never opens it, and an
+   unreadable ``/gdata`` degrades to a message in this tab instead of a GUI that
+   will not start.  And the folder is defaulted from the session's experiment path
+   only until the user browses somewhere else -- after that the choice is theirs
+   and the poll stops overriding it.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: FlyscanPlotTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Host the flyscan live viewer, pointed at the experiment folder.
+
+
+   .. py:attribute:: title
+      :value: 'Flyscan plot'
+
+
+
+   .. py:attribute:: scrollable
+      :value: False
+
+
+
+   .. py:attribute:: detachable
+      :value: True
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Track the session's experiment path and adopt it as the folder.
+
+      ``exp_path`` is *absent* -- not empty -- until ``experiment_setup()``
+      has run, because the kernel-side property raises until then and the
+      poller keeps only expressions that evaluated cleanly.  The reply also
+      arrives once a second whether anything changed or not, hence the
+      comparison against the cached value.
+
+
+
+   .. py:method:: showEvent(event)
+
+      Build the viewer the first time the tab is actually looked at.
+
+
+

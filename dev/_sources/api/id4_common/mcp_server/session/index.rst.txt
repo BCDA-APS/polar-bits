@@ -1,0 +1,224 @@
+id4_common.mcp_server.session
+=============================
+
+.. py:module:: id4_common.mcp_server.session
+
+.. autoapi-nested-parse::
+
+   Talk to a running GUI session's kernel.
+
+   :class:`HklSession` is a plain ``jupyter_client`` client with one method that
+   matters, :meth:`HklSession.call`.  It has **no ``mcp`` import**, so everything
+   below can be built and tested before the SDK is installed, and the protocol
+   layer in :mod:`id4_common.mcp_server.server` stays a declaration of tools and
+   nothing else.
+
+   Finding the kernel
+   ------------------
+   The GUI writes ``.polar-gui-kernel-<station>.json`` into its kernel's working
+   directory (see :meth:`id4_common.gui.kernel.KernelSession.start`) and removes
+   it on close.  Discovery walks up from the current directory looking for that
+   file, which means an MCP client launched with ``cwd`` anywhere inside the
+   session's directory tree finds it; ``POLAR_GUI_KERNEL_FILE`` and the
+   constructor argument override.
+
+   The name carries the station because four POLAR stations share one filesystem
+   and one checkout.  6-ID-B could use a fixed name -- there is one session there
+   -- but here a station-blind pointer would let a client attach to the wrong
+   beamline's kernel, which is the one discovery failure this must not have.
+
+   Deliberately **not** :func:`jupyter_client.find_connection_file`, whose
+   no-argument form returns the newest runtime file -- which may be an unrelated
+   notebook, and attaching to the wrong kernel is exactly the failure this must
+   not have.
+
+   Not blocking on a busy kernel
+   -----------------------------
+   A running scan holds the shell channel, and a request sent to a busy kernel is
+   *queued*: it would run when the scan ends, possibly an hour later, long after
+   the model gave up on it.  Silently changing an orientation an hour after it was
+   asked for is worse than refusing, so :meth:`call` sends an empty, silent probe
+   first and refuses if that does not come back promptly.  The probe is a no-op,
+   so a queued one that lands later does nothing.
+
+   Watching without the kernel
+   ---------------------------
+   That refusal is right, and it leaves a gap: while an approved move or a scan
+   runs, *every* kernel call is refused, which is exactly when a client most wants
+   to know what is happening.  :meth:`HklSession.status` answers from two sources
+   outside the shell channel, both already proven elsewhere in this package:
+
+   * **Channel Access, from this process.**  The readback PV of each axis, read
+     with ``epics.PV`` -- the same trick the HKL tab's progress bar uses to follow
+     a move while the kernel is blocked by it (``tabs/hkl.py:_start_progress``).
+     The PV names arrive in ``real_pvs`` from ``get_state`` and are cached, so a
+     client that has read state once can watch the machine forever.
+   * **The session's ``RE.md`` on disk**, for ``scan_id`` and the run metadata.
+     At the beamline that is a ``bluesky.utils.PersistentDict`` -- a *directory*
+     of msgpack files under ``RUN_ENGINE.MD_PATH``, written through on every
+     assignment, so ``scan_id`` is on disk the moment a run opens.  The
+     development config points ``MD_PATH`` at a file instead, which is an
+     ``apstools.utils.StoredDict`` (one YAML file, written after a short delay).
+     Neither path is guessable from here -- it is per station and not under the
+     kernel's working directory -- so it is asked of the kernel once while it is
+     idle and remembered, the same bargain the PV cache makes.
+
+
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: ALL_READ_OPS
+
+.. py:data:: POINTER_GLOB
+   :value: '.polar-gui-kernel-*.json'
+
+
+.. py:data:: MD_KEYS
+   :value: ('scan_id', 'sample', 'proposal_id', 'beamline_id')
+
+
+.. py:data:: CA_TIMEOUT
+   :value: 1.0
+
+
+.. py:data:: POINTER_ENV
+   :value: 'POLAR_GUI_KERNEL_FILE'
+
+
+.. py:data:: PROBE_TIMEOUT
+   :value: 3.0
+
+
+.. py:data:: REPLY_NAME
+   :value: '_gui_mcp_reply'
+
+
+.. py:data:: CALL_TIMEOUT
+   :value: 30.0
+
+
+.. py:exception:: SessionError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Raised when no live GUI session can be reached.
+
+
+.. py:function:: pointer_name()
+
+   Name of the pointer file this client is looking for.
+
+   A function rather than a module constant because ``ID4_STATION`` may be
+   set after import -- the GUI's ``--station`` flag does exactly that -- and a
+   constant frozen at import time would send a client launched for id4_h
+   looking for id4_g's session.
+
+
+.. py:function:: find_pointer(start=None)
+
+   Return the path of the GUI's pointer file, or None.
+
+   Looks at :data:`POINTER_ENV` first, then *start* (default: the current
+   directory) and each of its parents.
+
+
+.. py:function:: find_other_pointers(start=None)
+
+   Return pointer files for *other* stations, nearest directory first.
+
+   Only for the error message.  Four stations share this filesystem, so
+   "no session" is usually wrong and misleading -- what actually happened is
+   that a session for a different station is running, and the fix is
+   ``--station`` (or ``ID4_STATION``), not starting a second GUI.
+
+
+.. py:function:: read_pointer(explicit=None, start=None)
+
+   Return the GUI's pointer file as a dict, or an empty one.
+
+   A connection file passed as *explicit* has no ``connection_file`` key and
+   comes back empty, which is the honest answer: it says nothing about where
+   the kernel is working.
+
+
+.. py:function:: resolve_connection_file(explicit=None, start=None)
+
+   Return the kernel connection file to attach to.
+
+   *explicit* may be either a connection file or a pointer file -- they are
+   told apart by content, so a user who passes the wrong one still gets a
+   working session rather than a puzzle.  Raises :class:`SessionError` with a
+   sentence saying what to do when there is nothing to attach to.
+
+
+.. py:class:: HklSession(connection_file=None, start=None, device=DEFAULT_DEVICE)
+
+   A client for the ``_gui_mcp`` dispatcher in a live GUI kernel.
+
+
+   .. py:attribute:: device
+
+
+   .. py:attribute:: connection_file
+      :value: None
+
+
+
+   .. py:attribute:: session_cwd
+      :value: None
+
+
+
+   .. py:attribute:: client
+      :value: None
+
+
+
+   .. py:method:: connect()
+
+      Attach to the kernel, raising :class:`SessionError` if there is none.
+
+
+
+   .. py:method:: close()
+
+      Detach.  The kernel keeps running -- it is not ours.
+
+
+
+   .. py:method:: call(op, device=None, **args)
+
+      Run one operation and return the dispatcher's reply.
+
+      *device* names the diffractometer for an orientation or hkl op, and is
+      :data:`~id4_common.mcp_server.bridge.SESSION_DEVICE` for one that acts on
+      the session as a whole; it defaults to ``self.device``.  The kernel
+      checks it again against the op's own scope, so getting it wrong here is
+      a refusal in words, not a wrong device.
+
+      Always returns ``{"ok": bool, "message": str, "data": ...}``, including
+      for transport failures, so a caller never has to tell a refusal apart
+      from a broken connection by its type.
+
+
+
+   .. py:method:: status()
+
+      Report what can be known *without* the kernel's shell channel.
+
+      This is the one call that still answers during a scan or an approved
+      move.  ``busy`` is the probe's own verdict, so it is the same notion of
+      busy every other call uses.
+
+
+

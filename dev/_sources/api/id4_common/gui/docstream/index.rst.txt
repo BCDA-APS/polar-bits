@@ -1,0 +1,106 @@
+id4_common.gui.docstream
+========================
+
+.. py:module:: id4_common.gui.docstream
+
+.. autoapi-nested-parse::
+
+   Stream Bluesky documents from the kernel into the GUI process.
+
+   Live plotting cannot be done inside the kernel on this beamline:
+
+   * ``%matplotlib qt`` *before* ``id4_common.startup`` breaks ``import gi``, which
+     ``hklpy2``/``libhkl`` needs (Qt and PyGObject fight over shared libraries);
+   * ``%matplotlib qt`` *after* startup leaves the RunEngine without the Qt
+     teleporter it would have built at construction time, and the next scan dies
+     with ``QObject::setParent: Cannot set parent, new parent is in a different
+     thread`` -- in testing it hung the RunEngine outright.
+
+   So the kernel stays Qt-free and simply publishes documents over ZMQ.  The GUI
+   process, which already owns a Qt event loop, receives them and draws.  Nothing
+   here can wedge a scan: if this side dies, the kernel just publishes into a
+   socket nobody reads.
+
+   Topology, all on localhost::
+
+       kernel: Publisher -> in_port -> Proxy -> out_port -> RemoteDispatcher: GUI
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: PUBLISHER_CODE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """try:
+          from bluesky.callbacks.zmq import Publisher as _GuiPublisher
+          _gui_publisher = _GuiPublisher(("127.0.0.1", {port}))
+          _gui_publisher_token = RE.subscribe(_gui_publisher)
+      except Exception as _gui_exc:
+          print("Live plot publisher unavailable:", _gui_exc)
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:function:: free_port()
+
+   Return a currently-unused localhost TCP port.
+
+
+.. py:class:: DocumentStream(parent=None)
+
+   Bases: :py:obj:`qtpy.QtCore.QObject`
+
+
+   Receive documents published by the kernel and re-emit them in Qt.
+
+   ``document`` is emitted on the GUI thread: the dispatcher runs in its own
+   thread, and Qt queues cross-thread signal emissions automatically.
+
+
+   .. py:attribute:: document
+
+
+   .. py:attribute:: in_port
+
+
+   .. py:attribute:: out_port
+
+
+   .. py:method:: start()
+
+      Start the proxy and dispatcher in daemon threads.
+
+
+
+   .. py:method:: publisher_code()
+
+      Return the snippet that subscribes the kernel's RunEngine.
+
+
+
+   .. py:method:: stop()
+
+      Stop the dispatcher.  Threads are daemons, so the proxy just ends.
+
+
+

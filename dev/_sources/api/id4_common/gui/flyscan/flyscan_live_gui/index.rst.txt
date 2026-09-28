@@ -1,0 +1,127 @@
+id4_common.gui.flyscan.flyscan_live_gui
+=======================================
+
+.. py:module:: id4_common.gui.flyscan.flyscan_live_gui
+
+.. autoapi-nested-parse::
+
+   Live (mid-scan) flyscan viewer.
+
+   A Qt GUI that polls a flyscan's HDF5 files in SWMR mode and updates
+   the 2D map as data lands on disk. Reuses the Eiger and Vortex tab widgets
+   from :mod:`flyscan_gui` so the controls, previews, and map look identical
+   to the post-scan viewer.
+
+   The Eiger preview has a frame slider under it: dragging it steps through the
+   frames written so far, and a red circle on the position map below marks where
+   that frame was taken.
+
+   Run with::
+
+       python flyscan_live_gui.py [--folder NdFeB] [--scan 244]
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: DEFAULT_POLL_MS
+   :value: 1000
+
+
+.. py:data:: DEFAULT_IDLE_TIMEOUT_S
+   :value: 30
+
+
+.. py:data:: FRAME_LOAD_DEBOUNCE_MS
+   :value: 120
+
+
+.. py:data:: WORKER_SHUTDOWN_WAIT_MS
+   :value: 3000
+
+
+.. py:data:: CONFIG_FILENAME
+   :value: 'flyscan_gui_dichro.config.json'
+
+
+.. py:data:: ROI_SAVE_DEBOUNCE_MS
+   :value: 400
+
+
+.. py:class:: LiveMainWindow(initial_folder=None)
+
+   Bases: :py:obj:`qtpy.QtWidgets.QMainWindow`
+
+
+   .. py:attribute:: folder_label
+
+
+   .. py:attribute:: browse_btn
+
+
+   .. py:attribute:: scan_spin
+
+
+   .. py:attribute:: auto_chk
+
+
+   .. py:attribute:: start_btn
+
+
+   .. py:attribute:: stop_btn
+
+
+   .. py:attribute:: reprocess_btn
+
+
+   .. py:attribute:: norm_chk
+
+
+   .. py:attribute:: style_combo
+
+
+   .. py:attribute:: poll_spin
+
+
+   .. py:attribute:: idle_spin
+
+
+   .. py:attribute:: tabs
+
+
+   .. py:attribute:: eiger_tab
+
+
+   .. py:attribute:: vortex_tab
+
+
+   .. py:attribute:: status
+
+
+   .. py:property:: folder
+
+      The sample folder currently being watched, ``""`` if unset.
+
+
+   .. py:method:: set_folder(path)
+
+      Point the viewer at the sample folder *path*.
+
+      Public so a host GUI can supply the folder without reaching into
+      private state -- the Flyscan plot tab defaults it to the session's
+      experiment path this way.
+
+
+
+   .. py:method:: closeEvent(event)
+
+
+.. py:function:: main()
+

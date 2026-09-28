@@ -1,0 +1,130 @@
+id4_common.gui.tabs.base
+========================
+
+.. py:module:: id4_common.gui.tabs.base
+
+.. autoapi-nested-parse::
+
+   Common base class for tabs in the Bluesky GUI upper pane.
+
+   To add a tab: subclass :class:`BaseTab`, set ``title``, override whichever
+   update hooks you need, then add the class to ``TABS`` in ``id4_common.gui.app``.
+   The window wires the poller signals to every tab automatically, so a tab only
+   has to say what it does with the values.
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: PLACEHOLDER
+   :value: '—'
+
+
+.. py:function:: fixed_font(widget)
+
+   Return the system monospace font at *widget*'s current point size.
+
+   ``QFontDatabase.systemFont`` carries the desktop's own size, which
+   ignores the application font set in ``app.main``.  Left alone, every
+   monospace value stays at the desktop default while the labels around it
+   scale, so the size is copied off the widget -- which has already
+   inherited the application font -- before the family is swapped.
+
+
+.. py:function:: value_label(text=PLACEHOLDER)
+
+   Return a monospace, selectable label for a displayed value.
+
+
+.. py:class:: BaseTab
+
+   Bases: :py:obj:`qtpy.QtWidgets.QWidget`
+
+
+   A tab in the upper pane.
+
+   Subclasses override the hooks they care about; the defaults do nothing so a
+   tab need only implement what it uses.
+
+
+   .. py:attribute:: title
+      :value: 'Tab'
+
+
+
+   .. py:attribute:: detachable
+      :value: False
+
+
+
+   .. py:attribute:: scrollable
+      :value: True
+
+
+
+   .. py:attribute:: poller
+      :value: None
+
+
+
+   .. py:attribute:: console_execute
+      :value: None
+
+
+
+   .. py:attribute:: session_cwd
+      :value: None
+
+
+
+   .. py:attribute:: transcript
+      :value: None
+
+
+
+   .. py:method:: run_in_console(code)
+
+      Run *code* in the console, as though the user had typed it.
+
+
+
+   .. py:method:: request(expressions)
+
+      Ask the kernel to evaluate *expressions* on the next idle poll.
+
+      Results arrive in :meth:`on_kernel_values` keyed the same way.
+
+
+
+   .. py:method:: on_metadata(metadata)
+
+      Handle a fresh read of the session's ``RE.md`` identity fields.
+
+      Called only when one of them changes, and only while the kernel is
+      idle enough to answer the poll -- a tab that needs to move during a
+      scan wants :meth:`on_document` instead.
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Handle evaluated ``user_expressions``.
+
+      Only called while the kernel is idle.  Keys whose expression raised are
+      absent from *values*.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Handle a kernel state change: ``"idle"``, ``"busy"`` or ``"dead"``.
+
+
+

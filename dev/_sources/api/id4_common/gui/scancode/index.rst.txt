@@ -1,0 +1,181 @@
+id4_common.gui.scancode
+=======================
+
+.. py:module:: id4_common.gui.scancode
+
+.. autoapi-nested-parse::
+
+   Build a scan-plan call from form values.
+
+   Shared by the Scan tab, which runs one scan now, and the Macro tab, which
+   writes one into a plan.  The rule worth keeping in one place is the argument
+   order, which differs between the plans and is silent when got wrong::
+
+       ascan(motor, start, stop, ..., num_points, time)     # len % 3 == 2
+       grid_scan(motor, start, stop, num, ..., time)        # len % 4 == 1
+       hscan(start, stop, num_points, time)                 # axis is implicit
+       hklscan(h1, h2, k1, k2, l1, l2, num_points, time)    # three implicit axes
+
+   Every numeric slot is a **string**.  The Scan tab formats its spin-box floats
+   before calling; the Macro tab passes its free-text fields straight through, so
+   a loop variable (``start`` = ``centre - 0.1``) survives into the generated code.
+
+   POLAR's reciprocal-space plans are the reason this module grew a third shape.
+   ``hscan``/``kscan``/``lscan``/``th2th``/``psiscan``/``hklscan`` take **no axis
+   argument** -- the axis is in the plan's name, and the plan finds the active
+   diffractometer itself.  Modelling them as "an axis row whose axis is fixed"
+   keeps one code path in both tabs; the alternative, a special case per plan,
+   is exactly the kind of silent argument-order bug this module exists to
+   prevent.
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: Plan(takes_axes=True, per_axis_points=False, fixed_axes=(), scalar_label='Points', scalar_points=True, note=None)
+
+   How one scan plan's positional arguments are laid out.
+
+   ``takes_axes``
+       Whether the caller chooses the axes.  False for ``count``/``qxscan``,
+       which take no trajectory at all, and for the fixed-axis plans, whose
+       axes are in their names.
+   ``per_axis_points``
+       Whether each axis carries its own point count (a mesh) or they share
+       one (a trajectory).
+   ``fixed_axes``
+       Labels for rows whose axis is implicit.  These emit ``start, stop``
+       only -- no axis name -- and the labels are shown in the form so the
+       operator can see which is which.
+   ``scalar_label``
+       For a plan with no rows, what its single leading number is.
+   ``scalar_points``
+       Whether that leading number *is* a point count.  ``qxscan``'s is an
+       edge energy in keV: a float, and no basis for a duration estimate,
+       since how many points it visits comes from ``qxscan_params()``.
+   ``note``
+       Shown under the form.  Only where a plan has a precondition the
+       argument list does not express.
+
+
+   .. py:attribute:: takes_axes
+      :value: True
+
+
+
+   .. py:attribute:: per_axis_points
+      :value: False
+
+
+
+   .. py:attribute:: fixed_axes
+      :value: ()
+
+
+
+   .. py:attribute:: scalar_label
+      :value: 'Points'
+
+
+
+   .. py:attribute:: scalar_points
+      :value: True
+
+
+
+   .. py:attribute:: note
+      :value: None
+
+
+
+   .. py:property:: has_rows
+
+      Whether the form shows start/stop rows for this plan.
+
+
+.. py:data:: PLANS
+
+.. py:data:: NO_FIXQ
+
+.. py:data:: MAX_TRAJECTORY_AXES
+   :value: 3
+
+
+.. py:data:: MAX_GRID_AXES
+   :value: 2
+
+
+.. py:data:: AXIS_ORDINALS
+   :value: ('', 'Second axis', 'Third axis')
+
+
+.. py:function:: plan(name)
+
+   Return the :class:`Plan` for *name*, defaulting to the ``ascan`` shape.
+
+
+.. py:function:: plan_shape(name)
+
+   Return ``(takes_axes, per_axis_points)`` for *name*.
+
+
+.. py:function:: fixed_axes(name)
+
+   Return the implicit axis labels for *name*, or an empty tuple.
+
+
+.. py:function:: takes_fixq(name)
+
+   Whether the ``fixq`` checkbox applies to *name*.
+
+
+.. py:function:: axis_limit(name)
+
+   Return how many axis rows *name* may be given in the GUI.
+
+
+.. py:function:: active_axes(name, enabled)
+
+   Return how many axis rows are in play.
+
+   *enabled* is the checked state of the boxes that add rows 2, 3, ...  Each
+   extra row needs the one before it, so the count stops at the first
+   unchecked box -- and at the plan's own ceiling.  A fixed-axis plan has no
+   boxes: every one of its rows is always in play.
+
+
+.. py:function:: format_number(value)
+
+   Format a float for generated code, without trailing noise.
+
+
+.. py:function:: scan_arguments(name, rows, shared_points, time_text)
+
+   Return ``(args, problem)`` -- the positional arguments, as strings.
+
+   *rows* is a sequence of ``(axis, start, stop, points)`` string tuples; the
+   ``points`` entry is ignored for the plans that share one point count, and
+   the ``axis`` entry for the fixed-axis plans, where it is a label rather
+   than something to pass.  *problem* is a message when the form cannot make a
+   valid call, in which case *args* is None.
+
+
+.. py:function:: format_scan_call(name, rows, shared_points, time_text, fixq=False, detectors=None)
+
+   Return ``(call_text, problem)`` for a bare ``plan(...)`` call.
+
+   The caller decides what to do with it: the Scan tab wraps it in ``RE(...)``,
+   the Macro tab prefixes ``yield from``.
+
+   *detectors* is a list of device names, or None to leave the argument out.
+   Omitting it matters -- passing an explicit list makes the plan skip
+   ``_setup_detectors()``, which is where the negative-time validation lives.
+
+

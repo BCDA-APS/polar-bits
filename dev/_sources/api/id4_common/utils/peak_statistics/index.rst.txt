@@ -1,0 +1,60 @@
+id4_common.utils.peak_statistics
+================================
+
+.. py:module:: id4_common.utils.peak_statistics
+
+.. autoapi-nested-parse::
+
+   Peak statistics for a single 1D curve.
+
+   One implementation, used by two callers that must not disagree:
+
+   * :mod:`id4_common.plans.center_maximum` -- the ``cen``/``maxi``/``mini``/``com``
+     plans that actually move a positioner, running in the Bluesky session.
+   * :mod:`id4_common.gui.tabs.scanplot` -- the peak readout, the dotted marker lines
+     and the four "Go to" buttons, running in the *GUI* process.
+
+   The definitions are copied from :class:`bluesky.callbacks.fitting.PeakStats`
+   (with its default ``edge_count=None``, i.e. no background subtraction), so the
+   numbers reported here match the ``cen``/``com``/``max`` table that
+   ``BestEffortCallback`` prints in the console after every scan.
+
+   The module is deliberately dependency-light -- only :mod:`numpy` -- so the GUI
+   process can import it without pulling in ophyd, bluesky or EPICS.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: STATISTICS
+   :value: ('cen', 'com', 'max', 'min', 'fwhm')
+
+
+.. py:function:: peak_statistics(x, y)
+
+   Compute peak statistics for one curve.
+
+   :param x: The curve, in acquisition order.  ``x`` is *not* sorted, so that the
+             result matches ``PeakStats``, which also works in event order.
+             Non-finite pairs are dropped.
+   :type x: sequence of float
+   :param y: The curve, in acquisition order.  ``x`` is *not* sorted, so that the
+             result matches ``PeakStats``, which also works in event order.
+             Non-finite pairs are dropped.
+   :type y: sequence of float
+
+   :returns: Keys ``"cen"``, ``"com"``, ``"max"``, ``"min"``, ``"fwhm"``,
+             ``"crossings"`` and ``"npoints"``.  ``cen``, ``com`` and ``fwhm`` are
+             floats; ``max`` and ``min`` are ``(x, y)`` tuples, as in
+             ``PeakStats``.  A statistic that is not defined for this curve is
+             ``None`` rather than an error -- a monotonic ramp has no half-maximum
+             crossing, so it has no ``cen`` and no ``fwhm``, but it still has a
+             ``max``.
+   :rtype: dict
+
+

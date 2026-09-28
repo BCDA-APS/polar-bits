@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>id4_common.gui.diffract3d &#8212; polar-bits</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=69256293" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+    <script src="../../../../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/gui/diffract3d/index';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">polar-bits</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/general.html">
+    General Examples
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/general.html">
+    General Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../app/index.html">id4_common.gui.app</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">id4_common.gui.config</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.gui.diffract3d</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docstream/index.html">id4_common.gui.docstream</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../flyscan/index.html">id4_common.gui.flyscan</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../flyscan/flyscan_gui/index.html">id4_common.gui.flyscan.flyscan_gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flyscan/flyscan_live_gui/index.html">id4_common.gui.flyscan.flyscan_live_gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flyscan/live_flyscan/index.html">id4_common.gui.flyscan.live_flyscan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../flyscan/process_flyscan/index.html">id4_common.gui.flyscan.process_flyscan</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../hkl_bridge/index.html">id4_common.gui.hkl_bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel/index.html">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scancode/index.html">id4_common.gui.scancode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scanreader/index.html">id4_common.gui.scanreader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../session_setup/index.html">id4_common.gui.session_setup</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tabs/index.html">id4_common.gui.tabs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/agent/index.html">id4_common.gui.tabs.agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/base/index.html">id4_common.gui.tabs.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/detectors/index.html">id4_common.gui.tabs.detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/devices/index.html">id4_common.gui.tabs.devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/diffract_panel/index.html">id4_common.gui.tabs.diffract_panel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/flyscanplot/index.html">id4_common.gui.tabs.flyscanplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/hkl/index.html">id4_common.gui.tabs.hkl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/macro/index.html">id4_common.gui.tabs.macro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/scan/index.html">id4_common.gui.tabs.scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/scanhistory/index.html">id4_common.gui.tabs.scanhistory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/scanplot/index.html">id4_common.gui.tabs.scanplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabs/status/index.html">id4_common.gui.tabs.status</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../transcript/index.html">id4_common.gui.transcript</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.gui.diffract3d</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-id4_common.gui.diffract3d">
+<span id="id4-common-gui-diffract3d"></span><h1>id4_common.gui.diffract3d<a class="headerlink" href="#module-id4_common.gui.diffract3d" title="Link to this heading">#</a></h1>
+<p>3D model of the POLAR diffractometer.</p>
+<p>Ported from <code class="docutils literal notranslate"><span class="pre">~/jwkim/python/diffract/diffractometer_polar.py</span></code>.  The geometry
+constants and the kinematic chain are kept exactly as written there – they were
+matched against the real instrument, so they are not something to re-derive.</p>
+<dl>
+<dt>Lab frame (Bluesky convention):</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">+x</span></kbd></dt>
+<dd><p>incident beam direction</p>
+</dd>
+<dt><kbd><span class="option">+y</span></kbd></dt>
+<dd><p>horizontal, perpendicular to the beam</p>
+</dd>
+<dt><kbd><span class="option">+z</span></kbd></dt>
+<dd><p>vertical up</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Five angles, not six.</strong>  The model’s joints are <code class="docutils literal notranslate"><span class="pre">mu,</span> <span class="pre">chi,</span> <span class="pre">phi,</span> <span class="pre">delta,</span> <span class="pre">nu</span></code>:
+there is no <code class="docutils literal notranslate"><span class="pre">eta</span></code>, and <code class="docutils literal notranslate"><span class="pre">phi</span></code> rotates about <strong>z</strong> where the 4S+2D model
+rotates it about y.  The solver’s sixth real axis, <code class="docutils literal notranslate"><span class="pre">tau</span></code>, is not modelled –
+nothing in the drawing moves with it – and the solver’s <code class="docutils literal notranslate"><span class="pre">gamma</span></code> is this
+model’s <code class="docutils literal notranslate"><span class="pre">nu</span></code>.  That last rename is why the panel maps names through
+<a class="reference internal" href="../config/index.html#id4_common.gui.config.MODEL_AXIS_MAP" title="id4_common.gui.config.MODEL_AXIS_MAP"><code class="xref py py-data docutils literal notranslate"><span class="pre">id4_common.gui.config.MODEL_AXIS_MAP</span></code></a> rather than matching them
+directly.</p>
+<p><code class="docutils literal notranslate"><span class="pre">vtk</span></code> and <code class="docutils literal notranslate"><span class="pre">pyvista</span></code> are imported lazily so this module – and therefore the
+GUI as a whole – still imports when they are not installed.  <code class="xref py py-data docutils literal notranslate"><span class="pre">AVAILABLE</span></code>
+says whether the 3D view can actually be built.</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.logger">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.logger" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.INSTALL_HINT">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">INSTALL_HINT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Multiline-String</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.INSTALL_HINT" title="Link to this definition">#</a></dt>
+<dd><details><summary>Show Value</summary><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">"""3D view unavailable — vtk, pyvista and pyvistaqt are not installed.</span>
+
+<span class="sd">On a networked machine:</span>
+<span class="sd">    pip download --no-deps -d ./pv3d vtk==9.3.1 pyvista==0.44.2 pyvistaqt==0.11.2 pooch scooby</span>
+<span class="sd">then copy pv3d/ across and run:</span>
+<span class="sd">    pip install --no-deps --no-index ./pv3d/*.whl"""</span>
+</pre></div>
+</div>
+</details></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.DEFAULT_CAMERA">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_CAMERA</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(0.0,</span> <span class="pre">22.0,</span> <span class="pre">7.0),</span> <span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">2.0),</span> <span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)]</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.DEFAULT_CAMERA" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Rx">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">Rx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Rx" title="Link to this definition">#</a></dt>
+<dd><p>Rotation about x by <em>t</em> radians.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Ry">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">Ry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Ry" title="Link to this definition">#</a></dt>
+<dd><p>Rotation about y by <em>t</em> radians.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Rz">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">Rz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Rz" title="Link to this definition">#</a></dt>
+<dd><p>Rotation about z by <em>t</em> radians.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.to_mat4">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">to_mat4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.to_mat4" title="Link to this definition">#</a></dt>
+<dd><p>Embed a 3x3 rotation in a 4x4 homogeneous matrix.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.trans4">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">trans4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.trans4" title="Link to this definition">#</a></dt>
+<dd><p>4x4 translation matrix.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.rot_about4">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">rot_about4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pivot</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.rot_about4" title="Link to this definition">#</a></dt>
+<dd><p>4x4 rotation about <em>axis</em> by <em>theta</em> radians around the point <em>pivot</em>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.vtk_matrix">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">vtk_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.vtk_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Convert a 4x4 numpy matrix to a <code class="docutils literal notranslate"><span class="pre">vtkMatrix4x4</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.rotation_to_align">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">rotation_to_align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.rotation_to_align" title="Link to this definition">#</a></dt>
+<dd><p>3x3 rotation matrix that maps unit vector <em>v1</em> onto unit vector <em>v2</em>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.diffract3d.</span></span><span class="sig-name descname"><span class="pre">Diffractometer</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer" title="Link to this definition">#</a></dt>
+<dd><p>The POLAR model: meshes, kinematic chain and the three overlays.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.BASE_RADIUS">
+<span class="sig-name descname"><span class="pre">BASE_RADIUS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.0</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.BASE_RADIUS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.BASE_TOP_Z">
+<span class="sig-name descname"><span class="pre">BASE_TOP_Z</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-2.3</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.BASE_TOP_Z" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.BASE_BOTTOM_Z">
+<span class="sig-name descname"><span class="pre">BASE_BOTTOM_Z</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-2.9</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.BASE_BOTTOM_Z" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.COLUMN_HALF_X">
+<span class="sig-name descname"><span class="pre">COLUMN_HALF_X</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.COLUMN_HALF_X" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.COLUMN_HALF_Y">
+<span class="sig-name descname"><span class="pre">COLUMN_HALF_Y</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.05</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.COLUMN_HALF_Y" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.COLUMN_Y">
+<span class="sig-name descname"><span class="pre">COLUMN_Y</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-2.3</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.COLUMN_Y" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.COLUMN_TOP_Z">
+<span class="sig-name descname"><span class="pre">COLUMN_TOP_Z</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.6</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.COLUMN_TOP_Z" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.MU_BASE_RADIUS">
+<span class="sig-name descname"><span class="pre">MU_BASE_RADIUS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.0</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.MU_BASE_RADIUS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.MU_BASE_BOTTOM_Z">
+<span class="sig-name descname"><span class="pre">MU_BASE_BOTTOM_Z</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-2.3</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.MU_BASE_BOTTOM_Z" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.MU_BASE_TOP_Z">
+<span class="sig-name descname"><span class="pre">MU_BASE_TOP_Z</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1.9</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.MU_BASE_TOP_Z" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.MU_COL_HALF_X">
+<span class="sig-name descname"><span class="pre">MU_COL_HALF_X</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.35</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.MU_COL_HALF_X" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.MU_COL_HALF_Y">
+<span class="sig-name descname"><span class="pre">MU_COL_HALF_Y</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.035</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.MU_COL_HALF_Y" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.MU_COL_TOP_Z">
+<span class="sig-name descname"><span class="pre">MU_COL_TOP_Z</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.6</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.MU_COL_TOP_Z" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.MU_COL_Y">
+<span class="sig-name descname"><span class="pre">MU_COL_Y</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1.965</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.MU_COL_Y" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.CHI_R_OUT">
+<span class="sig-name descname"><span class="pre">CHI_R_OUT</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.CHI_R_OUT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.CHI_R_IN">
+<span class="sig-name descname"><span class="pre">CHI_R_IN</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.4</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.CHI_R_IN" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.CHI_H">
+<span class="sig-name descname"><span class="pre">CHI_H</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.7</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.CHI_H" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.CHI_CX">
+<span class="sig-name descname"><span class="pre">CHI_CX</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-0.7</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.CHI_CX" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.PHI_R">
+<span class="sig-name descname"><span class="pre">PHI_R</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.36</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.PHI_R" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.PHI_SAMPLE_GAP">
+<span class="sig-name descname"><span class="pre">PHI_SAMPLE_GAP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.PHI_SAMPLE_GAP" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.SAMPLE_HALF">
+<span class="sig-name descname"><span class="pre">SAMPLE_HALF</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.12</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.SAMPLE_HALF" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.BEAM_Z">
+<span class="sig-name descname"><span class="pre">BEAM_Z</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.0</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.BEAM_Z" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.ARM_OUT_X">
+<span class="sig-name descname"><span class="pre">ARM_OUT_X</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4.0</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.ARM_OUT_X" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.ARM_HALF_Y">
+<span class="sig-name descname"><span class="pre">ARM_HALF_Y</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.05</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.ARM_HALF_Y" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.ARM_HALF_Z">
+<span class="sig-name descname"><span class="pre">ARM_HALF_Z</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.ARM_HALF_Z" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.angles">
+<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.angles" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.actors">
+<span class="sig-name descname"><span class="pre">actors</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.actors" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.scatter_plane_actor">
+<span class="sig-name descname"><span class="pre">scatter_plane_actor</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.scatter_plane_actor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.scatter_plane_visible">
+<span class="sig-name descname"><span class="pre">scatter_plane_visible</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.scatter_plane_visible" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.ref_vec_actor">
+<span class="sig-name descname"><span class="pre">ref_vec_actor</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.ref_vec_actor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.ref_vec_visible">
+<span class="sig-name descname"><span class="pre">ref_vec_visible</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.ref_vec_visible" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.q_vec_actor">
+<span class="sig-name descname"><span class="pre">q_vec_actor</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.q_vec_actor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.q_vec_visible">
+<span class="sig-name descname"><span class="pre">q_vec_visible</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.q_vec_visible" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.UB">
+<span class="sig-name descname"><span class="pre">UB</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.UB" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.hkl">
+<span class="sig-name descname"><span class="pre">hkl</span></span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.hkl" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plotter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.build" title="Link to this definition">#</a></dt>
+<dd><p>Create every mesh in <em>plotter</em> and apply the initial transforms.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.update_scatter_plane">
+<span class="sig-name descname"><span class="pre">update_scatter_plane</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.update_scatter_plane" title="Link to this definition">#</a></dt>
+<dd><p>Orient the scattering-plane disc from delta and nu.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.update_ref_vec">
+<span class="sig-name descname"><span class="pre">update_ref_vec</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.update_ref_vec" title="Link to this definition">#</a></dt>
+<dd><p>Point the reference arrow along <code class="docutils literal notranslate"><span class="pre">UB</span> <span class="pre">&#64;</span> <span class="pre">hkl</span></code>, carried by the sample chain.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.update_q_vec">
+<span class="sig-name descname"><span class="pre">update_q_vec</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.update_q_vec" title="Link to this definition">#</a></dt>
+<dd><p>Point the Q arrow along kf - ki.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.chain_matrix">
+<span class="sig-name descname"><span class="pre">chain_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chain</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.chain_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Return the 4x4 transform for a kinematic <em>chain</em> of joint names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.diffract3d.Diffractometer.update_transforms">
+<span class="sig-name descname"><span class="pre">update_transforms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.diffract3d.Diffractometer.update_transforms" title="Link to this definition">#</a></dt>
+<dd><p>Re-apply every actor’s transform from the current angles.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.INSTALL_HINT"><code class="docutils literal notranslate"><span class="pre">INSTALL_HINT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.DEFAULT_CAMERA"><code class="docutils literal notranslate"><span class="pre">DEFAULT_CAMERA</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Rx"><code class="docutils literal notranslate"><span class="pre">Rx()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Ry"><code class="docutils literal notranslate"><span class="pre">Ry()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Rz"><code class="docutils literal notranslate"><span class="pre">Rz()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.to_mat4"><code class="docutils literal notranslate"><span class="pre">to_mat4()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.trans4"><code class="docutils literal notranslate"><span class="pre">trans4()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.rot_about4"><code class="docutils literal notranslate"><span class="pre">rot_about4()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.vtk_matrix"><code class="docutils literal notranslate"><span class="pre">vtk_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.rotation_to_align"><code class="docutils literal notranslate"><span class="pre">rotation_to_align()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer"><code class="docutils literal notranslate"><span class="pre">Diffractometer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.BASE_RADIUS"><code class="docutils literal notranslate"><span class="pre">Diffractometer.BASE_RADIUS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.BASE_TOP_Z"><code class="docutils literal notranslate"><span class="pre">Diffractometer.BASE_TOP_Z</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.BASE_BOTTOM_Z"><code class="docutils literal notranslate"><span class="pre">Diffractometer.BASE_BOTTOM_Z</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.COLUMN_HALF_X"><code class="docutils literal notranslate"><span class="pre">Diffractometer.COLUMN_HALF_X</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.COLUMN_HALF_Y"><code class="docutils literal notranslate"><span class="pre">Diffractometer.COLUMN_HALF_Y</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.COLUMN_Y"><code class="docutils literal notranslate"><span class="pre">Diffractometer.COLUMN_Y</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.COLUMN_TOP_Z"><code class="docutils literal notranslate"><span class="pre">Diffractometer.COLUMN_TOP_Z</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.MU_BASE_RADIUS"><code class="docutils literal notranslate"><span class="pre">Diffractometer.MU_BASE_RADIUS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.MU_BASE_BOTTOM_Z"><code class="docutils literal notranslate"><span class="pre">Diffractometer.MU_BASE_BOTTOM_Z</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.MU_BASE_TOP_Z"><code class="docutils literal notranslate"><span class="pre">Diffractometer.MU_BASE_TOP_Z</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.MU_COL_HALF_X"><code class="docutils literal notranslate"><span class="pre">Diffractometer.MU_COL_HALF_X</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.MU_COL_HALF_Y"><code class="docutils literal notranslate"><span class="pre">Diffractometer.MU_COL_HALF_Y</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.MU_COL_TOP_Z"><code class="docutils literal notranslate"><span class="pre">Diffractometer.MU_COL_TOP_Z</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.MU_COL_Y"><code class="docutils literal notranslate"><span class="pre">Diffractometer.MU_COL_Y</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.CHI_R_OUT"><code class="docutils literal notranslate"><span class="pre">Diffractometer.CHI_R_OUT</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.CHI_R_IN"><code class="docutils literal notranslate"><span class="pre">Diffractometer.CHI_R_IN</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.CHI_H"><code class="docutils literal notranslate"><span class="pre">Diffractometer.CHI_H</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.CHI_CX"><code class="docutils literal notranslate"><span class="pre">Diffractometer.CHI_CX</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.PHI_R"><code class="docutils literal notranslate"><span class="pre">Diffractometer.PHI_R</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.PHI_SAMPLE_GAP"><code class="docutils literal notranslate"><span class="pre">Diffractometer.PHI_SAMPLE_GAP</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.SAMPLE_HALF"><code class="docutils literal notranslate"><span class="pre">Diffractometer.SAMPLE_HALF</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.BEAM_Z"><code class="docutils literal notranslate"><span class="pre">Diffractometer.BEAM_Z</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.ARM_OUT_X"><code class="docutils literal notranslate"><span class="pre">Diffractometer.ARM_OUT_X</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.ARM_HALF_Y"><code class="docutils literal notranslate"><span class="pre">Diffractometer.ARM_HALF_Y</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.ARM_HALF_Z"><code class="docutils literal notranslate"><span class="pre">Diffractometer.ARM_HALF_Z</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.angles"><code class="docutils literal notranslate"><span class="pre">Diffractometer.angles</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.actors"><code class="docutils literal notranslate"><span class="pre">Diffractometer.actors</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.scatter_plane_actor"><code class="docutils literal notranslate"><span class="pre">Diffractometer.scatter_plane_actor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.scatter_plane_visible"><code class="docutils literal notranslate"><span class="pre">Diffractometer.scatter_plane_visible</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.ref_vec_actor"><code class="docutils literal notranslate"><span class="pre">Diffractometer.ref_vec_actor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.ref_vec_visible"><code class="docutils literal notranslate"><span class="pre">Diffractometer.ref_vec_visible</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.q_vec_actor"><code class="docutils literal notranslate"><span class="pre">Diffractometer.q_vec_actor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.q_vec_visible"><code class="docutils literal notranslate"><span class="pre">Diffractometer.q_vec_visible</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.UB"><code class="docutils literal notranslate"><span class="pre">Diffractometer.UB</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.hkl"><code class="docutils literal notranslate"><span class="pre">Diffractometer.hkl</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.build"><code class="docutils literal notranslate"><span class="pre">Diffractometer.build()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.update_scatter_plane"><code class="docutils literal notranslate"><span class="pre">Diffractometer.update_scatter_plane()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.update_ref_vec"><code class="docutils literal notranslate"><span class="pre">Diffractometer.update_ref_vec()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.update_q_vec"><code class="docutils literal notranslate"><span class="pre">Diffractometer.update_q_vec()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.chain_matrix"><code class="docutils literal notranslate"><span class="pre">Diffractometer.chain_matrix()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.diffract3d.Diffractometer.update_transforms"><code class="docutils literal notranslate"><span class="pre">Diffractometer.update_transforms()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/gui/diffract3d/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../../_sources/api/id4_common/gui/diffract3d/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2014-2025, APS.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

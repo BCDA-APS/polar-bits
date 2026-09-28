@@ -1,0 +1,60 @@
+id4_common.mcp_server.server
+============================
+
+.. py:module:: id4_common.mcp_server.server
+
+.. autoapi-nested-parse::
+
+   MCP tools for setting up and driving the POLAR diffractometer.
+
+   Run as ``polar-mcp`` over stdio, next to a running ``polar-gui``.  Every tool is
+   one call into :meth:`id4_common.mcp_server.session.HklSession.call`; the work is in
+   the descriptions, which carry the ordering rules that make hklpy2 setup
+   succeed -- a mode before the angles it holds constant, two orienting
+   reflections before a UB, a "psi constant" mode before a fixed psi.
+
+   **Motion is requested, never performed.**  A move tool validates, then parks a
+   proposal for the operator to approve in the GUI's Agent tab, and returns
+   *before* anything happens.  The kernel-side dispatcher has no path to ``RE``
+   at all (:mod:`id4_common.mcp_server.motion`), so this is a property of the code
+   rather than a promise in a docstring.
+
+   Orientation tools take ``device``, defaulting to
+   :data:`~id4_common.mcp_server.bridge.DEFAULT_DEVICE`.  **That default is a real
+   machine.**  6-ID-B could default to a simulator, so touching hardware was
+   always an explicit act; POLAR has no simulated diffractometer, so that layer
+   does not exist here and the approval gate is the only thing in front of the
+   motors.  The allow-list and the per-op scope are checked again in the kernel,
+   so a bug here cannot address an op to a device it was not written for.
+
+   Every tool returns ``{"ok", "message", "data"}``.  ``message`` is written to be
+   read: when hklpy2 declines something -- a preset for an axis this mode does not
+   hold constant, say -- it says which and why, so the next call can be corrected
+   without a round trip to the human.
+
+   Needs the ``mcp`` SDK::
+
+       conda activate polar-bits && pip install mcp
+
+   Nothing else in this package imports it, so the rest works without it.  Both
+   SDK generations are accepted: 2.0 calls the decorator-style server
+   ``mcp.server.MCPServer``, 1.x called it ``mcp.server.fastmcp.FastMCP``, and
+   ``@server.tool()`` and ``run()`` behave the same on either.
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: build(connection_file=None)
+
+   Build the MCP server and the session it talks to.
+
+
+.. py:function:: main(argv=None)
+
+   Entry point for the ``polar-mcp`` console script.
+
+

@@ -1,0 +1,37 @@
+id4_common.gui
+==============
+
+.. py:module:: id4_common.gui
+
+.. autoapi-nested-parse::
+
+   Qt desktop interface for the POLAR Bluesky session.
+
+   This package is an *additive* front end: it starts a Jupyter kernel that runs
+   the same ``from id4_common.startup import *`` bootstrap as the plain IPython
+   session, so the existing command-line workflow is unaffected.
+
+   Launch with the ``polar-gui`` console script.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/id4_common/gui/app/index
+   /api/id4_common/gui/config/index
+   /api/id4_common/gui/diffract3d/index
+   /api/id4_common/gui/docstream/index
+   /api/id4_common/gui/flyscan/index
+   /api/id4_common/gui/hkl_bridge/index
+   /api/id4_common/gui/kernel/index
+   /api/id4_common/gui/scancode/index
+   /api/id4_common/gui/scanreader/index
+   /api/id4_common/gui/session_setup/index
+   /api/id4_common/gui/tabs/index
+   /api/id4_common/gui/transcript/index
+
+

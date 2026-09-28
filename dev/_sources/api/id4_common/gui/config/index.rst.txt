@@ -1,0 +1,103 @@
+id4_common.gui.config
+=====================
+
+.. py:module:: id4_common.gui.config
+
+.. autoapi-nested-parse::
+
+   Everything the GUI and MCP layer knows about *this* beamline.
+
+   The rest of the package is written against the names in here, so porting to
+   another station is editing this file rather than grepping for motor names.
+   At 6-ID-B these values were scattered as module constants across
+   ``hkl_bridge``, ``tabs/hkl``, ``mcp_server/bridge`` and ``mcp_server/session``;
+   collecting them is what makes the layer shareable between id4_b, id4_g, id4_h
+   and id4_raman.
+
+   Nothing here imports ophyd, Qt or bluesky — the GUI process, the MCP client
+   process and the kernel all read it.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: INSTRUMENT_PACKAGE
+   :value: 'id4_common'
+
+
+.. py:data:: DEFAULT_STATION
+   :value: 'id4_g'
+
+
+.. py:data:: WINDOW_TITLE
+   :value: 'POLAR {station} — Bluesky session'
+
+
+.. py:data:: QSETTINGS_ORG
+   :value: 'APS'
+
+
+.. py:data:: QSETTINGS_APP
+   :value: 'polar-gui'
+
+
+.. py:function:: station() -> str
+
+   Return the station package name for this session.
+
+
+.. py:function:: pointer_filename(station_name: str | None = None) -> str
+
+   Name of the kernel pointer file the MCP server discovers.
+
+   Station-scoped on purpose.  6-ID-B could use a fixed
+   ``.id6b-gui-kernel.json`` because there is one session; four POLAR
+   stations on one filesystem would collide, and cross-attaching an MCP
+   client to the wrong beamline's kernel is the one failure this must not
+   have.
+
+
+.. py:data:: DIFFRACTOMETERS
+   :value: ['huber_euler', 'huber_hp']
+
+
+.. py:data:: PSI_GEOMETRY
+
+.. py:data:: Q_GEOMETRY
+   :type:  dict[str, str]
+
+.. py:data:: REAL_MOTOR_DEVICES
+
+.. py:data:: MCP_ALLOWED_DEVICES
+
+.. py:data:: MCP_DEFAULT_DEVICE
+   :value: 'huber_euler'
+
+
+.. py:data:: MODEL_AXIS_MAP
+
+.. py:data:: UNMODELLED_AXES
+   :value: ('tau',)
+
+
+.. py:data:: PEAK_PLANS
+   :value: ['cen', 'com', 'maxi', 'mini']
+
+
+.. py:data:: PEAK_PLAN_LABELS
+
+.. py:data:: PEAK_AXIS_KEYWORD
+   :value: 'positioner'
+
+
+.. py:data:: PEAK_PLAN_KWARGS
+
+.. py:data:: PEAK_PLANS_TAKE_MONITOR
+   :value: False
+
+

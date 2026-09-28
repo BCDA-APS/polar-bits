@@ -1,0 +1,118 @@
+id4_common.gui.tabs.detectors
+=============================
+
+.. py:module:: id4_common.gui.tabs.detectors
+
+.. autoapi-nested-parse::
+
+   Detectors tab: set the ophyd ``Kind`` of each detector channel.
+
+   Unlike the check boxes on the Scan plot tab -- which only hide and show curves
+   that are already being recorded -- this changes the kernel-side configuration
+   and therefore what future scans read:
+
+   ``hinted``
+       read into the event stream and plotted.
+   ``normal``
+       read into the event stream, not plotted.
+   ``config``
+       recorded once per descriptor rather than per event.
+   ``omitted``
+       not read at all; the channel does not appear in the data.
+
+   The four are radio buttons in a column each, so the choice for a row is one
+   click and the whole tree can be read down a column.
+
+   Channels come from each detector's ``plot_signals`` mapping, so any detector
+   implementing the CountersClass interface appears here without changes.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: KINDS_KEY
+   :value: 'detector_kinds'
+
+
+.. py:data:: KINDS_EXPR
+   :value: '_gui_detector_kinds()'
+
+
+.. py:data:: EXTRAS_KEY
+   :value: 'detector_extras'
+
+
+.. py:data:: EXTRAS_EXPR
+   :value: '_gui_extra_devices()'
+
+
+.. py:data:: ADDABLE_KEY
+   :value: 'detector_addable'
+
+
+.. py:data:: ADDABLE_EXPR
+   :value: '_gui_addable_devices()'
+
+
+.. py:data:: EXTRA_KINDS_KEY
+   :value: 'detector_extra_kinds'
+
+
+.. py:data:: KIND_CHOICES
+   :value: ['hinted', 'normal', 'config', 'omitted']
+
+
+.. py:data:: KIND_TOOLTIPS
+
+.. py:data:: DETAIL_COLUMN
+   :value: 1
+
+
+.. py:data:: FIRST_KIND_COLUMN
+   :value: 2
+
+
+.. py:class:: DetectorsTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Per-channel Kind selection for every detector.
+
+
+   .. py:attribute:: title
+      :value: 'Detectors'
+
+
+
+   .. py:method:: refresh()
+
+      Re-read detector kinds, extra-device kinds, and the extras list.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Track idleness; Kind must not be changed during a scan.
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Consume kind, extras, addable-device and action replies.
+
+
+
+   .. py:method:: on_document(name, doc)
+
+      Refresh after a run, since plans may re-hint channels themselves.
+
+
+

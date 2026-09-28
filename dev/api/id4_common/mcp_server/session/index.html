@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>id4_common.mcp_server.session &#8212; polar-bits</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=69256293" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+    <script src="../../../../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/id4_common/mcp_server/session/index';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../../../_static/searchtools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script src="../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">polar-bits</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/general.html">
+    General Examples
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../whats_new.html">
+    What’s New
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../plans.html">
+    Scan Plans
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../useful_functions.html">
+    Useful Functions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/general.html">
+    General Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/writing_macros.html">
+    Writing Macros
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/4idg_diffractometer.html">
+    4IDG: Diffractometer Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/4idh_magnet.html">
+    4IDH: Magnet 9-1-1 Usage
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../devices_reference.html">
+    Device Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../faq.html">
+    Frequently Asked Questions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../architecture.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../configuration.html">
+    Configuration
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../devices_guide.html">
+    Devices Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../callbacks.html">
+    Callbacks and Data Output
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../queueserver.html">
+    QueueServer
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/BCDA-APS/polar-bits" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../bridge/index.html">id4_common.mcp_server.bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../motion/index.html">id4_common.mcp_server.motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server/index.html">id4_common.mcp_server.server</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.mcp_server.session</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">id4_common.mcp_server.session</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-id4_common.mcp_server.session">
+<span id="id4-common-mcp-server-session"></span><h1>id4_common.mcp_server.session<a class="headerlink" href="#module-id4_common.mcp_server.session" title="Link to this heading">#</a></h1>
+<p>Talk to a running GUI session’s kernel.</p>
+<p><a class="reference internal" href="#id4_common.mcp_server.session.HklSession" title="id4_common.mcp_server.session.HklSession"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSession</span></code></a> is a plain <code class="docutils literal notranslate"><span class="pre">jupyter_client</span></code> client with one method that
+matters, <a class="reference internal" href="#id4_common.mcp_server.session.HklSession.call" title="id4_common.mcp_server.session.HklSession.call"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HklSession.call()</span></code></a>.  It has <strong>no ``mcp`` import</strong>, so everything
+below can be built and tested before the SDK is installed, and the protocol
+layer in <a class="reference internal" href="../server/index.html#module-id4_common.mcp_server.server" title="id4_common.mcp_server.server"><code class="xref py py-mod docutils literal notranslate"><span class="pre">id4_common.mcp_server.server</span></code></a> stays a declaration of tools and
+nothing else.</p>
+<section id="finding-the-kernel">
+<h2>Finding the kernel<a class="headerlink" href="#finding-the-kernel" title="Link to this heading">#</a></h2>
+<p>The GUI writes <code class="docutils literal notranslate"><span class="pre">.polar-gui-kernel-&lt;station&gt;.json</span></code> into its kernel’s working
+directory (see <a class="reference internal" href="../../gui/kernel/index.html#id4_common.gui.kernel.KernelSession.start" title="id4_common.gui.kernel.KernelSession.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">id4_common.gui.kernel.KernelSession.start()</span></code></a>) and removes
+it on close.  Discovery walks up from the current directory looking for that
+file, which means an MCP client launched with <code class="docutils literal notranslate"><span class="pre">cwd</span></code> anywhere inside the
+session’s directory tree finds it; <code class="docutils literal notranslate"><span class="pre">POLAR_GUI_KERNEL_FILE</span></code> and the
+constructor argument override.</p>
+<p>The name carries the station because four POLAR stations share one filesystem
+and one checkout.  6-ID-B could use a fixed name – there is one session there
+– but here a station-blind pointer would let a client attach to the wrong
+beamline’s kernel, which is the one discovery failure this must not have.</p>
+<p>Deliberately <strong>not</strong> <code class="xref py py-func docutils literal notranslate"><span class="pre">jupyter_client.find_connection_file()</span></code>, whose
+no-argument form returns the newest runtime file – which may be an unrelated
+notebook, and attaching to the wrong kernel is exactly the failure this must
+not have.</p>
+</section>
+<section id="not-blocking-on-a-busy-kernel">
+<h2>Not blocking on a busy kernel<a class="headerlink" href="#not-blocking-on-a-busy-kernel" title="Link to this heading">#</a></h2>
+<p>A running scan holds the shell channel, and a request sent to a busy kernel is
+<em>queued</em>: it would run when the scan ends, possibly an hour later, long after
+the model gave up on it.  Silently changing an orientation an hour after it was
+asked for is worse than refusing, so <code class="xref py py-meth docutils literal notranslate"><span class="pre">call()</span></code> sends an empty, silent probe
+first and refuses if that does not come back promptly.  The probe is a no-op,
+so a queued one that lands later does nothing.</p>
+</section>
+<section id="watching-without-the-kernel">
+<h2>Watching without the kernel<a class="headerlink" href="#watching-without-the-kernel" title="Link to this heading">#</a></h2>
+<p>That refusal is right, and it leaves a gap: while an approved move or a scan
+runs, <em>every</em> kernel call is refused, which is exactly when a client most wants
+to know what is happening.  <a class="reference internal" href="#id4_common.mcp_server.session.HklSession.status" title="id4_common.mcp_server.session.HklSession.status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HklSession.status()</span></code></a> answers from two sources
+outside the shell channel, both already proven elsewhere in this package:</p>
+<ul class="simple">
+<li><p><strong>Channel Access, from this process.</strong>  The readback PV of each axis, read
+with <code class="docutils literal notranslate"><span class="pre">epics.PV</span></code> – the same trick the HKL tab’s progress bar uses to follow
+a move while the kernel is blocked by it (<code class="docutils literal notranslate"><span class="pre">tabs/hkl.py:_start_progress</span></code>).
+The PV names arrive in <code class="docutils literal notranslate"><span class="pre">real_pvs</span></code> from <code class="docutils literal notranslate"><span class="pre">get_state</span></code> and are cached, so a
+client that has read state once can watch the machine forever.</p></li>
+<li><p><strong>The session’s ``RE.md`` on disk</strong>, for <code class="docutils literal notranslate"><span class="pre">scan_id</span></code> and the run metadata.
+At the beamline that is a <code class="docutils literal notranslate"><span class="pre">bluesky.utils.PersistentDict</span></code> – a <em>directory</em>
+of msgpack files under <code class="docutils literal notranslate"><span class="pre">RUN_ENGINE.MD_PATH</span></code>, written through on every
+assignment, so <code class="docutils literal notranslate"><span class="pre">scan_id</span></code> is on disk the moment a run opens.  The
+development config points <code class="docutils literal notranslate"><span class="pre">MD_PATH</span></code> at a file instead, which is an
+<code class="docutils literal notranslate"><span class="pre">apstools.utils.StoredDict</span></code> (one YAML file, written after a short delay).
+Neither path is guessable from here – it is per station and not under the
+kernel’s working directory – so it is asked of the kernel once while it is
+idle and remembered, the same bargain the PV cache makes.</p></li>
+</ul>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.ALL_READ_OPS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">ALL_READ_OPS</span></span><a class="headerlink" href="#id4_common.mcp_server.session.ALL_READ_OPS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.POINTER_GLOB">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">POINTER_GLOB</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'.polar-gui-kernel-*.json'</span></span><a class="headerlink" href="#id4_common.mcp_server.session.POINTER_GLOB" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.MD_KEYS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">MD_KEYS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('scan_id',</span> <span class="pre">'sample',</span> <span class="pre">'proposal_id',</span> <span class="pre">'beamline_id')</span></span><a class="headerlink" href="#id4_common.mcp_server.session.MD_KEYS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.CA_TIMEOUT">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">CA_TIMEOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></span><a class="headerlink" href="#id4_common.mcp_server.session.CA_TIMEOUT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.POINTER_ENV">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">POINTER_ENV</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'POLAR_GUI_KERNEL_FILE'</span></span><a class="headerlink" href="#id4_common.mcp_server.session.POINTER_ENV" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.PROBE_TIMEOUT">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">PROBE_TIMEOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.0</span></span><a class="headerlink" href="#id4_common.mcp_server.session.PROBE_TIMEOUT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.REPLY_NAME">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">REPLY_NAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_gui_mcp_reply'</span></span><a class="headerlink" href="#id4_common.mcp_server.session.REPLY_NAME" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.CALL_TIMEOUT">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">CALL_TIMEOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30.0</span></span><a class="headerlink" href="#id4_common.mcp_server.session.CALL_TIMEOUT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.SessionError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">SessionError</span></span><a class="headerlink" href="#id4_common.mcp_server.session.SessionError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
+<p>Raised when no live GUI session can be reached.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.pointer_name">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">pointer_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.pointer_name" title="Link to this definition">#</a></dt>
+<dd><p>Name of the pointer file this client is looking for.</p>
+<p>A function rather than a module constant because <code class="docutils literal notranslate"><span class="pre">ID4_STATION</span></code> may be
+set after import – the GUI’s <code class="docutils literal notranslate"><span class="pre">--station</span></code> flag does exactly that – and a
+constant frozen at import time would send a client launched for id4_h
+looking for id4_g’s session.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.find_pointer">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">find_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.find_pointer" title="Link to this definition">#</a></dt>
+<dd><p>Return the path of the GUI’s pointer file, or None.</p>
+<p>Looks at <a class="reference internal" href="#id4_common.mcp_server.session.POINTER_ENV" title="id4_common.mcp_server.session.POINTER_ENV"><code class="xref py py-data docutils literal notranslate"><span class="pre">POINTER_ENV</span></code></a> first, then <em>start</em> (default: the current
+directory) and each of its parents.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.find_other_pointers">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">find_other_pointers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.find_other_pointers" title="Link to this definition">#</a></dt>
+<dd><p>Return pointer files for <em>other</em> stations, nearest directory first.</p>
+<p>Only for the error message.  Four stations share this filesystem, so
+“no session” is usually wrong and misleading – what actually happened is
+that a session for a different station is running, and the fix is
+<code class="docutils literal notranslate"><span class="pre">--station</span></code> (or <code class="docutils literal notranslate"><span class="pre">ID4_STATION</span></code>), not starting a second GUI.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.read_pointer">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">read_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.read_pointer" title="Link to this definition">#</a></dt>
+<dd><p>Return the GUI’s pointer file as a dict, or an empty one.</p>
+<p>A connection file passed as <em>explicit</em> has no <code class="docutils literal notranslate"><span class="pre">connection_file</span></code> key and
+comes back empty, which is the honest answer: it says nothing about where
+the kernel is working.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.resolve_connection_file">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">resolve_connection_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.resolve_connection_file" title="Link to this definition">#</a></dt>
+<dd><p>Return the kernel connection file to attach to.</p>
+<p><em>explicit</em> may be either a connection file or a pointer file – they are
+told apart by content, so a user who passes the wrong one still gets a
+working session rather than a puzzle.  Raises <a class="reference internal" href="#id4_common.mcp_server.session.SessionError" title="id4_common.mcp_server.session.SessionError"><code class="xref py py-class docutils literal notranslate"><span class="pre">SessionError</span></code></a> with a
+sentence saying what to do when there is nothing to attach to.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.session.</span></span><span class="sig-name descname"><span class="pre">HklSession</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_DEVICE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession" title="Link to this definition">#</a></dt>
+<dd><p>A client for the <code class="docutils literal notranslate"><span class="pre">_gui_mcp</span></code> dispatcher in a live GUI kernel.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession.device">
+<span class="sig-name descname"><span class="pre">device</span></span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession.device" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession.connection_file">
+<span class="sig-name descname"><span class="pre">connection_file</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession.connection_file" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession.session_cwd">
+<span class="sig-name descname"><span class="pre">session_cwd</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession.session_cwd" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession.client">
+<span class="sig-name descname"><span class="pre">client</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession.client" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession.connect" title="Link to this definition">#</a></dt>
+<dd><p>Attach to the kernel, raising <a class="reference internal" href="#id4_common.mcp_server.session.SessionError" title="id4_common.mcp_server.session.SessionError"><code class="xref py py-class docutils literal notranslate"><span class="pre">SessionError</span></code></a> if there is none.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession.close" title="Link to this definition">#</a></dt>
+<dd><p>Detach.  The kernel keeps running – it is not ours.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession.call" title="Link to this definition">#</a></dt>
+<dd><p>Run one operation and return the dispatcher’s reply.</p>
+<p><em>device</em> names the diffractometer for an orientation or hkl op, and is
+<a class="reference internal" href="../bridge/index.html#id4_common.mcp_server.bridge.SESSION_DEVICE" title="id4_common.mcp_server.bridge.SESSION_DEVICE"><code class="xref py py-data docutils literal notranslate"><span class="pre">SESSION_DEVICE</span></code></a> for one that acts on
+the session as a whole; it defaults to <code class="docutils literal notranslate"><span class="pre">self.device</span></code>.  The kernel
+checks it again against the op’s own scope, so getting it wrong here is
+a refusal in words, not a wrong device.</p>
+<p>Always returns <code class="docutils literal notranslate"><span class="pre">{&quot;ok&quot;:</span> <span class="pre">bool,</span> <span class="pre">&quot;message&quot;:</span> <span class="pre">str,</span> <span class="pre">&quot;data&quot;:</span> <span class="pre">...}</span></code>, including
+for transport failures, so a caller never has to tell a refusal apart
+from a broken connection by its type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.mcp_server.session.HklSession.status">
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.session.HklSession.status" title="Link to this definition">#</a></dt>
+<dd><p>Report what can be known <em>without</em> the kernel’s shell channel.</p>
+<p>This is the one call that still answers during a scan or an approved
+move.  <code class="docutils literal notranslate"><span class="pre">busy</span></code> is the probe’s own verdict, so it is the same notion of
+busy every other call uses.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-kernel">Finding the kernel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#not-blocking-on-a-busy-kernel">Not blocking on a busy kernel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#watching-without-the-kernel">Watching without the kernel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.ALL_READ_OPS"><code class="docutils literal notranslate"><span class="pre">ALL_READ_OPS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.POINTER_GLOB"><code class="docutils literal notranslate"><span class="pre">POINTER_GLOB</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.MD_KEYS"><code class="docutils literal notranslate"><span class="pre">MD_KEYS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.CA_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">CA_TIMEOUT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.POINTER_ENV"><code class="docutils literal notranslate"><span class="pre">POINTER_ENV</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.PROBE_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">PROBE_TIMEOUT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.REPLY_NAME"><code class="docutils literal notranslate"><span class="pre">REPLY_NAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.CALL_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">CALL_TIMEOUT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.SessionError"><code class="docutils literal notranslate"><span class="pre">SessionError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.pointer_name"><code class="docutils literal notranslate"><span class="pre">pointer_name()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.find_pointer"><code class="docutils literal notranslate"><span class="pre">find_pointer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.find_other_pointers"><code class="docutils literal notranslate"><span class="pre">find_other_pointers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.read_pointer"><code class="docutils literal notranslate"><span class="pre">read_pointer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.resolve_connection_file"><code class="docutils literal notranslate"><span class="pre">resolve_connection_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession"><code class="docutils literal notranslate"><span class="pre">HklSession</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession.device"><code class="docutils literal notranslate"><span class="pre">HklSession.device</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession.connection_file"><code class="docutils literal notranslate"><span class="pre">HklSession.connection_file</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession.session_cwd"><code class="docutils literal notranslate"><span class="pre">HklSession.session_cwd</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession.client"><code class="docutils literal notranslate"><span class="pre">HklSession.client</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession.connect"><code class="docutils literal notranslate"><span class="pre">HklSession.connect()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession.close"><code class="docutils literal notranslate"><span class="pre">HklSession.close()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession.call"><code class="docutils literal notranslate"><span class="pre">HklSession.call()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.session.HklSession.status"><code class="docutils literal notranslate"><span class="pre">HklSession.status()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/BCDA-APS/polar-bits/edit/main/docs/source/api/id4_common/mcp_server/session/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../../_sources/api/id4_common/mcp_server/session/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2014-2025, APS.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+  </p>
+</div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

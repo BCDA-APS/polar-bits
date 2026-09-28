@@ -1,0 +1,115 @@
+id4_common.mcp_server.motion
+============================
+
+.. py:module:: id4_common.mcp_server.motion
+
+.. autoapi-nested-parse::
+
+   Kernel-side motion requests, and the guards that stand in front of them.
+
+   ``MOTION_HELPERS_CODE`` is a second code string installed by the GUI's
+   bootstrap next to :data:`~id4_common.mcp_server.bridge.MCP_HELPERS_CODE`.  It exists
+   separately only so each stays readable; both run in the same namespace, and
+   ``_gui_mcp_ops()`` resolves the names below at call time, so their order does
+   not matter.
+
+   The invariant
+   -------------
+   **The MCP layer can only ever *request*.  The only process that emits motion is
+   the GUI, from a human click or an operator-armed auto window.**
+
+   Nothing here calls ``RE(...)`` on behalf of a client.  A motion or scan op
+   validates its targets and *parks* the request in ``_gui_mcp_pending``; the
+   Agent tab picks it up on the next 1 Hz poll and, if the operator approves,
+   calls ``_gui_mcp_execute(token)`` **through the console**, so an
+   LLM-originated move is an ordinary console command -- in the history, in the
+   transcript, on the session RunEngine, and interruptible with Ctrl-C.
+
+   It also keeps the client honest about time.  A running plan holds the kernel's
+   shell channel and :meth:`id4_common.mcp_server.session.HklSession._probe_idle`
+   refuses rather than queueing, so a *blocking* move would blow the call timeout
+   and leave every later call reporting "busy".  Requests return in milliseconds.
+
+   Nothing a client sends is ever executed as text
+   -----------------------------------------------
+   A parked request stores *structured* arguments -- an allow-listed dotted path
+   and a float, or a plan name and its numbers.  ``_gui_mcp_execute`` resolves
+   those to objects and calls ``RE(bps.mv(obj, value, ...))`` directly.  The
+   readable command string travels with the request for the banner, the console
+   comment and the ``[LLM]`` line, and is never evaluated.
+
+   Two allow-lists, not one
+   ------------------------
+   An **axis** is whatever ``_gui_scan_options()`` offers -- moved with
+   ``move_axes``, scanned by the Scan and Macro tabs, one definition shared by
+   all three.  A **settable signal** is anything else underneath a device that
+   reports ``write_access``: a filter attenuation, a lock-in sensitivity, an
+   enum that picks a mode.  Those are ``_gui_mcp_settable_paths``, set with
+   ``request_signals``, and they are kept separate deliberately -- widening
+   ``_movable()`` to reach ``gfilter.attenuation_setpoint`` would also have put a few
+   hundred ``velocity`` and ``user_offset`` entries into the Scan tab's axis
+   combo, and made a motor's coordinate system settable by accident.
+
+   The guards
+   ----------
+   ``_gui_mcp_check`` -- ``_gui_mcp_check_targets`` for axes,
+   ``_gui_mcp_check_settables`` for signals, both ending in the same
+   ``_gui_mcp_check_number`` -- runs at request time *and* again inside
+   ``_gui_mcp_execute``, because minutes may pass while the banner waits:
+
+   * **Soft limits** -- ``check_value()`` where the axis has one (ophyd raises
+     ``LimitError``, which is the canonical check and covers pseudo axes), else
+     ``.limits``.  Every axis is checked before anything is parked, and one
+     failure refuses the whole request.  No partial move, ever.
+   * **Maximum travel** -- :data:`MAX_TRAVEL_DEG` for diffractometer axes, plus a
+     unit-free :data:`MAX_TRAVEL_FRACTION` of the soft-limit span for any axis
+     that has finite limits.  A single absolute cap is meaningless across degrees,
+     mm, keV and kelvin.  ``allow_large_move`` lifts both -- a visible, logged,
+     still-human-approved act.
+   * **The choices of an enum** -- a signal set by name is checked against
+     ``enum_strs``, and refused *with the list*, so a client that guessed wrong
+     can correct itself rather than write an index it did not mean.
+
+   Neither guard knows anything about geometry: they are per-axis, and they say
+   nothing about the detector arm meeting the cryostat.  The angles on the
+   approval banner are what protects against that.
+
+   Where the guards cannot reach
+   -----------------------------
+   POLAR's reciprocal-space plans -- ``hscan``, ``kscan``, ``lscan``, ``hklscan``,
+   ``th2th``, ``psiscan`` -- name no motor: which ones move, and how far, is not
+   known until the plan solves each point against the UB, the mode and the fixed
+   angles in force at the time.  A start/stop soft-limit check is therefore not
+   available for them, and pretending otherwise would be worse than not having
+   one.  ``_gui_mcp_request_scan`` says so on the approval banner instead, and for
+   those plans the operator reading it is the whole of the protection.
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: MAX_TRAVEL_DEG
+   :value: 90.0
+
+
+.. py:data:: MAX_TRAVEL_FRACTION
+   :value: 0.5
+
+
+.. py:data:: HISTORY_LIMIT
+   :value: 20
+
+
+.. py:data:: ALLOWED_PLANS
+
+.. py:data:: MOTION_READ_OPS
+
+.. py:data:: MOTION_HELPERS_CODE
+   :value: ''
+
+
+.. py:data:: DIFFRACTOMETERS
+

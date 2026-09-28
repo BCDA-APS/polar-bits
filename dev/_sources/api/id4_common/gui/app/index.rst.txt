@@ -1,0 +1,107 @@
+id4_common.gui.app
+==================
+
+.. py:module:: id4_common.gui.app
+
+.. autoapi-nested-parse::
+
+   Main window and entry point for the POLAR Bluesky GUI.
+
+   Layout is a vertical splitter: parameter tabs on top, a full IPython console
+   below.  The console is a real Jupyter front end, so everything that works in
+   ``ipython -i -c "from id4_common.startup import *"`` works here too.
+
+   Run with the ``polar-gui`` console script.
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: TABS
+
+.. py:data:: MIN_FONT_POINTS
+   :value: 6
+
+
+.. py:data:: MAX_FONT_POINTS
+   :value: 32
+
+
+.. py:data:: FALLBACK_FONT_POINTS
+   :value: 10
+
+
+.. py:data:: UI_FONT_POINTS
+   :value: 14
+
+
+.. py:data:: BACKGROUNDS
+
+.. py:data:: DEFAULT_BACKGROUND
+   :value: 'black'
+
+
+.. py:data:: SETTINGS_ORG
+
+.. py:data:: SETTINGS_APP
+
+.. py:data:: FONT_SIZE_KEY
+   :value: 'console/font_size'
+
+
+.. py:data:: BACKGROUND_KEY
+   :value: 'console/background'
+
+
+.. py:class:: MainWindow(cwd, parent=None)
+
+   Bases: :py:obj:`qtpy.QtWidgets.QMainWindow`
+
+
+   Bluesky session window: parameter tabs above, IPython console below.
+
+
+   .. py:attribute:: session
+
+
+   .. py:attribute:: console
+
+
+   .. py:attribute:: docstream
+
+
+   .. py:attribute:: transcript
+
+
+   .. py:attribute:: poller
+
+
+   .. py:method:: showEvent(event)
+
+      Split the window evenly once the real height is known.
+
+      setSizes() before the first show is measured against size hints, not
+      the final geometry, so the even split has to be (re)applied here.
+
+
+
+   .. py:method:: closeEvent(event)
+
+      Stop polling and shut the kernel down so none is left orphaned.
+
+
+
+.. py:function:: main(argv=None)
+
+   Entry point for the ``polar-gui`` console script.
+
+

@@ -1,0 +1,424 @@
+id4_common.gui.tabs.macro
+=========================
+
+.. py:module:: id4_common.gui.tabs.macro
+
+.. autoapi-nested-parse::
+
+   Macro tab: build, edit, save and run a multi-step Bluesky plan.
+
+   An experiment is rarely one scan.  The usual shape is a loop -- set a
+   temperature, wait for it to settle, run a scan, move to the next temperature --
+   and writing that by hand means getting every ``yield from`` and every level of
+   indentation right.
+
+   A macro here is a **Bluesky plan**: one generator function, run as a single
+   ``RE(macro())``, so Ctrl-C, ``RE.pause()`` and resume apply to the whole loop
+   rather than to whichever scan happens to be running::
+
+       def temperature_series():
+           for temperature in [100, 150, 200]:
+               yield from mv(lakeshore340.setpoint, temperature)
+               yield from bps.sleep(120)
+               yield from ascan(huber_euler.h, 0.9, 1.1, 51, 1.0)
+
+   Everything it calls is already in the session namespace: the ``local_scans``
+   plans (``startup.py:141``) and ``bps`` (``startup.py:110``).
+
+   Generation is **one way**.  The component chooser on the left writes code into
+   the editor on the right and never reads it back, so nothing typed by hand is
+   ever silently rewritten -- what is saved and run is exactly what is on screen.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: OPTIONS_KEY
+   :value: 'scan_options'
+
+
+.. py:data:: OPTIONS_EXPR
+   :value: '_gui_scan_options()'
+
+
+.. py:data:: DEVICES_KEY
+   :value: 'device_table'
+
+
+.. py:data:: DEVICES_EXPR
+   :value: '_gui_device_table()'
+
+
+.. py:data:: TARGETS_KEY
+   :value: 'macro_targets'
+
+
+.. py:data:: PEAK_FIELDS_KEY
+   :value: 'peak_fields'
+
+
+.. py:data:: PEAK_FIELDS_EXPR
+   :value: '_gui_peak_fields()'
+
+
+.. py:data:: INDENT
+   :value: '    '
+
+
+.. py:data:: PLACEHOLDERS
+   :value: ('pass', 'yield from bps.null()')
+
+
+.. py:data:: DEFAULT_MACRO_NAME
+   :value: 'my_macro'
+
+
+.. py:data:: TEMPLATE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """"""Macro: {name}."""
+      
+      import bluesky.plan_stubs as bps
+      
+      
+      def {name}():
+          """Describe the macro here."""
+          yield from bps.null()
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: SETTINGS_ORG
+   :value: 'APS'
+
+
+.. py:data:: SETTINGS_APP
+   :value: 'polar-gui'
+
+
+.. py:data:: MACRO_DIR_KEY
+   :value: 'macro/directory'
+
+
+.. py:data:: WRAP_COLUMNS
+   :value: 76
+
+
+.. py:data:: MAX_LOOP_VALUES
+   :value: 200
+
+
+.. py:data:: VALUE_WIDTH
+   :value: 110
+
+
+.. py:data:: AXIS_WIDTH
+   :value: 200
+
+
+.. py:class:: PythonHighlighter(document, dark=False)
+
+   Bases: :py:obj:`qtpy.QtGui.QSyntaxHighlighter`
+
+
+   Minimal Python highlighting: keywords, strings, comments, numbers.
+
+
+   .. py:attribute:: KEYWORDS
+
+
+   .. py:method:: highlightBlock(text)
+
+      Apply every rule to one line.
+
+
+
+.. py:class:: MacroEditor(parent=None)
+
+   Bases: :py:obj:`qtpy.QtWidgets.QPlainTextEdit`
+
+
+   Plain text editor that never puts a literal tab into Python source.
+
+
+   .. py:method:: keyPressEvent(event)
+
+      Turn Tab into four spaces; a real tab would raise ``TabError``.
+
+
+
+.. py:class:: LoopForm(on_change, parent=None)
+
+   Bases: :py:obj:`_Form`
+
+
+   ``for <var> in [...]:`` with a ``pass`` body.
+
+
+   .. py:attribute:: label
+      :value: 'Loop'
+
+
+
+   .. py:attribute:: VALUES
+      :value: 'list of values'
+
+
+
+   .. py:attribute:: RANGE
+      :value: 'start / stop / steps'
+
+
+
+   .. py:method:: lines()
+
+      Return the ``for`` header plus an indented ``pass``.
+
+
+
+.. py:class:: SetForm(on_change, on_device, parent=None)
+
+   Bases: :py:obj:`_Form`
+
+
+   ``yield from mv(target, value)``.
+
+
+   .. py:attribute:: label
+      :value: 'Set value'
+
+
+
+   .. py:method:: set_devices(names)
+
+      Fill the device combo, keeping the current choice if still there.
+
+
+
+   .. py:method:: set_targets(rows)
+
+      Fill the target combo from ``_gui_macro_targets()`` rows.
+
+
+
+   .. py:method:: lines()
+
+      Return the ``mv`` call.
+
+
+
+.. py:class:: WaitForm(on_change, parent=None)
+
+   Bases: :py:obj:`_Form`
+
+
+   ``yield from bps.sleep(seconds)``.
+
+
+   .. py:attribute:: label
+      :value: 'Wait'
+
+
+
+   .. py:method:: lines()
+
+      Return the sleep call.
+
+
+
+.. py:class:: ScanRow(form, grid, row, label)
+
+   One axis / start / stop / points row inside :class:`ScanForm`.
+
+
+   .. py:attribute:: label
+
+
+   .. py:attribute:: combo
+
+
+   .. py:attribute:: start
+
+
+   .. py:attribute:: stop
+
+
+   .. py:attribute:: points
+
+
+   .. py:attribute:: points_label
+
+
+   .. py:method:: set_visible(visible, with_points)
+
+      Show or hide the row, and its points field independently.
+
+
+
+   .. py:method:: values()
+
+      Return the row as the string tuple ``format_scan_call`` wants.
+
+
+
+.. py:class:: ScanForm(on_change, parent=None)
+
+   Bases: :py:obj:`_Form`
+
+
+   ``yield from ascan(...)`` and the other ``local_scans`` plans.
+
+
+   .. py:attribute:: label
+      :value: 'Scan'
+
+
+
+   .. py:method:: set_axes(paths)
+
+      Fill every axis combo, keeping any current choice.
+
+
+
+   .. py:method:: lines()
+
+      Return the plan call, as a ``yield from``.
+
+
+
+.. py:class:: PeakForm(on_change, parent=None)
+
+   Bases: :py:obj:`_Form`
+
+
+   ``yield from cen()`` and friends -- move onto the last scan's peak.
+
+   The Scan plot tab's buttons emit a literal ``mv`` because the value is
+   already on screen.  Here the *plan* has to be emitted instead: a macro is
+   written before the scan it will align on, so the peak position cannot be
+   known at generation time.
+
+
+   .. py:attribute:: label
+      :value: 'Go to peak'
+
+
+
+   .. py:attribute:: STATISTICS
+
+
+   .. py:method:: set_axes(paths)
+
+      Fill the axis combo, keeping the current choice and the blank.
+
+
+
+   .. py:method:: set_peak_fields(names)
+
+      Fill the detector (and monitor) suggestions from the last scan.
+
+
+
+   .. py:method:: lines()
+
+      Return the plan call, as a ``yield from``.
+
+
+
+.. py:class:: PrintForm(on_change, parent=None)
+
+   Bases: :py:obj:`_Form`
+
+
+   ``print(f"...")`` -- a progress note in the console.
+
+
+   .. py:attribute:: label
+      :value: 'Print'
+
+
+
+   .. py:method:: lines()
+
+      Return the print call.
+
+
+
+.. py:class:: CodeForm(on_change, parent=None)
+
+   Bases: :py:obj:`_Form`
+
+
+   Free text, inserted verbatim -- the escape hatch.
+
+
+   .. py:attribute:: label
+      :value: 'Code'
+
+
+
+   .. py:method:: lines()
+
+      Return the typed lines, with their common indentation removed.
+
+
+
+.. py:class:: MacroTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Compose a macro on the left, edit the code on the right.
+
+
+   .. py:attribute:: title
+      :value: 'Macro'
+
+
+
+   .. py:attribute:: scrollable
+      :value: False
+
+
+
+   .. py:method:: refresh()
+
+      Re-read the axis, device and peak-field lists.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Load and Run are only safe while the kernel is idle.
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Fill the axis, device, peak-field and target lists as replies arrive.
+
+
+
+   .. py:method:: macro_name()
+
+      Return the name of the first top-level ``def``, or None.
+
+
+

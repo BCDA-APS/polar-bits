@@ -1,0 +1,67 @@
+id4_common.gui.tabs.devices
+===========================
+
+.. py:module:: id4_common.gui.tabs.devices
+
+.. autoapi-nested-parse::
+
+   Devices tab: everything registered in ``oregistry``.
+
+   The listing is fetched on demand rather than on the 1 s status poll -- it is a
+   comparatively expensive expression and the device set only changes when the
+   session is (re)started.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: DEVICES_KEY
+   :value: 'device_table'
+
+
+.. py:data:: DEVICES_EXPR
+   :value: '_gui_device_table()'
+
+
+.. py:data:: COLUMNS
+   :value: ['Name', 'Class', 'Prefix', 'Labels', 'Connected']
+
+
+.. py:class:: DevicesTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Table of every device the session created.
+
+
+   .. py:attribute:: title
+      :value: 'Devices'
+
+
+
+   .. py:method:: refresh()
+
+      Ask the kernel for the device listing on the next idle poll.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Reload the listing whenever a fresh session becomes usable.
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Populate the table from a device listing reply.
+
+
+

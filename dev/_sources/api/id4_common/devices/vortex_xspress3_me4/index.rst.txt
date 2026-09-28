@@ -213,7 +213,7 @@ Module Contents
    .. py:attribute:: dt_percent
 
 
-.. py:class:: VortexHDF1Plugin(*args, write_path_template='', **kwargs)
+.. py:class:: VortexHDF1Plugin
 
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
@@ -413,21 +413,26 @@ Module Contents
 
    .. py:method:: setup_flyscan_mode(*, num_images, acq_time, hdf_images)
 
-      Configure stage_sigs for an external-gate fly-scan.
+      Configure stage_sigs for a TTL-veto gated fly-scan.
 
-      Wraps :meth:`setup_external_trigger` (``trigger_type="gate"``) to
-      get the default External Gate stage signals, then overrides the
-      scan-specific image count, per-image acquire time, and HDF5
-      capture chunk size. Call this *before* ``stage()`` so the new
-      ``stage_sigs`` are applied when the RunEngine stages the
+      Wraps :meth:`setup_external_trigger` to get the default TTL Veto
+      Only stage signals, then overrides the scan-specific image count
+      and per-image acquire time. Call this *before* ``stage()`` so the
+      new ``stage_sigs`` are applied when the RunEngine stages the
       detector.
+
+      Unlike the Eiger's equivalent, this leaves ``_flysetup`` True
+      (:meth:`setup_external_trigger` sets it): :meth:`Trigger.stage`
+      keys the ``Acquire`` put off that flag, so clearing it here would
+      stage the detector without ever arming it.
 
       :param num_images: Total number of frames the scan will collect.
       :type num_images: int
       :param acq_time: Per-frame acquire time in seconds.
       :type acq_time: float
-      :param hdf_images: Frames per HDF5 capture chunk (sets
-                         ``hdf1.stage_sigs["num_capture"]``).
+      :param hdf_images: Accepted for signature compatibility with the other flyscan
+                         detectors, but unused -- the Xspress3 writes one HDF5 per
+                         scan (``num_capture = 0``) rather than one file per line.
       :type hdf_images: int
 
 

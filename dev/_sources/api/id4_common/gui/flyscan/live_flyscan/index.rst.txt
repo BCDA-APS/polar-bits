@@ -1,0 +1,219 @@
+id4_common.gui.flyscan.live_flyscan
+===================================
+
+.. py:module:: id4_common.gui.flyscan.live_flyscan
+
+.. autoapi-nested-parse::
+
+   Incremental SWMR reader for live flyscan plotting.
+
+   The acquisition pipeline writes three HDF5 files per scan in SWMR mode:
+   ``pos_stream``, ``eiger``, and ``vortex``. :class:`LiveScanReader` keeps a
+   small amount of state (cursors + the open trigger group's running aggregates)
+   so that each :meth:`tick` reads only the rows / frames that have been
+   appended since the previous call.
+
+   The reductions mirror :mod:`process_flyscan` exactly so that running this
+   backend to exhaustion on a finished scan gives the same arrays as the
+   post-scan processing.
+
+   The class is Qt-free — it is meant to be driven from a worker thread.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: find_latest_scan(folder)
+
+   Return the highest scan number found in ``<folder>/pos_stream/``.
+
+   Returns ``None`` if the directory does not exist or contains no
+   matching files. Used by the live GUI's auto-latest mode to detect
+   a newly-created scan and switch to it.
+
+
+.. py:class:: TickResult
+
+   Snapshot of the reader's cumulative state after one tick.
+
+
+   .. py:attribute:: xs
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: ys
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: i0s
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: dxs
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: dys
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: trigs
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: counts
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: coverage
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: partial
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: eiger_z
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: vortex_z
+      :type:  numpy.ndarray
+
+
+   .. py:attribute:: n_triggers_closed
+      :type:  int
+
+
+   .. py:attribute:: n_eiger_frames
+      :type:  int
+
+
+   .. py:attribute:: n_vortex_frames
+      :type:  int
+
+
+   .. py:attribute:: grew
+      :type:  bool
+
+
+   .. py:attribute:: pos_available
+      :type:  bool
+
+
+   .. py:attribute:: eiger_available
+      :type:  bool
+
+
+   .. py:attribute:: vortex_available
+      :type:  bool
+
+
+.. py:class:: LiveScanReader(folder, scan_number, eiger_roi, vortex_roi, batch=100)
+
+   Incrementally read a flyscan's HDF5 files while the writer is still
+   appending. Designed to be invoked from a background thread; the only
+   public entry points (:meth:`tick`, :meth:`reprocess_eiger`,
+   :meth:`reprocess_vortex`, :meth:`close`) are the ones that touch the
+   HDF5 handles, so all of them must run on the same worker thread.
+
+
+   .. py:attribute:: folder
+
+
+   .. py:attribute:: scan_number
+
+
+   .. py:attribute:: eiger_roi
+
+
+   .. py:attribute:: vortex_roi
+
+
+   .. py:attribute:: batch
+      :value: 100
+
+
+
+   .. py:attribute:: xs
+
+
+   .. py:attribute:: ys
+
+
+   .. py:attribute:: i0s
+
+
+   .. py:attribute:: dxs
+
+
+   .. py:attribute:: dys
+
+
+   .. py:attribute:: trigs
+
+
+   .. py:attribute:: counts
+
+
+   .. py:attribute:: coverage
+
+
+   .. py:attribute:: eiger_z
+
+
+   .. py:attribute:: vortex_z
+
+
+   .. py:attribute:: last_growth_time
+
+
+   .. py:method:: close()
+
+
+   .. py:method:: tick()
+
+      Drive one polling cycle. Returns a :class:`TickResult` snapshot.
+
+
+
+   .. py:method:: finalize()
+
+      Close the trigger group still open at the end of a scan.
+
+      A group is normally emitted only when the *next* trigger value shows
+      up, so the last exposure of a scan never closes on its own and its
+      detector frame ends up with no position. Once the writer has stopped
+      there is no next trigger coming, so the GUI calls this when it decides
+      the scan is over; the group lands like any other, short coverage and
+      all, and is flagged partial. Returns a fresh snapshot, or None if
+      there was nothing left to flush.
+
+
+
+   .. py:method:: read_eiger_frame(index)
+
+      Return Eiger frame ``index`` as float32, or None if it isn't there.
+
+      Goes through the reader's own SWMR handle, so it sees every frame the
+      writer has flushed — and, like :meth:`tick`, must not run at the same
+      time as another method on this instance.
+
+
+
+   .. py:method:: reprocess_eiger(new_roi)
+
+      Replace ``eiger_z`` with sums computed for the new ROI over all
+      frames already consumed. The cursor is unchanged, so the next tick
+      continues from where it left off using the new ROI.
+
+
+
+   .. py:method:: reprocess_vortex(new_roi)
+
+

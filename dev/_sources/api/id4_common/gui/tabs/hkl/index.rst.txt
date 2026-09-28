@@ -1,0 +1,102 @@
+id4_common.gui.tabs.hkl
+=======================
+
+.. py:module:: id4_common.gui.tabs.hkl
+
+.. autoapi-nested-parse::
+
+   HKL tab: diffractometer orientation, current position, and hkl → angles.
+
+   Everything here is backed by the ``_gui_hkl_*`` helpers installed in the kernel
+   by :mod:`id4_common.gui.hkl_bridge`, which mirror the call sequences in
+   ``id4_common.utils.hkl_utils_pete``.
+
+   This tab *writes instrument state* -- samples, reflections, UB, mode, presets
+   are shared with the console session, so an edit here is as real as one typed at
+   the prompt.  Two guards follow from that: every mutating control is disabled
+   unless the kernel is idle, and a move is confirmed and then run **through the
+   console** so it appears in history and can be interrupted normally.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: CALC_KEY
+   :value: 'hkl_calc'
+
+
+.. py:data:: ACTION_KEY
+   :value: 'hkl_action'
+
+
+.. py:data:: MOVE_GRACE_S
+   :value: 2.0
+
+
+.. py:data:: MOVE_TIMEOUT_S
+   :value: 600.0
+
+
+.. py:data:: VALUE_WIDTH
+   :value: 110
+
+
+.. py:data:: LATTICE_RANGES
+
+.. py:class:: HklTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Orientation, readout and hkl → angles for the diffractometer.
+
+
+   .. py:attribute:: title
+      :value: 'HKL'
+
+
+
+   .. py:attribute:: scrollable
+      :value: False
+
+
+
+   .. py:attribute:: model3d
+
+
+   .. py:property:: device
+
+      Name of the diffractometer the tab is acting on.
+
+
+   .. py:method:: refresh()
+
+      Re-read the full orientation state.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Track idleness: nothing may be edited while a plan is running.
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Consume state, position, action and calculation replies.
+
+
+
+   .. py:method:: on_document(name, doc)
+
+      A finished run may have moved the diffractometer.
+
+
+

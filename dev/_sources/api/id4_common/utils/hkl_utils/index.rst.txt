@@ -23,6 +23,7 @@ id4_common.utils.hkl_utils
        ~or0
        ~or1
        ~compute_UB
+       ~update_eiger
        ~setmode
        ~ca
        ~wh
@@ -183,6 +184,8 @@ Module Contents
              for it.
    :type l: float, optional
 
+
+.. py:function:: update_eiger()
 
 .. py:class:: Sync_UB_Matrix(source, target)
 

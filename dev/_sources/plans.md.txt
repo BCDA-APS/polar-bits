@@ -12,9 +12,8 @@ import *` — see [Writing Macros](examples/writing_macros.md).
 
 ## Common Scan Flags
 
-Most scan plans (`lup`, `ascan`, `th2th`, `qxscan`, `grid_scan`,
-`list_scan`) share three optional boolean flags that enable advanced
-measurement modes.
+Most scan plans (`lup`, `ascan`, `th2th`, `qxscan`, `grid_scan`) share three
+optional boolean flags that enable advanced measurement modes.
 
 The `dichro` and `lockin` flags require running `pr_setup` first to configure
 the scan (see [Phase Retarder setup](examples/4idh_magnet.md)).
@@ -121,57 +120,6 @@ Optional flags:
 RE(th2th(tth_start, tth_end, npts, time_per_point, dichro=True))
 RE(th2th(tth_start, tth_end, npts, time_per_point, lockin=True))
 RE(th2th(tth_start, tth_end, npts, time_per_point, fixq=True))
-```
-
----
-
-## List Scans
-
-`list_scan` and `rel_list_scan` take an **explicit list of positions** per
-motor instead of `start, stop, npts`. Reach for them when the points are not
-evenly spaced — a hand-picked set of setpoints, a log-spaced grid, or an
-energy list computed elsewhere. For the XAFS-specific energy grid use
-[`qxscan`](#xafs-energy-scan-qxscan) instead.
-
-All motors step together, one list entry per scan point, so every position
-list must have the same length. Lists may be Python lists, tuples or numpy
-arrays.
-
-### `list_scan` — absolute list of positions
-
-```python
-import numpy as np
-
-# Single motor, uneven spacing.
-RE(list_scan(motor, [0.0, 0.1, 0.3, 0.7, 1.5], time))
-
-# Single motor, computed list.
-RE(list_scan(energy, np.logspace(-1, 1, 25), time))
-
-# Two motors stepping together (5 points total, not a 5x5 grid).
-RE(list_scan(
-    motor1, [0, 1, 2, 3, 4],
-    motor2, [0.0, 0.5, 1.0, 1.5, 2.0],
-    time,
-))
-```
-
-### `rel_list_scan` — relative list of positions
-
-Same as `list_scan`, but each list holds offsets from the motor's current
-position. The motors are returned to where they started when the scan
-finishes.
-
-```python
-RE(rel_list_scan(motor, [-0.5, -0.1, 0, 0.1, 0.5], time))
-```
-
-Both accept the same `dichro` / `lockin` / `fixq` / `vortex_sgz` flags
-described in [Common Scan Flags](#common-scan-flags):
-
-```python
-RE(list_scan(energy, energies, time, dichro=True))
-RE(list_scan(energy, energies, time, fixq=True))
 ```
 
 ---

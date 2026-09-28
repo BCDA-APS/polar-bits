@@ -55,11 +55,15 @@ Module Contents
    This is a local version of `bluesky.plan_stubs.abs_set`. If more than one
    device is specifed, the movements are done in parallel.
 
-   :param args: device1, value1, device2, value2, ... passed to
-                bluesky.plan_stubs.abs_set
-   :param kwargs: passed to bluesky.plan_stubs.abs_set. Notably ``group`` (identifier
-                  used by 'wait') and ``wait`` (if True, wait for completion before
-                  processing any more messages; False by default).
+   :param obj:
+   :type obj: Device
+   :param group: identifier used by 'wait'
+   :type group: string (or any hashable object), optional
+   :param wait: If True, wait for completion before processing any more messages.
+                False by default.
+   :type wait: boolean, optional
+   :param args: passed to obj.set()
+   :param kwargs: passed to obj.set()
 
    :Yields: **msg** (*Msg*)
 

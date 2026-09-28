@@ -1,0 +1,94 @@
+id4_common.gui.tabs.status
+==========================
+
+.. py:module:: id4_common.gui.tabs.status
+
+.. autoapi-nested-parse::
+
+   Session status tab: catalog, user, scan number, output files, console log.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: SETTINGS_ORG
+   :value: 'APS'
+
+
+.. py:data:: SETTINGS_APP
+   :value: 'polar-gui'
+
+
+.. py:data:: LOG_PATH_KEY
+   :value: 'console/log_path'
+
+
+.. py:data:: LOG_ENABLED_KEY
+   :value: 'console/log_enabled'
+
+
+.. py:data:: DEFAULT_LOG_NAME
+   :value: 'console.log'
+
+
+.. py:data:: LOG_STATUS_INTERVAL_MS
+   :value: 1000
+
+
+.. py:class:: StatusTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Overview of the current Bluesky session.
+
+
+   .. py:attribute:: title
+      :value: 'Session'
+
+
+
+   .. py:method:: sync_transcript()
+
+      Show the state of the shared transcript.
+
+      Called by ``MainWindow`` once ``transcript`` and ``session_cwd`` are
+      set -- which is *after* the window has already auto-resumed logging, so
+      the tab has to read the transcript rather than assume it is idle.
+
+
+
+   .. py:method:: on_metadata(metadata)
+
+      Fill the fields carried by the RunEngine metadata file.
+
+
+
+   .. py:method:: on_document(name, doc)
+
+      Take the scan number from a run as it opens.
+
+      The poll cannot do this one: it is held back while the kernel is
+      busy, which is the whole length of a scan.  Documents arrive over
+      ZMQ instead, so this is the only path that moves the number while
+      the scan it belongs to is still running.
+
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Fill the fields that only the kernel can answer.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Track kernel liveness and refresh the derived RunEngine state.
+
+
+

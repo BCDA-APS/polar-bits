@@ -1,0 +1,17 @@
+id4_common.utils.eiger_setup
+============================
+
+.. py:module:: id4_common.utils.eiger_setup
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: setup_eiger()
+
+   Setup and write parameters to Eiger images
+
+
+
