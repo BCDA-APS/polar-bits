@@ -311,6 +311,19 @@ def flyscan(
         "hints": {
             "detectors": [],
             "motors": [nanox.name, nanoy.name],
+            # A dimensions hint, even though this plan emits no events.
+            # Without one, BestEffortCallback.start() sets its legacy
+            # _cleanup_motor_heuristic flag and only clears it on seeing a
+            # 'primary' descriptor -- which this plan never emits. BEC.clear()
+            # does not reset it, so the flag survives into the NEXT scan and
+            # makes BEC misread that scan's dimension hint (field names) as
+            # object names, raising KeyError in descriptor(). Both entries
+            # must name the same stream, or BEC falls back to the guess and
+            # sets the flag anyway.
+            "dimensions": [
+                ([nanox.name], "primary"),
+                ([nanoy.name], "primary"),
+            ],
         },
         "plan_args": plan_args,
         "master_file_path": str(_master_fullpath),
