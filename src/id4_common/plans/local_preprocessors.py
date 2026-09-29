@@ -294,6 +294,11 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
             dichro_bec.disable_plots()
             bec.enable_plots()
 
+        if sgz:
+            sgz_vortex = oregistry.find("sgz_vortex")
+            if sgz_vortex in counters.detectors:
+                counters.detectors.remove(sgz_vortex)
+
     def _inner_plan():
         yield from _stage()
         return (yield from plan)
