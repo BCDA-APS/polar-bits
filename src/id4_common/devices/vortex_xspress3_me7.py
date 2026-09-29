@@ -484,6 +484,7 @@ class VortexXspress37(Trigger, ROICountersMixin, DetectorBase):
         self.hdf1.stage_sigs.pop("enable")
         self.hdf1.stage_sigs["num_capture"] = 0
         self.hdf1.stage_sigs["capture"] = 1
+        self.hdf1.swmr_mode.put("On")
 
         self.setup_manual_trigger()
         self.save_images_off()
