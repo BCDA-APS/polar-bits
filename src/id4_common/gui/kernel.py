@@ -632,6 +632,23 @@ def _gui_set_extra_kinds(changes):
         except Exception as _exc:
             print(f"Could not set {_dev}.{_dotted} to {_kind}: {_exc}")
     return applied
+
+
+def _gui_set_console_columns(columns):
+    """Tell the motor-move progress bar how wide the GUI console is.
+
+    Nothing else reaches the kernel from the Qt side, and bluesky's bar
+    otherwise assumes 79 characters and wraps onto a second row.  The import
+    is local: the module pulls in only bluesky, but this runs before the
+    station startup and has no business failing it.
+    """
+    try:
+        from id4_common.utils.progress_bar import set_console_columns
+    except Exception as _exc:
+        print(f"Could not set the console width: {_exc}")
+        return None
+    set_console_columns(columns)
+    return columns
 '''
 
 POLL_INTERVAL_MS = 1000

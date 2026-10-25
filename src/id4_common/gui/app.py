@@ -17,6 +17,7 @@ from qtconsole.rich_jupyter_widget import RichJupyterWidget
 from qtpy.QtCore import QSettings
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QTimer
+from qtpy.QtGui import QFontMetrics
 from qtpy.QtWidgets import QApplication
 from qtpy.QtWidgets import QComboBox
 from qtpy.QtWidgets import QDialog
@@ -86,6 +87,19 @@ FALLBACK_FONT_POINTS = 10
 #: from the toolbar spin box and remembered in QSettings, so the two are set
 #: independently.
 UI_FONT_POINTS = 14
+
+#: How often the console's width in characters is re-measured, in ms.  The
+#: kernel cannot see the Qt console, so it has to be told -- see
+#: :mod:`id4_common.utils.progress_bar`.  Polling rather than hooking
+#: ``resizeEvent``, the splitter and both font paths: this one timer also
+#: catches the scroll bar appearing and a tab being detached, and it sends
+#: nothing to the kernel while nothing changes.
+WIDTH_POLL_MS = 1000
+
+#: Trimmed off the measured width before it is reported.  A bar drawn to the
+#: very last column leaves the cursor on the edge, and a terminal that wraps
+#: there puts the next write on a second row -- the problem being fixed.
+WIDTH_MARGIN_CHARS = 1
 
 #: Console background choices, mapped to qtconsole ``set_default_style``
 #: schemes.  "black" is the default: a dark console is easier on the eyes in a
@@ -192,6 +206,14 @@ class MainWindow(QMainWindow):
         self.transcript = ConsoleTranscript()
         self._resume_transcript(cwd)
 
+        # Last console width pushed to the kernel, so an unchanged
+        # measurement costs nothing.  Cleared on restart: the new kernel has
+        # not been told anything.
+        self._pushed_columns = None
+        self._width_timer = QTimer(self)
+        self._width_timer.setInterval(WIDTH_POLL_MS)
+        self._width_timer.timeout.connect(self._push_console_columns)
+
         self.poller = StatusPoller(self.session, parent=self)
         self.poller.iopub_message.connect(self.transcript.handle)
         self.poller.iopub_message.connect(self._echo_llm)
@@ -264,7 +286,39 @@ class MainWindow(QMainWindow):
         """Bootstrap Bluesky and begin polling, once the kernel can answer."""
         self.session.bootstrap(self.console, self.docstream.publisher_code())
         self.poller.start()
+        self._width_timer.start()
         self.restart_button.setEnabled(True)
+
+    def _console_columns(self):
+        """Return how many characters fit across the console, or None.
+
+        Reaches into qtconsole's private ``_control`` for the viewport: the
+        widget publishes its font but nothing public for the text area's
+        width, and the font alone does not account for the margins or the
+        scroll bar.
+        """
+        control = getattr(self.console, "_control", None)
+        if control is None:
+            return None
+        try:
+            advance = QFontMetrics(self.console.font).horizontalAdvance(" ")
+            if advance <= 0:
+                return None
+            margin = control.document().documentMargin() * 2
+            usable = control.viewport().width() - margin
+            columns = int(usable // advance) - WIDTH_MARGIN_CHARS
+        except Exception:  # noqa: BLE001 - a bad measurement is not fatal
+            logger.debug("Could not measure the console.", exc_info=True)
+            return None
+        return columns if columns > 0 else None
+
+    def _push_console_columns(self):
+        """Report the console's width to the kernel, if it has changed."""
+        columns = self._console_columns()
+        if columns is None or columns == self._pushed_columns:
+            return
+        if self.poller.execute_once(f"_gui_set_console_columns({columns})"):
+            self._pushed_columns = columns
 
     def _on_document(self, name, doc):
         """Forward a streamed document to every tab that wants one."""
@@ -541,6 +595,10 @@ class MainWindow(QMainWindow):
         """
         self.poller.stop()
         self.poller.reset()
+        self._width_timer.stop()
+        # The new kernel has been told nothing, so the next measurement must
+        # go out even if the console has not changed size.
+        self._pushed_columns = None
         if self._agent_tab is not None:
             # The kernel holding the pending request is going away, and an auto
             # window armed against the old session must not carry into the new
@@ -572,6 +630,7 @@ class MainWindow(QMainWindow):
         # flag stops their closeEvent trying to dock back into a dying window.
         self._closing = True
         self.poller.stop()
+        self._width_timer.stop()
         self.transcript.stop()
         self.docstream.stop()
         for tab in self._tab_widgets:
