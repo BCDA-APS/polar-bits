@@ -26,6 +26,7 @@ import numpy as np
 
 from qtpy import QtCore, QtWidgets
 
+from ..nowheel import install_wheel_guard
 from .flyscan_gui import (
     DEFAULT_EIGER_ROI,
     DEFAULT_VORTEX_ROI,
@@ -1063,6 +1064,7 @@ def main():
     args = parser.parse_args()
 
     app = QtWidgets.QApplication(sys.argv)
+    install_wheel_guard(app)
     win = LiveMainWindow(initial_folder=args.folder or os.getcwd())
     if args.scan is not None:
         win.scan_spin.setValue(args.scan)

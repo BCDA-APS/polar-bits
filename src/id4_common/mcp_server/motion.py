@@ -79,7 +79,6 @@ those plans the operator reading it is the whole of the protection.
 """
 
 from ..gui import scancode as _scancode
-from .bridge import ALLOWED_DEVICES
 from .bridge import ECHO_PREFIX
 
 #: Cap on a single axis's travel, in degrees, for the diffractometer axes.
@@ -1148,8 +1147,14 @@ def _gui_mcp_last_scan(device=None):
     return out
 '''
 
-#: The code the GUI installs in the kernel, next to ``MCP_HELPERS_CODE``.
+#: The code the GUI installs in the kernel, next to the MCP helpers.
 #: Substituted rather than ``%``-formatted: the body is full of ``%s``.
+#:
+#: A plain constant, unlike its two neighbours, because **nothing in it is
+#: station-specific**: the axis ops address devices by whatever name the caller
+#: passes and let the registry refuse an unknown one, and the plan allow-list
+#: is the same everywhere.  The device allow-list that *is* per station lives
+#: in the MCP helpers, which check it before any of this runs.
 MOTION_HELPERS_CODE = (
     _CODE.replace("__MAX_TRAVEL_DEG__", repr(MAX_TRAVEL_DEG))
     .replace("__MAX_TRAVEL_FRACTION__", repr(MAX_TRAVEL_FRACTION))
@@ -1160,5 +1165,9 @@ MOTION_HELPERS_CODE = (
     .replace("__PREFIX__", ECHO_PREFIX)
 )
 
-#: Kept so a reader of this module sees what it is guarding.
-DIFFRACTOMETERS = tuple(sorted(ALLOWED_DEVICES))
+# There was a ``DIFFRACTOMETERS = tuple(sorted(ALLOWED_DEVICES))`` here,
+# "kept so a reader of this module sees what it is guarding".  It had no
+# consumers, and read at import time it froze one station's devices into a
+# module constant before ``--station`` had been parsed -- the exact bug the
+# station profile exists to fix.  ``bridge.allowed_devices()`` is the live
+# answer.

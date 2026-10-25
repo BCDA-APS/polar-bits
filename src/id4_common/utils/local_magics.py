@@ -16,6 +16,7 @@ from pyRestTable import Table
 
 from ..plans import mv
 from ..plans import mvr
+from .progress_bar import progress_bar_manager
 
 try:
     # cytools is a drop-in replacement for toolz, implemented in Cython
@@ -27,6 +28,11 @@ except ImportError:
 @magics_class
 class LocalMagics(BlueskyMagics):
     """Custom IPython line magics for motor readback and movement at POLAR."""
+
+    #: Overrides the plain ``ProgressBarManager`` BlueskyMagics carries as a
+    #: class attribute, so ``%mov``/``%movr`` get a bar that stays on one row
+    #: in the GUI console just as a plan run through the session RE does.
+    pbar_manager = progress_bar_manager()
 
     # @line_magic
     # def att(self, line):

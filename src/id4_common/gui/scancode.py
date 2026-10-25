@@ -109,6 +109,17 @@ PLANS = {
 #: scan *is* the trajectory) and the checkbox is hidden.
 NO_FIXQ = frozenset({"hscan", "kscan", "lscan", "hklscan", "psiscan", "count"})
 
+#: Plans that need an active diffractometer, and so do not run at every
+#: station.  ``th2th`` joins the reciprocal-space five: it drives the
+#: diffractometer's own theta/two-theta pair, not a generic motor.
+#:
+#: Distinct from :data:`NO_FIXQ` despite the overlap -- that one is about
+#: whether holding hkl fixed *means* anything for a plan, this one about
+#: whether the plan can run in this hutch at all.
+HKL_PLANS = frozenset(
+    {"th2th", "hscan", "kscan", "lscan", "hklscan", "psiscan"}
+)
+
 
 #: ``ascan``/``lup`` hand their arguments to bluesky's ``scan()``, which takes
 #: any number of motors, so a third axis is a real trajectory.  The grid plans

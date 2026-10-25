@@ -9,6 +9,7 @@ from ophyd import EpicsSignal
 from ophyd import EpicsSignalRO
 from ophyd import FormattedComponent
 from ophyd import Kind
+from time import sleep
 
 
 class LocalPositioner(PVPositionerSoftDone):
@@ -32,8 +33,19 @@ class LocalPositioner(PVPositionerSoftDone):
         for current).
         """
         self._type = progtype
+        self._sleep = 0.005
         super().__init__(*args, readback_pv="1", **kwargs)
 
+    def _setup_move(self, position):
+        """Move and do not wait until motion is complete (asynchronous)"""
+        self.log.debug("%s.setpoint = %s", self.name, position)
+        self.setpoint.put(position, wait=True)
+        self.done.put(False)
+        sleep(self._sleep)
+        if self.actuate is not None:
+            self.log.debug("%s.actuate = %s", self.name, self.actuate_value)
+            self.actuate.put(self.actuate_value, wait=False)
+        self.cb_readback()  # This is needed to force the first check.
 
 class KepcoController(Device):
     """

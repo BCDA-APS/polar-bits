@@ -55,7 +55,9 @@ from ..plans.hkl_scans import kscan  # noqa: F401
 from ..plans.hkl_scans import lscan  # noqa: F401
 from ..plans.hkl_scans import psiscan  # noqa: F401
 from ..plans.hkl_scans import th2th  # noqa: F401
+from ..plans.list_scans import list_grid_scan  # noqa: F401
 from ..plans.list_scans import list_scan  # noqa: F401
+from ..plans.list_scans import rel_list_grid_scan  # noqa: F401
 from ..plans.list_scans import rel_list_scan  # noqa: F401
 from ..plans.move_plans import mv  # noqa: F401
 from ..plans.move_plans import mvr  # noqa: F401
@@ -87,6 +89,8 @@ __all__ = [
     "rel_grid_scan",
     "list_scan",
     "rel_list_scan",
+    "list_grid_scan",
+    "rel_list_grid_scan",
     "hklscan",
     "hscan",
     "kscan",

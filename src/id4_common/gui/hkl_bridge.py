@@ -31,24 +31,33 @@ lattice for (100), (110) and (200).  So ``2θ = 2·asin(|UB·hkl|·λ/4π)``.
 
 from . import config
 
-#: Diffractometers the tab may act on, in selector order.  The ``*_psi``
-#: geometries are used internally for the psi readout only and are not offered.
-DIFFRACTOMETERS = list(config.DIFFRACTOMETERS)
-
-#: Diffractometer -> the psi-engine geometry on the same motors.  Per device,
-#: because POLAR has two diffractometers and each has its own; ``hkl_utils``
-#: finds it by the same convention, ``oregistry.find(name + "_psi")``.
-PSI_GEOMETRY = dict(config.PSI_GEOMETRY)
-
 #: Poller keys.
 POSITION_KEY = "hkl_position"
 STATE_KEY = "hkl_state"
 
-#: Emitted ahead of the helpers so the map is a literal in the kernel rather
-#: than something interpolated into every function that needs it.  Built with
-#: ``repr`` for the same reason ``_gui_mcp`` sends its payload that way: a
-#: device name reaches the kernel as data, never as code.
-_PSI_PREAMBLE = f"_GUI_HKL_PSI = {PSI_GEOMETRY!r}\n\n\n"
+
+def diffractometers():
+    """Diffractometers the tab may act on, in selector order.
+
+    Empty at a station that has none, which is what makes the HKL tab a
+    disabled placeholder there.  The ``*_psi`` geometries are used internally
+    for the psi readout only and are not offered.
+
+    Resolved per call, not bound at import: ``app.main`` sets ``ID4_STATION``
+    after this module has already been imported by way of ``gui.kernel``.
+    """
+    return list(config.profile().diffractometers)
+
+
+def psi_geometry():
+    """Diffractometer -> the psi-engine geometry on the same motors.
+
+    Per device, because POLAR has two diffractometers and each has its own;
+    ``hkl_utils`` finds it by the same convention,
+    ``oregistry.find(name + "_psi")``.
+    """
+    return dict(config.profile().psi_geometry)
+
 
 _HELPERS_CODE = '''\
 def _gui_hkl_f(value, default=None):
@@ -701,8 +710,19 @@ def _gui_hkl_calc(name, h, k, l, psi=None, presets=None):
     return out
 '''
 
-#: Installed in the kernel by the bootstrap cell.  Plain concatenation, not
-#: ``%``-formatting: the body is several hundred lines of Python and a single
-#: literal ``%`` anywhere in it -- a format string, a modulo -- would break the
-#: whole thing at import time.
-HKL_HELPERS_CODE = _PSI_PREAMBLE + _HELPERS_CODE
+
+def hkl_helpers_code():
+    """Return the HKL helpers to install in the kernel, for this station.
+
+    The psi map is emitted ahead of the helpers so it is a literal in the
+    kernel rather than something interpolated into every function that needs
+    it.  Built with ``repr`` for the same reason ``_gui_mcp`` sends its payload
+    that way: a device name reaches the kernel as data, never as code.  Note
+    the ``dict`` -- ``profile().psi_geometry`` is a ``MappingProxyType``, whose
+    repr is not a Python literal.
+
+    Plain concatenation, not ``%``-formatting: the body is several hundred
+    lines of Python and a single literal ``%`` anywhere in it -- a format
+    string, a modulo -- would break the whole thing.
+    """
+    return f"_GUI_HKL_PSI = {psi_geometry()!r}\n\n\n" + _HELPERS_CODE

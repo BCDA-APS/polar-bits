@@ -58,7 +58,7 @@ id4_common.devices.monochromator.MonoDevice:
 - name: mono
   prefix: "4idVDCM:"
   pzt_thf2_pv: "4idaSoft:LJ:Ao5"
-  pzt_chi2_pv: "4idaSoft:LJ:Ao3"
+  pzt_chi2_pv: "4idaSoft:LJ:Ao2"
   labels: ["core", "monochromator", "energy device", "baseline"]
 
 # PRs prefix must be without :

@@ -135,7 +135,8 @@ energy list computed elsewhere. For the XAFS-specific energy grid use
 
 All motors step together, one list entry per scan point, so every position
 list must have the same length. Lists may be Python lists, tuples or numpy
-arrays.
+arrays. To combine the lists into a **mesh** instead of stepping them
+together, use [`list_grid_scan`](#list_grid_scan-absolute-grid-of-positions).
 
 ### `list_scan` — absolute list of positions
 
@@ -191,6 +192,59 @@ RE(grid_scan(
 ### `rel_grid_scan` — relative grid
 
 Same as `grid_scan` but offsets are relative to current motor positions.
+
+### `list_grid_scan` — absolute grid of positions
+
+The mesh equivalent of [`list_scan`](#list-scans): each motor gets an
+**explicit list of positions** instead of `start, stop, npts`, and the scan
+visits every combination of them (the outer product), first motor slowest.
+Because each list only sets the length of its own axis, the lists are
+independent and may have different lengths — a 4-entry list crossed with a
+3-entry list is a 4x3 = 12-point mesh.
+
+```python
+import numpy as np
+
+# 4 x 3 mesh, uneven spacing on the slow axis.
+RE(list_grid_scan(
+    motor1, [0.0, 0.1, 0.4, 1.0],
+    motor2, [-1.0, 0.0, 1.0],
+    time,
+))
+
+# Hand-picked setpoints on one axis crossed with a regular scan on another.
+RE(list_grid_scan(
+    temperature, [10, 50, 100, 300],
+    motor, np.linspace(-1, 1, 51),
+    time,
+))
+```
+
+Pass `snake_axes=True` to sweep the inner axis back and forth instead of
+flying back to its start on every row (the slowest axis is never snaked):
+
+```python
+RE(list_grid_scan(motor1, xs, motor2, ys, time, snake_axes=True))
+```
+
+### `rel_list_grid_scan` — relative grid of positions
+
+Same as `list_grid_scan` but each list holds offsets from the motor's current
+position. The motors are returned to where they started when the scan
+finishes.
+
+```python
+RE(rel_list_grid_scan(
+    motor1, [-0.5, 0, 0.5],
+    motor2, [-0.1, -0.05, 0, 0.05, 0.1],
+    time,
+))
+```
+
+Both accept the same `dichro` / `lockin` / `fixq` / `vortex_sgz` flags as the
+1-D plans, and both record `shape` / `extents` in the start document, so the
+2-D peak helpers (`cen`, `com`, `maxi`, `mini`) and the GUI's mesh plot work
+on them the same way they do on `grid_scan`.
 
 ---
 

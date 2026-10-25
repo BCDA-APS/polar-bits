@@ -19,6 +19,7 @@ Auxilary HKL functions.
     ~compute_UB
     ~update_eiger
     ~setmode
+    ~ca_all
     ~ca
     ~wh
     ~pa_new
@@ -62,7 +63,6 @@ try:
     from bluesky import RunEngine
     from bluesky import RunEngineInterrupted
     from bluesky.plan_stubs import mv
-    from bluesky.utils import ProgressBarManager
     from epics import caget
     from epics import caput
     from hklpy2 import ConfigurationRunWrapper
@@ -70,7 +70,9 @@ try:
     from hklpy2.user import add_sample
     from hklpy2.user import get_diffractometer
     from hklpy2.user import set_diffractometer as hklpy2_set_diffract
+    from hklpy2.user import cahkl_table
 
+    from .progress_bar import progress_bar_manager
     from .run_engine import RE as polar_RE
     from .run_engine import cat
 except ModuleNotFoundError:
@@ -94,6 +96,7 @@ __all__ = """
     compute_UB
     update_eiger
     setmode
+    ca_all
     ca
     wh
     pa_new
@@ -123,7 +126,7 @@ __all__ = """
 polar_config = pathlib.Path("polar-config.json")
 
 RE = RunEngine({}, loop=asyncio.new_event_loop())
-pbar_manager = ProgressBarManager()
+pbar_manager = progress_bar_manager()
 
 logging.getLogger("hklpy2").setLevel(logging.WARNING)
 # Levels: DEBUG, INFO, WARNING (default), ERROR, CRITICAL
@@ -1273,6 +1276,9 @@ def freeze_general():
     for axis, val in new_presets.items():
         print(f"  {axis} = {val}")
 
+
+def ca_all(h,k,l):
+    cahkl_table((h,k,l))
 
 def ca(h, k, l, energy=None):  # noqa: E741
     """

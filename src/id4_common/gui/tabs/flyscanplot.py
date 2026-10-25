@@ -39,6 +39,19 @@ class FlyscanPlotTab(BaseTab):
     #: A live map is worth a window of its own on a second screen.
     detachable = True
 
+    @classmethod
+    def unavailable_reason(cls, profile):
+        """Flyscans need the softglue and piezo hardware, which is 4IDG's."""
+        if profile.has_flyscan:
+            return None
+        return (
+            f"{profile.display} has no flyscan hardware.\n\n"
+            "The live viewer reads the HDF5 files a flyscan writes, and the "
+            "softglue and piezo devices that produce them (gsgz_isn, "
+            "piezo_jena) are 4IDG's.\n\n"
+            "Use the Scan plot tab for step scans run here."
+        )
+
     def __init__(self, parent=None):
         """Show a placeholder; the viewer is built on first show."""
         super().__init__(parent)

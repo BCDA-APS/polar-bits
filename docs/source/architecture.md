@@ -146,6 +146,8 @@ succeeds.
 
 - `base_scans` — `lup`, `ascan`, `count`, `qxscan`, `th2th`
 - `grid_scans` — `grid_scan`, `rel_grid_scan`
+- `list_scans` — `list_scan`, `rel_list_scan`, `list_grid_scan`,
+  `rel_list_grid_scan`
 - `hkl_scans` — `hklscan`, `hscan`, `kscan`, `lscan`, `psiscan`
 - `move_plans` — `mv`, `mvr`, `abs_set` (with magnet911 staging)
 - `peak_position` — `cen` / `com` / `maxi` / `mini` / `peak` / `peak_pos` /

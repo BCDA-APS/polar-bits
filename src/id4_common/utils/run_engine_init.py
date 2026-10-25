@@ -32,8 +32,9 @@ from apsbits.utils.controls_setup import set_timeouts
 from apsbits.utils.metadata import get_md_path
 from apsbits.utils.metadata import re_metadata
 from apsbits.utils.stored_dict import StoredDict
-from bluesky.utils import ProgressBarManager
 from bluesky_tiled_plugins import TiledWriter
+
+from .progress_bar import progress_bar_manager
 
 logger = logging.getLogger(__name__)
 logger.bsdev(__file__)
@@ -149,8 +150,9 @@ def init_RE(
     connect_scan_id_pv(RE, pv=scan_id_pv)
 
     if re_config.get("USE_PROGRESS_BAR", True):
-        # Add a progress bar.
-        pbar_manager = ProgressBarManager()
+        # Add a progress bar.  Ours, not bluesky's: see progress_bar.py for
+        # why the stock one wraps onto a second row in the GUI console.
+        pbar_manager = progress_bar_manager()
         RE.waiting_hook = pbar_manager
 
     return RE, sd

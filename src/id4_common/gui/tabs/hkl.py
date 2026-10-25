@@ -38,9 +38,9 @@ from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
 from .. import config
-from ..hkl_bridge import DIFFRACTOMETERS
 from ..hkl_bridge import POSITION_KEY
 from ..hkl_bridge import STATE_KEY
+from ..hkl_bridge import diffractometers
 from .base import PLACEHOLDER
 from .base import BaseTab
 from .base import value_label
@@ -74,6 +74,53 @@ LATTICE_RANGES = {
 }
 
 
+#: Keys that step a *closed* QComboBox through its items.  Swallowed by
+#: :class:`_ClickOnlyComboBox`; inside an open popup they still navigate.
+_STEP_KEYS = frozenset(
+    (
+        Qt.Key_Up,
+        Qt.Key_Down,
+        Qt.Key_PageUp,
+        Qt.Key_PageDown,
+        Qt.Key_Home,
+        Qt.Key_End,
+    )
+)
+
+
+class _ClickOnlyComboBox(QComboBox):
+    """A combo box that only changes when an item in the popup is clicked.
+
+    Picking here writes instrument state -- the solver mode, the sample, the
+    active diffractometer -- so Qt's defaults are too easy to fire by
+    accident: a wheel over the closed box steps the value, and so do the
+    arrow keys while it holds focus.  Both are swallowed, leaving the popup
+    as the only way in.  Pair it with ``activated`` rather than
+    ``currentIndexChanged``.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # Focus on a click only: a box the wheel cannot focus is a box the
+        # wheel cannot step.
+        self.setFocusPolicy(Qt.ClickFocus)
+
+    def wheelEvent(self, event):
+        """Ignore the wheel, leaving it to the scroll area underneath.
+
+        Belt and braces: :mod:`id4_common.gui.nowheel` guards the whole
+        application, but a tab built outside it is still safe this way.
+        """
+        event.ignore()
+
+    def keyPressEvent(self, event):
+        """Ignore the keys that step a closed box; pass the rest through."""
+        if event.key() in _STEP_KEYS:
+            event.ignore()
+            return
+        super().keyPressEvent(event)
+
+
 def _spin(minimum, maximum, value=0.0, decimals=4):
     box = QDoubleSpinBox()
     box.setRange(minimum, maximum)
@@ -90,6 +137,26 @@ class HklTab(BaseTab):
 
     #: Provides its own scroll area.
     scrollable = False
+
+    @classmethod
+    def unavailable_reason(cls, profile):
+        """There is nothing to orient at a station with no diffractometer.
+
+        Answered from the profile rather than from ``oregistry``: every
+        station instantiates the same ``devices.yml``, so ``huber_euler`` is
+        findable at 4IDB too -- disconnected, and belonging to another hutch.
+        """
+        if profile.has_diffractometer:
+            return None
+        return (
+            f"{profile.display} has no diffractometer.\n\n"
+            "Orientation, UB and hkl → angles belong to the 4IDG Huber "
+            "machines; nothing here has reciprocal-space coordinates to set "
+            "or read.\n\n"
+            "The reciprocal-space scan plans (th2th, hscan, kscan, lscan, "
+            "hklscan, psiscan) are disabled in the Scan tab for the same "
+            "reason."
+        )
 
     def __init__(self, parent=None):
         """Build the scrollable stack of orientation sections."""
@@ -154,7 +221,13 @@ class HklTab(BaseTab):
 
         self._status = QLabel("Waiting for the session…")
         layout = QVBoxLayout(self)
-        layout.addWidget(split)
+        # The stretch is what makes the tab grow with the window.  A
+        # horizontal QSplitter is only *Preferred* vertically, so with every
+        # stretch at 0 it stopped at its size hint and the one-line status
+        # label below -- Preferred too, and equally entitled -- took all the
+        # height the window gained.  The controls stayed the same height with
+        # their scroll bar frozen while the label sat in a growing blank gap.
+        layout.addWidget(split, 1)
         layout.addWidget(self._status)
 
     # -- construction -----------------------------------------------------
@@ -164,9 +237,9 @@ class HklTab(BaseTab):
         row = QHBoxLayout(box)
         row.setContentsMargins(0, 0, 0, 0)
         row.addWidget(QLabel("Diffractometer:"))
-        self._device_combo = QComboBox()
-        self._device_combo.addItems(DIFFRACTOMETERS)
-        self._device_combo.currentIndexChanged.connect(self._on_device_changed)
+        self._device_combo = _ClickOnlyComboBox()
+        self._device_combo.addItems(diffractometers())
+        self._device_combo.activated.connect(self._on_device_changed)
         row.addWidget(self._device_combo)
         self._device_banner = QLabel()
         row.addWidget(self._device_banner)
@@ -190,8 +263,8 @@ class HklTab(BaseTab):
         outer = QVBoxLayout(box)
 
         row = QHBoxLayout()
-        self._sample_combo = QComboBox()
-        self._sample_combo.currentIndexChanged.connect(self._on_sample_selected)
+        self._sample_combo = _ClickOnlyComboBox()
+        self._sample_combo.activated.connect(self._on_sample_selected)
         row.addWidget(self._sample_combo, 1)
         self._sample_name = QLineEdit()
         self._sample_name.setPlaceholderText("new sample name")
@@ -259,8 +332,8 @@ class HklTab(BaseTab):
     def _build_mode_group(self):
         box = QGroupBox("Mode")
         form = QFormLayout(box)
-        self._mode_combo = QComboBox()
-        self._mode_combo.currentIndexChanged.connect(self._on_mode_selected)
+        self._mode_combo = _ClickOnlyComboBox()
+        self._mode_combo.activated.connect(self._on_mode_selected)
         form.addRow("Mode:", self._mode_combo)
         self._constant_label = value_label()
         form.addRow("Constant axes:", self._constant_label)
@@ -905,7 +978,7 @@ class HklTab(BaseTab):
         # at stations that do have one.
         warning = (
             "REAL MOTORS WILL MOVE.\n\n"
-            if self.device in config.REAL_MOTOR_DEVICES
+            if self.device in config.profile().real_motor_devices
             else ""
         )
         # A fixed angle decides which of many solutions this is, so it belongs

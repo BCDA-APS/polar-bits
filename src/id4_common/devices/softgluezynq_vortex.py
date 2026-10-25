@@ -8,6 +8,7 @@ from ophyd import DeviceStatus
 from ophyd import DynamicDeviceComponent
 from ophyd import Signal
 from ophyd import Staged
+from time import sleep as time_sleep
 
 from .softgluezynq_parts import SGZDFF
 from .softgluezynq_parts import SGZClocks
@@ -172,7 +173,7 @@ class SGZVortex(Device):
                 # Turn off the enable
                 # Not sure .set is the best thing to do here.
                 self.buffers.in1.signal.set("0").wait()
-                sleep(self._read_delay)
+                time_sleep(self._read_delay)
                 self._status.set_finished()
                 self._status = None
 

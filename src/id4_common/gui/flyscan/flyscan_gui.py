@@ -40,6 +40,7 @@ from matplotlib.colors import LogNorm
 from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle
 
+from ..nowheel import install_wheel_guard
 from .process_flyscan import (
     FNAME_FORMAT,
     describe_partial_groups,
@@ -1510,6 +1511,7 @@ def main():
     args = parser.parse_args()
 
     app = QtWidgets.QApplication(sys.argv)
+    install_wheel_guard(app)
     win = MainWindow(initial_folder=args.folder or os.getcwd())
     if args.scan is not None:
         win.scan_spin.setValue(args.scan)

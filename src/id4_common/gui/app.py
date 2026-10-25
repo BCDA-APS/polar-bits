@@ -11,11 +11,13 @@ import argparse
 import logging
 import os
 import sys
+import traceback
 
 from qtconsole.rich_jupyter_widget import RichJupyterWidget
 from qtpy.QtCore import QSettings
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QTimer
+from qtpy.QtGui import QFontMetrics
 from qtpy.QtWidgets import QApplication
 from qtpy.QtWidgets import QComboBox
 from qtpy.QtWidgets import QDialog
@@ -37,7 +39,9 @@ from . import config
 from .docstream import DocumentStream
 from .kernel import KernelSession
 from .kernel import StatusPoller
+from .nowheel import install_wheel_guard
 from .tabs.agent import AgentTab
+from .tabs.base import UnavailableTab
 from .tabs.detectors import DetectorsTab
 from .tabs.devices import DevicesTab
 from .tabs.flyscanplot import FlyscanPlotTab
@@ -84,6 +88,19 @@ FALLBACK_FONT_POINTS = 10
 #: independently.
 UI_FONT_POINTS = 14
 
+#: How often the console's width in characters is re-measured, in ms.  The
+#: kernel cannot see the Qt console, so it has to be told -- see
+#: :mod:`id4_common.utils.progress_bar`.  Polling rather than hooking
+#: ``resizeEvent``, the splitter and both font paths: this one timer also
+#: catches the scroll bar appearing and a tab being detached, and it sends
+#: nothing to the kernel while nothing changes.
+WIDTH_POLL_MS = 1000
+
+#: Trimmed off the measured width before it is reported.  A bar drawn to the
+#: very last column leaves the cursor on the edge, and a terminal that wraps
+#: there puts the next write on a second row -- the problem being fixed.
+WIDTH_MARGIN_CHARS = 1
+
 #: Console background choices, mapped to qtconsole ``set_default_style``
 #: schemes.  "black" is the default: a dark console is easier on the eyes in a
 #: dimmed hutch, and it matches the terminal sessions already in use.
@@ -92,9 +109,10 @@ DEFAULT_BACKGROUND = "black"
 
 #: Where console appearance choices are remembered between sessions.  From
 #: ``gui/config.py`` so the four stations cannot drift into separate settings
-#: scopes by an edit in one file and not the others.
+#: scopes by an edit in one file and not the others.  The application half is
+#: ``config.qsettings_app()``, called at each use: it is per station, and the
+#: station is not known until ``main`` has parsed ``--station``.
 SETTINGS_ORG = config.QSETTINGS_ORG
-SETTINGS_APP = config.QSETTINGS_APP
 FONT_SIZE_KEY = "console/font_size"
 BACKGROUND_KEY = "console/background"
 
@@ -145,7 +163,7 @@ class MainWindow(QMainWindow):
         # Four stations may be open at once on one desktop, so the title has
         # to say which one this is.
         self.setWindowTitle(
-            config.WINDOW_TITLE.format(station=config.station())
+            config.WINDOW_TITLE.format(station=config.profile().display)
         )
         self.resize(1100, 900)
 
@@ -187,6 +205,14 @@ class MainWindow(QMainWindow):
         # bootstrap has printed -- has somewhere to go.
         self.transcript = ConsoleTranscript()
         self._resume_transcript(cwd)
+
+        # Last console width pushed to the kernel, so an unchanged
+        # measurement costs nothing.  Cleared on restart: the new kernel has
+        # not been told anything.
+        self._pushed_columns = None
+        self._width_timer = QTimer(self)
+        self._width_timer.setInterval(WIDTH_POLL_MS)
+        self._width_timer.timeout.connect(self._push_console_columns)
 
         self.poller = StatusPoller(self.session, parent=self)
         self.poller.iopub_message.connect(self.transcript.handle)
@@ -248,7 +274,7 @@ class MainWindow(QMainWindow):
         failed start is left to the Session tab to report; it must not stop the
         window from opening.
         """
-        settings = QSettings(SETTINGS_ORG, SETTINGS_APP)
+        settings = QSettings(SETTINGS_ORG, config.qsettings_app())
         if not settings.value(LOG_ENABLED_KEY, False, type=bool):
             return
         path = settings.value(LOG_PATH_KEY, "", type=str)
@@ -260,7 +286,39 @@ class MainWindow(QMainWindow):
         """Bootstrap Bluesky and begin polling, once the kernel can answer."""
         self.session.bootstrap(self.console, self.docstream.publisher_code())
         self.poller.start()
+        self._width_timer.start()
         self.restart_button.setEnabled(True)
+
+    def _console_columns(self):
+        """Return how many characters fit across the console, or None.
+
+        Reaches into qtconsole's private ``_control`` for the viewport: the
+        widget publishes its font but nothing public for the text area's
+        width, and the font alone does not account for the margins or the
+        scroll bar.
+        """
+        control = getattr(self.console, "_control", None)
+        if control is None:
+            return None
+        try:
+            advance = QFontMetrics(self.console.font).horizontalAdvance(" ")
+            if advance <= 0:
+                return None
+            margin = control.document().documentMargin() * 2
+            usable = control.viewport().width() - margin
+            columns = int(usable // advance) - WIDTH_MARGIN_CHARS
+        except Exception:  # noqa: BLE001 - a bad measurement is not fatal
+            logger.debug("Could not measure the console.", exc_info=True)
+            return None
+        return columns if columns > 0 else None
+
+    def _push_console_columns(self):
+        """Report the console's width to the kernel, if it has changed."""
+        columns = self._console_columns()
+        if columns is None or columns == self._pushed_columns:
+            return
+        if self.poller.execute_once(f"_gui_set_console_columns({columns})"):
+            self._pushed_columns = columns
 
     def _on_document(self, name, doc):
         """Forward a streamed document to every tab that wants one."""
@@ -291,8 +349,9 @@ class MainWindow(QMainWindow):
     def _build_tabs(self):
         tabs = QTabWidget()
         widgets = []
+        profile = config.profile()
         for tab_class in TABS:
-            tab = tab_class()
+            tab = self._build_tab(tab_class, profile)
             if isinstance(tab, AgentTab):
                 # A move waiting behind another tab is a move nobody approves.
                 self._agent_tab = tab
@@ -323,6 +382,31 @@ class MainWindow(QMainWindow):
         # Let the splitter shrink the whole stack; each page scrolls instead.
         tabs.setMinimumHeight(120)
         return tabs, widgets
+
+    @staticmethod
+    def _build_tab(tab_class, profile):
+        """Build one tab, or a placeholder saying why there is none.
+
+        Every station shows the same tabs in the same order, so the layout is
+        learned once and a tab that is missing here is missing because the
+        hutch cannot do that -- said in words, on the page.  Keeping the count
+        fixed also keeps the Agent tab's index correct, which is what the
+        window scrolls to when a move needs approving.
+
+        The construction is wrapped because it was not: one tab whose
+        ``__init__`` raised took the whole window with it, which is a poor
+        trade for a session whose other nine tabs would have worked.
+        """
+        reason = tab_class.unavailable_reason(profile)
+        if reason is not None:
+            return UnavailableTab(tab_class.title, reason)
+        try:
+            return tab_class()
+        except Exception:
+            logger.exception("%s failed to build", tab_class.__name__)
+            return UnavailableTab(
+                tab_class.title, traceback.format_exc(), failed=True
+            )
 
     def _detach_tab(self, index):
         """Move a detachable tab into its own window, on double-click.
@@ -412,7 +496,7 @@ class MainWindow(QMainWindow):
 
     def _saved_background(self):
         """Return the remembered background name, defaulting to black."""
-        settings = QSettings(SETTINGS_ORG, SETTINGS_APP)
+        settings = QSettings(SETTINGS_ORG, config.qsettings_app())
         name = settings.value(BACKGROUND_KEY, DEFAULT_BACKGROUND, type=str)
         return name if name in BACKGROUNDS else DEFAULT_BACKGROUND
 
@@ -424,11 +508,13 @@ class MainWindow(QMainWindow):
         self._background = name
         # Changing the style sheet does not disturb the font size.
         self.console.set_default_style(BACKGROUNDS[name])
-        QSettings(SETTINGS_ORG, SETTINGS_APP).setValue(BACKGROUND_KEY, name)
+        QSettings(SETTINGS_ORG, config.qsettings_app()).setValue(
+            BACKGROUND_KEY, name
+        )
 
     def _initial_font_points(self):
         """Return the remembered console font size, or the current one."""
-        settings = QSettings(SETTINGS_ORG, SETTINGS_APP)
+        settings = QSettings(SETTINGS_ORG, config.qsettings_app())
         saved = settings.value(FONT_SIZE_KEY, 0, type=int)
         if MIN_FONT_POINTS <= saved <= MAX_FONT_POINTS:
             self._apply_font_points(saved)
@@ -453,7 +539,9 @@ class MainWindow(QMainWindow):
     def _on_font_spin_changed(self, points):
         """Apply and remember a font size chosen in the toolbar."""
         self._apply_font_points(points)
-        QSettings(SETTINGS_ORG, SETTINGS_APP).setValue(FONT_SIZE_KEY, points)
+        QSettings(SETTINGS_ORG, config.qsettings_app()).setValue(
+            FONT_SIZE_KEY, points
+        )
 
     def _on_console_font_changed(self):
         """Mirror a console-side font change back into the spin box."""
@@ -464,7 +552,9 @@ class MainWindow(QMainWindow):
         blocked = self.font_spin.blockSignals(True)
         self.font_spin.setValue(points)
         self.font_spin.blockSignals(blocked)
-        QSettings(SETTINGS_ORG, SETTINGS_APP).setValue(FONT_SIZE_KEY, points)
+        QSettings(SETTINGS_ORG, config.qsettings_app()).setValue(
+            FONT_SIZE_KEY, points
+        )
 
     def _on_metadata(self, metadata):
         for tab in self._tab_widgets:
@@ -505,6 +595,10 @@ class MainWindow(QMainWindow):
         """
         self.poller.stop()
         self.poller.reset()
+        self._width_timer.stop()
+        # The new kernel has been told nothing, so the next measurement must
+        # go out even if the console has not changed size.
+        self._pushed_columns = None
         if self._agent_tab is not None:
             # The kernel holding the pending request is going away, and an auto
             # window armed against the old session must not carry into the new
@@ -536,6 +630,7 @@ class MainWindow(QMainWindow):
         # flag stops their closeEvent trying to dock back into a dying window.
         self._closing = True
         self.poller.stop()
+        self._width_timer.stop()
         self.transcript.stop()
         self.docstream.stop()
         for tab in self._tab_widgets:
@@ -568,25 +663,38 @@ def main(argv=None):
     parser.add_argument(
         "--station",
         default=None,
+        choices=sorted(config.STATIONS),
         help=(
-            "Station package to start: id4_b, id4_g, id4_h or id4_raman.  "
-            "One checkout serves all four, so this decides which startup the "
-            "kernel runs, which devices exist, and the name of the kernel "
-            "pointer file an MCP client discovers.  Defaults to $ID4_STATION, "
+            "Station package to start.  One checkout serves all of them, so "
+            "this decides which startup the kernel runs, which devices "
+            "connect, which tabs work, and the name of the kernel pointer "
+            "file an MCP client discovers.  Defaults to $ID4_STATION, "
             f"then {config.DEFAULT_STATION}."
         ),
     )
     args = parser.parse_args(argv)
 
     # Set before anything reads it: config.station() is consulted by the
-    # window title, the pointer filename and the kernel's bootstrap import.
+    # window title, the pointer filename, the capability profile and the
+    # kernel's bootstrap import.
     if args.station:
         os.environ["ID4_STATION"] = args.station
+
+    # A station the GUI cannot run is refused here rather than at the kernel's
+    # first cell: the failure would otherwise arrive as an ImportError buried
+    # in a console the operator has no reason to be reading yet.  ``choices``
+    # above has already caught a typo; this catches a real station whose
+    # session cannot start.
+    profile = config.profile()
+    if profile.unsupported_reason:
+        parser.error(profile.unsupported_reason)
 
     logging.basicConfig(level=logging.INFO)
 
     app = QApplication.instance() or QApplication(sys.argv[:1])
-    app.setApplicationName(config.WINDOW_TITLE.format(station=config.station()))
+    app.setApplicationName(config.WINDOW_TITLE.format(station=profile.display))
+    # No value in this GUI changes because the wheel passed over it.
+    install_wheel_guard(app)
 
     # Before the window exists, so every widget is built with it.
     ui_font = app.font()
