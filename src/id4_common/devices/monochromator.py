@@ -61,7 +61,7 @@ class MonoDevice(PseudoPositioner):
         prefix,
         *,
         pzt_thf2_pv="4idaSoft:LJ:Ao5",
-        pzt_chi2_pv="4idaSoft:LJ:Ao3",
+        pzt_chi2_pv="4idaSoft:LJ:Ao2",
         **kwargs,
     ):
         """Initialize MonoDevice with parametric LabJack PZT PV addresses."""
