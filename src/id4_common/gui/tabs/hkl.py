@@ -221,7 +221,13 @@ class HklTab(BaseTab):
 
         self._status = QLabel("Waiting for the session…")
         layout = QVBoxLayout(self)
-        layout.addWidget(split)
+        # The stretch is what makes the tab grow with the window.  A
+        # horizontal QSplitter is only *Preferred* vertically, so with every
+        # stretch at 0 it stopped at its size hint and the one-line status
+        # label below -- Preferred too, and equally entitled -- took all the
+        # height the window gained.  The controls stayed the same height with
+        # their scroll bar frozen while the label sat in a growing blank gap.
+        layout.addWidget(split, 1)
         layout.addWidget(self._status)
 
     # -- construction -----------------------------------------------------
