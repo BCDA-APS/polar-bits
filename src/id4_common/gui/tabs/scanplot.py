@@ -11,6 +11,12 @@ divides every curve by that field point by point, which is how a detector is
 normalised against I0 -- the usual way to take the incident-flux drift of a
 scan out of the data.
 
+Tick exactly **two** curves and the second gets the right-hand y axis to
+itself, each axis named and tick-labelled in its curve's colour.  Two
+detectors in one scan are routinely orders of magnitude apart, and sharing a
+scale flattens the smaller one along the bottom; three or more curves, or the
+derivative option, go back to one shared scale (see ``_split_field``).
+
 Data is retained **raw** for all fields regardless of tick state, so enabling a
 curve part-way through a scan shows its full history, and changing the monitor
 recomputes every curve from the values already recorded rather than only
@@ -28,6 +34,7 @@ buttons move to is the peak of the curve on screen, not of the raw detector.
 import logging
 
 import numpy
+from matplotlib import rcParams
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qtagg import (
     NavigationToolbar2QT as NavigationToolbar,
@@ -37,6 +44,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QButtonGroup
 from qtpy.QtWidgets import QCheckBox
 from qtpy.QtWidgets import QComboBox
+from qtpy.QtWidgets import QDoubleSpinBox
 from qtpy.QtWidgets import QGridLayout
 from qtpy.QtWidgets import QHBoxLayout
 from qtpy.QtWidgets import QLabel
@@ -82,10 +90,120 @@ DICHRO_XMCD = "dichro_xmcd"
 #: Colours for the 1D dichro pair, matching their axis labels.
 DICHRO_COLOURS = {DICHRO_XAS: "#1f77b4", DICHRO_XMCD: "#d62728"}
 
+#: Colour map for the XMCD mesh.  XMCD is signed and symmetric about zero --
+#: the sign is which way the moment points -- so it wants a diverging map
+#: centred on white, not the sequential default that reads a sign change as
+#: just another step in brightness.  XAS keeps the default: it is a count rate
+#: with no meaningful midpoint.
+DICHRO_MAP_CMAP = "seismic"
+
+#: Where the "Clip map scale" box starts: on a 1500-cell mesh, the eight most
+#: extreme cells either way.  Small enough that a map with nothing wrong with
+#: it barely changes, which is what a starting point should do; one or two
+#: cells are what usually wreck a scale.  Type over it when more needs to go.
+COLOR_CLIP_PERCENT = 0.5
+
+#: Half the data from each end is the whole of it, and the two percentiles
+#: meet at the median.  Stop just short, where there is still a scale to draw.
+COLOR_CLIP_MAX = 49.0
+
 
 def is_flyscan(doc):
     """Whether *doc* is the start document of a flyscan."""
     return (doc.get("plan_name") or "").startswith(FLYSCAN_PREFIX)
+
+
+def scale_extend(z, low, high):
+    """Which ends of *z* fall outside ``(low, high)``, as colour-bar arrows.
+
+    In the wording :meth:`~matplotlib.figure.Figure.colorbar` wants for
+    ``extend``, so a scale that does not reach its own data says so on the bar
+    rather than leaving it to be noticed.  ``None`` for a limit is
+    matplotlib's "fit the data", which by definition cuts nothing off there.
+
+    Asked separately from the limits because the limits move after they are
+    first worked out: :func:`centered_limits` widens a range, and cells that
+    saturated against the clipped one need not saturate against the wider.
+    """
+    finite = numpy.asarray(z, dtype=float)
+    finite = finite[numpy.isfinite(finite)]
+    if finite.size == 0:
+        return "neither"
+    cuts = (
+        low is not None and low > float(finite.min()),
+        high is not None and high < float(finite.max()),
+    )
+    return {
+        (True, True): "both",
+        (True, False): "min",
+        (False, True): "max",
+        (False, False): "neither",
+    }[cuts]
+
+
+def clipped_limits(z, percent=COLOR_CLIP_PERCENT):
+    """Colour limits leaving out the most extreme *percent* at each end.
+
+    A handful of wild cells -- a spot where the beam ran off the sample, a
+    detector glitch -- stretch a map's colour scale over a range nothing else
+    occupies, leaving the rest of it one flat shade.  Cutting the scale back
+    to where the bulk of the data lives brings that structure back; the cells
+    outside simply saturate.
+
+    How much to cut is asked for rather than worked out, which is the point.
+    Rules that decide for themselves what is an outlier (Tukey's fences on the
+    interquartile range, say) read the top of a sharp peak as one, because a
+    peaked map legitimately has a long tail above its upper quartile.  On the
+    sample-position rasters this beamline lines up on -- ``huber_euler_z`` by
+    ``huber_euler_y`` against a detector total, where the peak *is* the result
+    -- those fences clip most of the peak away.  A number someone typed can be
+    wrong, but it cannot be surprising, and the same number gives the same
+    answer on every map it is applied to.
+
+    *percent* is a percentile, so what it costs depends on how the values are
+    distributed, not on how extreme they are: 0.5 on a 1500-cell mesh is the
+    eight cells at each end whatever they hold.
+
+    Returns the two limits and which ends they actually cut.
+    ``(None, None, "neither")`` means leave the limits alone.
+    """
+    finite = numpy.asarray(z, dtype=float)
+    finite = finite[numpy.isfinite(finite)]
+    if finite.size < 3:
+        return None, None, "neither"
+    low, high = (
+        float(v) for v in numpy.percentile(finite, [percent, 100.0 - percent])
+    )
+    if not (numpy.isfinite(low) and numpy.isfinite(high)) or low >= high:
+        # Flat, or so nearly flat that the percentiles coincide.
+        return None, None, "neither"
+    return low, high, scale_extend(finite, low, high)
+
+
+def centered_limits(z, low, high):
+    """``(low, high)`` widened until zero sits exactly in the middle.
+
+    A diverging colour map is read by where its middle colour falls, and left
+    to the data that lands wherever the range happens to centre: white on an
+    arbitrary value, and red and blue no longer meaning the sign.  Zero is
+    where white belongs, because zero is what XMCD is a difference from.
+
+    Widening to whichever end reaches further costs the shorter end some of
+    its contrast, and buys a map that can be read without consulting the bar.
+    Either limit may be ``None``, meaning the data's own extreme.
+
+    Only ever widens, so no cell that was inside the scale leaves it -- but
+    the arrows still have to be recomputed, which is :func:`scale_extend`.
+    """
+    finite = numpy.asarray(z, dtype=float)
+    finite = finite[numpy.isfinite(finite)]
+    if finite.size == 0:
+        return low, high
+    lo = float(finite.min()) if low is None else low
+    hi = float(finite.max()) if high is None else high
+    reach = max(abs(lo), abs(hi))
+    # Every cell is zero, and there is no scale left to centre on it.
+    return (-reach, reach) if reach > 0 else (low, high)
 
 
 #: Width of the selector panel.  Detector fields have long names
@@ -111,6 +229,12 @@ MARKER_STYLES = (
     ("max", "#7b3fb5"),
     ("min", "#c77f00"),
 )
+
+#: The default curve colours.  Taken a field at a time and remembered, so a
+#: curve keeps its colour -- and so does its check box -- when it is remade on
+#: the other y axis, which matplotlib's own per-axes cycle would not manage:
+#: a twin starts its cycle afresh, so the two curves would both come out blue.
+CURVE_COLOURS = rcParams["axes.prop_cycle"].by_key().get("color") or ["C0"]
 
 #: What each statistic means, for the buttons and the toggle.
 MARKER_TOOLTIPS = {
@@ -188,6 +312,8 @@ class ScanPlotTab(BaseTab):
         self._ref_axes = None
         # Right-hand axis carrying XMCD, when the dichro stream is shown.
         self._dichro_axes = None
+        # Right-hand axis carrying the second of exactly two shown curves.
+        self._right_axes = None
 
         self._figure = Figure(tight_layout=True)
         self._axes = self._figure.add_subplot(111)
@@ -202,6 +328,7 @@ class ScanPlotTab(BaseTab):
         middle.addWidget(self._build_selector_panel(), 0)
         layout.addLayout(middle, 1)
         layout.addWidget(self._build_peak_row())
+        layout.addWidget(self._build_map_row())
         layout.addWidget(self._build_stream_row())
         layout.addWidget(self._status)
 
@@ -286,6 +413,66 @@ class ScanPlotTab(BaseTab):
         self._peak_row.setLayout(column)
         return self._peak_row
 
+    def _build_map_row(self):
+        """Colour-scale controls, shown only while the run is a mesh.
+
+        Its own row rather than an existing one: the peak row is hidden for
+        every grid scan, and the stream row only appears for a dichro run, so
+        neither is on screen when a map most needs these.
+        """
+        self._clip_btn = QPushButton("Clip map scale")
+        self._clip_btn.setCheckable(True)
+        self._clip_btn.setToolTip(
+            "Leave the most extreme cells of the colour map out of its "
+            "colour scale, so that a few wild ones — the corner where the "
+            "beam ran off the sample, a detector glitch — stop flattening "
+            "everything else into one shade.\n"
+            "Clipped cells saturate, and the colour bar grows an arrow at "
+            "each end it cut.  How much to leave out is the box alongside."
+        )
+        self._clip_btn.toggled.connect(lambda _state: self._on_clip_changed())
+
+        self._clip_spin = QDoubleSpinBox()
+        self._clip_spin.setRange(0.0, COLOR_CLIP_MAX)
+        self._clip_spin.setDecimals(2)
+        self._clip_spin.setSingleStep(0.5)
+        self._clip_spin.setSuffix(" %")
+        self._clip_spin.setValue(COLOR_CLIP_PERCENT)
+        self._clip_spin.setEnabled(False)
+        self._clip_spin.setToolTip(
+            "How much of the map to leave out at each end of its colour "
+            "scale.  A spike or two needs a fraction of a percent; a map "
+            "still washed out at that can take a good deal more.  Both ends "
+            "are cut by the same amount.\n"
+            "Only active while the map scale is being clipped."
+        )
+        # Re-plotting on every keystroke would redraw the mesh once per digit
+        # typed, and "12" would clip at 1% on its way to 12%.  Wait for Enter,
+        # the arrows, or the focus leaving the box.
+        self._clip_spin.setKeyboardTracking(False)
+        self._clip_spin.valueChanged.connect(
+            lambda _value: self._on_clip_changed()
+        )
+
+        self._map_row = QWidget()
+        row = QHBoxLayout(self._map_row)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.addWidget(self._clip_btn)
+        row.addWidget(self._clip_spin)
+        row.addStretch(1)
+        self._map_row.hide()
+        return self._map_row
+
+    def _on_clip_changed(self):
+        """Apply a change of the clip controls to whichever map is up."""
+        # No amount to set when nothing is being clipped by it.
+        self._clip_spin.setEnabled(self._clip_btn.isChecked())
+        if not self._grid:
+            return
+        # Routes to the dichro map or the primary mesh, whichever is shown.
+        self._repaint_stream()
+        self._update_status()
+
     def _build_stream_row(self):
         """Stream picker, shown only for a run that writes a dichro stream."""
         self._stream_combo = QComboBox()
@@ -349,6 +536,9 @@ class ScanPlotTab(BaseTab):
         #           "radio": QRadioButton}
         self._series = {}
         self._monitor = None
+        # The field drawn against the right-hand y axis, or None for one
+        # shared scale.  See _split_field.
+        self._right_field = None
         self._start_time = None
         self._use_elapsed_time = False
         # 2D (mesh) state, used when the run is a grid scan.
@@ -373,8 +563,16 @@ class ScanPlotTab(BaseTab):
             blocked = self._stream_combo.blockSignals(True)
             self._stream_combo.setCurrentText(PRIMARY)
             self._stream_combo.blockSignals(blocked)
+        # Shown again by _on_start once the run turns out to be a mesh.  The
+        # button and the percentage themselves are left alone, like the
+        # marker and derivative toggles: clipping stays on across a series of
+        # maps, which is how it is used.
+        if getattr(self, "_map_row", None) is not None:
+            self._map_row.hide()
         self._image = None
         self._colorbar = None
+        # Which arrows the colour bar was built with; see _redraw_grid.
+        self._colorbar_extend = None
         # Peak statistics of the field named in the peak combo, or None.
         self._peak_stats = None
         # statistic -> the axvline drawn for it.  Emptied here rather than
@@ -466,6 +664,7 @@ class ScanPlotTab(BaseTab):
         # kept the previous scan's curve drawn over the new one.
         self._drop_reference_axes()
         self._drop_dichro_axes()
+        self._drop_value_axes()
         self._reset_state()
         self._clear_selectors()
         self._start_time = doc.get("time")
@@ -475,6 +674,7 @@ class ScanPlotTab(BaseTab):
         hints = doc.get("hints") or {}
         dimensions = hints.get("dimensions") or []
         self._grid = self._grid_geometry(doc, hints, dimensions)
+        self._map_row.setVisible(bool(self._grid))
 
         if dimensions:
             fields, stream = dimensions[0]
@@ -534,13 +734,11 @@ class ScanPlotTab(BaseTab):
 
     def _on_descriptor(self, doc):
         if doc.get("name") == DICHRO_STREAM:
-            # Remember it and offer the picker; the primary view stays up
-            # until the user asks for the other stream.
             self._dichro_uid = doc.get("uid")
             self._dichro_columns = {
                 key: [] for key in (doc.get("data_keys") or {})
             }
-            self._stream_row.show()
+            self._offer_dichro()
             return
         if doc.get("name") != PRIMARY:
             return
@@ -617,6 +815,8 @@ class ScanPlotTab(BaseTab):
             "radio": radio,
             # The undifferentiated curve on the twin axis, when shown.
             "ref": None,
+            # Fixed the first time the curve is drawn; see CURVE_COLOURS.
+            "color": None,
         }
 
     # -- normalisation ------------------------------------------------------
@@ -716,6 +916,7 @@ class ScanPlotTab(BaseTab):
             line.set_data(self._x_data, self._values(series))
             line.set_label(self._label(name))
             line.set_visible(self._shown(series))
+        self._sync_split()
         self._sync_references()
         self._rescale()
         self._update_status()
@@ -743,6 +944,7 @@ class ScanPlotTab(BaseTab):
                 continue
             line.set_data(self._x_data, self._values(series))
             line.set_label(self._label(name))
+        self._sync_split()
         self._sync_references()
         self._rescale()
         self._update_status()
@@ -760,6 +962,7 @@ class ScanPlotTab(BaseTab):
             self._create_line(field, series)
         elif series["line"] is not None:
             series["line"].set_visible(self._shown(series))
+        self._sync_split()
         self._sync_references()
         self._rescale()
         self._update_status()
@@ -876,8 +1079,50 @@ class ScanPlotTab(BaseTab):
             logger.debug("Colorbar removal failed.", exc_info=True)
         self._colorbar = None
 
+    def _make_colorbar(self, extend):
+        """Attach a colour bar to the current image, with *extend* arrows."""
+        self._colorbar = self._figure.colorbar(
+            self._image, ax=self._axes, extend=extend
+        )
+        self._colorbar_extend = extend
+
+    def _map_limits(self, z, diverging=False):
+        """Colour limits and colour-bar arrows for the mesh *z*.
+
+        With the clip button off these are the full range of the data, which
+        is what a mesh has always been drawn with.  With it on, the most
+        extreme cells at each end are left out -- :func:`clipped_limits`.
+
+        A *diverging* map is mirrored about zero either way, clipped or not:
+        its colour map is read by where white falls, and white has to be on
+        zero for red and blue to mean the sign.
+        """
+        if self._clip_btn.isChecked():
+            low, high, extend = clipped_limits(z, self._clip_spin.value())
+        else:
+            low, high, extend = None, None, "neither"
+        if low is None or high is None:
+            # Not clipping, or too few cells (or too flat a map) to clip.
+            finite = numpy.asarray(z, dtype=float)
+            finite = finite[numpy.isfinite(finite)]
+            if finite.size == 0:
+                return None, None, "neither"
+            low = float(finite.min())
+            high = float(finite.max())
+            extend = "neither"
+        if diverging:
+            low, high = centered_limits(z, low, high)
+            # The widened scale cuts off less than the clipped one did, so
+            # the arrows have to be asked again rather than carried.
+            extend = scale_extend(z, low, high)
+        return low, high, extend
+
     def _redraw_grid(self):
         if self._grid is None or self._grid_data is None:
+            return
+        if not self._showing_primary():
+            # The mesh is up to date in ``_grid_data``; _repaint_stream draws
+            # it whole when the user asks for the primary stream back.
             return
         finite = numpy.isfinite(self._grid_data)
         if self._image is None and not finite.any():
@@ -885,6 +1130,7 @@ class ScanPlotTab(BaseTab):
             # the first real point.
             return
         (slow0, slow1), (fast0, fast1) = self._grid["extents"]
+        low, high, extend = self._map_limits(self._grid_data)
         if self._image is None:
             self._image = self._axes.imshow(
                 self._grid_data,
@@ -893,14 +1139,18 @@ class ScanPlotTab(BaseTab):
                 interpolation="nearest",
                 extent=[fast0, fast1, slow0, slow1],
             )
-            self._colorbar = self._figure.colorbar(self._image, ax=self._axes)
+            self._make_colorbar(extend)
         else:
             self._image.set_data(self._grid_data)
-        if finite.any():
-            self._image.set_clim(
-                float(numpy.nanmin(self._grid_data)),
-                float(numpy.nanmax(self._grid_data)),
-            )
+            if extend != self._colorbar_extend:
+                # Colorbar.extend is fixed at construction -- matplotlib has
+                # no setter for it -- so an arrow appearing or going means
+                # building the bar again.  Guarded on the change, so this is
+                # a rebuild or two per scan and not one per point.
+                self._discard_colorbar()
+                self._make_colorbar(extend)
+        if low is not None:
+            self._image.set_clim(low, high)
         if self._colorbar is not None:
             self._colorbar.set_label(self._label(self._grid_field))
         self._canvas.draw_idle()
@@ -977,13 +1227,110 @@ class ScanPlotTab(BaseTab):
             self._ref_axes.autoscale_view()
             self._ref_axes.set_ylabel("signal")
 
+    # -- the second curve's own y scale -------------------------------------
+
+    def _split_field(self):
+        """The field that belongs on the right-hand y axis, or None.
+
+        Two detectors read in the same scan are routinely orders of magnitude
+        apart -- a diode against a counter, say -- and on one scale the weaker
+        of the two is a flat line along the bottom.  With exactly two curves
+        shown there is a right-hand axis free to give the second one, so it
+        gets it and both are readable; the second here is the second in the
+        order the fields came from the descriptor, which is the order of the
+        check boxes.
+
+        Three or more and there is no obvious pairing, so they share the left
+        axis as before.  So do they while the derivative option is on: the
+        right-hand side is already the reference curves'
+        (:meth:`_reference_axes`), and the comparison that option is for is
+        the derivative against its own signal, not one detector against
+        another.
+        """
+        if self._grid or self._derivative or not self._showing_primary():
+            return None
+        shown = [name for name, s in self._series.items() if self._shown(s)]
+        return shown[1] if len(shown) == 2 else None
+
+    def _value_axes(self):
+        """The right-hand axis the second curve lives on, made on demand."""
+        if self._right_axes is None:
+            self._right_axes = self._axes.twinx()
+        return self._right_axes
+
+    def _drop_value_axes(self):
+        """Remove the right-hand value axis, and forget what was on it."""
+        self._right_field = None
+        if self._right_axes is not None:
+            try:
+                self._right_axes.remove()
+            except Exception:  # noqa: BLE001 - already gone with the axes
+                logger.debug("Value axis removal failed.", exc_info=True)
+            self._right_axes = None
+
+    def _sync_split(self):
+        """Move the curves onto the axes :meth:`_split_field` asks for.
+
+        A line cannot change axes, so the ones affected are destroyed and
+        remade.  Cheap -- a handful of curves, and only when the set of shown
+        curves changes -- and ``series["color"]`` keeps each one looking the
+        same across the move.
+        """
+        wanted = self._split_field()
+        if wanted == self._right_field:
+            return
+        self._right_field = wanted
+        for series in self._series.values():
+            line = series["line"]
+            if line is None:
+                continue
+            line.remove()
+            series["line"] = None
+        if wanted is None:
+            self._drop_value_axes()
+        for field, series in self._series.items():
+            if self._shown(series):
+                self._create_line(field, series)
+
+    def _plot_axes(self, field):
+        """The axes *field*'s curve is drawn on."""
+        if field == self._right_field:
+            return self._value_axes()
+        return self._axes
+
+    @staticmethod
+    def _name_axis(axes, line):
+        """Label *axes* with *line*'s name, in *line*'s colour.
+
+        With a curve on each scale the colour is what says which numbers
+        belong to which, so the tick labels are tinted as well as the axis
+        title -- it is the ticks that are actually read off.
+        """
+        colour = line.get_color()
+        axes.set_ylabel(line.get_label(), color=colour)
+        axes.tick_params(axis="y", colors=colour)
+
+    def _colour(self, series):
+        """The curve's colour, assigned on first use and kept thereafter."""
+        if series["color"] is None:
+            taken = {s["color"] for s in self._series.values()}
+            series["color"] = next(
+                (c for c in CURVE_COLOURS if c not in taken), CURVE_COLOURS[0]
+            )
+        return series["color"]
+
     def _create_line(self, field, series):
-        (line,) = self._axes.plot(
+        if not self._showing_primary():
+            # ``series["y"]`` is still growing; the curve is made from all of
+            # it by _redraw_primary once the primary stream is back on screen.
+            return
+        (line,) = self._plot_axes(field).plot(
             self._x_data,
             self._values(series),
             marker="o",
             markersize=3,
             label=self._label(field),
+            color=self._colour(series),
         )
         series["line"] = line
         # Colour the check box to match its curve.
@@ -1036,6 +1383,7 @@ class ScanPlotTab(BaseTab):
             )
         # The monitor's own point has to be in before any ratio is computed,
         # hence the second pass.
+        self._sync_split()
         for field, series in self._series.items():
             if self._shown(series):
                 if series["line"] is None:
@@ -1046,6 +1394,34 @@ class ScanPlotTab(BaseTab):
 
         self._rescale()
         self._update_status()
+
+    def _offer_dichro(self):
+        """Reveal the stream picker and open the run on the dichro view.
+
+        A dichro scan is run to get XAS and XMCD out of it, so that is what
+        the run is about and what it should come up showing; the detectors
+        those were reduced from are one click away in the picker.  Driven off
+        the descriptor (or, in the history tab, off the stored columns), so
+        the switch happens per run and a later pick of ``primary`` stands --
+        a stream only announces itself once.
+
+        Deliberately routed through the combo's own signal rather than
+        setting ``_stream``: :meth:`_set_stream` is what repaints.
+        """
+        self._stream_row.show()
+        self._stream_combo.setCurrentText(DICHRO_STREAM)
+
+    def _showing_primary(self):
+        """True when the primary stream is the one on the canvas.
+
+        A dichro run writes both streams at once, and the primary points keep
+        arriving -- and keep being recorded -- while the dichro view is up.
+        Every path that *paints* the primary view has to ask this first: left
+        unguarded, each primary event repaints the mesh (or the curves) over
+        the dichro plot and the next dichro event paints it back, so the
+        canvas flips between the two, point by point.
+        """
+        return self._stream == PRIMARY
 
     def _set_stream(self, name):
         """Switch the canvas between the primary and dichro streams."""
@@ -1059,6 +1435,7 @@ class ScanPlotTab(BaseTab):
         self._discard_colorbar()
         self._drop_reference_axes()
         self._drop_dichro_axes()
+        self._drop_value_axes()
         self._axes.clear()
         self._image = None
         for series in self._series.values():
@@ -1084,6 +1461,7 @@ class ScanPlotTab(BaseTab):
             self._axes.set_ylabel(self._grid["slow"])
             self._redraw_grid()
         else:
+            self._right_field = self._split_field()
             for field, series in self._series.items():
                 if self._shown(series):
                     self._create_line(field, series)
@@ -1150,20 +1528,23 @@ class ScanPlotTab(BaseTab):
                 grid[cell] = values[index]
 
         (slow0, slow1), (fast0, fast1) = self._grid["extents"]
+        diverging = field == DICHRO_XMCD
         self._image = self._axes.imshow(
             grid,
             origin="lower",
             aspect="auto",
             interpolation="nearest",
             extent=[fast0, fast1, slow0, slow1],
+            cmap=DICHRO_MAP_CMAP if diverging else None,
         )
-        finite = numpy.isfinite(grid)
-        if finite.any():
-            self._image.set_clim(
-                float(numpy.nanmin(grid)),
-                float(numpy.nanmax(grid)),
-            )
-        self._colorbar = self._figure.colorbar(self._image, ax=self._axes)
+        # Sign is the signal in XMCD, so the midpoint of the colour scale has
+        # to sit on zero -- otherwise seismic's white lands on an arbitrary
+        # value and red/blue stop meaning +/-.  _map_limits mirrors the
+        # limits for that, clipped or not.
+        low, high, extend = self._map_limits(grid, diverging=diverging)
+        if low is not None:
+            self._image.set_clim(low, high)
+        self._make_colorbar(extend)
         self._colorbar.set_label(field)
         self._axes.set_xlabel(self._grid["fast"])
         self._axes.set_ylabel(self._grid["slow"])
@@ -1211,10 +1592,23 @@ class ScanPlotTab(BaseTab):
                 loc="best",
             )
 
+    def _clip_note(self):
+        """Trailing note for the status line while the colour scale is cut.
+
+        A clipped scale is not showing the full range, which the plot should
+        say rather than leave to be noticed from the bar.  Keyed on there
+        being an image, so the 1D dichro curves do not claim to be clipped.
+        """
+        if self._image is None or not self._clip_btn.isChecked():
+            return ""
+        return f" — colour clipped at {self._clip_spin.value():g}%"
+
     def _update_status(self):
         if self._stream == DICHRO_STREAM:
             points = len(self._dichro_columns.get(DICHRO_SLOW) or [])
-            self._status.setText(f"{DICHRO_STREAM} — {points} points.")
+            self._status.setText(
+                f"{DICHRO_STREAM} — {points} points.{self._clip_note()}"
+            )
             return
         normalised = f", normalised by {self._monitor}" if self._monitor else ""
         if self._grid:
@@ -1222,7 +1616,7 @@ class ScanPlotTab(BaseTab):
             self._status.setText(
                 f"{len(self._x_data)} of {rows * columns} points — "
                 f"{self._grid_field} vs {self._grid['fast']} / "
-                f"{self._grid['slow']}{normalised}"
+                f"{self._grid['slow']}{normalised}{self._clip_note()}"
             )
             return
         shown = sum(1 for s in self._series.values() if self._shown(s))
@@ -1232,9 +1626,18 @@ class ScanPlotTab(BaseTab):
         )
 
     def _rescale(self):
+        if not self._showing_primary():
+            # The limits, legend and y label on these axes are the dichro
+            # plot's; rescaling to the primary curves would take them over.
+            return
         # visible_only so hidden curves do not stretch the axes.
         self._axes.relim(visible_only=True)
         self._axes.autoscale_view()
+        if self._right_axes is not None:
+            # A twin has its own limits; the left axis' relim knows nothing
+            # of the curve over here.
+            self._right_axes.relim(visible_only=True)
+            self._right_axes.autoscale_view()
         visible = [
             s["line"]
             for s in self._series.values()
@@ -1245,7 +1648,8 @@ class ScanPlotTab(BaseTab):
         # them -- a legend owned by one axis knows only its own lines.
         refs = [s["ref"] for s in self._series.values() if s.get("ref")]
         handles = visible + refs
-        if len(handles) > 1:
+        split = self._right_field is not None
+        if len(handles) > 1 and not split:
             self._axes.legend(
                 handles,
                 [h.get_label() for h in handles],
@@ -1253,11 +1657,20 @@ class ScanPlotTab(BaseTab):
                 loc="best",
             )
         elif self._axes.get_legend() is not None:
+            # Split across two scales, each curve names and colours its own
+            # axis, so a legend would only say it again -- over the data.
             self._axes.get_legend().remove()
-        if len(visible) == 1:
-            self._axes.set_ylabel(visible[0].get_label())
+        if split:
+            for line in visible:
+                self._name_axis(line.axes, line)
         else:
-            self._axes.set_ylabel("")
+            # Back to one scale: the left axis is everyone's again, so it
+            # goes back to the default ink a single curve's name was in.
+            self._axes.set_ylabel(
+                visible[0].get_label() if len(visible) == 1 else "",
+                color=rcParams["axes.labelcolor"],
+            )
+            self._axes.tick_params(axis="y", colors=rcParams["ytick.color"])
         self._canvas.draw_idle()
 
     def _on_stop(self, doc):

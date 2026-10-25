@@ -286,7 +286,7 @@ class ScanHistoryTab(ScanPlotTab):
         # the data and lets the picker appear.
         self._dichro_columns = data.get("dichro") or {}
         if self._dichro_columns:
-            self._stream_row.show()
+            self._offer_dichro()
         self._update_peak()
         self._update_status()
 
@@ -317,4 +317,6 @@ class ScanHistoryTab(ScanPlotTab):
         normalised = f", normalised by {self._monitor}" if self._monitor else ""
         self._status.setText(
             f"Scan {self._loaded} — {len(self._x_data)} points{normalised}."
+            # Empty unless a map is up and its colour scale is being cut.
+            f"{self._clip_note()}"
         )
