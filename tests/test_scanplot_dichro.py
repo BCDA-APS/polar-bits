@@ -146,7 +146,6 @@ def test_mesh_keeps_accumulating_behind_the_dichro_view(dichro_grid_tab):
     arrived while the dichro stream had the canvas.
     """
     import numpy
-
     from id4_common.gui.tabs.scanplot import DICHRO_STREAM
 
     tab = dichro_grid_tab

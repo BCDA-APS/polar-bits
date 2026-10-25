@@ -30,10 +30,9 @@ def qt_app(monkeypatch):
 @pytest.fixture
 def hkl_tab(qt_app):
     """An HKL tab shown inside a resizable holder, as a tab page is."""
+    from id4_common.gui.tabs.hkl import HklTab
     from qtpy.QtWidgets import QVBoxLayout
     from qtpy.QtWidgets import QWidget
-
-    from id4_common.gui.tabs.hkl import HklTab
 
     tab = HklTab()
     holder = QWidget()

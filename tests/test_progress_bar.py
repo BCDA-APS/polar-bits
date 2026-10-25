@@ -12,7 +12,6 @@ from __future__ import annotations
 import io
 
 import pytest
-
 from id4_common.utils.progress_bar import MIN_COLUMNS
 from id4_common.utils.progress_bar import OneLineProgressBar
 from id4_common.utils.progress_bar import console_columns

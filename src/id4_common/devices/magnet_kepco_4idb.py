@@ -2,6 +2,8 @@
 Kepko power supply
 """
 
+from time import sleep
+
 from apstools.devices import PVPositionerSoftDone
 from ophyd import Component
 from ophyd import Device
@@ -9,7 +11,6 @@ from ophyd import EpicsSignal
 from ophyd import EpicsSignalRO
 from ophyd import FormattedComponent
 from ophyd import Kind
-from time import sleep
 
 
 class LocalPositioner(PVPositionerSoftDone):
@@ -46,6 +47,7 @@ class LocalPositioner(PVPositionerSoftDone):
             self.log.debug("%s.actuate = %s", self.name, self.actuate_value)
             self.actuate.put(self.actuate_value, wait=False)
         self.cb_readback()  # This is needed to force the first check.
+
 
 class KepcoController(Device):
     """

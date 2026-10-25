@@ -3,7 +3,8 @@ Vimba cameras
 """
 
 from pathlib import Path
-from time import time as ttime, sleep
+from time import sleep
+from time import time as ttime
 
 from ophyd import EpicsSignal
 from ophyd import EpicsSignalRO

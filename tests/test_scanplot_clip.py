@@ -148,7 +148,6 @@ def dichro_grid_tab(qt_app):
 def test_clipped_limits_cuts_both_ends_of_a_spiky_map(qt_app):
     """The limits land inside the data, and the arrows say both ends went."""
     import numpy
-
     from id4_common.gui.tabs.scanplot import clipped_limits
 
     z = numpy.arange(100, dtype=float).reshape(10, 10)
@@ -165,7 +164,6 @@ def test_clipped_limits_cuts_both_ends_of_a_spiky_map(qt_app):
 def test_clipped_limits_leaves_a_flat_map_alone(qt_app):
     """Both percentiles coincide, and there is no scale left to clip."""
     import numpy
-
     from id4_common.gui.tabs.scanplot import clipped_limits
 
     flat = numpy.full((5, 5), 3.0)
@@ -176,7 +174,6 @@ def test_clipped_limits_leaves_a_flat_map_alone(qt_app):
 def test_clipped_limits_needs_three_finite_cells(qt_app):
     """A mesh two points into a scan has nothing to take a percentile of."""
     import numpy
-
     from id4_common.gui.tabs.scanplot import clipped_limits
 
     barely = numpy.full((3, 3), numpy.nan)
@@ -199,7 +196,6 @@ def test_clipped_limits_needs_three_finite_cells(qt_app):
 def test_scale_extend_names_the_ends_that_were_cut(qt_app, low, high, expected):
     """The arrows are asked of the data, not carried from the clip."""
     import numpy
-
     from id4_common.gui.tabs.scanplot import scale_extend
 
     z = numpy.arange(10, dtype=float)
@@ -210,7 +206,6 @@ def test_scale_extend_names_the_ends_that_were_cut(qt_app, low, high, expected):
 def test_centered_limits_puts_zero_in_the_middle_and_only_widens(qt_app):
     """Widening costs the shorter end contrast and buys a readable sign."""
     import numpy
-
     from id4_common.gui.tabs.scanplot import centered_limits
 
     z = numpy.array([-0.2, 0.4, 0.9])

@@ -68,9 +68,9 @@ try:
     from hklpy2 import ConfigurationRunWrapper
     from hklpy2.run_utils import get_run_orientation
     from hklpy2.user import add_sample
+    from hklpy2.user import cahkl_table
     from hklpy2.user import get_diffractometer
     from hklpy2.user import set_diffractometer as hklpy2_set_diffract
-    from hklpy2.user import cahkl_table
 
     from .progress_bar import progress_bar_manager
     from .run_engine import RE as polar_RE
@@ -1277,8 +1277,9 @@ def freeze_general():
         print(f"  {axis} = {val}")
 
 
-def ca_all(h,k,l):
-    cahkl_table((h,k,l))
+def ca_all(h, k, l):
+    cahkl_table((h, k, l))
+
 
 def ca(h, k, l, energy=None):  # noqa: E741
     """

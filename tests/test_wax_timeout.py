@@ -11,7 +11,6 @@ import inspect
 import time
 
 import pytest
-
 from id4_common.utils.wax import MOTOR_FIELDS
 from id4_common.utils.wax import PROBE_BUDGET
 from id4_common.utils.wax import PROBE_TIMEOUT

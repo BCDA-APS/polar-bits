@@ -1,5 +1,7 @@
 """SoftGlue Zynq device for histogram-mode Vortex detector triggering."""
 
+from time import sleep as time_sleep
+
 from bluesky.plan_stubs import mv
 from bluesky.plan_stubs import sleep
 from ophyd import Component
@@ -8,7 +10,6 @@ from ophyd import DeviceStatus
 from ophyd import DynamicDeviceComponent
 from ophyd import Signal
 from ophyd import Staged
-from time import sleep as time_sleep
 
 from .softgluezynq_parts import SGZDFF
 from .softgluezynq_parts import SGZClocks

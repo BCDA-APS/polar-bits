@@ -21,9 +21,8 @@ def guarded_app(monkeypatch):
     """A headless QApplication with the wheel guard installed."""
     monkeypatch.setenv("QT_QPA_PLATFORM", "offscreen")
     pytest.importorskip("qtpy", reason="Qt is in the gui extra only")
-    from qtpy.QtWidgets import QApplication
-
     from id4_common.gui.nowheel import install_wheel_guard
+    from qtpy.QtWidgets import QApplication
 
     app = QApplication.instance() or QApplication([])
     install_wheel_guard(app)

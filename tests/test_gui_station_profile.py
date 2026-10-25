@@ -24,7 +24,6 @@ import logging
 from pathlib import Path
 
 import pytest
-
 from id4_common.gui import config
 
 #: Captured from ``ID4_STATION=id4_g`` before the refactor.
