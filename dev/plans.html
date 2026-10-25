@@ -678,7 +678,8 @@ energy list computed elsewhere. For the XAFS-specific energy grid use
 <a class="reference internal" href="#xafs-energy-scan-qxscan"><span class="std std-ref">qxscan</span></a> instead.</p>
 <p>All motors step together, one list entry per scan point, so every position
 list must have the same length. Lists may be Python lists, tuples or numpy
-arrays.</p>
+arrays. To combine the lists into a <strong>mesh</strong> instead of stepping them
+together, use list_grid_scan.</p>
 <section id="list-scan-absolute-list-of-positions">
 <h3><code class="docutils literal notranslate"><span class="pre">list_scan</span></code> — absolute list of positions<a class="headerlink" href="#list-scan-absolute-list-of-positions" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -730,6 +731,54 @@ described in <a class="reference internal" href="#common-scan-flags"><span class
 <section id="rel-grid-scan-relative-grid">
 <h3><code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code> — relative grid<a class="headerlink" href="#rel-grid-scan-relative-grid" title="Link to this heading">#</a></h3>
 <p>Same as <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> but offsets are relative to current motor positions.</p>
+</section>
+<section id="list-grid-scan-absolute-grid-of-positions">
+<h3><code class="docutils literal notranslate"><span class="pre">list_grid_scan</span></code> — absolute grid of positions<a class="headerlink" href="#list-grid-scan-absolute-grid-of-positions" title="Link to this heading">#</a></h3>
+<p>The mesh equivalent of <a class="reference internal" href="#list-scans"><span class="std std-ref">list_scan</span></a>: each motor gets an
+<strong>explicit list of positions</strong> instead of <code class="docutils literal notranslate"><span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">npts</span></code>, and the scan
+visits every combination of them (the outer product), first motor slowest.
+Because each list only sets the length of its own axis, the lists are
+independent and may have different lengths — a 4-entry list crossed with a
+3-entry list is a 4x3 = 12-point mesh.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># 4 x 3 mesh, uneven spacing on the slow axis.</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">list_grid_scan</span><span class="p">(</span>
+    <span class="n">motor1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="n">motor2</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="n">time</span><span class="p">,</span>
+<span class="p">))</span>
+
+<span class="c1"># Hand-picked setpoints on one axis crossed with a regular scan on another.</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">list_grid_scan</span><span class="p">(</span>
+    <span class="n">temperature</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
+    <span class="n">motor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span>
+    <span class="n">time</span><span class="p">,</span>
+<span class="p">))</span>
+</pre></div>
+</div>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">snake_axes=True</span></code> to sweep the inner axis back and forth instead of
+flying back to its start on every row (the slowest axis is never snaked):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">list_grid_scan</span><span class="p">(</span><span class="n">motor1</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">motor2</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">snake_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="rel-list-grid-scan-relative-grid-of-positions">
+<h3><code class="docutils literal notranslate"><span class="pre">rel_list_grid_scan</span></code> — relative grid of positions<a class="headerlink" href="#rel-list-grid-scan-relative-grid-of-positions" title="Link to this heading">#</a></h3>
+<p>Same as <code class="docutils literal notranslate"><span class="pre">list_grid_scan</span></code> but each list holds offsets from the motor’s current
+position. The motors are returned to where they started when the scan
+finishes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">rel_list_grid_scan</span><span class="p">(</span>
+    <span class="n">motor1</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="n">motor2</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+    <span class="n">time</span><span class="p">,</span>
+<span class="p">))</span>
+</pre></div>
+</div>
+<p>Both accept the same <code class="docutils literal notranslate"><span class="pre">dichro</span></code> / <code class="docutils literal notranslate"><span class="pre">lockin</span></code> / <code class="docutils literal notranslate"><span class="pre">fixq</span></code> / <code class="docutils literal notranslate"><span class="pre">vortex_sgz</span></code> flags as the
+1-D plans, and both record <code class="docutils literal notranslate"><span class="pre">shape</span></code> / <code class="docutils literal notranslate"><span class="pre">extents</span></code> in the start document, so the
+2-D peak helpers (<code class="docutils literal notranslate"><span class="pre">cen</span></code>, <code class="docutils literal notranslate"><span class="pre">com</span></code>, <code class="docutils literal notranslate"><span class="pre">maxi</span></code>, <code class="docutils literal notranslate"><span class="pre">mini</span></code>) and the GUI’s mesh plot work
+on them the same way they do on <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code>.</p>
 </section>
 </section>
 <hr class="docutils" />
@@ -966,6 +1015,8 @@ parameter documentation of <code class="docutils literal notranslate"><span clas
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-n-d-scans">2-D / N-D Scans</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-scan-absolute-grid"><code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> — absolute grid</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rel-grid-scan-relative-grid"><code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code> — relative grid</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#list-grid-scan-absolute-grid-of-positions"><code class="docutils literal notranslate"><span class="pre">list_grid_scan</span></code> — absolute grid of positions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rel-list-grid-scan-relative-grid-of-positions"><code class="docutils literal notranslate"><span class="pre">rel_list_grid_scan</span></code> — relative grid of positions</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-count">Simple Count</a></li>

@@ -18,6 +18,12 @@ id4_common.gui.tabs.scanplot
    normalised against I0 -- the usual way to take the incident-flux drift of a
    scan out of the data.
 
+   Tick exactly **two** curves and the second gets the right-hand y axis to
+   itself, each axis named and tick-labelled in its curve's colour.  Two
+   detectors in one scan are routinely orders of magnitude apart, and sharing a
+   scale flattens the smaller one along the bottom; three or more curves, or the
+   derivative option, go back to one shared scale (see ``_split_field``).
+
    Data is retained **raw** for all fields regardless of tick state, so enabling a
    curve part-way through a scan shows its full history, and changing the monitor
    recomputes every curve from the values already recorded rather than only
@@ -74,9 +80,80 @@ Module Contents
 
 .. py:data:: DICHRO_COLOURS
 
+.. py:data:: DICHRO_MAP_CMAP
+   :value: 'seismic'
+
+
+.. py:data:: COLOR_CLIP_PERCENT
+   :value: 0.5
+
+
+.. py:data:: COLOR_CLIP_MAX
+   :value: 49.0
+
+
 .. py:function:: is_flyscan(doc)
 
    Whether *doc* is the start document of a flyscan.
+
+
+.. py:function:: scale_extend(z, low, high)
+
+   Which ends of *z* fall outside ``(low, high)``, as colour-bar arrows.
+
+   In the wording :meth:`~matplotlib.figure.Figure.colorbar` wants for
+   ``extend``, so a scale that does not reach its own data says so on the bar
+   rather than leaving it to be noticed.  ``None`` for a limit is
+   matplotlib's "fit the data", which by definition cuts nothing off there.
+
+   Asked separately from the limits because the limits move after they are
+   first worked out: :func:`centered_limits` widens a range, and cells that
+   saturated against the clipped one need not saturate against the wider.
+
+
+.. py:function:: clipped_limits(z, percent=COLOR_CLIP_PERCENT)
+
+   Colour limits leaving out the most extreme *percent* at each end.
+
+   A handful of wild cells -- a spot where the beam ran off the sample, a
+   detector glitch -- stretch a map's colour scale over a range nothing else
+   occupies, leaving the rest of it one flat shade.  Cutting the scale back
+   to where the bulk of the data lives brings that structure back; the cells
+   outside simply saturate.
+
+   How much to cut is asked for rather than worked out, which is the point.
+   Rules that decide for themselves what is an outlier (Tukey's fences on the
+   interquartile range, say) read the top of a sharp peak as one, because a
+   peaked map legitimately has a long tail above its upper quartile.  On the
+   sample-position rasters this beamline lines up on -- ``huber_euler_z`` by
+   ``huber_euler_y`` against a detector total, where the peak *is* the result
+   -- those fences clip most of the peak away.  A number someone typed can be
+   wrong, but it cannot be surprising, and the same number gives the same
+   answer on every map it is applied to.
+
+   *percent* is a percentile, so what it costs depends on how the values are
+   distributed, not on how extreme they are: 0.5 on a 1500-cell mesh is the
+   eight cells at each end whatever they hold.
+
+   Returns the two limits and which ends they actually cut.
+   ``(None, None, "neither")`` means leave the limits alone.
+
+
+.. py:function:: centered_limits(z, low, high)
+
+   ``(low, high)`` widened until zero sits exactly in the middle.
+
+   A diverging colour map is read by where its middle colour falls, and left
+   to the data that lands wherever the range happens to centre: white on an
+   arbitrary value, and red and blue no longer meaning the sign.  Zero is
+   where white belongs, because zero is what XMCD is a difference from.
+
+   Widening to whichever end reaches further costs the shorter end some of
+   its contrast, and buys a map that can be read without consulting the bar.
+   Either limit may be ``None``, meaning the data's own extreme.
+
+   Only ever widens, so no cell that was inside the scale leaves it -- but
+   the arrows still have to be recomputed, which is :func:`scale_extend`.
 
 
 .. py:data:: SELECTOR_WIDTH
@@ -94,6 +171,8 @@ Module Contents
 .. py:data:: MARKER_STYLES
    :value: (('cen', '#d62728'), ('com', '#1f9e5a'), ('max', '#7b3fb5'), ('min', '#c77f00'))
 
+
+.. py:data:: CURVE_COLOURS
 
 .. py:data:: MARKER_TOOLTIPS
 

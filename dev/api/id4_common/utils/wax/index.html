@@ -527,6 +527,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../peak_statistics/index.html">id4_common.utils.peak_statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pr_setup/index.html">id4_common.utils.pr_setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../progress_bar/index.html">id4_common.utils.progress_bar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session_state/index.html">id4_common.utils.session_state</a></li>
@@ -598,11 +599,45 @@
   <section id="module-id4_common.utils.wax">
 <span id="id4-common-utils-wax"></span><h1>id4_common.utils.wax<a class="headerlink" href="#module-id4_common.utils.wax" title="Link to this heading">#</a></h1>
 <p>Motor position display utilities (wm, wax, wa_scan, wa_new).</p>
+<p>The live-EPICS helpers here walk every <code class="docutils literal notranslate"><span class="pre">&quot;motor&quot;</span></code>-labelled entry in
+<code class="docutils literal notranslate"><span class="pre">oregistry</span></code>, which at any station includes the <em>other</em> stations’ motors:
+<code class="docutils literal notranslate"><span class="pre">make_devices(...,</span> <span class="pre">connect=False)</span></code> instantiates all of <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code> and
+only <code class="docutils literal notranslate"><span class="pre">core</span></code> plus the local station label is connected afterwards.  A motor
+whose IOC is alive connects on demand in milliseconds, but one whose IOC is
+down costs the full <code class="docutils literal notranslate"><span class="pre">PV_CONNECTION</span></code> timeout from <code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code> (60 s), and
+serially over tens of devices that reads as a hang.</p>
+<p>So every read goes through <code class="xref py py-func docutils literal notranslate"><span class="pre">_motor_row()</span></code>, which</p>
+<ol class="arabic simple">
+<li><p>skips the connection wait entirely for signals already connected,</p></li>
+<li><p>probes the rest with a short <code class="docutils literal notranslate"><span class="pre">PROBE_TIMEOUT</span></code> instead of the session
+default, and</p></li>
+<li><p>shares one <code class="docutils literal notranslate"><span class="pre">PROBE_BUDGET</span></code> across the whole call, after which the
+remaining unconnected devices are reported without any further I/O.</p></li>
+</ol>
+<p>Consequence worth knowing: when many IOCs are down, <em>which</em> unconnected motors
+get probed depends on registry iteration order.  Name filtering happens before
+any read, so <code class="docutils literal notranslate"><span class="pre">wax(&quot;ancillary&quot;)</span></code> always probes its own small candidate set,
+and <code class="docutils literal notranslate"><span class="pre">wax(&quot;ancillary&quot;,</span> <span class="pre">timeout=5)</span></code> probes it patiently.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="id4_common.utils.wax.cat">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.wax.</span></span><span class="sig-name descname"><span class="pre">cat</span></span><a class="headerlink" href="#id4_common.utils.wax.cat" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.utils.wax.PROBE_TIMEOUT">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.wax.</span></span><span class="sig-name descname"><span class="pre">PROBE_TIMEOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.2</span></span><a class="headerlink" href="#id4_common.utils.wax.PROBE_TIMEOUT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.utils.wax.PROBE_BUDGET">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.wax.</span></span><span class="sig-name descname"><span class="pre">PROBE_BUDGET</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.0</span></span><a class="headerlink" href="#id4_common.utils.wax.PROBE_BUDGET" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.utils.wax.MOTOR_FIELDS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.wax.</span></span><span class="sig-name descname"><span class="pre">MOTOR_FIELDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('user_readback',</span> <span class="pre">'low_limit_travel',</span> <span class="pre">'high_limit_travel')</span></span><a class="headerlink" href="#id4_common.utils.wax.MOTOR_FIELDS" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -613,23 +648,32 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.wax.wax">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.wax.</span></span><span class="sig-name descname"><span class="pre">wax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'motor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_missed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.wax.wax" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.wax.</span></span><span class="sig-name descname"><span class="pre">wax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'motor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_missed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PROBE_TIMEOUT</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.wax.wax" title="Link to this definition">#</a></dt>
 <dd><p>Display current and past motor values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>number</strong> (<a class="reference internal" href="../../devices/lakeshore_gaussmeter/index.html#id4_common.devices.lakeshore_gaussmeter.GaussmeterDevice.scan" title="id4_common.devices.lakeshore_gaussmeter.GaussmeterDevice.scan"><em>scan</em></a>) – Scan number of any scan</p></li>
-<li><p><strong>name</strong> (<a class="reference internal" href="../../devices/aps_undulator/index.html#id4_common.devices.aps_undulator.PhaseShifterDevice.device" title="id4_common.devices.aps_undulator.PhaseShifterDevice.device"><em>device</em></a>) – If None all motor positions will be deisplayed.</p></li>
-<li><p><strong>name</strong> – Default’ is “motor”, used to find devices in the registry.
+<li><p><strong>scan</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Scan number of any scan.  A string is treated as a motor name
+filter on the current positions instead.</p></li>
+<li><p><strong>motor</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – If None all motor positions will be displayed.</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Default is “motor”, used to find devices in the registry.
 Other possibilities include “detector”, “sensor”, “actuator”, etc.</p></li>
+<li><p><strong>display_missed</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – List the devices that could not be read, rather than only
+counting them.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em>, </em><em>optional</em>) – Seconds allowed per signal that is not already connected
+(default: <a class="reference internal" href="#id4_common.utils.wax.PROBE_TIMEOUT" title="id4_common.utils.wax.PROBE_TIMEOUT"><code class="xref py py-data docutils literal notranslate"><span class="pre">PROBE_TIMEOUT</span></code></a>).  The call as a whole spends at
+most <a class="reference internal" href="#id4_common.utils.wax.PROBE_BUDGET" title="id4_common.utils.wax.PROBE_BUDGET"><code class="xref py py-data docutils literal notranslate"><span class="pre">PROBE_BUDGET</span></code></a> seconds connecting on demand, so a
+station whose IOCs are down costs a couple of seconds, not a
+minute per motor.  <code class="docutils literal notranslate"><span class="pre">None</span></code> restores the session defaults from
+<code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code> and can block for a very long time.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>wa(): current position of all motors
-wa(‘motor’): current position of motors containing ‘motor’
-wa(42, ‘motor’): current position of motors containing ‘motor’ of scan
-wa(42): current position of all motors in scan 42</p>
+<p>wax(): current position of all motors
+wax(‘motor’): current position of motors containing ‘motor’
+wax(42, ‘motor’): position of motors containing ‘motor’ in scan 42
+wax(42): position of all motors in scan 42</p>
 </dd></dl>
 
 <dl class="py function">
@@ -640,7 +684,7 @@ wa(42): current position of all motors in scan 42</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.wax.wa_new">
-<span class="sig-prename descclassname"><span class="pre">id4_common.utils.wax.</span></span><span class="sig-name descname"><span class="pre">wa_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">motor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.wax.wa_new" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.wax.</span></span><span class="sig-name descname"><span class="pre">wa_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">motor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_missed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PROBE_TIMEOUT</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.wax.wa_new" title="Link to this definition">#</a></dt>
 <dd><p>Print current position and limits for all motors, optionally filtered by
 name.</p>
 </dd></dl>
@@ -679,6 +723,9 @@ name.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.wax.cat"><code class="docutils literal notranslate"><span class="pre">cat</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.wax.PROBE_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">PROBE_TIMEOUT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.wax.PROBE_BUDGET"><code class="docutils literal notranslate"><span class="pre">PROBE_BUDGET</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.wax.MOTOR_FIELDS"><code class="docutils literal notranslate"><span class="pre">MOTOR_FIELDS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.wax.wm"><code class="docutils literal notranslate"><span class="pre">wm()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.wax.wax"><code class="docutils literal notranslate"><span class="pre">wax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.wax.wa_scan"><code class="docutils literal notranslate"><span class="pre">wa_scan()</span></code></a></li>

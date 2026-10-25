@@ -1,0 +1,85 @@
+id4_common.utils.progress_bar
+=============================
+
+.. py:module:: id4_common.utils.progress_bar
+
+.. autoapi-nested-parse::
+
+   A motor-move progress bar that always fits on one row.
+
+   Bluesky's ``TerminalProgressBar`` measures the terminal once, when the bar is
+   built::
+
+       self.ncols = _screen_shape_wrapper()(sys.stdout)[0] or 79
+
+   Inside an IPython kernel -- the GUI's console -- ``sys.stdout`` is an
+   ``ipykernel`` stream with no tty behind it, so that measurement fails and the
+   bar is drawn 79 characters wide no matter how wide the console really is.
+   Anything narrower wraps the line onto a second display row, and the redraw
+   (one ``\n`` and one cursor-up per meter) then counts rows wrong and leaves a
+   trail of half-erased bars behind the moving motor.
+
+   A plain ``ipython`` terminal does not have this problem: there the ioctl
+   succeeds and the real width is used.  Only the GUI has to be told, which it
+   does through :func:`set_console_columns` -- see
+   ``_gui_set_console_columns`` in :mod:`id4_common.gui.kernel`.
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: DELAY_DRAW
+   :value: 0.2
+
+
+.. py:data:: MIN_COLUMNS
+   :value: 20
+
+
+.. py:function:: set_console_columns(columns)
+
+   Tell the progress bar how wide the console is, in characters.
+
+   Called from the GUI whenever the console is resized or its font changes.
+   Pass ``None`` to go back to bluesky's own measurement.  Takes effect for
+   the *next* bar: the width is read once per move, when the bar is built.
+
+
+.. py:function:: console_columns()
+
+   Return the width to draw at, or None to keep bluesky's measurement.
+
+
+.. py:class:: OneLineProgressBar(status_objs, delay_draw=DELAY_DRAW)
+
+   Bases: :py:obj:`bluesky.utils.TerminalProgressBar`
+
+
+   A bluesky progress bar that never spills onto a second row.
+
+
+   .. py:method:: draw()
+
+      Clip every meter to one row, then draw as usual.
+
+      The last word on width.  tqdm honours ``ncols`` for the bar it
+      formats, but a long device name in the prefix can still push the line
+      past it, and the "[In progress. No progress bar available.]" fallback
+      is not formatted by tqdm at all.
+
+
+
+.. py:function:: progress_bar_manager()
+
+   Return a ``ProgressBarManager`` that builds one-line progress bars.
+
+

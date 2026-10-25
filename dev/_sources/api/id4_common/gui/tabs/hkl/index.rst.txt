@@ -68,6 +68,18 @@ Module Contents
 
 
 
+   .. py:method:: unavailable_reason(profile)
+      :classmethod:
+
+
+      There is nothing to orient at a station with no diffractometer.
+
+      Answered from the profile rather than from ``oregistry``: every
+      station instantiates the same ``devices.yml``, so ``huber_euler`` is
+      findable at 4IDB too -- disconnected, and belonging to another hutch.
+
+
+
    .. py:attribute:: model3d
 
 

@@ -109,10 +109,6 @@ Module Contents
    :value: 'APS'
 
 
-.. py:data:: SETTINGS_APP
-   :value: 'polar-gui'
-
-
 .. py:data:: MACRO_DIR_KEY
    :value: 'macro/directory'
 

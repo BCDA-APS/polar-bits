@@ -527,6 +527,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../peak_statistics/index.html">id4_common.utils.peak_statistics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../polartools_hklpy2_imports/index.html">id4_common.utils.polartools_hklpy2_imports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pr_setup/index.html">id4_common.utils.pr_setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../progress_bar/index.html">id4_common.utils.progress_bar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session_state/index.html">id4_common.utils.session_state</a></li>
@@ -605,6 +606,11 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.utils.local_magics.</span></span><span class="sig-name descname"><span class="pre">LocalMagics</span></span><a class="headerlink" href="#id4_common.utils.local_magics.LocalMagics" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">bluesky.magics.BlueskyMagics</span></code></p>
 <p>Custom IPython line magics for motor readback and movement at POLAR.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.utils.local_magics.LocalMagics.pbar_manager">
+<span class="sig-name descname"><span class="pre">pbar_manager</span></span><a class="headerlink" href="#id4_common.utils.local_magics.LocalMagics.pbar_manager" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.utils.local_magics.LocalMagics.wm">
 <span class="sig-name descname"><span class="pre">wm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.local_magics.LocalMagics.wm" title="Link to this definition">#</a></dt>
@@ -665,6 +671,7 @@
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.local_magics.LocalMagics"><code class="docutils literal notranslate"><span class="pre">LocalMagics</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.local_magics.LocalMagics.pbar_manager"><code class="docutils literal notranslate"><span class="pre">LocalMagics.pbar_manager</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.local_magics.LocalMagics.wm"><code class="docutils literal notranslate"><span class="pre">LocalMagics.wm()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.local_magics.LocalMagics.mov"><code class="docutils literal notranslate"><span class="pre">LocalMagics.mov()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.local_magics.LocalMagics.movr"><code class="docutils literal notranslate"><span class="pre">LocalMagics.movr()</span></code></a></li>

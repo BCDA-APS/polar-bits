@@ -518,6 +518,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hkl_bridge/index.html">id4_common.gui.hkl_bridge</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../kernel/index.html">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nowheel/index.html">id4_common.gui.nowheel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scancode/index.html">id4_common.gui.scancode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scanreader/index.html">id4_common.gui.scanreader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session_setup/index.html">id4_common.gui.session_setup</a></li>
@@ -601,6 +602,9 @@
 update hooks you need, then add the class to <code class="docutils literal notranslate"><span class="pre">TABS</span></code> in <code class="docutils literal notranslate"><span class="pre">id4_common.gui.app</span></code>.
 The window wires the poller signals to every tab automatically, so a tab only
 has to say what it does with the values.</p>
+<p>A tab that cannot work at every POLAR station also overrides
+<a class="reference internal" href="#id4_common.gui.tabs.base.BaseTab.unavailable_reason" title="id4_common.gui.tabs.base.BaseTab.unavailable_reason"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseTab.unavailable_reason()</span></code></a>; the window then shows an
+<a class="reference internal" href="#id4_common.gui.tabs.base.UnavailableTab" title="id4_common.gui.tabs.base.UnavailableTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnavailableTab</span></code></a> in its place, carrying the reason it gave.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
@@ -668,6 +672,24 @@ tab need only implement what it uses.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.base.BaseTab.unavailable_reason">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">unavailable_reason</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.base.BaseTab.unavailable_reason" title="Link to this definition">#</a></dt>
+<dd><p>Why this tab cannot work at <em>profile</em>’s station, or None if it can.</p>
+<p>Consulted once, before the tab is built.  A <em>reason</em> rather than a
+bool because the window puts it on screen: a tab that is simply
+absent, or present and grey with nothing said, is indistinguishable
+from a dead IOC or a broken GUI, and that ambiguity is the thing this
+exists to remove.</p>
+<p>This is for what the <em>station</em> cannot do – no diffractometer in this
+hutch – and is answered from the declared profile, not from the
+registry: every station instantiates the same <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code>, so
+finding a device proves nothing about whether it is here.  For
+something that is applicable but not ready yet – an IOC down, the
+kernel still starting – return None and let the real tab show its own
+waiting state.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="id4_common.gui.tabs.base.BaseTab.run_in_console">
 <span class="sig-name descname"><span class="pre">run_in_console</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.base.BaseTab.run_in_console" title="Link to this definition">#</a></dt>
 <dd><p>Run <em>code</em> in the console, as though the user had typed it.</p>
@@ -702,6 +724,41 @@ absent from <em>values</em>.</p>
 <span class="sig-name descname"><span class="pre">on_kernel_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.base.BaseTab.on_kernel_state" title="Link to this definition">#</a></dt>
 <dd><p>Handle a kernel state change: <code class="docutils literal notranslate"><span class="pre">&quot;idle&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;busy&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;dead&quot;</span></code>.</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.base.UnavailableTab">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.base.</span></span><span class="sig-name descname"><span class="pre">UnavailableTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.base.UnavailableTab" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.gui.tabs.base.BaseTab" title="id4_common.gui.tabs.base.BaseTab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseTab</span></code></a></p>
+<p>Stands in for a tab that cannot run here, and says why.</p>
+<p>Subclasses <a class="reference internal" href="#id4_common.gui.tabs.base.BaseTab" title="id4_common.gui.tabs.base.BaseTab"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTab</span></code></a> rather than being a bare <code class="docutils literal notranslate"><span class="pre">QWidget</span></code> because
+MainWindow calls <code class="docutils literal notranslate"><span class="pre">on_metadata</span></code>, <code class="docutils literal notranslate"><span class="pre">on_kernel_values</span></code> and
+<code class="docutils literal notranslate"><span class="pre">on_kernel_state</span></code> on every tab without checking what it got; the
+inherited no-ops are what make that safe.</p>
+<p>Used for two different things, distinguished by <em>failed</em>: a tab the
+station profile says does not apply, and a tab whose constructor raised.
+The second keeps one broken tab from taking the window down with it, and
+puts the traceback where the person who can act on it will see it.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.base.UnavailableTab.scrollable">
+<span class="sig-name descname"><span class="pre">scrollable</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#id4_common.gui.tabs.base.UnavailableTab.scrollable" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.base.UnavailableTab.title">
+<span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#id4_common.gui.tabs.base.UnavailableTab.title" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.base.UnavailableTab.reason">
+<span class="sig-name descname"><span class="pre">reason</span></span><a class="headerlink" href="#id4_common.gui.tabs.base.UnavailableTab.reason" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.base.UnavailableTab.failed">
+<span class="sig-name descname"><span class="pre">failed</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#id4_common.gui.tabs.base.UnavailableTab.failed" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -749,11 +806,19 @@ absent from <em>values</em>.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.console_execute"><code class="docutils literal notranslate"><span class="pre">BaseTab.console_execute</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.session_cwd"><code class="docutils literal notranslate"><span class="pre">BaseTab.session_cwd</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.transcript"><code class="docutils literal notranslate"><span class="pre">BaseTab.transcript</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.unavailable_reason"><code class="docutils literal notranslate"><span class="pre">BaseTab.unavailable_reason()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.run_in_console"><code class="docutils literal notranslate"><span class="pre">BaseTab.run_in_console()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.request"><code class="docutils literal notranslate"><span class="pre">BaseTab.request()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.on_metadata"><code class="docutils literal notranslate"><span class="pre">BaseTab.on_metadata()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.on_kernel_values"><code class="docutils literal notranslate"><span class="pre">BaseTab.on_kernel_values()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.BaseTab.on_kernel_state"><code class="docutils literal notranslate"><span class="pre">BaseTab.on_kernel_state()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.UnavailableTab"><code class="docutils literal notranslate"><span class="pre">UnavailableTab</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.UnavailableTab.scrollable"><code class="docutils literal notranslate"><span class="pre">UnavailableTab.scrollable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.UnavailableTab.title"><code class="docutils literal notranslate"><span class="pre">UnavailableTab.title</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.UnavailableTab.reason"><code class="docutils literal notranslate"><span class="pre">UnavailableTab.reason</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.base.UnavailableTab.failed"><code class="docutils literal notranslate"><span class="pre">UnavailableTab.failed</span></code></a></li>
 </ul>
 </li>
 </ul>

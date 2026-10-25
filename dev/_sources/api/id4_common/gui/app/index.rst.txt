@@ -44,6 +44,14 @@ Module Contents
    :value: 14
 
 
+.. py:data:: WIDTH_POLL_MS
+   :value: 1000
+
+
+.. py:data:: WIDTH_MARGIN_CHARS
+   :value: 1
+
+
 .. py:data:: BACKGROUNDS
 
 .. py:data:: DEFAULT_BACKGROUND
@@ -51,8 +59,6 @@ Module Contents
 
 
 .. py:data:: SETTINGS_ORG
-
-.. py:data:: SETTINGS_APP
 
 .. py:data:: FONT_SIZE_KEY
    :value: 'console/font_size'

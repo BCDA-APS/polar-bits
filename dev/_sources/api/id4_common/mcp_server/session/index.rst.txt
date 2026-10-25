@@ -161,7 +161,7 @@ Module Contents
    sentence saying what to do when there is nothing to attach to.
 
 
-.. py:class:: HklSession(connection_file=None, start=None, device=DEFAULT_DEVICE)
+.. py:class:: HklSession(connection_file=None, start=None, device=None)
 
    A client for the ``_gui_mcp`` dispatcher in a live GUI kernel.
 

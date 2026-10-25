@@ -22,6 +22,9 @@ Module Contents
    Custom IPython line magics for motor readback and movement at POLAR.
 
 
+   .. py:attribute:: pbar_manager
+
+
    .. py:method:: wm(line)
 
       Print position and travel limits for the named motors.

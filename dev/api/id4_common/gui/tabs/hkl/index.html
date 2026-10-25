@@ -518,6 +518,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hkl_bridge/index.html">id4_common.gui.hkl_bridge</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../kernel/index.html">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nowheel/index.html">id4_common.gui.nowheel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scancode/index.html">id4_common.gui.scancode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scanreader/index.html">id4_common.gui.scanreader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session_setup/index.html">id4_common.gui.session_setup</a></li>
@@ -657,6 +658,15 @@ console</strong> so it appears in history and can be interrupted normally.</p>
 <span class="sig-name descname"><span class="pre">scrollable</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#id4_common.gui.tabs.hkl.HklTab.scrollable" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.hkl.HklTab.unavailable_reason">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">unavailable_reason</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.hkl.HklTab.unavailable_reason" title="Link to this definition">#</a></dt>
+<dd><p>There is nothing to orient at a station with no diffractometer.</p>
+<p>Answered from the profile rather than from <code class="docutils literal notranslate"><span class="pre">oregistry</span></code>: every
+station instantiates the same <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code>, so <code class="docutils literal notranslate"><span class="pre">huber_euler</span></code> is
+findable at 4IDB too – disconnected, and belonging to another hutch.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.gui.tabs.hkl.HklTab.model3d">
 <span class="sig-name descname"><span class="pre">model3d</span></span><a class="headerlink" href="#id4_common.gui.tabs.hkl.HklTab.model3d" title="Link to this definition">#</a></dt>
@@ -737,6 +747,7 @@ console</strong> so it appears in history and can be interrupted normally.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.hkl.HklTab"><code class="docutils literal notranslate"><span class="pre">HklTab</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.hkl.HklTab.title"><code class="docutils literal notranslate"><span class="pre">HklTab.title</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.hkl.HklTab.scrollable"><code class="docutils literal notranslate"><span class="pre">HklTab.scrollable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.hkl.HklTab.unavailable_reason"><code class="docutils literal notranslate"><span class="pre">HklTab.unavailable_reason()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.hkl.HklTab.model3d"><code class="docutils literal notranslate"><span class="pre">HklTab.model3d</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.hkl.HklTab.device"><code class="docutils literal notranslate"><span class="pre">HklTab.device</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.hkl.HklTab.refresh"><code class="docutils literal notranslate"><span class="pre">HklTab.refresh()</span></code></a></li>

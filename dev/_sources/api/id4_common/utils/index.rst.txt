@@ -37,6 +37,7 @@ Submodules
    /api/id4_common/utils/peak_statistics/index
    /api/id4_common/utils/polartools_hklpy2_imports/index
    /api/id4_common/utils/pr_setup/index
+   /api/id4_common/utils/progress_bar/index
    /api/id4_common/utils/run_engine/index
    /api/id4_common/utils/run_engine_init/index
    /api/id4_common/utils/session_state/index

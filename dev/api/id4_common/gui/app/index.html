@@ -518,6 +518,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_bridge/index.html">id4_common.gui.hkl_bridge</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../kernel/index.html">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nowheel/index.html">id4_common.gui.nowheel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scancode/index.html">id4_common.gui.scancode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scanreader/index.html">id4_common.gui.scanreader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session_setup/index.html">id4_common.gui.session_setup</a></li>
@@ -634,6 +635,16 @@ below.  The console is a real Jupyter front end, so everything that works in
 <dd></dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.app.WIDTH_POLL_MS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.app.</span></span><span class="sig-name descname"><span class="pre">WIDTH_POLL_MS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></span><a class="headerlink" href="#id4_common.gui.app.WIDTH_POLL_MS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.app.WIDTH_MARGIN_CHARS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.app.</span></span><span class="sig-name descname"><span class="pre">WIDTH_MARGIN_CHARS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#id4_common.gui.app.WIDTH_MARGIN_CHARS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="id4_common.gui.app.BACKGROUNDS">
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.app.</span></span><span class="sig-name descname"><span class="pre">BACKGROUNDS</span></span><a class="headerlink" href="#id4_common.gui.app.BACKGROUNDS" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -646,11 +657,6 @@ below.  The console is a real Jupyter front end, so everything that works in
 <dl class="py data">
 <dt class="sig sig-object py" id="id4_common.gui.app.SETTINGS_ORG">
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.app.</span></span><span class="sig-name descname"><span class="pre">SETTINGS_ORG</span></span><a class="headerlink" href="#id4_common.gui.app.SETTINGS_ORG" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.gui.app.SETTINGS_APP">
-<span class="sig-prename descclassname"><span class="pre">id4_common.gui.app.</span></span><span class="sig-name descname"><span class="pre">SETTINGS_APP</span></span><a class="headerlink" href="#id4_common.gui.app.SETTINGS_APP" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
@@ -754,10 +760,11 @@ the final geometry, so the even split has to be (re)applied here.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.MAX_FONT_POINTS"><code class="docutils literal notranslate"><span class="pre">MAX_FONT_POINTS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.FALLBACK_FONT_POINTS"><code class="docutils literal notranslate"><span class="pre">FALLBACK_FONT_POINTS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.UI_FONT_POINTS"><code class="docutils literal notranslate"><span class="pre">UI_FONT_POINTS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.WIDTH_POLL_MS"><code class="docutils literal notranslate"><span class="pre">WIDTH_POLL_MS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.WIDTH_MARGIN_CHARS"><code class="docutils literal notranslate"><span class="pre">WIDTH_MARGIN_CHARS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.BACKGROUNDS"><code class="docutils literal notranslate"><span class="pre">BACKGROUNDS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.DEFAULT_BACKGROUND"><code class="docutils literal notranslate"><span class="pre">DEFAULT_BACKGROUND</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.SETTINGS_ORG"><code class="docutils literal notranslate"><span class="pre">SETTINGS_ORG</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.SETTINGS_APP"><code class="docutils literal notranslate"><span class="pre">SETTINGS_APP</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.FONT_SIZE_KEY"><code class="docutils literal notranslate"><span class="pre">FONT_SIZE_KEY</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.BACKGROUND_KEY"><code class="docutils literal notranslate"><span class="pre">BACKGROUND_KEY</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.app.MainWindow"><code class="docutils literal notranslate"><span class="pre">MainWindow</span></code></a><ul class="nav section-nav flex-column">

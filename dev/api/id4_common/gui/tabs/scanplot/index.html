@@ -518,6 +518,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hkl_bridge/index.html">id4_common.gui.hkl_bridge</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../kernel/index.html">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nowheel/index.html">id4_common.gui.nowheel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scancode/index.html">id4_common.gui.scancode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scanreader/index.html">id4_common.gui.scanreader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../session_setup/index.html">id4_common.gui.session_setup</a></li>
@@ -606,6 +607,11 @@ column of check boxes and a <strong>Mon</strong> column of radio buttons.  Picki
 divides every curve by that field point by point, which is how a detector is
 normalised against I0 – the usual way to take the incident-flux drift of a
 scan out of the data.</p>
+<p>Tick exactly <strong>two</strong> curves and the second gets the right-hand y axis to
+itself, each axis named and tick-labelled in its curve’s colour.  Two
+detectors in one scan are routinely orders of magnitude apart, and sharing a
+scale flattens the smaller one along the bottom; three or more curves, or the
+derivative option, go back to one shared scale (see <code class="docutils literal notranslate"><span class="pre">_split_field</span></code>).</p>
 <p>Data is retained <strong>raw</strong> for all fields regardless of tick state, so enabling a
 curve part-way through a scan shows its full history, and changing the monitor
 recomputes every curve from the values already recorded rather than only
@@ -664,10 +670,78 @@ buttons move to is the peak of the curve on screen, not of the raw detector.</p>
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">DICHRO_COLOURS</span></span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.DICHRO_COLOURS" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.DICHRO_MAP_CMAP">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">DICHRO_MAP_CMAP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'seismic'</span></span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.DICHRO_MAP_CMAP" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.COLOR_CLIP_PERCENT">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">COLOR_CLIP_PERCENT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.5</span></span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.COLOR_CLIP_PERCENT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.COLOR_CLIP_MAX">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">COLOR_CLIP_MAX</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">49.0</span></span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.COLOR_CLIP_MAX" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.is_flyscan">
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">is_flyscan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.is_flyscan" title="Link to this definition">#</a></dt>
 <dd><p>Whether <em>doc</em> is the start document of a flyscan.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.scale_extend">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">scale_extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.scale_extend" title="Link to this definition">#</a></dt>
+<dd><p>Which ends of <em>z</em> fall outside <code class="docutils literal notranslate"><span class="pre">(low,</span> <span class="pre">high)</span></code>, as colour-bar arrows.</p>
+<p>In the wording <code class="xref py py-meth docutils literal notranslate"><span class="pre">colorbar()</span></code> wants for
+<code class="docutils literal notranslate"><span class="pre">extend</span></code>, so a scale that does not reach its own data says so on the bar
+rather than leaving it to be noticed.  <code class="docutils literal notranslate"><span class="pre">None</span></code> for a limit is
+matplotlib’s “fit the data”, which by definition cuts nothing off there.</p>
+<p>Asked separately from the limits because the limits move after they are
+first worked out: <a class="reference internal" href="#id4_common.gui.tabs.scanplot.centered_limits" title="id4_common.gui.tabs.scanplot.centered_limits"><code class="xref py py-func docutils literal notranslate"><span class="pre">centered_limits()</span></code></a> widens a range, and cells that
+saturated against the clipped one need not saturate against the wider.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.clipped_limits">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">clipped_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">COLOR_CLIP_PERCENT</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.clipped_limits" title="Link to this definition">#</a></dt>
+<dd><p>Colour limits leaving out the most extreme <em>percent</em> at each end.</p>
+<p>A handful of wild cells – a spot where the beam ran off the sample, a
+detector glitch – stretch a map’s colour scale over a range nothing else
+occupies, leaving the rest of it one flat shade.  Cutting the scale back
+to where the bulk of the data lives brings that structure back; the cells
+outside simply saturate.</p>
+<p>How much to cut is asked for rather than worked out, which is the point.
+Rules that decide for themselves what is an outlier (Tukey’s fences on the
+interquartile range, say) read the top of a sharp peak as one, because a
+peaked map legitimately has a long tail above its upper quartile.  On the
+sample-position rasters this beamline lines up on – <code class="docutils literal notranslate"><span class="pre">huber_euler_z</span></code> by
+<code class="docutils literal notranslate"><span class="pre">huber_euler_y</span></code> against a detector total, where the peak <em>is</em> the result
+– those fences clip most of the peak away.  A number someone typed can be
+wrong, but it cannot be surprising, and the same number gives the same
+answer on every map it is applied to.</p>
+<p><em>percent</em> is a percentile, so what it costs depends on how the values are
+distributed, not on how extreme they are: 0.5 on a 1500-cell mesh is the
+eight cells at each end whatever they hold.</p>
+<p>Returns the two limits and which ends they actually cut.
+<code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None,</span> <span class="pre">&quot;neither&quot;)</span></code> means leave the limits alone.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.centered_limits">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">centered_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.centered_limits" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">(low,</span> <span class="pre">high)</span></code> widened until zero sits exactly in the middle.</p>
+<p>A diverging colour map is read by where its middle colour falls, and left
+to the data that lands wherever the range happens to centre: white on an
+arbitrary value, and red and blue no longer meaning the sign.  Zero is
+where white belongs, because zero is what XMCD is a difference from.</p>
+<p>Widening to whichever end reaches further costs the shorter end some of
+its contrast, and buys a map that can be read without consulting the bar.
+Either limit may be <code class="docutils literal notranslate"><span class="pre">None</span></code>, meaning the data’s own extreme.</p>
+<p>Only ever widens, so no cell that was inside the scale leaves it – but
+the arrows still have to be recomputed, which is <a class="reference internal" href="#id4_common.gui.tabs.scanplot.scale_extend" title="id4_common.gui.tabs.scanplot.scale_extend"><code class="xref py py-func docutils literal notranslate"><span class="pre">scale_extend()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -688,6 +762,11 @@ buttons move to is the peak of the curve on screen, not of the raw detector.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.MARKER_STYLES">
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">MARKER_STYLES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(('cen',</span> <span class="pre">'#d62728'),</span> <span class="pre">('com',</span> <span class="pre">'#1f9e5a'),</span> <span class="pre">('max',</span> <span class="pre">'#7b3fb5'),</span> <span class="pre">('min',</span> <span class="pre">'#c77f00'))</span></span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.MARKER_STYLES" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.scanplot.CURVE_COLOURS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.scanplot.</span></span><span class="sig-name descname"><span class="pre">CURVE_COLOURS</span></span><a class="headerlink" href="#id4_common.gui.tabs.scanplot.CURVE_COLOURS" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
@@ -783,11 +862,18 @@ buttons move to is the peak of the curve on screen, not of the raw detector.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.DICHRO_XAS"><code class="docutils literal notranslate"><span class="pre">DICHRO_XAS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.DICHRO_XMCD"><code class="docutils literal notranslate"><span class="pre">DICHRO_XMCD</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.DICHRO_COLOURS"><code class="docutils literal notranslate"><span class="pre">DICHRO_COLOURS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.DICHRO_MAP_CMAP"><code class="docutils literal notranslate"><span class="pre">DICHRO_MAP_CMAP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.COLOR_CLIP_PERCENT"><code class="docutils literal notranslate"><span class="pre">COLOR_CLIP_PERCENT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.COLOR_CLIP_MAX"><code class="docutils literal notranslate"><span class="pre">COLOR_CLIP_MAX</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.is_flyscan"><code class="docutils literal notranslate"><span class="pre">is_flyscan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.scale_extend"><code class="docutils literal notranslate"><span class="pre">scale_extend()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.clipped_limits"><code class="docutils literal notranslate"><span class="pre">clipped_limits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.centered_limits"><code class="docutils literal notranslate"><span class="pre">centered_limits()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.SELECTOR_WIDTH"><code class="docutils literal notranslate"><span class="pre">SELECTOR_WIDTH</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.OPTIONS_KEY"><code class="docutils literal notranslate"><span class="pre">OPTIONS_KEY</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.OPTIONS_EXPR"><code class="docutils literal notranslate"><span class="pre">OPTIONS_EXPR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.MARKER_STYLES"><code class="docutils literal notranslate"><span class="pre">MARKER_STYLES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.CURVE_COLOURS"><code class="docutils literal notranslate"><span class="pre">CURVE_COLOURS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.MARKER_TOOLTIPS"><code class="docutils literal notranslate"><span class="pre">MARKER_TOOLTIPS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.ScanPlotTab"><code class="docutils literal notranslate"><span class="pre">ScanPlotTab</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.scanplot.ScanPlotTab.title"><code class="docutils literal notranslate"><span class="pre">ScanPlotTab.title</span></code></a></li>

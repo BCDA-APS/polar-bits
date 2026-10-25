@@ -12,6 +12,10 @@ id4_common.gui.tabs.base
    The window wires the poller signals to every tab automatically, so a tab only
    has to say what it does with the values.
 
+   A tab that cannot work at every POLAR station also overrides
+   :meth:`BaseTab.unavailable_reason`; the window then shows an
+   :class:`UnavailableTab` in its place, carrying the reason it gave.
+
 
 
 
@@ -89,6 +93,28 @@ Module Contents
 
 
 
+   .. py:method:: unavailable_reason(profile)
+      :classmethod:
+
+
+      Why this tab cannot work at *profile*'s station, or None if it can.
+
+      Consulted once, before the tab is built.  A *reason* rather than a
+      bool because the window puts it on screen: a tab that is simply
+      absent, or present and grey with nothing said, is indistinguishable
+      from a dead IOC or a broken GUI, and that ambiguity is the thing this
+      exists to remove.
+
+      This is for what the *station* cannot do -- no diffractometer in this
+      hutch -- and is answered from the declared profile, not from the
+      registry: every station instantiates the same ``devices.yml``, so
+      finding a device proves nothing about whether it is here.  For
+      something that is applicable but not ready yet -- an IOC down, the
+      kernel still starting -- return None and let the real tab show its own
+      waiting state.
+
+
+
    .. py:method:: run_in_console(code)
 
       Run *code* in the console, as though the user had typed it.
@@ -125,6 +151,40 @@ Module Contents
    .. py:method:: on_kernel_state(state)
 
       Handle a kernel state change: ``"idle"``, ``"busy"`` or ``"dead"``.
+
+
+
+.. py:class:: UnavailableTab(title, reason, failed=False)
+
+   Bases: :py:obj:`BaseTab`
+
+
+   Stands in for a tab that cannot run here, and says why.
+
+   Subclasses :class:`BaseTab` rather than being a bare ``QWidget`` because
+   MainWindow calls ``on_metadata``, ``on_kernel_values`` and
+   ``on_kernel_state`` on every tab without checking what it got; the
+   inherited no-ops are what make that safe.
+
+   Used for two different things, distinguished by *failed*: a tab the
+   station profile says does not apply, and a tab whose constructor raised.
+   The second keeps one broken tab from taking the window down with it, and
+   puts the traceback where the person who can act on it will see it.
+
+
+   .. py:attribute:: scrollable
+      :value: False
+
+
+
+   .. py:attribute:: title
+
+
+   .. py:attribute:: reason
+
+
+   .. py:attribute:: failed
+      :value: False
 
 
 

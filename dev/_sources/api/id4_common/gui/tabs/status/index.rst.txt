@@ -20,10 +20,6 @@ Module Contents
    :value: 'APS'
 
 
-.. py:data:: SETTINGS_APP
-   :value: 'polar-gui'
-
-
 .. py:data:: LOG_PATH_KEY
    :value: 'console/log_path'
 

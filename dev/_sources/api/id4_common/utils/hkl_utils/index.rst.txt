@@ -25,6 +25,7 @@ id4_common.utils.hkl_utils
        ~compute_UB
        ~update_eiger
        ~setmode
+       ~ca_all
        ~ca
        ~wh
        ~pa_new
@@ -329,6 +330,8 @@ Module Contents
    For each angle held constant in the current mode, prompts for a value
    (showing the current preset as default). Updates ``_geom_.core.presets``.
 
+
+.. py:function:: ca_all(h, k, l)
 
 .. py:function:: ca(h, k, l, energy=None)
 

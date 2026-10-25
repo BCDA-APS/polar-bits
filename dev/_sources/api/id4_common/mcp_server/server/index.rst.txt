@@ -20,12 +20,18 @@ id4_common.mcp_server.server
    rather than a promise in a docstring.
 
    Orientation tools take ``device``, defaulting to
-   :data:`~id4_common.mcp_server.bridge.DEFAULT_DEVICE`.  **That default is a real
+   :func:`~id4_common.mcp_server.bridge.default_device`.  **That default is a real
    machine.**  6-ID-B could default to a simulator, so touching hardware was
    always an explicit act; POLAR has no simulated diffractometer, so that layer
    does not exist here and the approval gate is the only thing in front of the
    motors.  The allow-list and the per-op scope are checked again in the kernel,
    so a bug here cannot address an op to a device it was not written for.
+
+   **The tool set depends on the station.**  ``ID4_STATION`` picks a profile in
+   :mod:`id4_common.gui.config`; at a station with no diffractometer (4IDB, 4IDH)
+   the eighteen orientation tools are not declared at all and the instructions
+   drop their half.  A client there sees only the eleven tools that work, rather
+   than a menu of calls that fail once it tries them.
 
    Every tool returns ``{"ok", "message", "data"}``.  ``message`` is written to be
    read: when hklpy2 declines something -- a preset for an axis this mode does not
@@ -47,6 +53,16 @@ id4_common.mcp_server.server
 
 Module Contents
 ---------------
+
+.. py:function:: instructions(profile=None)
+
+   Assemble the server instructions for *profile* (default: this station).
+
+   Two-thirds of the text is a diffractometer tutorial, and at a station with
+   no diffractometer none of the tools it describes exist.  Left whole it
+   would be the same lie the GUI's always-present HKL tab used to tell, only
+   to a reader that cannot look at the hutch and check.
+
 
 .. py:function:: build(connection_file=None)
 

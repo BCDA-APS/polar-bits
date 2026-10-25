@@ -580,12 +580,17 @@ proposal for the operator to approve in the GUI’s Agent tab, and returns
 at all (<a class="reference internal" href="../motion/index.html#module-id4_common.mcp_server.motion" title="id4_common.mcp_server.motion"><code class="xref py py-mod docutils literal notranslate"><span class="pre">id4_common.mcp_server.motion</span></code></a>), so this is a property of the code
 rather than a promise in a docstring.</p>
 <p>Orientation tools take <code class="docutils literal notranslate"><span class="pre">device</span></code>, defaulting to
-<a class="reference internal" href="../bridge/index.html#id4_common.mcp_server.bridge.DEFAULT_DEVICE" title="id4_common.mcp_server.bridge.DEFAULT_DEVICE"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_DEVICE</span></code></a>.  <strong>That default is a real
+<a class="reference internal" href="../bridge/index.html#id4_common.mcp_server.bridge.default_device" title="id4_common.mcp_server.bridge.default_device"><code class="xref py py-func docutils literal notranslate"><span class="pre">default_device()</span></code></a>.  <strong>That default is a real
 machine.</strong>  6-ID-B could default to a simulator, so touching hardware was
 always an explicit act; POLAR has no simulated diffractometer, so that layer
 does not exist here and the approval gate is the only thing in front of the
 motors.  The allow-list and the per-op scope are checked again in the kernel,
 so a bug here cannot address an op to a device it was not written for.</p>
+<p><strong>The tool set depends on the station.</strong>  <code class="docutils literal notranslate"><span class="pre">ID4_STATION</span></code> picks a profile in
+<a class="reference internal" href="../../gui/config/index.html#module-id4_common.gui.config" title="id4_common.gui.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">id4_common.gui.config</span></code></a>; at a station with no diffractometer (4IDB, 4IDH)
+the eighteen orientation tools are not declared at all and the instructions
+drop their half.  A client there sees only the eleven tools that work, rather
+than a menu of calls that fail once it tries them.</p>
 <p>Every tool returns <code class="docutils literal notranslate"><span class="pre">{&quot;ok&quot;,</span> <span class="pre">&quot;message&quot;,</span> <span class="pre">&quot;data&quot;}</span></code>.  <code class="docutils literal notranslate"><span class="pre">message</span></code> is written to be
 read: when hklpy2 declines something – a preset for an axis this mode does not
 hold constant, say – it says which and why, so the next call can be corrected
@@ -600,6 +605,16 @@ SDK generations are accepted: 2.0 calls the decorator-style server
 <code class="docutils literal notranslate"><span class="pre">&#64;server.tool()</span></code> and <code class="docutils literal notranslate"><span class="pre">run()</span></code> behave the same on either.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.mcp_server.server.instructions">
+<span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.server.</span></span><span class="sig-name descname"><span class="pre">instructions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.server.instructions" title="Link to this definition">#</a></dt>
+<dd><p>Assemble the server instructions for <em>profile</em> (default: this station).</p>
+<p>Two-thirds of the text is a diffractometer tutorial, and at a station with
+no diffractometer none of the tools it describes exist.  Left whole it
+would be the same lie the GUI’s always-present HKL tab used to tell, only
+to a reader that cannot look at the hutch and check.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.mcp_server.server.build">
 <span class="sig-prename descclassname"><span class="pre">id4_common.mcp_server.server.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.mcp_server.server.build" title="Link to this definition">#</a></dt>
@@ -645,6 +660,7 @@ SDK generations are accepted: 2.0 calls the decorator-style server
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.server.instructions"><code class="docutils literal notranslate"><span class="pre">instructions()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.server.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.mcp_server.server.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>

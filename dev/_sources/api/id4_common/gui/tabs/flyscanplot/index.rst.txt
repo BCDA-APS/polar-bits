@@ -55,6 +55,14 @@ Module Contents
 
 
 
+   .. py:method:: unavailable_reason(profile)
+      :classmethod:
+
+
+      Flyscans need the softglue and piezo hardware, which is 4IDG's.
+
+
+
    .. py:method:: on_kernel_values(values)
 
       Track the session's experiment path and adopt it as the folder.

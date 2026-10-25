@@ -518,6 +518,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_bridge/index.html">id4_common.gui.hkl_bridge</a></li>
 <li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nowheel/index.html">id4_common.gui.nowheel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scancode/index.html">id4_common.gui.scancode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scanreader/index.html">id4_common.gui.scanreader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session_setup/index.html">id4_common.gui.session_setup</a></li>
@@ -1203,7 +1204,24 @@ back.  The scan number moves on the <code class="docutils literal notranslate"><
 <span class="s2">        except Exception as _exc:</span>
 <span class="s2">            print(f"Could not set </span><span class="si">{_dev}</span><span class="s2">.</span><span class="si">{_dotted}</span><span class="s2"> to </span><span class="si">{_kind}</span><span class="s2">: </span><span class="si">{_exc}</span><span class="s2">")</span>
 <span class="s2">    return applied</span>
-<span class="s2">"""</span>
+
+
+<span class="s2">def _gui_set_console_columns(columns):</span>
+<span class="s2">    """</span><span class="n">Tell</span> <span class="n">the</span> <span class="n">motor</span><span class="o">-</span><span class="n">move</span> <span class="n">progress</span> <span class="n">bar</span> <span class="n">how</span> <span class="n">wide</span> <span class="n">the</span> <span class="n">GUI</span> <span class="n">console</span> <span class="ow">is</span><span class="o">.</span>
+
+    <span class="n">Nothing</span> <span class="k">else</span> <span class="n">reaches</span> <span class="n">the</span> <span class="n">kernel</span> <span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">Qt</span> <span class="n">side</span><span class="p">,</span> <span class="ow">and</span> <span class="n">bluesky</span><span class="s1">'s bar</span>
+    <span class="n">otherwise</span> <span class="n">assumes</span> <span class="mi">79</span> <span class="n">characters</span> <span class="ow">and</span> <span class="n">wraps</span> <span class="n">onto</span> <span class="n">a</span> <span class="n">second</span> <span class="n">row</span><span class="o">.</span>  <span class="n">The</span> <span class="kn">import</span>
+<span class="w">    </span><span class="nn">is</span> <span class="n">local</span><span class="p">:</span> <span class="n">the</span> <span class="n">module</span> <span class="n">pulls</span> <span class="ow">in</span> <span class="n">only</span> <span class="n">bluesky</span><span class="p">,</span> <span class="n">but</span> <span class="n">this</span> <span class="n">runs</span> <span class="n">before</span> <span class="n">the</span>
+    <span class="n">station</span> <span class="n">startup</span> <span class="ow">and</span> <span class="n">has</span> <span class="n">no</span> <span class="n">business</span> <span class="n">failing</span> <span class="n">it</span><span class="o">.</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    try:</span>
+<span class="sd">        from id4_common.utils.progress_bar import set_console_columns</span>
+<span class="sd">    except Exception as _exc:</span>
+<span class="sd">        print(f"Could not set the console width: {_exc}")</span>
+<span class="sd">        return None</span>
+<span class="sd">    set_console_columns(columns)</span>
+<span class="sd">    return columns</span>
+<span class="sd">"""</span>
 </pre></div>
 </div>
 </details></dd></dl>

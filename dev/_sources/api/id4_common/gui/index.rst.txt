@@ -28,6 +28,7 @@ Submodules
    /api/id4_common/gui/flyscan/index
    /api/id4_common/gui/hkl_bridge/index
    /api/id4_common/gui/kernel/index
+   /api/id4_common/gui/nowheel/index
    /api/id4_common/gui/scancode/index
    /api/id4_common/gui/scanreader/index
    /api/id4_common/gui/session_setup/index

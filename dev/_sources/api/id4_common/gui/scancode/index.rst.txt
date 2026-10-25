@@ -104,6 +104,8 @@ Module Contents
 
 .. py:data:: NO_FIXQ
 
+.. py:data:: HKL_PLANS
+
 .. py:data:: MAX_TRAJECTORY_AXES
    :value: 3
 

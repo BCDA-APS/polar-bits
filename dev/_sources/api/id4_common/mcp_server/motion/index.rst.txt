@@ -111,5 +111,3 @@ Module Contents
    :value: ''
 
 
-.. py:data:: DIFFRACTOMETERS
-

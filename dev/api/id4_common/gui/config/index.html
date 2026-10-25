@@ -518,6 +518,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_bridge/index.html">id4_common.gui.hkl_bridge</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../kernel/index.html">id4_common.gui.kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nowheel/index.html">id4_common.gui.nowheel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scancode/index.html">id4_common.gui.scancode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scanreader/index.html">id4_common.gui.scanreader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session_setup/index.html">id4_common.gui.session_setup</a></li>
@@ -603,10 +604,19 @@ At 6-ID-B these values were scattered as module constants across
 <code class="docutils literal notranslate"><span class="pre">hkl_bridge</span></code>, <code class="docutils literal notranslate"><span class="pre">tabs/hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">mcp_server/bridge</span></code> and <code class="docutils literal notranslate"><span class="pre">mcp_server/session</span></code>;
 collecting them is what makes the layer shareable between id4_b, id4_g, id4_h
 and id4_raman.</p>
+<p>What differs <em>between</em> those stations lives in <a class="reference internal" href="#id4_common.gui.config.STATIONS" title="id4_common.gui.config.STATIONS"><code class="xref py py-data docutils literal notranslate"><span class="pre">STATIONS</span></code></a>, one
+<a class="reference internal" href="#id4_common.gui.config.StationProfile" title="id4_common.gui.config.StationProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">StationProfile</span></code></a> each, resolved at call time by <a class="reference internal" href="#id4_common.gui.config.profile" title="id4_common.gui.config.profile"><code class="xref py py-func docutils literal notranslate"><span class="pre">profile()</span></code></a>.  What
+is the same everywhere – the POLAR geometry’s axis names, the peak plans –
+stays a flat constant below.</p>
 <p>Nothing here imports ophyd, Qt or bluesky — the GUI process, the MCP client
 process and the kernel all read it.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.config.logger">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.gui.config.logger" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py data">
 <dt class="sig sig-object py" id="id4_common.gui.config.INSTRUMENT_PACKAGE">
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">INSTRUMENT_PACKAGE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'id4_common'</span></span><a class="headerlink" href="#id4_common.gui.config.INSTRUMENT_PACKAGE" title="Link to this definition">#</a></dt>
@@ -639,6 +649,20 @@ process and the kernel all read it.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.config.qsettings_app">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">qsettings_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#id4_common.gui.config.qsettings_app" title="Link to this definition">#</a></dt>
+<dd><p>Return the Qt settings application scope for this station.</p>
+<p>Scoped per station because the settings are not all cosmetic: alongside
+the font size and console background sit the transcript’s log path and
+its auto-enable flag, which <code class="docutils literal notranslate"><span class="pre">app.MainWindow</span></code> reads at start-up.  Shared,
+a 4IDB session would open the GUI and start appending its console traffic
+to whatever file the 4IDG session last wrote.</p>
+<p><code class="docutils literal notranslate"><span class="pre">id4_g</span></code> keeps the unscoped name it has been writing since before this
+was scoped, so the station that already has a GUI does not lose its font,
+log path and macro folder the first time it starts a station-aware build.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="id4_common.gui.config.pointer_filename">
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">pointer_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#id4_common.gui.config.pointer_filename" title="Link to this definition">#</a></dt>
 <dd><p>Name of the kernel pointer file the MCP server discovers.</p>
@@ -649,34 +673,106 @@ client to the wrong beamline’s kernel is the one failure this must not
 have.</p>
 </dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.gui.config.DIFFRACTOMETERS">
-<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">DIFFRACTOMETERS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['huber_euler',</span> <span class="pre">'huber_hp']</span></span><a class="headerlink" href="#id4_common.gui.config.DIFFRACTOMETERS" title="Link to this definition">#</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">StationProfile</span></span><a class="headerlink" href="#id4_common.gui.config.StationProfile" title="Link to this definition">#</a></dt>
+<dd><p>What the GUI and MCP layer may offer at one station.</p>
+<p><strong>Declared, not discovered.</strong>  Every station’s <code class="docutils literal notranslate"><span class="pre">startup</span></code> calls
+<code class="docutils literal notranslate"><span class="pre">make_devices(file=&quot;devices.yml&quot;)</span></code> with no <code class="docutils literal notranslate"><span class="pre">path</span></code>, and apsbits
+resolves that against <code class="docutils literal notranslate"><span class="pre">INSTRUMENT_PATH</span></code> – always
+<code class="docutils literal notranslate"><span class="pre">id4_common/configs</span></code>.  So every station instantiates the same devices
+and the station label only decides which ones get <code class="docutils literal notranslate"><span class="pre">connect_device()</span></code>
+called: <code class="docutils literal notranslate"><span class="pre">oregistry.find(&quot;huber_euler&quot;)</span></code> succeeds at 4IDB and hands back
+a disconnected object.  The one honest runtime signal is
+<code class="docutils literal notranslate"><span class="pre">get_diffractometer()</span></code>, and that needs a live kernel – far too late for
+a window that must draw its tabs before the session exists.</p>
+<p>It is not in YAML either.  <code class="docutils literal notranslate"><span class="pre">apsbits.update_config</span></code> is a top-level
+<code class="docutils literal notranslate"><span class="pre">dict.update</span></code>, so a station overriding one nested key drops the rest of
+that block; the four <code class="docutils literal notranslate"><span class="pre">iconfig_extras.yml</span></code> already lose
+<code class="docutils literal notranslate"><span class="pre">RUN_ENGINE.DEFAULT_METADATA.proposal_id</span></code> that way.</p>
+<p>Only fields with a consumer belong here.  A declaration this layer never
+reads goes stale unnoticed – see the note at the foot of this file.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.package">
+<span class="sig-name descname"><span class="pre">package</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.package" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.gui.config.PSI_GEOMETRY">
-<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">PSI_GEOMETRY</span></span><a class="headerlink" href="#id4_common.gui.config.PSI_GEOMETRY" title="Link to this definition">#</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.display" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.diffractometers">
+<span class="sig-name descname"><span class="pre">diffractometers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.diffractometers" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.psi_geometry">
+<span class="sig-name descname"><span class="pre">psi_geometry</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.psi_geometry" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.real_motor_devices">
+<span class="sig-name descname"><span class="pre">real_motor_devices</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><span class="pre">frozenset</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.real_motor_devices" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.mcp_default_device">
+<span class="sig-name descname"><span class="pre">mcp_default_device</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.mcp_default_device" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.has_flyscan">
+<span class="sig-name descname"><span class="pre">has_flyscan</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.has_flyscan" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.unsupported_reason">
+<span class="sig-name descname"><span class="pre">unsupported_reason</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.unsupported_reason" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.has_diffractometer">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">has_diffractometer</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.has_diffractometer" title="Link to this definition">#</a></dt>
+<dd><p>Whether an hkl-aware session runs at this station.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.gui.config.StationProfile.mcp_allowed_devices">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mcp_allowed_devices</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><span class="pre">frozenset</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#id4_common.gui.config.StationProfile.mcp_allowed_devices" title="Link to this definition">#</a></dt>
+<dd><p>Devices an MCP client may address.</p>
+<p>Derived rather than declared, so a station cannot allow a device it
+does not offer.  Checked in the <em>kernel</em>, so a bug in the server – or
+a second client that found the connection file – is still bounded by
+it.  The psi partners stay out: separate engines on the same motors,
+and nothing in the tool set needs them.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.config.STATIONS">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">STATIONS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#id4_common.gui.config.StationProfile" title="id4_common.gui.config.StationProfile"><span class="pre">StationProfile</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#id4_common.gui.config.STATIONS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.config.profile">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#id4_common.gui.config.StationProfile" title="id4_common.gui.config.StationProfile"><span class="pre">StationProfile</span></a></span></span><a class="headerlink" href="#id4_common.gui.config.profile" title="Link to this definition">#</a></dt>
+<dd><p>Return the capability profile for <em>station_name</em>, or this session’s.</p>
+<p>Resolved at <strong>call time</strong>, never at import: <code class="docutils literal notranslate"><span class="pre">app.main</span></code> does not set
+<code class="docutils literal notranslate"><span class="pre">ID4_STATION</span></code> until it has parsed <code class="docutils literal notranslate"><span class="pre">--station</span></code>, and by then this module
+has long been imported by way of <code class="docutils literal notranslate"><span class="pre">gui.kernel</span></code>.  Anything that caches a
+profile in a module constant re-freezes the bug this exists to fix.</p>
+<p>An unrecognised name is reported and answered with a capability-free
+profile rather than an exception.  The MCP server reads <code class="docutils literal notranslate"><span class="pre">ID4_STATION</span></code>
+from an environment it does not control, and a station it cannot place is
+a station it should offer nothing for.</p>
+</dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="id4_common.gui.config.Q_GEOMETRY">
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">Q_GEOMETRY</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#id4_common.gui.config.Q_GEOMETRY" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.gui.config.REAL_MOTOR_DEVICES">
-<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">REAL_MOTOR_DEVICES</span></span><a class="headerlink" href="#id4_common.gui.config.REAL_MOTOR_DEVICES" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.gui.config.MCP_ALLOWED_DEVICES">
-<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">MCP_ALLOWED_DEVICES</span></span><a class="headerlink" href="#id4_common.gui.config.MCP_ALLOWED_DEVICES" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.gui.config.MCP_DEFAULT_DEVICE">
-<span class="sig-prename descclassname"><span class="pre">id4_common.gui.config.</span></span><span class="sig-name descname"><span class="pre">MCP_DEFAULT_DEVICE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'huber_euler'</span></span><a class="headerlink" href="#id4_common.gui.config.MCP_DEFAULT_DEVICE" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
@@ -747,19 +843,31 @@ have.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.INSTRUMENT_PACKAGE"><code class="docutils literal notranslate"><span class="pre">INSTRUMENT_PACKAGE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.DEFAULT_STATION"><code class="docutils literal notranslate"><span class="pre">DEFAULT_STATION</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.WINDOW_TITLE"><code class="docutils literal notranslate"><span class="pre">WINDOW_TITLE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.QSETTINGS_ORG"><code class="docutils literal notranslate"><span class="pre">QSETTINGS_ORG</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.QSETTINGS_APP"><code class="docutils literal notranslate"><span class="pre">QSETTINGS_APP</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.station"><code class="docutils literal notranslate"><span class="pre">station()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.qsettings_app"><code class="docutils literal notranslate"><span class="pre">qsettings_app()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.pointer_filename"><code class="docutils literal notranslate"><span class="pre">pointer_filename()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.DIFFRACTOMETERS"><code class="docutils literal notranslate"><span class="pre">DIFFRACTOMETERS</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.PSI_GEOMETRY"><code class="docutils literal notranslate"><span class="pre">PSI_GEOMETRY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile"><code class="docutils literal notranslate"><span class="pre">StationProfile</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.package"><code class="docutils literal notranslate"><span class="pre">StationProfile.package</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.display"><code class="docutils literal notranslate"><span class="pre">StationProfile.display</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.diffractometers"><code class="docutils literal notranslate"><span class="pre">StationProfile.diffractometers</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.psi_geometry"><code class="docutils literal notranslate"><span class="pre">StationProfile.psi_geometry</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.real_motor_devices"><code class="docutils literal notranslate"><span class="pre">StationProfile.real_motor_devices</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.mcp_default_device"><code class="docutils literal notranslate"><span class="pre">StationProfile.mcp_default_device</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.has_flyscan"><code class="docutils literal notranslate"><span class="pre">StationProfile.has_flyscan</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.unsupported_reason"><code class="docutils literal notranslate"><span class="pre">StationProfile.unsupported_reason</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.has_diffractometer"><code class="docutils literal notranslate"><span class="pre">StationProfile.has_diffractometer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.StationProfile.mcp_allowed_devices"><code class="docutils literal notranslate"><span class="pre">StationProfile.mcp_allowed_devices</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.STATIONS"><code class="docutils literal notranslate"><span class="pre">STATIONS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.profile"><code class="docutils literal notranslate"><span class="pre">profile()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.Q_GEOMETRY"><code class="docutils literal notranslate"><span class="pre">Q_GEOMETRY</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.REAL_MOTOR_DEVICES"><code class="docutils literal notranslate"><span class="pre">REAL_MOTOR_DEVICES</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.MCP_ALLOWED_DEVICES"><code class="docutils literal notranslate"><span class="pre">MCP_ALLOWED_DEVICES</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.MCP_DEFAULT_DEVICE"><code class="docutils literal notranslate"><span class="pre">MCP_DEFAULT_DEVICE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.MODEL_AXIS_MAP"><code class="docutils literal notranslate"><span class="pre">MODEL_AXIS_MAP</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.UNMODELLED_AXES"><code class="docutils literal notranslate"><span class="pre">UNMODELLED_AXES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.config.PEAK_PLANS"><code class="docutils literal notranslate"><span class="pre">PEAK_PLANS</span></code></a></li>
