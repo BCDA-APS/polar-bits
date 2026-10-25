@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
-<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+  <link href="../../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
@@ -35,10 +35,10 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
-<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
     <script src="../../../../_static/documentation_options.js?v=f539c95a"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -50,6 +50,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -598,7 +599,7 @@ plots.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>plan</strong> (<em>iterable</em><em> or </em><em>iterator</em>) – a generator, list, or similar containing <cite>Msg</cite> objects</p></li>
-<li><p><strong>extras</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Devices to read during the plan but keep out of the plot hints. An
+<li><p><strong>extras</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a>) – Devices to read during the plan but keep out of the plot hints. An
 empty list passes the plan through unchanged.</p></li>
 </ul>
 </dd>
@@ -617,9 +618,9 @@ empty list passes the plan through unchanged.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>plan</strong> (<em>iterable</em><em> or </em><em>iterator</em>) – a generator, list, or similar containing <cite>Msg</cite> objects</p></li>
-<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Devices whose <cite>preset_monitor</cite> will be set to <cite>count_time</cite>. Their
+<li><p><strong>detectors</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a>) – Devices whose <cite>preset_monitor</cite> will be set to <cite>count_time</cite>. Their
 original presets are stashed and restored when the plan ends.</p></li>
-<li><p><strong>count_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> or </em><em>None</em>) – Preset to apply. If None, the plan passes through unchanged. If
+<li><p><strong>count_time</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a><em> or </em><em>None</em>) – Preset to apply. If None, the plan passes through unchanged. If
 positive, it is written to each detector’s <cite>preset_monitor</cite>. If
 negative, its absolute value is used as the preset of the monitor
 scaler channel, which requires <cite>counters.monitor</cite> to be a scaler
@@ -644,7 +645,7 @@ channel. Zero raises a ValueError.</p></li>
 <li><p><strong>lockin</strong> (<em>boolean</em>) – Flag that triggers the stage/unstage process of lockin scans.</p></li>
 <li><p><strong>sgz</strong> (<em>boolean</em>) – Flag for softgluezynq-triggered scans. Like <cite>lockin</cite>, it switches the
 phase retarder into AC mode while the plan runs.</p></li>
-<li><p><strong>positioner</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – Motors being scanned. Their names are passed to the dichro plotting
+<li><p><strong>positioner</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a>) – Motors being scanned. Their names are passed to the dichro plotting
 settings as <code class="docutils literal notranslate"><span class="pre">positioner1</span></code>…``positionerN``. Entries may be None.</p></li>
 </ul>
 </dd>
@@ -812,8 +813,8 @@ be in the oregistry otherwise a ValueError is raised.</p></li>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
-<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">

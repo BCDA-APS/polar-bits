@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
-<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+  <link href="../../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
@@ -35,10 +35,10 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
-<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
     <script src="../../../../_static/documentation_options.js?v=f539c95a"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -50,6 +50,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -613,12 +614,12 @@ backend based on the scan’s plan, and returns a nested dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan); negative indices count
+<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan); negative indices count
 from the end.</p></li>
-<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – For 1D scans: motor (x-axis) field name. If None, picks the
+<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – For 1D scans: motor (x-axis) field name. If None, picks the
 single motor or, for multi-motor 1D scans, the motor with the
 largest range. Ignored for 2D scans.</p></li>
-<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Detector (y-axis) field name(s). If None, uses every entry in
+<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Detector (y-axis) field name(s). If None, uses every entry in
 <code class="docutils literal notranslate"><span class="pre">start[&quot;hints&quot;][&quot;detectors&quot;]</span></code>.</p></li>
 </ul>
 </dd>
@@ -637,7 +638,7 @@ on dimensionality:</p>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -651,11 +652,11 @@ differs from <a class="reference internal" href="#id4_common.plans.peak_position
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index of the scan. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
-<li><p><strong>positioner</strong> (<em>ophyd object</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Device(s) to move.  None → autodetected from the scan’s motors
+<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index of the scan. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
+<li><p><strong>positioner</strong> (<em>ophyd object</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em>, </em><em>optional</em>) – Device(s) to move.  None → autodetected from the scan’s motors
 (single for 1D scans, both motors for 2D <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code>).</p></li>
-<li><p><strong>detector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. None → first hint from the scan.</p></li>
-<li><p><strong>confirm</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True (default), prompts for multi-motor 1D scans and for
+<li><p><strong>detector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. None → first hint from the scan.</p></li>
+<li><p><strong>confirm</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – If True (default), prompts for multi-motor 1D scans and for
 scans older than 5 minutes.  False skips every prompt.</p></li>
 </ul>
 </dd>
@@ -707,14 +708,14 @@ scans older than 5 minutes.  False skips every prompt.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index of the scan. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
-<li><p><strong>feature</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Which peak feature to move to. Accepts the PR-#54 names
+<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index of the scan. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
+<li><p><strong>feature</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Which peak feature to move to. Accepts the PR-#54 names
 (<code class="docutils literal notranslate"><span class="pre">&quot;centroid&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;x_at_max_y&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;x_at_min_y&quot;</span></code>) and the short
 names (<code class="docutils literal notranslate"><span class="pre">&quot;com&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;max&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;min&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;cen&quot;</span></code>). Anything else
 raises a ValueError. Default <code class="docutils literal notranslate"><span class="pre">&quot;centroid&quot;</span></code>.</p></li>
-<li><p><strong>positioner</strong> (<em>ophyd object</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>, </em><em>optional</em>) – Device(s) to move. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
-<li><p><strong>detector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
-<li><p><strong>confirm</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Prompt behavior. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
+<li><p><strong>positioner</strong> (<em>ophyd object</em><em> or </em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><em>list</em></a><em>, </em><em>optional</em>) – Device(s) to move. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
+<li><p><strong>detector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
+<li><p><strong>confirm</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – Prompt behavior. See <a class="reference internal" href="#id4_common.plans.peak_position.cen" title="id4_common.plans.peak_position.cen"><code class="xref py py-func docutils literal notranslate"><span class="pre">cen()</span></code></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -747,11 +748,11 @@ beam sits on each side of the sample.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
-<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Motor field name. None → the scan’s single motor, or the widest-moving
+<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
+<li><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Motor field name. None → the scan’s single motor, or the widest-moving
 one for multi-motor scans.</p></li>
-<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. None → the first entry of the scan’s hints.</p></li>
-<li><p><strong>monitor</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>False</em><em>, </em><em>optional</em>) – Monitor field to normalise by. None → the scan’s <code class="docutils literal notranslate"><span class="pre">hints[&quot;monitor&quot;]</span></code>
+<li><p><strong>y</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. None → the first entry of the scan’s hints.</p></li>
+<li><p><strong>monitor</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em> or </em><em>False</em><em>, </em><em>optional</em>) – Monitor field to normalise by. None → the scan’s <code class="docutils literal notranslate"><span class="pre">hints[&quot;monitor&quot;]</span></code>
 if it is present in the stream. <code class="docutils literal notranslate"><span class="pre">False</span></code> → use the raw detector.</p></li>
 </ul>
 </dd>
@@ -762,12 +763,12 @@ if it is present in the stream. <code class="docutils literal notranslate"><span
 own units.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – For 2-D grid scans.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the transmission contrast is below <code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_ABS_CONTRAST</span></code>, i.e.
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#NotImplementedError" title="(in Python v3.15)"><strong>NotImplementedError</strong></a> – For 2-D grid scans.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the transmission contrast is below <code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_ABS_CONTRAST</span></code>, i.e.
 there is no dip to centre on.</p></li>
 </ul>
 </dd>
@@ -793,10 +794,10 @@ in that case.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index of the scan. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
+<li><p><strong>scan_id</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><em>int</em></a><em>, </em><em>optional</em>) – Catalog index of the scan. Default <code class="docutils literal notranslate"><span class="pre">-1</span></code> (last scan).</p></li>
 <li><p><strong>positioner</strong> (<em>ophyd object</em><em>, </em><em>optional</em>) – Device to move. None → the scan’s motor, via <code class="docutils literal notranslate"><span class="pre">oregistry</span></code>.</p></li>
-<li><p><strong>detector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. None → the first hint from the scan.</p></li>
-<li><p><strong>confirm</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – If True (default), prompts before moving for scans older than
+<li><p><strong>detector</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><em>str</em></a><em>, </em><em>optional</em>) – Detector field name. None → the first hint from the scan.</p></li>
+<li><p><strong>confirm</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a><em>, </em><em>optional</em>) – If True (default), prompts before moving for scans older than
 5 minutes. False skips the prompt.</p></li>
 </ul>
 </dd>
@@ -896,8 +897,8 @@ in that case.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
-<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
