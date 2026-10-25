@@ -3,7 +3,7 @@ Vimba cameras
 """
 
 from pathlib import Path
-from time import time as ttime
+from time import time as ttime, sleep
 
 from ophyd import EpicsSignal
 from ophyd import EpicsSignalRO
@@ -39,6 +39,7 @@ class Trigger(TriggerBase):
         self._image_name = image_name
         # self._flysetup = False
         self._status = None
+        self._delay = 0.1
 
     def setup_manual_trigger(self):
         """Configure stage_sigs for single-image manual-trigger mode."""
@@ -115,7 +116,7 @@ class Trigger(TriggerBase):
             return
         if (old_value != 0) and (value == 0):
             # Negative-going edge means an acquisition just finished.
-            # sleep(self._delay)
+            sleep(self._delay)
             self._status.set_finished()
             self._status = None
 
