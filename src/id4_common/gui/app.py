@@ -38,6 +38,7 @@ from . import config
 from .docstream import DocumentStream
 from .kernel import KernelSession
 from .kernel import StatusPoller
+from .nowheel import install_wheel_guard
 from .tabs.agent import AgentTab
 from .tabs.base import UnavailableTab
 from .tabs.detectors import DetectorsTab
@@ -633,6 +634,8 @@ def main(argv=None):
 
     app = QApplication.instance() or QApplication(sys.argv[:1])
     app.setApplicationName(config.WINDOW_TITLE.format(station=profile.display))
+    # No value in this GUI changes because the wheel passed over it.
+    install_wheel_guard(app)
 
     # Before the window exists, so every widget is built with it.
     ui_font = app.font()
