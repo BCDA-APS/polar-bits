@@ -53,6 +53,7 @@ def _make_1d_run(motor_name, x, det_name, y, plan_name="ascan", scan_id=42):
     # `run.primary.read()` is called as a method; patch with a Mock returning
     # something that supports attribute access ``table[<key>].values``.
     primary = MagicMock()
+    primary.to_dask.side_effect = NotImplementedError
     primary.read.return_value = _DictTable(
         {motor_name: np.asarray(x), det_name: np.asarray(y)}
     )
@@ -86,6 +87,7 @@ def _make_2d_grid_run(
     flat_m2 = np.tile(m2_vals, len(m1_vals))
     flat_det = img.reshape(-1)
     primary = MagicMock()
+    primary.to_dask.side_effect = NotImplementedError
     primary.read.return_value = _DictTable(
         {m1_name: flat_m1, m2_name: flat_m2, det_name: flat_det}
     )

@@ -58,6 +58,9 @@ exclude = [ ".eggs", ".git", ".git-rewrite", ".mypy_cache", ".pytype", ".ruff_ca
     # Vendored verbatim from the beamline analysis folder; kept
     # diffable against its source rather than restyled.
     "src/id4_common/gui/flyscan",
+    # Unfinished draft (not importable, undefined names); excluded until
+    # it is ready. See https://github.com/BCDA-APS/polar-bits/issues/83
+    "src/id4_common/utils/eiger_setup.py",
 ]
 line-length = 80
 indent-width = 4

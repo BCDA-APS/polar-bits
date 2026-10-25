@@ -79,7 +79,6 @@ import numpy as np
 from apsbits.core.instrument_init import oregistry
 from bluesky.plan_stubs import mv
 from bluesky.plan_stubs import sleep
-from epics import caput, caget
 
 from ..callbacks.nexus_data_file_writer import nxwriter
 from ..utils.run_engine import RE
@@ -372,12 +371,10 @@ def flyscan(
     x_dac_min = DAC_CENTRE_UM - half_x_width
     x_dac_max = DAC_CENTRE_UM + half_x_width
     y_dac_min = DAC_CENTRE_UM - half_y_width
-    y_dac_max = DAC_CENTRE_UM + half_y_width
 
     x_min_bits = sg.um_to_bits(x_dac_min)
     x_max_bits = sg.um_to_bits(x_dac_max)
     y_min_bits = sg.um_to_bits(y_dac_min)
-    y_max_bits = sg.um_to_bits(y_dac_max)
 
     acquire_period = acquire_time + det_dead
     interferometry_period = acquire_period / interferometer_per_pixel
@@ -602,7 +599,7 @@ def flyscan(
         yield from bps.checkpoint()
         logger.debug("Enabling piezo modulation input.")
         yield from sleep(0.1)
-        #print(caget("4idgSoftX:jena:m2.RBV"))
+        # print(caget("4idgSoftX:jena:m2.RBV"))
         pz.modulation_input_on("x")
         yield from sleep(0.1)
 
@@ -615,7 +612,7 @@ def flyscan(
 
         pz.modulation_input_on("y")
         yield from sleep(0.1)
-        #print(caget("4idgSoftX:jena:m2.RBV"))
+        # print(caget("4idgSoftX:jena:m2.RBV"))
 
         # --- Switch DAC1 mux back to memDrive (waveform playback) ---
 
@@ -650,9 +647,9 @@ def flyscan(
         # yield from sleep(1)
         # --- Start softglue ---
 
-        #print(caget("4idgSoftX:jena:m2.RBV"))
+        # print(caget("4idgSoftX:jena:m2.RBV"))
         print("[sg] prepare()")
-        #print(caget("4idgSoftX:jena:m2.RBV"))
+        # print(caget("4idgSoftX:jena:m2.RBV"))
         yield from sleep(1)
         sg.prepare()
         yield from sleep(1)
@@ -683,7 +680,7 @@ def flyscan(
         # --- scal_to_stream_1 pipeline can still drain.             ---
 
         print("[sg] scal_to_stream_1.flush.signal <- '1!'  (draining DMA)")
-        #for _ in range(7):
+        # for _ in range(7):
         sg.scal_to_stream_1.flush.signal.put("1!")
         yield from sleep(0.1)
 

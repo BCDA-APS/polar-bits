@@ -54,6 +54,7 @@ import logging
 import math
 import pathlib
 import traceback
+
 import yaml
 
 try:
@@ -578,8 +579,12 @@ def compute_UB():
 
 
 def update_eiger():
-    eiger_x = int(caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX") / 2)
-    eiger_y = int(caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY") / 2)
+    eiger_x = int(
+        caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX") / 2
+    )
+    eiger_y = int(
+        caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY") / 2
+    )
     caput("4idgSoftX:Eiger:Center", [eiger_x, eiger_y])
     caput("4idEiger:cam1:BeamX", eiger_x)
     caput("4idEiger:cam1:BeamY", eiger_y)
@@ -884,7 +889,6 @@ def or1(h=None, k=None, l=None):
     except Exception as e:
         print(f"Error adding reflection: {e}")
         print("Use del_reflection() and/or set_orienting() if needed.")
-
 
     if len(orienting_refl) > 2:
         sample.reflections.order.pop(1)

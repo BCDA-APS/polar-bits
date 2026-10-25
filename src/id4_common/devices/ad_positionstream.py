@@ -202,7 +202,7 @@ class PositionStreamDevice(MySingleTrigger, CountersMixin, DetectorBase):
         # which make_write_read_paths() below would otherwise choke on
         # (or silently diverge from the path predict_save_path()
         # computed for the pre-scan collision check).
-        #self.hdf1.file_template.set(self.hdf1_name_format).wait(timeout=10)
+        # self.hdf1.file_template.set(self.hdf1_name_format).wait(timeout=10)
 
         _, full_path, relative_path = self.hdf1.make_write_read_paths(base_path)
 

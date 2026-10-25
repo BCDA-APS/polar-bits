@@ -45,7 +45,6 @@ class KepcoController(Device):
     voltage = Component(LocalPositioner, "", progtype="V", tolerance=0.02)
     current = Component(LocalPositioner, "", progtype="C", tolerance=0.03)
 
-
     # Control toggles
     mode = Component(
         EpicsSignal, "setMode", kind="config", string=True, auto_monitor=True
