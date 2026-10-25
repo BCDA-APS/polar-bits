@@ -598,12 +598,22 @@
                   
   <section id="module-id4_common.utils.eiger_setup">
 <span id="id4-common-utils-eiger-setup"></span><h1>id4_common.utils.eiger_setup<a class="headerlink" href="#module-id4_common.utils.eiger_setup" title="Link to this heading">#</a></h1>
+<p>Eiger geometry setup: sample-detector distance and beam center.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.utils.eiger_setup.CENTER_PV">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.eiger_setup.</span></span><span class="sig-name descname"><span class="pre">CENTER_PV</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'4idgSoftX:Eiger:Center'</span></span><a class="headerlink" href="#id4_common.utils.eiger_setup.CENTER_PV" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.eiger_setup.setup_eiger">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.eiger_setup.</span></span><span class="sig-name descname"><span class="pre">setup_eiger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.eiger_setup.setup_eiger" title="Link to this definition">#</a></dt>
-<dd><p>Setup and write parameters to Eiger images</p>
+<dd><p>Write the sample-detector distance and beam center to the Eiger.</p>
+<p>The distance defaults to the current position of the <code class="docutils literal notranslate"><span class="pre">huber_euler</span></code> pad
+rail. The beam center is taken as the center of ROI1.</p>
+<p>The soft-IOC beam center array is not part of the ADEiger driver, so it
+is written with a raw <code class="docutils literal notranslate"><span class="pre">caput</span></code> rather than an ophyd signal.</p>
 </dd></dl>
 
 </section>
@@ -639,6 +649,7 @@
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.eiger_setup.CENTER_PV"><code class="docutils literal notranslate"><span class="pre">CENTER_PV</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.eiger_setup.setup_eiger"><code class="docutils literal notranslate"><span class="pre">setup_eiger()</span></code></a></li>
 </ul>
 </li>
