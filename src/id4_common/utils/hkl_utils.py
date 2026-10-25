@@ -19,6 +19,7 @@ Auxilary HKL functions.
     ~compute_UB
     ~update_eiger
     ~setmode
+    ~ca_all
     ~ca
     ~wh
     ~pa_new
@@ -69,6 +70,7 @@ try:
     from hklpy2.user import add_sample
     from hklpy2.user import get_diffractometer
     from hklpy2.user import set_diffractometer as hklpy2_set_diffract
+    from hklpy2.user import cahkl_table
 
     from .progress_bar import progress_bar_manager
     from .run_engine import RE as polar_RE
@@ -94,6 +96,7 @@ __all__ = """
     compute_UB
     update_eiger
     setmode
+    ca_all
     ca
     wh
     pa_new
@@ -1273,6 +1276,9 @@ def freeze_general():
     for axis, val in new_presets.items():
         print(f"  {axis} = {val}")
 
+
+def ca_all(h,k,l):
+    cahkl_table((h,k,l))
 
 def ca(h, k, l, energy=None):  # noqa: E741
     """
