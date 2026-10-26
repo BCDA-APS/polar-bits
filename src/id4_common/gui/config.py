@@ -151,7 +151,7 @@ class StationProfile:
     mcp_default_device: str | None = None
 
     #: Station has the softglue and piezo hardware the flyscan viewer reads.
-    #: Both ``gsgz_isn`` and ``piezo_jena`` are labelled ``4idg`` only.
+    #: Both ``gsgz`` and ``piezo_jena`` are labelled ``4idg`` only.
     has_flyscan: bool = False
 
     #: Why the GUI refuses to launch here at all, or None.  Set for a station

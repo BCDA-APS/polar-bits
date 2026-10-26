@@ -350,10 +350,10 @@ id4_common.devices.piezo_jena.PiezoJena:
   prefix: "4idgSoftX:asyn_MOXA_G:2"
   labels: ["4idg", "baseline"]
 
-id4_common.devices.softgluezynq_g_new.SoftGlueZynq:
-- name: gsgz_isn
+id4_common.devices.softgluezynq_g.SoftGlueZynq:
+- name: gsgz
   prefix: "4idgACQ:"
-  labels: ["4idg"]
+  labels: ["4idg", "flyscan"]
 
 ############
 ## 4-ID-H ##
@@ -473,7 +473,7 @@ id4_common.devices.softgluezynq_vortex.SGZVortex:
 id4_common.devices.ad_positionstream.PositionStreamDevice:
 - name: pos_stream
   prefix: "4idSGSocket:"
-  labels: []
+  labels: ["flyscan"]
 
 id4_common.devices.ge_controller.GEController:
 - name: comp

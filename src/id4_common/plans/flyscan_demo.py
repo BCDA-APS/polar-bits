@@ -37,7 +37,7 @@ iconfig = get_config()
 logger = getLogger(__name__)
 logger.info(__file__)
 
-sgz = oregistry.find("sgz", allow_none=True)
+sgz = oregistry.find("gsgz", allow_none=True)
 dm_experiment = oregistry.find("dm_experiment", allow_none=True)
 
 __all__ = "flyscan_snake flyscan_1d flyscan_cycler".split()

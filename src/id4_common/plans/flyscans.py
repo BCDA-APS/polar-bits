@@ -135,7 +135,7 @@ def flyscan(
     interferometer_per_pixel: int = 5,
     F: float = 0.9,
     *,
-    softglue="gsgz_isn",
+    softglue="gsgz",
     piezo="piezo_jena",
     diffractometer="huber_hp",
     socketserver="socketserver",

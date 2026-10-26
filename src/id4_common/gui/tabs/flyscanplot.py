@@ -47,7 +47,7 @@ class FlyscanPlotTab(BaseTab):
         return (
             f"{profile.display} has no flyscan hardware.\n\n"
             "The live viewer reads the HDF5 files a flyscan writes, and the "
-            "softglue and piezo devices that produce them (gsgz_isn, "
+            "softglue and piezo devices that produce them (gsgz, "
             "piezo_jena) are 4IDG's.\n\n"
             "Use the Scan plot tab for step scans run here."
         )
