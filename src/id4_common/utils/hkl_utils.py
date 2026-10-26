@@ -63,7 +63,6 @@ try:
     from bluesky import RunEngine
     from bluesky import RunEngineInterrupted
     from bluesky.plan_stubs import mv
-    from epics import caget
     from epics import caput
     from hklpy2 import ConfigurationRunWrapper
     from hklpy2.run_utils import get_run_orientation
@@ -124,6 +123,11 @@ __all__ = """
 """.split()
 
 polar_config = pathlib.Path("polar-config.json")
+
+#: 4-ID-G soft-IOC PVs that are not modeled by any ophyd device.
+UB_MATRIX_PV = "4idgSoftX:Bluesky:UB_matrix"
+EIGER_CENTER_PV = "4idgSoftX:Eiger:Center"
+EIGER_DISTANCE_PV = "4idgSoftX:Eiger:Distance"
 
 RE = RunEngine({}, loop=asyncio.new_event_loop())
 pbar_manager = progress_bar_manager()
@@ -562,10 +566,9 @@ def compute_UB():
         print("UB not calculated. Check geometry.")
         traceback.print_exc()
 
-    # TODO: prefer to not use caput to a specific PV, hard to maintain, verify,
-    # etc...
+    # The soft-IOC UB matrix array is not modeled by any device.
     caput(
-        "4idgSoftX:Bluesky:UB_matrix",
+        UB_MATRIX_PV,
         [
             sample.UB[0][0],
             sample.UB[0][1],
@@ -582,18 +585,24 @@ def compute_UB():
 
 
 def update_eiger():
-    eiger_x = int(
-        caget("4idEiger:ROI1:MinX") + caget("4idEiger:ROI1:SizeX") / 2
-    )
-    eiger_y = int(
-        caget("4idEiger:ROI1:MinY") + caget("4idEiger:ROI1:SizeY") / 2
-    )
-    caput("4idgSoftX:Eiger:Center", [eiger_x, eiger_y])
-    caput("4idEiger:cam1:BeamX", eiger_x)
-    caput("4idEiger:cam1:BeamY", eiger_y)
-    eiger_distance = caget("4idgSoft:m21.RBV")
-    caput("4idEiger:cam1:DetDist", eiger_distance)
-    caput("4idgSoftX:Eiger:Distance", eiger_distance)
+    """
+    Write the beam center and sample-detector distance to the Eiger.
+
+    The beam center is taken as the center of ROI1 and the distance as the
+    current position of the diffractometer pad rail. The soft-IOC center and
+    distance PVs are not part of any device, so they use a raw ``caput``.
+    """
+    eiger = oregistry.find("eiger")
+    roi = eiger.roi1
+    eiger_x = int(roi.min_xyz.min_x.get() + roi.size.x.get() / 2)
+    eiger_y = int(roi.min_xyz.min_y.get() + roi.size.y.get() / 2)
+    caput(EIGER_CENTER_PV, [eiger_x, eiger_y])
+    eiger.cam.beam_center_x.set(eiger_x).wait(timeout=10)
+    eiger.cam.beam_center_y.set(eiger_y).wait(timeout=10)
+
+    eiger_distance = get_diffractometer().pad_rail.user_readback.get()
+    eiger.cam.det_distance.set(eiger_distance).wait(timeout=10)
+    caput(EIGER_DISTANCE_PV, eiger_distance)
 
 
 def _copy_sample_to_psi(source, target, ub=None):
@@ -1579,7 +1588,10 @@ def pa_new(full=False):
 
     print("\nMonochromator:")
     mono_width = len("     Wavelength")
-    two_d = caget("4idVDCM:Bragg2dSpacingAO")
+    try:
+        two_d = oregistry.find("mono").crystal_2d.get()
+    except Exception:
+        two_d = None
     d_str = f"{two_d / 2:.4f} Å" if two_d is not None else "N/A"
     print(f"{'     Energy':>{mono_width}} = {_geom_.beam.energy.get():.4f} keV")
     print(
@@ -2248,7 +2260,8 @@ def set_detector():
 
     Uses defaults if the user just presses Enter.
     """
-    offset = caget("4idgSoft:m20.OFF")
+    delta_offset = get_diffractometer().delta.user_offset
+    offset = delta_offset.get()
     if offset == 25:
         dets = "Eiger"
     elif offset == 0:
@@ -2263,10 +2276,10 @@ def set_detector():
         "p",
         "P",
     ):
-        caput("4idgSoft:m20.OFF", 0)
+        delta_offset.set(0).wait(timeout=10)
         print("Current detector: Point detector/Aanalyzer")
     elif det in ("Eiger", "eiger", "e", "E"):
-        caput("4idgSoft:m20.OFF", 25)
+        delta_offset.set(25).wait(timeout=10)
         print("Current detector: Eiger")
     else:
         print("Select Eiger or Point Detector")
