@@ -185,6 +185,8 @@ class AnalyzerDevice(PseudoPositioner):
         Calibrate the Bragg-angle motor to match the given photon energy (keV).
         """
         # energy in keV, theta in degrees.
+        self.th_motor.user_offset.put(45, wait=True, force=True)
+        self.tth_trans.user_offset.put(0, wait=True, force=True)
         theta = self.convert_energy_to_theta(energy)
         self.th_motor.set_current_position(theta)
 
@@ -219,7 +221,7 @@ class AnalyzerDevice(PseudoPositioner):
             self.set_energy(energy)
         elif acal == "r":
             print("Releasing calibration for ath!")
-            self.th_motor.user_offset.put(45)
+            self.th_motor.user_offset.put(45, wait=True, force=True)
             self.tth_trans.user_offset.put(0, wait=True, force=True)
 
     def setup(
