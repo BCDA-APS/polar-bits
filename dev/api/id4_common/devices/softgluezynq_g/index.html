@@ -543,7 +543,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../phaseplates/index.html">id4_common.devices.phaseplates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../piezo_jena/index.html">id4_common.devices.piezo_jena</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../polar_diffractometer/index.html">id4_common.devices.polar_diffractometer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../polar_diffractometer_obsolete/index.html">id4_common.devices.polar_diffractometer_obsolete</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../polar_status/index.html">id4_common.devices.polar_status</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../polarimeter/index.html">id4_common.devices.polarimeter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../preamps/index.html">id4_common.devices.preamps</a></li>
@@ -554,8 +553,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../scaler_dual_ctr8/index.html">id4_common.devices.scaler_dual_ctr8</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../shutters/index.html">id4_common.devices.shutters</a></li>
 <li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.devices.softgluezynq_g</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../softgluezynq_g_new/index.html">id4_common.devices.softgluezynq_g_new</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../softgluezynq_old/index.html">id4_common.devices.softgluezynq_old</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_parts/index.html">id4_common.devices.softgluezynq_parts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_vortex/index.html">id4_common.devices.softgluezynq_vortex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../srs810/index.html">id4_common.devices.srs810</a></li>
@@ -631,7 +628,29 @@
                   
   <section id="module-id4_common.devices.softgluezynq_g">
 <span id="id4-common-devices-softgluezynq-g"></span><h1>id4_common.devices.softgluezynq_g<a class="headerlink" href="#module-id4_common.devices.softgluezynq_g" title="Link to this heading">#</a></h1>
-<p>SoftGlueZynq</p>
+<p>SoftGlueZynq implementation for ISN.</p>
+<p>Coexists with <code class="xref py py-class docutils literal notranslate"><span class="pre">id4_common.devices.softgluezynq_g.SoftGlueZynqDevice</span></code>.
+Shares the SoftGlueSignal-based block library with
+<a class="reference internal" href="../softgluezynq_parts/index.html#module-id4_common.devices.softgluezynq_parts" title="id4_common.devices.softgluezynq_parts"><code class="xref py py-mod docutils literal notranslate"><span class="pre">id4_common.devices.softgluezynq_parts</span></code></a> — only the blocks that
+<code class="docutils literal notranslate"><span class="pre">softgluezynq_parts</span></code> does not provide (UpDown counter, pulse-train
+generator, per-interferometer trackers, dual-RAM components, DAC1 mux,
+threshold trigger) are defined locally.</p>
+<section id="physical-axis-mapping-polar">
+<h2>Physical axis mapping (POLAR)<a class="headerlink" href="#physical-axis-mapping-polar" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Fast = X piezo</strong>, driven by the <code class="docutils literal notranslate"><span class="pre">mem</span></code> / <code class="docutils literal notranslate"><span class="pre">driveRAM</span></code> channel via
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">snake_x()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">write_RAM_x()</span></code>. DAC1 (<code class="docutils literal notranslate"><span class="pre">dac1_*</span></code>) is wired to
+this channel for manual / waveform mode switching.</p></li>
+<li><p><strong>Slow = Y piezo</strong>, driven by the <code class="docutils literal notranslate"><span class="pre">mem2</span></code> / <code class="docutils literal notranslate"><span class="pre">driveRAMx</span></code> channel via
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">snake_y()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">write_RAM_y()</span></code>. Advances one increment per
+fast-axis snake cycle via the <code class="docutils literal notranslate"><span class="pre">driveRAMx_START</span> <span class="pre">/</span> <span class="pre">_INC</span> <span class="pre">/</span> <span class="pre">_END</span></code> ramp.</p></li>
+</ul>
+<p>The Python attribute names (<code class="docutils literal notranslate"><span class="pre">mem_x_*</span></code> / <code class="docutils literal notranslate"><span class="pre">ram_x_*</span></code> for fast,
+<code class="docutils literal notranslate"><span class="pre">mem_y_*</span></code> / <code class="docutils literal notranslate"><span class="pre">ram_y_*</span></code> for slow) match the physical axes. The
+underlying EPICS PV names (<code class="docutils literal notranslate"><span class="pre">SG:mem_*</span></code>, <code class="docutils literal notranslate"><span class="pre">SG:mem2_*</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SG:driveRAM_*</span></code>, <code class="docutils literal notranslate"><span class="pre">SG:driveRAMx_*</span></code>) are inherited from the IOC and
+do <em>not</em> reflect the physical axis.</p>
+</section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
@@ -640,152 +659,487 @@
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_g.</span></span><span class="sig-name descname"><span class="pre">SoftGlueZynqDevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_clock</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.UpDownCounter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_g.</span></span><span class="sig-name descname"><span class="pre">UpDownCounter</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.UpDownCounter" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
-<p>SoftGlue Zynq FPGA timing device for 4IDG flyscans (counters, DMA, I/O).</p>
+<p>SoftGlue up/down counter block with direction control.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.preset_monitor">
-<span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.preset_monitor" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.UpDownCounter.enable">
+<span class="sig-name descname"><span class="pre">enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.UpDownCounter.enable" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.dma">
-<span class="sig-name descname"><span class="pre">dma</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.dma" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.UpDownCounter.clock">
+<span class="sig-name descname"><span class="pre">clock</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.UpDownCounter.clock" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.buffers">
-<span class="sig-name descname"><span class="pre">buffers</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.buffers" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.UpDownCounter.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.UpDownCounter.clear" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.io">
-<span class="sig-name descname"><span class="pre">io</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.io" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.UpDownCounter.updown">
+<span class="sig-name descname"><span class="pre">updown</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.UpDownCounter.updown" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_count">
-<span class="sig-name descname"><span class="pre">up_counter_count</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_count" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.UpDownCounter.load">
+<span class="sig-name descname"><span class="pre">load</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.UpDownCounter.load" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_trigger">
-<span class="sig-name descname"><span class="pre">up_counter_trigger</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_trigger" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.UpDownCounter.preset">
+<span class="sig-name descname"><span class="pre">preset</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.UpDownCounter.preset" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_gate_on">
-<span class="sig-name descname"><span class="pre">up_counter_gate_on</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_gate_on" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.UpDownCounter.counts">
+<span class="sig-name descname"><span class="pre">counts</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.UpDownCounter.counts" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.PulseTrain">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_g.</span></span><span class="sig-name descname"><span class="pre">PulseTrain</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.PulseTrain" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlue pulse-train generator (number of pulses, period, width).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.PulseTrain.clock">
+<span class="sig-name descname"><span class="pre">clock</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.PulseTrain.clock" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_gate_off">
-<span class="sig-name descname"><span class="pre">up_counter_gate_off</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_gate_off" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.PulseTrain.n">
+<span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.PulseTrain.n" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_count">
-<span class="sig-name descname"><span class="pre">div_by_n_count</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_count" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.PulseTrain.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.PulseTrain.period" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_trigger">
-<span class="sig-name descname"><span class="pre">div_by_n_trigger</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_trigger" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.PulseTrain.width">
+<span class="sig-name descname"><span class="pre">width</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.PulseTrain.width" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.softgluezynq_g.</span></span><span class="sig-name descname"><span class="pre">SoftGlueZynq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">det_keymap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>SoftGlueZynq FPGA timing device for ISN flyscans.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.io">
+<span class="sig-name descname"><span class="pre">io</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.io" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_interrupt">
-<span class="sig-name descname"><span class="pre">div_by_n_interrupt</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_interrupt" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.dma">
+<span class="sig-name descname"><span class="pre">dma</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dma" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.gate_trigger">
-<span class="sig-name descname"><span class="pre">gate_trigger</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.gate_trigger" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.buffers">
+<span class="sig-name descname"><span class="pre">buffers</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.buffers" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.scaltostream">
-<span class="sig-name descname"><span class="pre">scaltostream</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.scaltostream" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.and_1">
+<span class="sig-name descname"><span class="pre">and_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.and_1" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clocks">
-<span class="sig-name descname"><span class="pre">clocks</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clocks" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.or_1">
+<span class="sig-name descname"><span class="pre">or_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.or_1" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clock_freq">
-<span class="sig-name descname"><span class="pre">clock_freq</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clock_freq" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_1">
+<span class="sig-name descname"><span class="pre">div_by_n_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_1" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.sample_pos">
-<span class="sig-name descname"><span class="pre">sample_pos</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.sample_pos" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_2">
+<span class="sig-name descname"><span class="pre">div_by_n_2</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_3">
+<span class="sig-name descname"><span class="pre">div_by_n_3</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_3" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_4">
+<span class="sig-name descname"><span class="pre">div_by_n_4</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_4" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_1">
+<span class="sig-name descname"><span class="pre">up_counter_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_2">
+<span class="sig-name descname"><span class="pre">up_counter_2</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_3">
+<span class="sig-name descname"><span class="pre">up_counter_3</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_3" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_4">
+<span class="sig-name descname"><span class="pre">up_counter_4</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_4" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.down_counter_1">
+<span class="sig-name descname"><span class="pre">down_counter_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.down_counter_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.up_down_counter_1">
+<span class="sig-name descname"><span class="pre">up_down_counter_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_down_counter_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.up_down_counter_2">
+<span class="sig-name descname"><span class="pre">up_down_counter_2</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_down_counter_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.gate_delay_1">
+<span class="sig-name descname"><span class="pre">gate_delay_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.gate_delay_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.pulse_train">
+<span class="sig-name descname"><span class="pre">pulse_train</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.pulse_train" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.flip_flop_1">
+<span class="sig-name descname"><span class="pre">flip_flop_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.flip_flop_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.scal_to_stream_1">
+<span class="sig-name descname"><span class="pre">scal_to_stream_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.scal_to_stream_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_address">
+<span class="sig-name descname"><span class="pre">mem_x_address</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_address" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_data">
+<span class="sig-name descname"><span class="pre">mem_x_data</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_data" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_clk">
+<span class="sig-name descname"><span class="pre">mem_x_clk</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_clk" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_write">
+<span class="sig-name descname"><span class="pre">mem_x_write</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_write" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_enable">
+<span class="sig-name descname"><span class="pre">mem_x_enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_enable" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_x_enable">
+<span class="sig-name descname"><span class="pre">ram_x_enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_x_enable" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_x_n">
+<span class="sig-name descname"><span class="pre">ram_x_n</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_x_n" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_address">
+<span class="sig-name descname"><span class="pre">mem_y_address</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_address" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_data">
+<span class="sig-name descname"><span class="pre">mem_y_data</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_data" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_clk">
+<span class="sig-name descname"><span class="pre">mem_y_clk</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_clk" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_write">
+<span class="sig-name descname"><span class="pre">mem_y_write</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_write" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_enable">
+<span class="sig-name descname"><span class="pre">ram_y_enable</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_enable" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_n">
+<span class="sig-name descname"><span class="pre">ram_y_n</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_n" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_start">
+<span class="sig-name descname"><span class="pre">ram_y_start</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_start" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_inc">
+<span class="sig-name descname"><span class="pre">ram_y_inc</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_inc" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_end">
+<span class="sig-name descname"><span class="pre">ram_y_end</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_end" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_done">
+<span class="sig-name descname"><span class="pre">ram_y_done</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_done" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_man">
+<span class="sig-name descname"><span class="pre">dac1_man</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_man" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_val">
+<span class="sig-name descname"><span class="pre">dac1_val</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_val" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_write">
+<span class="sig-name descname"><span class="pre">dac1_write</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_write" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_init">
+<span class="sig-name descname"><span class="pre">dac1_init</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_init" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.dac2_val">
+<span class="sig-name descname"><span class="pre">dac2_val</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac2_val" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.threshold_pos">
+<span class="sig-name descname"><span class="pre">threshold_pos</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.threshold_pos" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.threshold_neg">
+<span class="sig-name descname"><span class="pre">threshold_neg</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.threshold_neg" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_1">
+<span class="sig-name descname"><span class="pre">if_tracker_1</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_2">
+<span class="sig-name descname"><span class="pre">if_tracker_2</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_3">
+<span class="sig-name descname"><span class="pre">if_tracker_3</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_3" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.det_keymap">
+<span class="sig-name descname"><span class="pre">det_keymap</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.det_keymap" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_softglue">
-<span class="sig-name descname"><span class="pre">start_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_softglue" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to assert the global enable buffer (in1 = ‘1’).</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.start" title="Link to this definition">#</a></dt>
+<dd><p>Bluesky plan stub to assert the global enable buffer.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_softglue">
-<span class="sig-name descname"><span class="pre">stop_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_softglue" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to de-assert the global enable buffer (in1 = ‘0’).</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.start_flyscan">
+<span class="sig-name descname"><span class="pre">start_flyscan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.start_flyscan" title="Link to this definition">#</a></dt>
+<dd><p>Arm DMA + assert the enable buffer; finish when flip-flop falls.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_detectors">
-<span class="sig-name descname"><span class="pre">start_detectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_detectors" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to assert the detector enable buffer (in2 = ‘1’).</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.prepare" title="Link to this definition">#</a></dt>
+<dd><p>Arm and clear DMA in preparation for triggering.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_detectors">
-<span class="sig-name descname"><span class="pre">stop_detectors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_detectors" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to de-assert the detector enable buffer (in2 = ‘0’).</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.trigger">
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.trigger" title="Link to this definition">#</a></dt>
+<dd><p>Issue a software trigger.</p>
+<p>Returns a <code class="docutils literal notranslate"><span class="pre">SubscriptionStatus</span></code> that completes on the rising
+edge (<code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">-&gt;</span> <span class="pre">1</span></code>) of <a class="reference internal" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_done" title="id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_done"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ram_y_done</span></code></a>, the SoftGlue scan-
+complete indicator wired to <code class="docutils literal notranslate"><span class="pre">4idgACQ:SG:driveRAMx_done</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.reset_plan">
-<span class="sig-name descname"><span class="pre">reset_plan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.reset_plan" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to pulse the counter-reset and DMA-reset buffers.</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.stop_softglue">
+<span class="sig-name descname"><span class="pre">stop_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.stop_softglue" title="Link to this definition">#</a></dt>
+<dd><p>Latch the OR-1 reset path and de-assert the enable buffer.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_enable_dma">
-<span class="sig-name descname"><span class="pre">clear_enable_dma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_enable_dma" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to clear the DMA buffer and then enable DMA
-acquisition.</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.pause_softglue">
+<span class="sig-name descname"><span class="pre">pause_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.pause_softglue" title="Link to this definition">#</a></dt>
+<dd><p>Pause the AND-1 gate (in2 -&gt; “0”).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_disable_dma">
-<span class="sig-name descname"><span class="pre">clear_disable_dma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_disable_dma" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to clear the DMA buffer and then disable DMA
-acquisition.</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.resume_softglue">
+<span class="sig-name descname"><span class="pre">resume_softglue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.resume_softglue" title="Link to this definition">#</a></dt>
+<dd><p>Resume the AND-1 gate (in2 -&gt; “1”).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_trigger_plan">
-<span class="sig-name descname"><span class="pre">setup_trigger_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_width_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_delay_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_trigger_plan" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to configure the trigger period, pulse width, and
-delay in clock ticks.</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.reset" title="Link to this definition">#</a></dt>
+<dd><p>Pulse buffer-1 once to clear the ScalToStream-1 FIFO.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_count_plan">
-<span class="sig-name descname"><span class="pre">setup_count_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_count_plan" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan stub to set the count divider N for the given count time in
-seconds.</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.reset_interferometers">
+<span class="sig-name descname"><span class="pre">reset_interferometers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.reset_interferometers" title="Link to this definition">#</a></dt>
+<dd><p>Bluesky plan stub to pulse buffer-2 (interferometer reset).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.default_settings">
-<span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.default_settings" title="Link to this definition">#</a></dt>
-<dd><p>Apply default FPGA settings (no-op for this class; subclasses override).</p>
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.setup_gated_trigger">
+<span class="sig-name descname"><span class="pre">setup_gated_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">period_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.setup_gated_trigger" title="Link to this definition">#</a></dt>
+<dd><p>Configure div_by_n_3 and gate_delay_1 for a gated trigger.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.enable_waveform">
+<span class="sig-name descname"><span class="pre">enable_waveform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.enable_waveform" title="Link to this definition">#</a></dt>
+<dd><p>Switch the DAC1 mux to RAM-driven (fast axis) waveform mode.</p>
+<p>Only <code class="docutils literal notranslate"><span class="pre">dac1_man</span></code> (mux SEL) and <code class="docutils literal notranslate"><span class="pre">dac1_write</span></code> are touched.
+<code class="docutils literal notranslate"><span class="pre">mem_x_enable</span></code> is intentionally left alone — toggling it
+between scans clears the RAM-armed state on the POLAR IOC.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.disable_waveform">
+<span class="sig-name descname"><span class="pre">disable_waveform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.disable_waveform" title="Link to this definition">#</a></dt>
+<dd><p>Switch the DAC1 mux back to manual (fast axis) control.</p>
+<p>Only the mux SEL signal (<code class="docutils literal notranslate"><span class="pre">dac1_man</span></code>, PV
+<code class="docutils literal notranslate"><span class="pre">SG:mux32_SEL_Signal</span></code>) is toggled — <code class="docutils literal notranslate"><span class="pre">mem_x_enable</span></code> must
+stay asserted so the mem RAM remains armed for the next scan.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.write_RAM_x">
+<span class="sig-name descname"><span class="pre">write_RAM_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.write_RAM_x" title="Link to this definition">#</a></dt>
+<dd><p>Write <code class="docutils literal notranslate"><span class="pre">array</span></code> into the fast-axis (X piezo) RAM (driveRAM).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.write_RAM_y">
+<span class="sig-name descname"><span class="pre">write_RAM_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.write_RAM_y" title="Link to this definition">#</a></dt>
+<dd><p>Write <code class="docutils literal notranslate"><span class="pre">array</span></code> into the slow-axis (Y piezo) RAM (driveRAMx).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.create_snake_bits">
+<span class="sig-name descname"><span class="pre">create_snake_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32767</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.create_snake_bits" title="Link to this definition">#</a></dt>
+<dd><p>Build a snake waveform (linear ramp joined to quarter-sines).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.um_to_bits">
+<span class="sig-name descname"><span class="pre">um_to_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.um_to_bits" title="Link to this definition">#</a></dt>
+<dd><p>Convert a DAC offset (microns, 0..+40) to a DAC bit value.</p>
+<p>POLAR piezo / DAC calibration:</p>
+<ul class="simple">
+<li><p>The PiezoJena modulation input is <strong>summed</strong> with the EPICS-
+driven setpoint:  <code class="docutils literal notranslate"><span class="pre">piezo</span> <span class="pre">=</span> <span class="pre">nanox.setpoint</span> <span class="pre">+</span> <span class="pre">dac_offset</span></code>.</p></li>
+<li><p>The SoftGlue DAC outputs 0..5 V, which the PiezoJena
+interprets as a 0..+40 um offset on top of the EPICS
+setpoint (0 V = 0 um added, 5 V = +40 um added).</p></li>
+<li><p>The DAC’s 0..32767 unsigned bit range maps linearly to
+0..5 V, and therefore to 0..+40 um offset at the piezo.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">position</span></code> here is the <strong>DAC offset in microns</strong>, not an
+absolute piezo position. The same calibration is assumed for
+both DAC1 (fast X) and DAC2 (slow Y) channels.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.snake_x">
+<span class="sig-name descname"><span class="pre">snake_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32767</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.snake_x" title="Link to this definition">#</a></dt>
+<dd><p>Build a fast-axis (X piezo) snake waveform and load mem.</p>
+<p><code class="docutils literal notranslate"><span class="pre">x_min</span></code> / <code class="docutils literal notranslate"><span class="pre">x_max</span></code> are raw DAC bit values; defaults span the
+full 16-bit unsigned range. The waveform shape (linear ramp
+joined to quarter sines, with snake reversal) matches
+<code class="docutils literal notranslate"><span class="pre">snakeYoff</span></code> in <code class="docutils literal notranslate"><span class="pre">POLAR_scan.py</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.snake_y">
+<span class="sig-name descname"><span class="pre">snake_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7.28156</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.snake_y" title="Link to this definition">#</a></dt>
+<dd><p>Build a slow-axis (Y piezo) step waveform and load mem2.</p>
+<p>Also configures <code class="docutils literal notranslate"><span class="pre">driveRAMx_START</span></code> / <code class="docutils literal notranslate"><span class="pre">_INC</span></code> / <code class="docutils literal notranslate"><span class="pre">_END</span></code> so the
+Y ramp covers <code class="docutils literal notranslate"><span class="pre">[y_start,</span> <span class="pre">y_end]</span></code> (DAC bit units) in steps of
+<code class="docutils literal notranslate"><span class="pre">2*dy</span></code> (one stored RAM period covers two line spacings <code class="docutils literal notranslate"><span class="pre">dy</span></code>).
+Matches <code class="docutils literal notranslate"><span class="pre">snakeX</span></code> in <code class="docutils literal notranslate"><span class="pre">POLAR_scan.py</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.move_x_analog">
+<span class="sig-name descname"><span class="pre">move_x_analog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.move_x_analog" title="Link to this definition">#</a></dt>
+<dd><p>Move the fast-axis (X piezo) to <code class="docutils literal notranslate"><span class="pre">position</span></code> um via DAC1.</p>
+<p>Uses manual DAC1 control: switches the mux away from RAM-drive,
+writes the bit value, and pulses the DAC write strobe. Microns
+are converted via <a class="reference internal" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.um_to_bits" title="id4_common.devices.softgluezynq_g.SoftGlueZynq.um_to_bits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">um_to_bits()</span></code></a> (19-ID 0-90 um piezo
+calibration).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.move_y_analog">
+<span class="sig-name descname"><span class="pre">move_y_analog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.move_y_analog" title="Link to this definition">#</a></dt>
+<dd><p>Set the slow-axis (Y piezo) manual DAC2 output to <code class="docutils literal notranslate"><span class="pre">position</span></code> um.</p>
+<p>DAC2 has no mux/init signal of its own – writes <code class="docutils literal notranslate"><span class="pre">dac2_val</span></code>
+and pulses the shared <code class="docutils literal notranslate"><span class="pre">dac1_write</span></code> strobe (PV
+<code class="docutils literal notranslate"><span class="pre">DAC_WRITE_Signal</span></code>) to commit it. Microns are converted via
+<a class="reference internal" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.um_to_bits" title="id4_common.devices.softgluezynq_g.SoftGlueZynq.um_to_bits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">um_to_bits()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.enable_detector_trigger">
+<span class="sig-name descname"><span class="pre">enable_detector_trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">det_keymap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.enable_detector_trigger" title="Link to this definition">#</a></dt>
+<dd><p>Route the SoftGlue <code class="docutils literal notranslate"><span class="pre">trigger</span></code> signal to <code class="docutils literal notranslate"><span class="pre">detector_name</span></code>’s FO.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.softgluezynq_g.SoftGlueZynq.clear_output_fields">
+<span class="sig-name descname"><span class="pre">clear_output_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.clear_output_fields" title="Link to this definition">#</a></dt>
+<dd><p>Clear the first eight SoftGlue output fields.</p>
 </dd></dl>
 
 </dd></dl>
@@ -822,35 +1176,97 @@ seconds.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-axis-mapping-polar">Physical axis mapping (POLAR)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.preset_monitor"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.preset_monitor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.dma"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.dma</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.buffers"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.buffers</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.io"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.io</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_count"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.up_counter_count</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_trigger"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.up_counter_trigger</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_gate_on"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.up_counter_gate_on</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.up_counter_gate_off"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.up_counter_gate_off</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_count"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.div_by_n_count</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_trigger"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.div_by_n_trigger</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.div_by_n_interrupt"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.div_by_n_interrupt</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.gate_trigger"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.gate_trigger</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.scaltostream"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.scaltostream</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clocks"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.clocks</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clock_freq"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.clock_freq</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.sample_pos"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.sample_pos</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_softglue"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.start_softglue()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_softglue"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.stop_softglue()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.start_detectors"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.start_detectors()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.stop_detectors"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.stop_detectors()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.reset_plan"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.reset_plan()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_enable_dma"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.clear_enable_dma()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.clear_disable_dma"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.clear_disable_dma()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_trigger_plan"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.setup_trigger_plan()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.setup_count_plan"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.setup_count_plan()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynqDevice.default_settings"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynqDevice.default_settings()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.UpDownCounter"><code class="docutils literal notranslate"><span class="pre">UpDownCounter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.UpDownCounter.enable"><code class="docutils literal notranslate"><span class="pre">UpDownCounter.enable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.UpDownCounter.clock"><code class="docutils literal notranslate"><span class="pre">UpDownCounter.clock</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.UpDownCounter.clear"><code class="docutils literal notranslate"><span class="pre">UpDownCounter.clear</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.UpDownCounter.updown"><code class="docutils literal notranslate"><span class="pre">UpDownCounter.updown</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.UpDownCounter.load"><code class="docutils literal notranslate"><span class="pre">UpDownCounter.load</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.UpDownCounter.preset"><code class="docutils literal notranslate"><span class="pre">UpDownCounter.preset</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.UpDownCounter.counts"><code class="docutils literal notranslate"><span class="pre">UpDownCounter.counts</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.PulseTrain"><code class="docutils literal notranslate"><span class="pre">PulseTrain</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.PulseTrain.clock"><code class="docutils literal notranslate"><span class="pre">PulseTrain.clock</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.PulseTrain.n"><code class="docutils literal notranslate"><span class="pre">PulseTrain.n</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.PulseTrain.period"><code class="docutils literal notranslate"><span class="pre">PulseTrain.period</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.PulseTrain.width"><code class="docutils literal notranslate"><span class="pre">PulseTrain.width</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.io"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.io</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dma"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dma</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.buffers"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.buffers</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.and_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.and_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.or_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.or_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.div_by_n_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_2"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.div_by_n_2</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_3"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.div_by_n_3</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.div_by_n_4"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.div_by_n_4</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.up_counter_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_2"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.up_counter_2</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_3"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.up_counter_3</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_counter_4"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.up_counter_4</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.down_counter_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.down_counter_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_down_counter_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.up_down_counter_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.up_down_counter_2"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.up_down_counter_2</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.gate_delay_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.gate_delay_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.pulse_train"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.pulse_train</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.flip_flop_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.flip_flop_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.scal_to_stream_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.scal_to_stream_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_address"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_x_address</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_data"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_x_data</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_clk"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_x_clk</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_write"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_x_write</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_x_enable"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_x_enable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_x_enable"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.ram_x_enable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_x_n"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.ram_x_n</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_address"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_y_address</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_data"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_y_data</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_clk"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_y_clk</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.mem_y_write"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.mem_y_write</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_enable"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.ram_y_enable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_n"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.ram_y_n</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_start"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.ram_y_start</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_inc"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.ram_y_inc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_end"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.ram_y_end</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.ram_y_done"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.ram_y_done</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_man"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac1_man</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_val"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac1_val</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_write"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac1_write</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac1_init"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac1_init</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.dac2_val"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.dac2_val</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.threshold_pos"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.threshold_pos</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.threshold_neg"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.threshold_neg</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_1"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.if_tracker_1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_2"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.if_tracker_2</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.if_tracker_3"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.if_tracker_3</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.det_keymap"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.det_keymap</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.start"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.start()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.start_flyscan"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.start_flyscan()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.prepare"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.prepare()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.trigger"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.trigger()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.stop_softglue"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.stop_softglue()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.pause_softglue"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.pause_softglue()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.resume_softglue"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.resume_softglue()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.reset"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.reset()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.reset_interferometers"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.reset_interferometers()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.setup_gated_trigger"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.setup_gated_trigger()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.enable_waveform"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.enable_waveform()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.disable_waveform"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.disable_waveform()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.write_RAM_x"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.write_RAM_x()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.write_RAM_y"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.write_RAM_y()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.create_snake_bits"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.create_snake_bits()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.um_to_bits"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.um_to_bits()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.snake_x"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.snake_x()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.snake_y"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.snake_y()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.move_x_analog"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.move_x_analog()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.move_y_analog"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.move_y_analog()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.enable_detector_trigger"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.enable_detector_trigger()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.softgluezynq_g.SoftGlueZynq.clear_output_fields"><code class="docutils literal notranslate"><span class="pre">SoftGlueZynq.clear_output_fields()</span></code></a></li>
 </ul>
 </li>
 </ul>

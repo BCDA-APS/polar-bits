@@ -5,12 +5,22 @@ id4_common.utils.utilities
 
 .. autoapi-nested-parse::
 
-   Utility functions.
+   Utility functions and short convenience wrappers for common session
+   operations.
 
    .. autosummary::
        ~plotselect
        ~set_counting_time
        ~list_functions
+       ~opt
+       ~crl_setup
+       ~crl_size
+       ~piezo_jena_setup
+       ~te
+       ~spec_off
+       ~spec_on
+       ~plots_on
+       ~plots_off
 
 
 
@@ -49,5 +59,101 @@ Module Contents
        "absorption": functions related to absorption experiments
        "diffraction": functions related to diffraction experiments
        "hklpy": functions related to reciprocal space
+
+
+.. py:function:: opt(method='cen')
+
+   Move positioner of last scan to center of last scan
+
+   usage: RE(opt())
+       optional argument:      method = 'cen' (default)
+                                               method = 'max'
+
+
+
+
+.. py:function:: crl_setup(hutch=None)
+
+   Switch the CRL sample-position offset to the active hutch.
+
+   Delegates to :meth:`CRLClass.select_g` / ``select_h``, which
+   write to the IOC's ``ZOffsetToggle`` PV.  The per-hutch offset values
+   themselves live on the device as ``crl.offset_g`` / ``offset_h`` and
+   are not changed here.
+
+   :param hutch: Hutch to switch to.  Case-insensitive, accepts ``"G"`` / ``"H"``
+                 and the longer aliases ``"diffractometer"`` (= G) /
+                 ``"magnet"`` (= H) for backwards compatibility.  When ``None``
+                 (default), prompt interactively.
+   :type hutch: {'g', 'h'}, optional
+
+
+.. py:function:: crl_size(focal_size)
+
+   Set the CRL focal size.
+
+   Renamed from ``crl`` so the function does not shadow the ``crl``
+   device that ``load_device("crl")`` injects into the session
+   namespace.
+
+   :param focal_size: Target focal size in microns. If < 5 µm, the device's
+                      ``minimize_button`` is triggered instead of writing a setpoint.
+                      Otherwise the value is written to ``crl.beamsize`` (which handles
+                      the microns -> meters conversion internally).
+   :type focal_size: float
+
+
+.. py:function:: piezo_jena_setup()
+
+   Check and change the modulation-input state of the PiezoJena device.
+   This needs to be turned ON to allow analog input from the FPGA used for
+   fly scanning, which is trigering the Eiger detector and reading the
+   interferometers of the sample position.
+
+   For each axis (x, y, z), reads the current modulation-input state
+   (ON / OFF) and prompts for a new value with the current state shown as
+   the default. Accepts ``on`` / ``off`` (case-insensitive); pressing
+   Enter keeps the current state.
+
+
+.. py:function:: te(temperature)
+
+   Set the active temperature controller's setpoint.
+
+   Thin shortcut over the ``tc`` signal installed by
+   :func:`id4_common.utils.temperature_setup.temperature_setup`.  Writes
+   the setpoint and returns immediately; the controller continues ramping
+   toward the target on its own.
+
+   :param temperature: Target temperature setpoint.
+   :type temperature: float
+
+   :raises RuntimeError: ``temperature_setup()`` has not been run, so there is no active
+       controller to talk to.
+
+
+.. py:function:: spec_off()
+
+   Unsubscribe the SPEC file writer from the RunEngine.
+
+   No-op (returns 0) if the writer is already unsubscribed. Pair with
+   :func:`spec_on` to re-enable.
+
+
+.. py:function:: spec_on()
+
+   Re-subscribe the SPEC file writer to the RunEngine.
+
+   No-op if the writer is already subscribed (avoids duplicate output).
+
+
+.. py:function:: plots_on()
+
+   Enable BestEffortCallback live plots.
+
+
+.. py:function:: plots_off()
+
+   Disable BestEffortCallback live plots.
 
 

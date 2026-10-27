@@ -517,7 +517,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../flyscan_utils/index.html">id4_common.utils.flyscan_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../formatted_dynamic_component/index.html">id4_common.utils.formatted_dynamic_component</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hkl_utils/index.html">id4_common.utils.hkl_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hkl_utils_bkp/index.html">id4_common.utils.hkl_utils_bkp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../load_vortex/index.html">id4_common.utils.load_vortex</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../local_magics/index.html">id4_common.utils.local_magics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logbook_mcr/index.html">id4_common.utils.logbook_mcr</a></li>
@@ -531,7 +530,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../run_engine/index.html">id4_common.utils.run_engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../run_engine_init/index.html">id4_common.utils.run_engine_init</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../session_state/index.html">id4_common.utils.session_state</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../shorts/index.html">id4_common.utils.shorts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../spe_handler/index.html">id4_common.utils.spe_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../temperature_setup/index.html">id4_common.utils.temperature_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../transfocator_calculation/index.html">id4_common.utils.transfocator_calculation</a></li>
@@ -598,7 +596,8 @@
                   
   <section id="module-id4_common.utils.utilities">
 <span id="id4-common-utils-utilities"></span><h1>id4_common.utils.utilities<a class="headerlink" href="#module-id4_common.utils.utilities" title="Link to this heading">#</a></h1>
-<p>Utility functions.</p>
+<p>Utility functions and short convenience wrappers for common session
+operations.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 </tbody>
@@ -646,6 +645,113 @@ time &gt;= 200: monitor counts</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.opt">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">opt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cen'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.opt" title="Link to this definition">#</a></dt>
+<dd><p>Move positioner of last scan to center of last scan</p>
+<dl class="simple">
+<dt>usage: RE(opt())</dt><dd><dl class="simple">
+<dt>optional argument:      method = ‘cen’ (default)</dt><dd><p>method = ‘max’</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.crl_setup">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">crl_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hutch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.crl_setup" title="Link to this definition">#</a></dt>
+<dd><p>Switch the CRL sample-position offset to the active hutch.</p>
+<p>Delegates to <code class="xref py py-meth docutils literal notranslate"><span class="pre">CRLClass.select_g()</span></code> / <code class="docutils literal notranslate"><span class="pre">select_h</span></code>, which
+write to the IOC’s <code class="docutils literal notranslate"><span class="pre">ZOffsetToggle</span></code> PV.  The per-hutch offset values
+themselves live on the device as <code class="docutils literal notranslate"><span class="pre">crl.offset_g</span></code> / <code class="docutils literal notranslate"><span class="pre">offset_h</span></code> and
+are not changed here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hutch</strong> (<em>{'g'</em><em>, </em><em>'h'}</em><em>, </em><em>optional</em>) – Hutch to switch to.  Case-insensitive, accepts <code class="docutils literal notranslate"><span class="pre">&quot;G&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;H&quot;</span></code>
+and the longer aliases <code class="docutils literal notranslate"><span class="pre">&quot;diffractometer&quot;</span></code> (= G) /
+<code class="docutils literal notranslate"><span class="pre">&quot;magnet&quot;</span></code> (= H) for backwards compatibility.  When <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(default), prompt interactively.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.crl_size">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">crl_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">focal_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.crl_size" title="Link to this definition">#</a></dt>
+<dd><p>Set the CRL focal size.</p>
+<p>Renamed from <code class="docutils literal notranslate"><span class="pre">crl</span></code> so the function does not shadow the <code class="docutils literal notranslate"><span class="pre">crl</span></code>
+device that <code class="docutils literal notranslate"><span class="pre">load_device(&quot;crl&quot;)</span></code> injects into the session
+namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>focal_size</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Target focal size in microns. If &lt; 5 µm, the device’s
+<code class="docutils literal notranslate"><span class="pre">minimize_button</span></code> is triggered instead of writing a setpoint.
+Otherwise the value is written to <code class="docutils literal notranslate"><span class="pre">crl.beamsize</span></code> (which handles
+the microns -&gt; meters conversion internally).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.piezo_jena_setup">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">piezo_jena_setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.piezo_jena_setup" title="Link to this definition">#</a></dt>
+<dd><p>Check and change the modulation-input state of the PiezoJena device.
+This needs to be turned ON to allow analog input from the FPGA used for
+fly scanning, which is trigering the Eiger detector and reading the
+interferometers of the sample position.</p>
+<p>For each axis (x, y, z), reads the current modulation-input state
+(ON / OFF) and prompts for a new value with the current state shown as
+the default. Accepts <code class="docutils literal notranslate"><span class="pre">on</span></code> / <code class="docutils literal notranslate"><span class="pre">off</span></code> (case-insensitive); pressing
+Enter keeps the current state.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.te">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">te</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.te" title="Link to this definition">#</a></dt>
+<dd><p>Set the active temperature controller’s setpoint.</p>
+<p>Thin shortcut over the <code class="docutils literal notranslate"><span class="pre">tc</span></code> signal installed by
+<a class="reference internal" href="../temperature_setup/index.html#id4_common.utils.temperature_setup.temperature_setup" title="id4_common.utils.temperature_setup.temperature_setup"><code class="xref py py-func docutils literal notranslate"><span class="pre">id4_common.utils.temperature_setup.temperature_setup()</span></code></a>.  Writes
+the setpoint and returns immediately; the controller continues ramping
+toward the target on its own.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><em>float</em></a>) – Target temperature setpoint.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.15)"><strong>RuntimeError</strong></a> – <code class="docutils literal notranslate"><span class="pre">temperature_setup()</span></code> has not been run, so there is no active
+controller to talk to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.spec_off">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">spec_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.spec_off" title="Link to this definition">#</a></dt>
+<dd><p>Unsubscribe the SPEC file writer from the RunEngine.</p>
+<p>No-op (returns 0) if the writer is already unsubscribed. Pair with
+<a class="reference internal" href="#id4_common.utils.utilities.spec_on" title="id4_common.utils.utilities.spec_on"><code class="xref py py-func docutils literal notranslate"><span class="pre">spec_on()</span></code></a> to re-enable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.spec_on">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">spec_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.spec_on" title="Link to this definition">#</a></dt>
+<dd><p>Re-subscribe the SPEC file writer to the RunEngine.</p>
+<p>No-op if the writer is already subscribed (avoids duplicate output).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.plots_on">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">plots_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.plots_on" title="Link to this definition">#</a></dt>
+<dd><p>Enable BestEffortCallback live plots.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.utilities.plots_off">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.utilities.</span></span><span class="sig-name descname"><span class="pre">plots_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.utilities.plots_off" title="Link to this definition">#</a></dt>
+<dd><p>Disable BestEffortCallback live plots.</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -684,6 +790,15 @@ time &gt;= 200: monitor counts</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.plotselect"><code class="docutils literal notranslate"><span class="pre">plotselect()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.set_counting_time"><code class="docutils literal notranslate"><span class="pre">set_counting_time()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.list_functions"><code class="docutils literal notranslate"><span class="pre">list_functions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.opt"><code class="docutils literal notranslate"><span class="pre">opt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.crl_setup"><code class="docutils literal notranslate"><span class="pre">crl_setup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.crl_size"><code class="docutils literal notranslate"><span class="pre">crl_size()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.piezo_jena_setup"><code class="docutils literal notranslate"><span class="pre">piezo_jena_setup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.te"><code class="docutils literal notranslate"><span class="pre">te()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.spec_off"><code class="docutils literal notranslate"><span class="pre">spec_off()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.spec_on"><code class="docutils literal notranslate"><span class="pre">spec_on()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.plots_on"><code class="docutils literal notranslate"><span class="pre">plots_on()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.utilities.plots_off"><code class="docutils literal notranslate"><span class="pre">plots_off()</span></code></a></li>
 </ul>
 </li>
 </ul>

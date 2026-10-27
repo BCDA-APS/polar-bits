@@ -68,6 +68,18 @@ Module Contents
 
 .. py:data:: polar_config
 
+.. py:data:: UB_MATRIX_PV
+   :value: '4idgSoftX:Bluesky:UB_matrix'
+
+
+.. py:data:: EIGER_CENTER_PV
+   :value: '4idgSoftX:Eiger:Center'
+
+
+.. py:data:: EIGER_DISTANCE_PV
+   :value: '4idgSoftX:Eiger:Distance'
+
+
 .. py:data:: RE
 
 .. py:data:: pbar_manager
@@ -187,6 +199,13 @@ Module Contents
 
 
 .. py:function:: update_eiger()
+
+   Write the beam center and sample-detector distance to the Eiger.
+
+   The beam center is taken as the center of ROI1 and the distance as the
+   current position of the diffractometer pad rail. The soft-IOC center and
+   distance PVs are not part of any device, so they use a raw ``caput``.
+
 
 .. py:class:: Sync_UB_Matrix(source, target)
 

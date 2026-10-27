@@ -115,7 +115,7 @@ Module Contents
    :value: 1.0
 
 
-.. py:function:: flyscan(detectors: list = None, x_min: float = -10, x_max: float = 10, x_npts: int = 21, y_min: float = -10, y_max: float = 10, y_npts: int = 21, acquire_time: float = 50, det_dead: float = 10, interferometer_per_pixel: int = 5, F: float = 0.9, *, softglue='gsgz_isn', piezo='piezo_jena', diffractometer='huber_hp', socketserver='socketserver', savedata='savedata')
+.. py:function:: flyscan(detectors: list = None, x_min: float = -10, x_max: float = 10, x_npts: int = 21, y_min: float = -10, y_max: float = 10, y_npts: int = 21, acquire_time: float = 50, det_dead: float = 10, interferometer_per_pixel: int = 5, F: float = 0.9, *, softglue='gsgz', piezo='piezo_jena', diffractometer='huber_hp', socketserver='socketserver', savedata='savedata')
 
    Run a POLAR ISN 2D piezo fly-scan.
 

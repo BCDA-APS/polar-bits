@@ -199,4 +199,6 @@ succeeds.
   `experiment_load_from_scan`
 - `hkl_utils` — hklpy2 wrappers
 - `polartools_hklpy2_imports` — re-exports
-- `shorts` — `crl_setup`, `crl_size`, `te`, `opt`
+- `utilities` — `set_counting_time`, `list_functions`, and shortcuts
+  (`crl_setup`, `crl_size`, `te`, `opt`, `spec_on`/`spec_off`,
+  `plots_on`/`plots_off`)
