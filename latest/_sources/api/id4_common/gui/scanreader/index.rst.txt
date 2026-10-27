@@ -1,0 +1,63 @@
+id4_common.gui.scanreader
+=========================
+
+.. py:module:: id4_common.gui.scanreader
+
+.. autoapi-nested-parse::
+
+   Read a finished scan out of the catalog, in the GUI process.
+
+   The Scan plot tab used to ask the kernel for this, through a
+   ``user_expressions`` helper.  That made it unusable during a scan: the poller
+   will not send a request while the kernel is busy
+   (``kernel.StatusPoller._poll_kernel``), and a request that did get through would
+   queue *inside* the kernel behind the running plan.  A scan is exactly when
+   someone wants to look back at the previous one.
+
+   So the GUI reads the catalog itself.  Nothing here touches the RunEngine, and a
+   load costs the acquisition nothing.  The same argument already applies elsewhere
+   in this package: ``tabs/flyscanplot.py`` reads its HDF5 directly, and
+   ``tabs/status.py`` reads motor PVs directly to drive the move progress bar --
+   both because the kernel is busy precisely when the display is wanted.
+
+   Qt-free on purpose: the tab runs this on a worker thread, and keeping it plain
+   means it can be exercised without a GUI.
+
+   **The imports are deliberately inside the functions.**  ``import databroker``
+   costs 5.3 s and opening the catalog another 1.1 s, and the open drags in
+   ``area_detector_handlers`` -> ``ophyd`` -> ``pyepics`` (8 daemon threads and a
+   Channel Access context) plus 4 pymongo monitor threads.  At module scope that
+   would be ~6.7 s added to every GUI start-up, including the sessions that never
+   open the tab.  Paid on the first load instead, off the Qt thread.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: DICHRO_FIELDS
+   :value: ('dichro_positioner1', 'dichro_positioner2', 'dichro_xas', 'dichro_xmcd')
+
+
+.. py:function:: is_connected(catalog_name, instrument_name)
+
+   Whether the catalog for this station is already open.
+
+   Lets the caller say "connecting…" on the load that will take seven seconds
+   and stay quiet on the ones that take a fifth of one.
+
+
+.. py:function:: read_scan(catalog_name, instrument_name, scan_id)
+
+   Return one past scan as a plain dict, or ``{"error": ...}``.
+
+   The shape is what the Scan plot tab's renderers already consume, so the
+   drawing code is unchanged by where the data came from.
+
+

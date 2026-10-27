@@ -12,8 +12,9 @@ import *` — see [Writing Macros](examples/writing_macros.md).
 
 ## Common Scan Flags
 
-Most scan plans (`lup`, `ascan`, `th2th`, `qxscan`, `grid_scan`) share three
-optional boolean flags that enable advanced measurement modes.
+Most scan plans (`lup`, `ascan`, `th2th`, `qxscan`, `grid_scan`,
+`list_scan`) share three optional boolean flags that enable advanced
+measurement modes.
 
 The `dichro` and `lockin` flags require running `pr_setup` first to configure
 the scan (see [Phase Retarder setup](examples/4idh_magnet.md)).
@@ -124,6 +125,58 @@ RE(th2th(tth_start, tth_end, npts, time_per_point, fixq=True))
 
 ---
 
+## List Scans
+
+`list_scan` and `rel_list_scan` take an **explicit list of positions** per
+motor instead of `start, stop, npts`. Reach for them when the points are not
+evenly spaced — a hand-picked set of setpoints, a log-spaced grid, or an
+energy list computed elsewhere. For the XAFS-specific energy grid use
+[`qxscan`](#xafs-energy-scan-qxscan) instead.
+
+All motors step together, one list entry per scan point, so every position
+list must have the same length. Lists may be Python lists, tuples or numpy
+arrays. To combine the lists into a **mesh** instead of stepping them
+together, use [`list_grid_scan`](#list_grid_scan-absolute-grid-of-positions).
+
+### `list_scan` — absolute list of positions
+
+```python
+import numpy as np
+
+# Single motor, uneven spacing.
+RE(list_scan(motor, [0.0, 0.1, 0.3, 0.7, 1.5], time))
+
+# Single motor, computed list.
+RE(list_scan(energy, np.logspace(-1, 1, 25), time))
+
+# Two motors stepping together (5 points total, not a 5x5 grid).
+RE(list_scan(
+    motor1, [0, 1, 2, 3, 4],
+    motor2, [0.0, 0.5, 1.0, 1.5, 2.0],
+    time,
+))
+```
+
+### `rel_list_scan` — relative list of positions
+
+Same as `list_scan`, but each list holds offsets from the motor's current
+position. The motors are returned to where they started when the scan
+finishes.
+
+```python
+RE(rel_list_scan(motor, [-0.5, -0.1, 0, 0.1, 0.5], time))
+```
+
+Both accept the same `dichro` / `lockin` / `fixq` / `vortex_sgz` flags
+described in [Common Scan Flags](#common-scan-flags):
+
+```python
+RE(list_scan(energy, energies, time, dichro=True))
+RE(list_scan(energy, energies, time, fixq=True))
+```
+
+---
+
 ## 2-D / N-D Scans
 
 ### `grid_scan` — absolute grid
@@ -139,6 +192,59 @@ RE(grid_scan(
 ### `rel_grid_scan` — relative grid
 
 Same as `grid_scan` but offsets are relative to current motor positions.
+
+### `list_grid_scan` — absolute grid of positions
+
+The mesh equivalent of [`list_scan`](#list-scans): each motor gets an
+**explicit list of positions** instead of `start, stop, npts`, and the scan
+visits every combination of them (the outer product), first motor slowest.
+Because each list only sets the length of its own axis, the lists are
+independent and may have different lengths — a 4-entry list crossed with a
+3-entry list is a 4x3 = 12-point mesh.
+
+```python
+import numpy as np
+
+# 4 x 3 mesh, uneven spacing on the slow axis.
+RE(list_grid_scan(
+    motor1, [0.0, 0.1, 0.4, 1.0],
+    motor2, [-1.0, 0.0, 1.0],
+    time,
+))
+
+# Hand-picked setpoints on one axis crossed with a regular scan on another.
+RE(list_grid_scan(
+    temperature, [10, 50, 100, 300],
+    motor, np.linspace(-1, 1, 51),
+    time,
+))
+```
+
+Pass `snake_axes=True` to sweep the inner axis back and forth instead of
+flying back to its start on every row (the slowest axis is never snaked):
+
+```python
+RE(list_grid_scan(motor1, xs, motor2, ys, time, snake_axes=True))
+```
+
+### `rel_list_grid_scan` — relative grid of positions
+
+Same as `list_grid_scan` but each list holds offsets from the motor's current
+position. The motors are returned to where they started when the scan
+finishes.
+
+```python
+RE(rel_list_grid_scan(
+    motor1, [-0.5, 0, 0.5],
+    motor2, [-0.1, -0.05, 0, 0.05, 0.1],
+    time,
+))
+```
+
+Both accept the same `dichro` / `lockin` / `fixq` / `vortex_sgz` flags as the
+1-D plans, and both record `shape` / `extents` in the start document, so the
+2-D peak helpers (`cen`, `com`, `maxi`, `mini`) and the GUI's mesh plot work
+on them the same way they do on `grid_scan`.
 
 ---
 

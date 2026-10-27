@@ -7,6 +7,27 @@ id4_common.utils.wax
 
    Motor position display utilities (wm, wax, wa_scan, wa_new).
 
+   The live-EPICS helpers here walk every ``"motor"``-labelled entry in
+   ``oregistry``, which at any station includes the *other* stations' motors:
+   ``make_devices(..., connect=False)`` instantiates all of ``devices.yml`` and
+   only ``core`` plus the local station label is connected afterwards.  A motor
+   whose IOC is alive connects on demand in milliseconds, but one whose IOC is
+   down costs the full ``PV_CONNECTION`` timeout from ``iconfig.yml`` (60 s), and
+   serially over tens of devices that reads as a hang.
+
+   So every read goes through :func:`_motor_row`, which
+
+   1. skips the connection wait entirely for signals already connected,
+   2. probes the rest with a short ``PROBE_TIMEOUT`` instead of the session
+      default, and
+   3. shares one ``PROBE_BUDGET`` across the whole call, after which the
+      remaining unconnected devices are reported without any further I/O.
+
+   Consequence worth knowing: when many IOCs are down, *which* unconnected motors
+   get probed depends on registry iteration order.  Name filtering happens before
+   any read, so ``wax("ancillary")`` always probes its own small candidate set,
+   and ``wax("ancillary", timeout=5)`` probes it patiently.
+
 
 
 
@@ -18,29 +39,52 @@ Module Contents
 
 .. py:data:: cat
 
+.. py:data:: PROBE_TIMEOUT
+   :value: 0.2
+
+
+.. py:data:: PROBE_BUDGET
+   :value: 2.0
+
+
+.. py:data:: MOTOR_FIELDS
+   :value: ('user_readback', 'low_limit_travel', 'high_limit_travel')
+
+
 .. py:function:: wm(*args)
 
    Print a table of current position and travel limits for the given motors.
 
 
-.. py:function:: wax(scan=None, motor=None, device='motor', display_missed=False)
+.. py:function:: wax(scan=None, motor=None, device='motor', display_missed=False, timeout=PROBE_TIMEOUT)
 
    Display current and past motor values
 
-   :param scan number: Scan number of any scan
-   :type scan number: int, optional
-   :param motor name: If None all motor positions will be deisplayed.
-   :type motor name: string, optional
-   :param device name: Default' is "motor", used to find devices in the registry.
-                       Other possibilities include "detector", "sensor", "actuator", etc.
-   :type device name: string: optional
+   :param scan: Scan number of any scan.  A string is treated as a motor name
+                filter on the current positions instead.
+   :type scan: int or str, optional
+   :param motor: If None all motor positions will be displayed.
+   :type motor: str, optional
+   :param device: Default is "motor", used to find devices in the registry.
+                  Other possibilities include "detector", "sensor", "actuator", etc.
+   :type device: str, optional
+   :param display_missed: List the devices that could not be read, rather than only
+                          counting them.
+   :type display_missed: bool, optional
+   :param timeout: Seconds allowed per signal that is not already connected
+                   (default: :data:`PROBE_TIMEOUT`).  The call as a whole spends at
+                   most :data:`PROBE_BUDGET` seconds connecting on demand, so a
+                   station whose IOCs are down costs a couple of seconds, not a
+                   minute per motor.  ``None`` restores the session defaults from
+                   ``iconfig.yml`` and can block for a very long time.
+   :type timeout: float, optional
 
    .. rubric:: Examples
 
-   wa(): current position of all motors
-   wa('motor'): current position of motors containing 'motor'
-   wa(42, 'motor'): current position of motors containing 'motor' of scan
-   wa(42): current position of all motors in scan 42
+   wax(): current position of all motors
+   wax('motor'): current position of motors containing 'motor'
+   wax(42, 'motor'): position of motors containing 'motor' in scan 42
+   wax(42): position of all motors in scan 42
 
 
 .. py:function:: wa_scan(scan=None, motor=None)
@@ -48,7 +92,7 @@ Module Contents
    Print motor positions recorded in the baseline stream of a past scan.
 
 
-.. py:function:: wa_new(motor=None)
+.. py:function:: wa_new(motor=None, display_missed=False, timeout=PROBE_TIMEOUT)
 
    Print current position and limits for all motors, optionally filtered by
    name.

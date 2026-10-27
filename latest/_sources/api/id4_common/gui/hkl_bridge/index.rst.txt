@@ -1,0 +1,91 @@
+id4_common.gui.hkl_bridge
+=========================
+
+.. py:module:: id4_common.gui.hkl_bridge
+
+.. autoapi-nested-parse::
+
+   Kernel-side helpers for the HKL tab.
+
+   These are installed in the kernel as part of the bootstrap cell.  They exist
+   here rather than in the GUI because ``user_expressions`` evaluates expressions
+   only -- it cannot run a ``try``/``except`` -- and almost every hklpy2 call can
+   raise on an unoriented or unreachable configuration.
+
+   The API mirrors ``id4_common.utils.hkl_utils``, which is the reference for the
+   call sequences.  Its console entry points are not called from here, because
+   almost all of them act on whichever diffractometer is *active* and prompt for
+   what they were not told, while the tab has to be able to show either device and
+   can never prompt.
+
+   Everything returned is plain Python (floats coerced off numpy) so the poller's
+   ``ast.literal_eval`` round trip works.
+
+   **Three things differ from a Eulerian six-circle** and shape most of what
+   follows.  POLAR's ``APS POLAR`` geometry has six real axes ``tau, mu, chi, phi,
+   gamma, delta``; its mode names are **space-separated** (``"psi constant
+   horizontal"``, not ``psi_constant_horizontal``), so every test against a mode
+   name goes through :func:`_gui_hkl_mode_key`; and there is **no ``q``
+   engine** -- ``hkl-engine-list-error-quark: this engine list does not contain
+   this engine "q"`` -- so 2theta is computed here from ``UB`` rather than read off
+   a helper geometry.
+
+   The last one is worth stating precisely, because it is the sort of thing that
+   is right by luck or wrong by a factor of 2π.  hklpy2's ``UB`` is in the 2π
+   convention: ``|UB · (h, k, l)| = 2π/d``, checked against Bragg's law on a cubic
+   lattice for (100), (110) and (200).  So ``2θ = 2·asin(|UB·hkl|·λ/4π)``.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: POSITION_KEY
+   :value: 'hkl_position'
+
+
+.. py:data:: STATE_KEY
+   :value: 'hkl_state'
+
+
+.. py:function:: diffractometers()
+
+   Diffractometers the tab may act on, in selector order.
+
+   Empty at a station that has none, which is what makes the HKL tab a
+   disabled placeholder there.  The ``*_psi`` geometries are used internally
+   for the psi readout only and are not offered.
+
+   Resolved per call, not bound at import: ``app.main`` sets ``ID4_STATION``
+   after this module has already been imported by way of ``gui.kernel``.
+
+
+.. py:function:: psi_geometry()
+
+   Diffractometer -> the psi-engine geometry on the same motors.
+
+   Per device, because POLAR has two diffractometers and each has its own;
+   ``hkl_utils`` finds it by the same convention,
+   ``oregistry.find(name + "_psi")``.
+
+
+.. py:function:: hkl_helpers_code()
+
+   Return the HKL helpers to install in the kernel, for this station.
+
+   The psi map is emitted ahead of the helpers so it is a literal in the
+   kernel rather than something interpolated into every function that needs
+   it.  Built with ``repr`` for the same reason ``_gui_mcp`` sends its payload
+   that way: a device name reaches the kernel as data, never as code.  Note
+   the ``dict`` -- ``profile().psi_geometry`` is a ``MappingProxyType``, whose
+   repr is not a Python literal.
+
+   Plain concatenation, not ``%``-formatting: the body is several hundred
+   lines of Python and a single literal ``%`` anywhere in it -- a format
+   string, a modulo -- would break the whole thing.
+
+

@@ -1,0 +1,111 @@
+id4_common.gui.transcript
+=========================
+
+.. py:module:: id4_common.gui.transcript
+
+.. autoapi-nested-parse::
+
+   Append the console's traffic to a plain text file.
+
+   Everything the session does passes through the IPython console -- typed
+   commands, the device-loading log, BEC's scan tables, tracebacks, and every
+   command a tab runs through :meth:`~id4_common.gui.tabs.base.BaseTab.run_in_console`
+   -- and none of it survives on its own: qtconsole trims its scrollback, the
+   Restart button clears the pane, and closing the window loses the lot.
+
+   The content comes from the kernel's **iopub** channel rather than from the
+   widget.  iopub is a broadcast, so the poll client sees every message the
+   console renders even though the console is on a different client
+   (:meth:`~id4_common.gui.kernel.StatusPoller._drain_iopub` was already reading it to
+   track busy/idle).  Taking it from there means the file is unaffected by the
+   scrollback limit or by clearing the console, and it keeps filling **while a
+   scan is running**, which is when it matters most.
+
+   Not IPython's ``%logstart``: that records input and results but not stream
+   output, tracebacks or the device-loading log, which is most of what is wanted
+   here.  ``apsbits``' ``logging_setup`` already starts one, into
+   ``<cwd>/.logs/ipython_log.py``; this is the complement to it, not a duplicate.
+
+   Deliberately Qt-free, so it can be tested without a ``QApplication``.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: ConsoleTranscript
+
+   Write the console's input and output to a file, as the session runs.
+
+   Feed :meth:`handle` every iopub message; call :meth:`start` and
+   :meth:`stop` to open and close the file.  Writing never raises: an
+   :class:`OSError` stops logging and is reported through :attr:`error`,
+   because this is driven from a timer that must keep running.
+
+
+   .. py:attribute:: path
+      :value: None
+
+
+
+   .. py:attribute:: started_at
+      :value: None
+
+
+
+   .. py:attribute:: bytes_written
+      :value: 0
+
+
+
+   .. py:attribute:: error
+      :value: None
+
+
+
+   .. py:property:: active
+
+      Whether a file is currently open for writing.
+
+
+   .. py:method:: start(path)
+
+      Open *path* for appending and write the session header.
+
+      Appends rather than truncates: one file can then hold a whole
+      experiment, and pressing Start by mistake cannot destroy the earlier
+      transcript.  Returns True on success; on failure :attr:`error` says
+      why.
+
+
+
+   .. py:method:: stop()
+
+      Write the footer and close the file, if one is open.
+
+
+
+   .. py:method:: note(text)
+
+      Record *text* as a marker line.
+
+      Used for events the kernel cannot report itself -- a deliberate
+      restart, say, which clears the console but leaves the file intact.
+
+
+
+   .. py:method:: handle(msg)
+
+      Write one iopub message.
+
+      Unknown message types are ignored, so ``status``, ``clear_output``,
+      comm traffic and anything a future kernel adds cost nothing.
+
+
+

@@ -1,0 +1,73 @@
+id4_common.gui.tabs.scanhistory
+===============================
+
+.. py:module:: id4_common.gui.tabs.scanhistory
+
+.. autoapi-nested-parse::
+
+   Plot a scan that has already finished, by number.
+
+   The Live plot tab follows whatever the beamline is doing; this one shows the
+   scan you ask for and stays there.  Two tabs rather than one tab with a mode:
+   nothing has to decide what a running scan should do to a plot you are reading,
+   because the answer is nothing.
+
+   Everything about the drawing is inherited from
+   :class:`~id4_common.gui.tabs.scanplot.ScanPlotTab` -- selectors, I0
+   normalisation, the derivative and its reference curve, the peak statistics and
+   their markers, and the 2D mesh rendering.  Only the source of the data differs:
+   :mod:`~id4_common.gui.scanreader` reads the run out of the catalog in this
+   process (see its docstring for why not the kernel), and the document handlers
+   are then fed by hand rather than by the live stream.
+
+   The "Go to" buttons are hidden here.  Driving the beamline onto a peak measured
+   in some earlier scan is not something this tab should offer.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: MAX_SCAN_ID
+   :value: 1000000
+
+
+.. py:data:: WORKER_SHUTDOWN_WAIT_MS
+   :value: 8000
+
+
+.. py:class:: ScanHistoryTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.scanplot.ScanPlotTab`
+
+
+   Draw a finished scan fetched from the catalog.
+
+
+   .. py:attribute:: title
+      :value: 'Scan plot'
+
+
+
+   .. py:method:: on_document(name, doc)
+
+      Ignore the live stream: this tab shows the scan you asked for.
+
+
+
+   .. py:method:: on_metadata(metadata)
+
+      Learn which catalog, and which station's runs within it.
+
+      Broadcast once a second while the kernel is idle, and only when a value
+      changes, so this arrives early and then stays put.  ``tabs/status.py``
+      reads the same two keys for its display.
+
+
+

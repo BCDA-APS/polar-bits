@@ -1,0 +1,31 @@
+id4_common.gui.tabs
+===================
+
+.. py:module:: id4_common.gui.tabs
+
+.. autoapi-nested-parse::
+
+   Tab widgets for the Bluesky GUI upper pane.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/id4_common/gui/tabs/agent/index
+   /api/id4_common/gui/tabs/base/index
+   /api/id4_common/gui/tabs/detectors/index
+   /api/id4_common/gui/tabs/devices/index
+   /api/id4_common/gui/tabs/diffract_panel/index
+   /api/id4_common/gui/tabs/flyscanplot/index
+   /api/id4_common/gui/tabs/hkl/index
+   /api/id4_common/gui/tabs/macro/index
+   /api/id4_common/gui/tabs/scan/index
+   /api/id4_common/gui/tabs/scanhistory/index
+   /api/id4_common/gui/tabs/scanplot/index
+   /api/id4_common/gui/tabs/status/index
+
+

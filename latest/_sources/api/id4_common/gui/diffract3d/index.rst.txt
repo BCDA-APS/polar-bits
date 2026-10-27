@@ -1,0 +1,317 @@
+id4_common.gui.diffract3d
+=========================
+
+.. py:module:: id4_common.gui.diffract3d
+
+.. autoapi-nested-parse::
+
+   3D model of the POLAR diffractometer.
+
+   Ported from ``~/jwkim/python/diffract/diffractometer_polar.py``.  The geometry
+   constants and the kinematic chain are kept exactly as written there -- they were
+   matched against the real instrument, so they are not something to re-derive.
+
+   Lab frame (Bluesky convention):
+       +x  incident beam direction
+       +y  horizontal, perpendicular to the beam
+       +z  vertical up
+
+   **Five angles, not six.**  The model's joints are ``mu, chi, phi, delta, nu``:
+   there is no ``eta``, and ``phi`` rotates about **z** where the 4S+2D model
+   rotates it about y.  The solver's sixth real axis, ``tau``, is not modelled --
+   nothing in the drawing moves with it -- and the solver's ``gamma`` is this
+   model's ``nu``.  That last rename is why the panel maps names through
+   :data:`id4_common.gui.config.MODEL_AXIS_MAP` rather than matching them
+   directly.
+
+   ``vtk`` and ``pyvista`` are imported lazily so this module -- and therefore the
+   GUI as a whole -- still imports when they are not installed.  :data:`AVAILABLE`
+   says whether the 3D view can actually be built.
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: INSTALL_HINT
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """3D view unavailable — vtk, pyvista and pyvistaqt are not installed.
+      
+      On a networked machine:
+          pip download --no-deps -d ./pv3d vtk==9.3.1 pyvista==0.44.2 pyvistaqt==0.11.2 pooch scooby
+      then copy pv3d/ across and run:
+          pip install --no-deps --no-index ./pv3d/*.whl"""
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: DEFAULT_CAMERA
+   :value: [(0.0, 22.0, 7.0), (0.0, 0.0, 2.0), (0, 0, 1)]
+
+
+.. py:function:: Rx(t)
+
+   Rotation about x by *t* radians.
+
+
+.. py:function:: Ry(t)
+
+   Rotation about y by *t* radians.
+
+
+.. py:function:: Rz(t)
+
+   Rotation about z by *t* radians.
+
+
+.. py:function:: to_mat4(R)
+
+   Embed a 3x3 rotation in a 4x4 homogeneous matrix.
+
+
+.. py:function:: trans4(dx, dy, dz)
+
+   4x4 translation matrix.
+
+
+.. py:function:: rot_about4(axis, theta, pivot)
+
+   4x4 rotation about *axis* by *theta* radians around the point *pivot*.
+
+
+.. py:function:: vtk_matrix(M)
+
+   Convert a 4x4 numpy matrix to a ``vtkMatrix4x4``.
+
+
+.. py:function:: rotation_to_align(v1, v2)
+
+   3x3 rotation matrix that maps unit vector *v1* onto unit vector *v2*.
+
+
+.. py:class:: Diffractometer
+
+   The POLAR model: meshes, kinematic chain and the three overlays.
+
+
+   .. py:attribute:: BASE_RADIUS
+      :value: 3.0
+
+
+
+   .. py:attribute:: BASE_TOP_Z
+      :value: -2.3
+
+
+
+   .. py:attribute:: BASE_BOTTOM_Z
+      :value: -2.9
+
+
+
+   .. py:attribute:: COLUMN_HALF_X
+      :value: 0.5
+
+
+
+   .. py:attribute:: COLUMN_HALF_Y
+      :value: 0.05
+
+
+
+   .. py:attribute:: COLUMN_Y
+      :value: -2.3
+
+
+
+   .. py:attribute:: COLUMN_TOP_Z
+      :value: 2.6
+
+
+
+   .. py:attribute:: MU_BASE_RADIUS
+      :value: 2.0
+
+
+
+   .. py:attribute:: MU_BASE_BOTTOM_Z
+      :value: -2.3
+
+
+
+   .. py:attribute:: MU_BASE_TOP_Z
+      :value: -1.9
+
+
+
+   .. py:attribute:: MU_COL_HALF_X
+      :value: 0.35
+
+
+
+   .. py:attribute:: MU_COL_HALF_Y
+      :value: 0.035
+
+
+
+   .. py:attribute:: MU_COL_TOP_Z
+      :value: 2.6
+
+
+
+   .. py:attribute:: MU_COL_Y
+      :value: -1.965
+
+
+
+   .. py:attribute:: CHI_R_OUT
+
+
+   .. py:attribute:: CHI_R_IN
+      :value: 1.4
+
+
+
+   .. py:attribute:: CHI_H
+      :value: 0.7
+
+
+
+   .. py:attribute:: CHI_CX
+      :value: -0.7
+
+
+
+   .. py:attribute:: PHI_R
+      :value: 0.36
+
+
+
+   .. py:attribute:: PHI_SAMPLE_GAP
+      :value: 0.1
+
+
+
+   .. py:attribute:: SAMPLE_HALF
+      :value: 0.12
+
+
+
+   .. py:attribute:: BEAM_Z
+      :value: 2.0
+
+
+
+   .. py:attribute:: ARM_OUT_X
+      :value: 4.0
+
+
+
+   .. py:attribute:: ARM_HALF_Y
+      :value: 0.05
+
+
+
+   .. py:attribute:: ARM_HALF_Z
+      :value: 0.5
+
+
+
+   .. py:attribute:: angles
+
+
+   .. py:attribute:: actors
+      :value: []
+
+
+
+   .. py:attribute:: scatter_plane_actor
+      :value: None
+
+
+
+   .. py:attribute:: scatter_plane_visible
+      :value: False
+
+
+
+   .. py:attribute:: ref_vec_actor
+      :value: None
+
+
+
+   .. py:attribute:: ref_vec_visible
+      :value: False
+
+
+
+   .. py:attribute:: q_vec_actor
+      :value: None
+
+
+
+   .. py:attribute:: q_vec_visible
+      :value: False
+
+
+
+   .. py:attribute:: UB
+
+
+   .. py:attribute:: hkl
+
+
+   .. py:method:: build(plotter)
+
+      Create every mesh in *plotter* and apply the initial transforms.
+
+
+
+   .. py:method:: update_scatter_plane()
+
+      Orient the scattering-plane disc from delta and nu.
+
+
+
+   .. py:method:: update_ref_vec()
+
+      Point the reference arrow along ``UB @ hkl``, carried by the sample chain.
+
+
+
+   .. py:method:: update_q_vec()
+
+      Point the Q arrow along kf - ki.
+
+
+
+   .. py:method:: chain_matrix(chain)
+
+      Return the 4x4 transform for a kinematic *chain* of joint names.
+
+
+
+   .. py:method:: update_transforms()
+
+      Re-apply every actor's transform from the current angles.
+
+
+

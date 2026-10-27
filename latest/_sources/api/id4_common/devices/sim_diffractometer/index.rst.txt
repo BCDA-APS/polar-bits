@@ -1,0 +1,170 @@
+id4_common.devices.sim_diffractometer
+=====================================
+
+.. py:module:: id4_common.devices.sim_diffractometer
+
+.. autoapi-nested-parse::
+
+   Simulated polar diffractometer
+
+   Geometry-only twins of the POLAR diffractometers. The real axes and the
+   polarization analyzer motors are ``SoftPositioner`` objects and the beam
+   energy is a user-defined soft signal, so nothing here talks to EPICS. Set the
+   energy with ``sim_euler.beam.energy.put(<keV>)``.
+
+   To start from the beamline state, copy it from the real diffractometer with
+   ``sync_motors()``, ``sync_energy()``, ``sync_setup()`` (samples, reflections,
+   UB, constraints, mode) or ``sync_all()``.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: SIM_TTH_DETECTOR_DISTANCE
+   :value: 1000.0
+
+
+.. py:data:: sim_beam_kwargs
+
+.. py:data:: sim_reals
+
+.. py:class:: SimAnalyzerDevice
+
+   Bases: :py:obj:`id4_common.devices.polar_diffractometer.AnalyzerDevice`
+
+
+   Polarization analyzer with simulated motors.
+
+   The energy calculations and crystal setup are inherited from
+   ``AnalyzerDevice`` and use the parent's simulated beam energy. The
+   calibration methods redefine the soft positions instead of writing EPICS
+   motor offsets.
+
+
+   .. py:attribute:: th
+
+
+   .. py:attribute:: tth_trans
+
+
+   .. py:attribute:: th_motor
+
+
+   .. py:attribute:: tth
+
+
+   .. py:attribute:: eta
+
+
+   .. py:attribute:: chi
+
+
+   .. py:attribute:: tth_detector_distance
+
+
+   .. py:method:: ath_reset_offset()
+
+      No motor offsets to reset in the simulated analyzer.
+
+
+
+   .. py:method:: set_energy(energy)
+
+      Redefine the Bragg-angle positions to match the given energy (keV).
+
+
+
+   .. py:method:: release_calibration()
+
+      No calibration offsets to release in the simulated analyzer.
+
+
+
+.. py:data:: SimDiffractometerBase
+
+.. py:class:: SimDiffractometer(*args, real_diffractometer=None, **kwargs)
+
+   Bases: :py:obj:`id4_common.devices.polar_diffractometer.DiffractometerCoreMixin`, :py:obj:`SimDiffractometerBase`
+
+
+   hklpy2 APS-POLAR diffractometer with simulated motors and analyzer.
+
+   ``real_diffractometer`` names the real diffractometer that the ``sync_*``
+   methods copy from (e.g. ``"huber_euler"``).
+
+
+   .. py:attribute:: ana
+
+
+   .. py:attribute:: real_diffractometer
+      :value: None
+
+
+
+   .. py:method:: sync_motors(real_diffractometer=None)
+
+      Copy the real diffractometer's motor positions into this simulator.
+
+      Copies the six diffractometer axes, the analyzer motors and the
+      analyzer crystal setup (``d_spacing``, ``crystal``), so that
+      ``ana.energy`` reads as on the real device. Axes that cannot be read
+      (e.g. a disconnected IOC) are skipped and reported.
+
+      :param real_diffractometer: Device to copy from. Defaults to ``self.real_diffractometer``.
+      :type real_diffractometer: str or Diffractometer, optional
+
+
+
+   .. py:method:: sync_energy(real_diffractometer=None)
+
+      Copy the real beamline energy into this simulator.
+
+      :param real_diffractometer: Device to copy from. Defaults to ``self.real_diffractometer``.
+      :type real_diffractometer: str or Diffractometer, optional
+
+
+
+   .. py:method:: sync_setup(real_diffractometer=None)
+
+      Copy the real orientation setup into this simulator.
+
+      Replaces the samples (lattice, reflections, U and UB), the active
+      sample, the constraints, the mode, its extras and presets. The psi
+      partner (``<name>_psi``) is updated from the real psi partner too,
+      when both are loaded. Motor positions and energy are not changed.
+
+      :param real_diffractometer: Device to copy from. Defaults to ``self.real_diffractometer``.
+      :type real_diffractometer: str or Diffractometer, optional
+
+
+
+   .. py:method:: sync_all(real_diffractometer=None)
+
+      Copy the real setup, energy and motor positions into this simulator.
+
+      :param real_diffractometer: Device to copy from. Defaults to ``self.real_diffractometer``.
+      :type real_diffractometer: str or Diffractometer, optional
+
+
+
+.. py:data:: SimDiffractometerPSIBase
+
+.. py:class:: SimDiffractometerPSI(*args, **kwargs)
+
+   Bases: :py:obj:`SimDiffractometerPSIBase`
+
+
+   Simulated hklpy2 APS-POLAR diffractometer using the psi engine.
+
+   The real ``*_psi`` devices share motor PVs with their partner. Here the
+   partner (same name without ``_psi``) has its own soft motors, so the real
+   axes and the wavelength are mirrored from it after connection.
+
+

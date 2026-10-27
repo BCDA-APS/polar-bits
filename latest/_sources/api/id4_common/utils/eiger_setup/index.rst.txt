@@ -1,0 +1,33 @@
+id4_common.utils.eiger_setup
+============================
+
+.. py:module:: id4_common.utils.eiger_setup
+
+.. autoapi-nested-parse::
+
+   Eiger geometry setup: sample-detector distance and beam center.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: CENTER_PV
+   :value: '4idgSoftX:Eiger:Center'
+
+
+.. py:function:: setup_eiger()
+
+   Write the sample-detector distance and beam center to the Eiger.
+
+   The distance defaults to the current position of the ``huber_euler`` pad
+   rail. The beam center is taken as the center of ROI1.
+
+   The soft-IOC beam center array is not part of the ADEiger driver, so it
+   is written with a raw ``caput`` rather than an ophyd signal.
+
+

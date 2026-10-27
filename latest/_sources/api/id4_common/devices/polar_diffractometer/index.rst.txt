@@ -38,6 +38,29 @@ Module Contents
 
 .. py:data:: ANALYZER_LIST_PATH
 
+.. py:class:: UBMatrixSignal(pv_name, *, parent=None, name=None, **kwargs)
+
+   Bases: :py:obj:`ophyd.Signal`
+
+
+   In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
+
+   Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
+   other components can subscribe to UB matrix changes via .subscribe().
+
+
+   .. py:method:: get(**kwargs)
+
+      Return the parent diffractometer's current UB matrix.
+
+
+
+   .. py:method:: put(value, *, timestamp=None, force=False, **kwargs)
+
+      Write the UB matrix back to the parent and notify subscribers.
+
+
+
 .. py:class:: AnalyzerDevice
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
@@ -88,13 +111,13 @@ Module Contents
    .. py:property:: beamline_wavelength
 
       Return the current beamline wavelength from the parent diffractometer
-      calc.
+      beam object.
 
 
    .. py:property:: beamline_energy
 
-      Return the current beamline energy in keV from the parent
-      diffractometer.
+      Return the current beamline energy in keV from the parent diffractometer
+      beam object.
 
 
    .. py:method:: convert_energy_to_theta(energy)
@@ -105,6 +128,13 @@ Module Contents
 
 
    .. py:method:: convert_energy_to_tth_trans(energy)
+
+      Convert photon energy (keV) to the two-theta translation stage position
+      (mm).
+
+
+
+   .. py:method:: convert_energy_to_tth_pseudo(energy)
 
       Convert photon energy (keV) to the two-theta translation stage position
       (mm).
@@ -130,6 +160,12 @@ Module Contents
 
 
 
+   .. py:method:: ath_reset_offset()
+
+      Reset the analyzer theta motor offset to its nominal 45 degrees.
+
+
+
    .. py:method:: set_energy(energy)
 
       Calibrate the Bragg-angle motor to match the given photon energy (keV).
@@ -138,7 +174,14 @@ Module Contents
 
    .. py:method:: calc(acal='No')
 
-      Print analyzer Bragg angles and optionally calibrate the theta motor.
+      Print analyzer Bragg angles for the current crystal at the current
+      beamline energy.
+
+
+
+   .. py:method:: release_calibration()
+
+      Restore the nominal theta and two-theta translation offsets.
 
 
 
@@ -149,35 +192,51 @@ Module Contents
 
 
 
-.. py:class:: SixCircleDiffractometer
+.. py:class:: DiffractometerCoreMixin
 
-   Bases: :py:obj:`hkl.geometries.ApsPolar`
-
-
-   ApsPolar: Huber diffractometer in 6-circle horizontal geometry with energy.
-
-   HKL engine.
+   Bases: :py:obj:`ophyd.Device`
 
 
-   .. py:attribute:: h
+   Hardware-free behavior shared by the real and simulated diffractometers.
 
 
-   .. py:attribute:: k
+   .. py:property:: hints
+
+      Return only explicitly-hinted sub-components to avoid busy plotting.
+
+      ``Kind`` is a bitfield: ``Kind.hinted`` (0b101) shares the
+      ``Kind.normal`` bit (0b001). ``_get_components_of_kind(Kind.hinted)``
+      therefore yields *both* normal and hinted components. The mask
+      ``(~Kind.normal & Kind.hinted)`` isolates the "hinted-only" bit so
+      only components explicitly tagged ``Kind.hinted`` contribute fields.
 
 
-   .. py:attribute:: l
+   .. py:property:: auxiliary_axis_names
+
+      Drop nested PseudoPositioner sub-devices from auxiliaries.
+
+      hklpy2's ``wh(full=True)``/``pa()`` formats each auxiliary axis with
+      ``round(component.position, ndigits=...)``. ``PseudoPositioner``
+      sub-devices (e.g. ``ana``) return a ``PseudoPosition`` namedtuple,
+      which has no ``__round__`` and crashes the print step. Filter them
+      out here; scalar single-axis auxiliaries (the case hklpy2 was
+      designed for) still pass through.
 
 
-   .. py:attribute:: tau
+   .. py:method:: default_settings()
+
+      Apply default settings for the diffractometer mixin (no-op; subclasses
+      override).
 
 
-   .. py:attribute:: mu
+
+.. py:class:: DiffractometerMixin
+
+   Bases: :py:obj:`DiffractometerCoreMixin`
 
 
-   .. py:attribute:: gamma
-
-
-   .. py:attribute:: delta
+   Mixin adding table, area-detector, filter, slit, and analyzer components to
+   a diffractometer.
 
 
    .. py:attribute:: tablex
@@ -201,40 +260,31 @@ Module Contents
    .. py:attribute:: ana
 
 
-   .. py:attribute:: energy
+.. py:class:: DeferredEpicsMonochromatorRO
+
+   Bases: :py:obj:`hklpy2.incident.EpicsMonochromatorRO`
 
 
-   .. py:attribute:: energy_update_calc_flag
+   ``EpicsMonochromatorRO`` whose wavelength doesn't block on init.
+
+   See ``_DeferredEpicsSignalRO`` for the rationale. Used as the ``beam``
+   component for the POLAR diffractometers so they can be instantiated
+   while the VDCM IOC is offline. ``energy`` is the stock ``EpicsSignalRO``.
 
 
-   .. py:attribute:: energy_offset
+   .. py:attribute:: wavelength
 
 
-   .. py:property:: hints
+.. py:data:: mono_kwargs
 
-      Return hinted fields, excluding non-hinted components to prevent busy
-      plotting.
+.. py:data:: CradleDiffractometerBase
 
+.. py:class:: CradleDiffractometer(*args, **kwargs)
 
-   .. py:method:: default_settings()
-
-      Update the HKL calc engine energy from the EPICS monochromator readback.
+   Bases: :py:obj:`_InitFallbackMixin`, :py:obj:`DiffractometerMixin`, :py:obj:`CradleDiffractometerBase`
 
 
-
-.. py:class:: CradleDiffractometer
-
-   Bases: :py:obj:`SixCircleDiffractometer`
-
-
-   SixCircleDiffractometer with cradle chi/phi motors and sample XYZ
-   positioning.
-
-
-   .. py:attribute:: chi
-
-
-   .. py:attribute:: phi
+   hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation.
 
 
    .. py:attribute:: x
@@ -246,13 +296,14 @@ Module Contents
    .. py:attribute:: z
 
 
-.. py:class:: HPDiffractometer
+.. py:data:: HPDiffractometerBase
 
-   Bases: :py:obj:`SixCircleDiffractometer`
+.. py:class:: HPDiffractometer(*args, **kwargs)
+
+   Bases: :py:obj:`_InitFallbackMixin`, :py:obj:`DiffractometerMixin`, :py:obj:`HPDiffractometerBase`
 
 
-   SixCircleDiffractometer for the HP press setup with base and nano-
-   positioning motors.
+   hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
 
 
    .. py:attribute:: chi
@@ -297,56 +348,26 @@ Module Contents
    .. py:attribute:: nanoz
 
 
-.. py:class:: PolarPSI
-
-   Bases: :py:obj:`hkl.geometries.ApsPolar`
+   .. py:attribute:: xeryon
 
 
-   ApsPolar: Huber diffractometer in 6-circle horizontal geometry with energy.
+.. py:data:: CradleDiffractometerPSIBase
 
-   Psi engine.
+.. py:data:: HPDiffractometerPSIBase
 
+.. py:class:: CradleDiffractometerPSI(*args, **kwargs)
 
-   .. py:attribute:: psi
-
-
-   .. py:attribute:: tau
+   Bases: :py:obj:`_InitFallbackMixin`, :py:obj:`CradleDiffractometerPSIBase`
 
 
-   .. py:attribute:: mu
+   hklpy2 APS-POLAR cradle diffractometer using the psi engine.
 
 
-   .. py:attribute:: gamma
+.. py:class:: HPDiffractometerPSI(*args, **kwargs)
+
+   Bases: :py:obj:`_InitFallbackMixin`, :py:obj:`HPDiffractometerPSIBase`
 
 
-   .. py:attribute:: delta
-
-
-.. py:class:: CradlePSI
-
-   Bases: :py:obj:`PolarPSI`
-
-
-   PolarPSI diffractometer with cradle chi and phi motors.
-
-
-   .. py:attribute:: chi
-
-
-   .. py:attribute:: phi
-
-
-.. py:class:: HPPSI
-
-   Bases: :py:obj:`PolarPSI`
-
-
-   PolarPSI diffractometer for the HP press with its chi and phi motors.
-
-
-   .. py:attribute:: chi
-
-
-   .. py:attribute:: phi
+   hklpy2 APS-POLAR HP-press diffractometer using the psi engine.
 
 

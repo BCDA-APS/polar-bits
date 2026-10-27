@@ -1,0 +1,117 @@
+id4_common.gui.tabs.agent
+=========================
+
+.. py:module:: id4_common.gui.tabs.agent
+
+.. autoapi-nested-parse::
+
+   Agent tab: approve or reject the moves an LLM asks for.
+
+   An MCP client can set up an orientation, ask for a move, ask for a scan -- but
+   it cannot make any of it happen.  A motion op in ``mcp_server/motion.py``
+   validates the request and *parks* it; this tab is where a human sees it and
+   decides.  The invariant the whole feature rests on:
+
+       The MCP layer can only ever request.  The only process that emits motion
+       is the GUI, and only from a human click or an operator-armed auto window.
+
+   So Approve does not do anything clever: it runs ``_gui_mcp_execute(token)``
+   through the console, the same path the HKL tab's Move button uses.  The move is
+   an ordinary console command -- in the history, in the transcript, on the
+   session RunEngine, interruptible with Ctrl-C.
+
+   Three controls beyond Approve/Reject:
+
+   ``Allow LLM moves without asking``
+       Hands over the keys for a stretch of work.  Time-boxed, with a live
+       countdown, unchecked at construction and unchecked again on a kernel
+       restart, so it can never be inherited from an earlier session.  An
+       auto-approval goes through the *same* ``_gui_mcp_execute`` call, so there
+       is one code path for motion rather than two.
+
+   ``Refuse all motion requests``
+       The master off switch.  Enforced kernel-side (``_gui_mcp_set_blocked``) so
+       a request is declined with a sentence the model can act on, rather than
+       sitting unanswered until someone comes back.
+
+   History
+       The last outcomes, so "what did it do while I was at lunch" has an answer
+       that does not need the transcript.
+
+   State arrives with the ordinary 1 Hz poll (``mcp_pending`` in
+   ``KERNEL_EXPRESSIONS``), so the tab adds no reader of its own to the shell
+   channel.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: PENDING_KEY
+   :value: 'mcp_pending'
+
+
+.. py:data:: DEFAULT_AUTO_MINUTES
+   :value: 30
+
+
+.. py:data:: MIN_AUTO_MINUTES
+   :value: 1
+
+
+.. py:data:: MAX_AUTO_MINUTES
+   :value: 240
+
+
+.. py:data:: AUTO_TICK_MS
+   :value: 1000
+
+
+.. py:data:: IDLE_TEXT
+   :value: 'No request waiting.'
+
+
+.. py:class:: AgentTab(parent=None)
+
+   Bases: :py:obj:`id4_common.gui.tabs.base.BaseTab`
+
+
+   Pending LLM request, the approval controls, and what happened before.
+
+
+   .. py:attribute:: title
+      :value: 'Agent'
+
+
+
+   .. py:attribute:: request_arrived
+
+
+   .. py:method:: on_kernel_values(values)
+
+      Take the parked request, the history and the master switch.
+
+
+
+   .. py:method:: on_kernel_state(state)
+
+      Approve/Reject need an idle kernel: a busy one queues the command.
+
+
+
+   .. py:method:: clear_auto_mode()
+
+      Drop auto mode and forget what has been answered.
+
+      Called by the window's restart path: the kernel that had the pending
+      request is gone, and an auto window armed against the old session must
+      not carry over into the new one.
+
+
+

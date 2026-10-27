@@ -1,0 +1,214 @@
+id4_common.gui.config
+=====================
+
+.. py:module:: id4_common.gui.config
+
+.. autoapi-nested-parse::
+
+   Everything the GUI and MCP layer knows about *this* beamline.
+
+   The rest of the package is written against the names in here, so porting to
+   another station is editing this file rather than grepping for motor names.
+   At 6-ID-B these values were scattered as module constants across
+   ``hkl_bridge``, ``tabs/hkl``, ``mcp_server/bridge`` and ``mcp_server/session``;
+   collecting them is what makes the layer shareable between id4_b, id4_g, id4_h
+   and id4_raman.
+
+   What differs *between* those stations lives in :data:`STATIONS`, one
+   :class:`StationProfile` each, resolved at call time by :func:`profile`.  What
+   is the same everywhere -- the POLAR geometry's axis names, the peak plans --
+   stays a flat constant below.
+
+   Nothing here imports ophyd, Qt or bluesky — the GUI process, the MCP client
+   process and the kernel all read it.
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: INSTRUMENT_PACKAGE
+   :value: 'id4_common'
+
+
+.. py:data:: DEFAULT_STATION
+   :value: 'id4_g'
+
+
+.. py:data:: WINDOW_TITLE
+   :value: 'POLAR {station} — Bluesky session'
+
+
+.. py:data:: QSETTINGS_ORG
+   :value: 'APS'
+
+
+.. py:data:: QSETTINGS_APP
+   :value: 'polar-gui'
+
+
+.. py:function:: station() -> str
+
+   Return the station package name for this session.
+
+
+.. py:function:: qsettings_app() -> str
+
+   Return the Qt settings application scope for this station.
+
+   Scoped per station because the settings are not all cosmetic: alongside
+   the font size and console background sit the transcript's log path and
+   its auto-enable flag, which ``app.MainWindow`` reads at start-up.  Shared,
+   a 4IDB session would open the GUI and start appending its console traffic
+   to whatever file the 4IDG session last wrote.
+
+   ``id4_g`` keeps the unscoped name it has been writing since before this
+   was scoped, so the station that already has a GUI does not lose its font,
+   log path and macro folder the first time it starts a station-aware build.
+
+
+.. py:function:: pointer_filename(station_name: str | None = None) -> str
+
+   Name of the kernel pointer file the MCP server discovers.
+
+   Station-scoped on purpose.  6-ID-B could use a fixed
+   ``.id6b-gui-kernel.json`` because there is one session; four POLAR
+   stations on one filesystem would collide, and cross-attaching an MCP
+   client to the wrong beamline's kernel is the one failure this must not
+   have.
+
+
+.. py:class:: StationProfile
+
+   What the GUI and MCP layer may offer at one station.
+
+   **Declared, not discovered.**  Every station's ``startup`` calls
+   ``make_devices(file="devices.yml")`` with no ``path``, and apsbits
+   resolves that against ``INSTRUMENT_PATH`` -- always
+   ``id4_common/configs``.  So every station instantiates the same devices
+   and the station label only decides which ones get ``connect_device()``
+   called: ``oregistry.find("huber_euler")`` succeeds at 4IDB and hands back
+   a disconnected object.  The one honest runtime signal is
+   ``get_diffractometer()``, and that needs a live kernel -- far too late for
+   a window that must draw its tabs before the session exists.
+
+   It is not in YAML either.  ``apsbits.update_config`` is a top-level
+   ``dict.update``, so a station overriding one nested key drops the rest of
+   that block; the four ``iconfig_extras.yml`` already lose
+   ``RUN_ENGINE.DEFAULT_METADATA.proposal_id`` that way.
+
+   Only fields with a consumer belong here.  A declaration this layer never
+   reads goes stale unnoticed -- see the note at the foot of this file.
+
+
+   .. py:attribute:: package
+      :type:  str
+
+
+   .. py:attribute:: display
+      :type:  str
+
+
+   .. py:attribute:: diffractometers
+      :type:  tuple[str, ...]
+      :value: ()
+
+
+
+   .. py:attribute:: psi_geometry
+      :type:  Mapping[str, str]
+
+
+   .. py:attribute:: real_motor_devices
+      :type:  frozenset[str]
+
+
+   .. py:attribute:: mcp_default_device
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: has_flyscan
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: unsupported_reason
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:property:: has_diffractometer
+      :type: bool
+
+
+      Whether an hkl-aware session runs at this station.
+
+
+   .. py:property:: mcp_allowed_devices
+      :type: frozenset[str]
+
+
+      Devices an MCP client may address.
+
+      Derived rather than declared, so a station cannot allow a device it
+      does not offer.  Checked in the *kernel*, so a bug in the server -- or
+      a second client that found the connection file -- is still bounded by
+      it.  The psi partners stay out: separate engines on the same motors,
+      and nothing in the tool set needs them.
+
+
+.. py:data:: STATIONS
+   :type:  dict[str, StationProfile]
+
+.. py:function:: profile(station_name: str | None = None) -> StationProfile
+
+   Return the capability profile for *station_name*, or this session's.
+
+   Resolved at **call time**, never at import: ``app.main`` does not set
+   ``ID4_STATION`` until it has parsed ``--station``, and by then this module
+   has long been imported by way of ``gui.kernel``.  Anything that caches a
+   profile in a module constant re-freezes the bug this exists to fix.
+
+   An unrecognised name is reported and answered with a capability-free
+   profile rather than an exception.  The MCP server reads ``ID4_STATION``
+   from an environment it does not control, and a station it cannot place is
+   a station it should offer nothing for.
+
+
+.. py:data:: Q_GEOMETRY
+   :type:  dict[str, str]
+
+.. py:data:: MODEL_AXIS_MAP
+
+.. py:data:: UNMODELLED_AXES
+   :value: ('tau',)
+
+
+.. py:data:: PEAK_PLANS
+   :value: ['cen', 'com', 'maxi', 'mini']
+
+
+.. py:data:: PEAK_PLAN_LABELS
+
+.. py:data:: PEAK_AXIS_KEYWORD
+   :value: 'positioner'
+
+
+.. py:data:: PEAK_PLAN_KWARGS
+
+.. py:data:: PEAK_PLANS_TAKE_MONITOR
+   :value: False
+
+

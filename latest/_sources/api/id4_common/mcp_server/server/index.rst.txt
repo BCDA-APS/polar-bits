@@ -1,0 +1,76 @@
+id4_common.mcp_server.server
+============================
+
+.. py:module:: id4_common.mcp_server.server
+
+.. autoapi-nested-parse::
+
+   MCP tools for setting up and driving the POLAR diffractometer.
+
+   Run as ``polar-mcp`` over stdio, next to a running ``polar-gui``.  Every tool is
+   one call into :meth:`id4_common.mcp_server.session.HklSession.call`; the work is in
+   the descriptions, which carry the ordering rules that make hklpy2 setup
+   succeed -- a mode before the angles it holds constant, two orienting
+   reflections before a UB, a "psi constant" mode before a fixed psi.
+
+   **Motion is requested, never performed.**  A move tool validates, then parks a
+   proposal for the operator to approve in the GUI's Agent tab, and returns
+   *before* anything happens.  The kernel-side dispatcher has no path to ``RE``
+   at all (:mod:`id4_common.mcp_server.motion`), so this is a property of the code
+   rather than a promise in a docstring.
+
+   Orientation tools take ``device``, defaulting to
+   :func:`~id4_common.mcp_server.bridge.default_device`.  **That default is a real
+   machine.**  6-ID-B defaulted to a simulator, so touching hardware was always
+   an explicit act; POLAR has simulated twins (``sim_*``) but still defaults to a
+   real machine, so the approval gate is the only thing in front of the motors.
+   The allow-list and the per-op scope are checked again in the kernel, so a bug
+   here cannot address an op to a device it was not written for.
+
+   **The tool set depends on the station.**  ``ID4_STATION`` picks a profile in
+   :mod:`id4_common.gui.config`; at a station with no diffractometer (4IDB, 4IDH)
+   the eighteen orientation tools are not declared at all and the instructions
+   drop their half.  A client there sees only the eleven tools that work, rather
+   than a menu of calls that fail once it tries them.
+
+   Every tool returns ``{"ok", "message", "data"}``.  ``message`` is written to be
+   read: when hklpy2 declines something -- a preset for an axis this mode does not
+   hold constant, say -- it says which and why, so the next call can be corrected
+   without a round trip to the human.
+
+   Needs the ``mcp`` SDK::
+
+       conda activate polar-bits && pip install mcp
+
+   Nothing else in this package imports it, so the rest works without it.  Both
+   SDK generations are accepted: 2.0 calls the decorator-style server
+   ``mcp.server.MCPServer``, 1.x called it ``mcp.server.fastmcp.FastMCP``, and
+   ``@server.tool()`` and ``run()`` behave the same on either.
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: instructions(profile=None)
+
+   Assemble the server instructions for *profile* (default: this station).
+
+   Two-thirds of the text is a diffractometer tutorial, and at a station with
+   no diffractometer none of the tools it describes exist.  Left whole it
+   would be the same lie the GUI's always-present HKL tab used to tell, only
+   to a reader that cannot look at the hutch and check.
+
+
+.. py:function:: build(connection_file=None)
+
+   Build the MCP server and the session it talks to.
+
+
+.. py:function:: main(argv=None)
+
+   Entry point for the ``polar-mcp`` console script.
+
+

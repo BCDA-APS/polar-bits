@@ -1,0 +1,75 @@
+id4_common.gui.nowheel
+======================
+
+.. py:module:: id4_common.gui.nowheel
+
+.. autoapi-nested-parse::
+
+   An application-wide guard against values changed by the mouse wheel.
+
+   Qt lets the wheel step a spin box, a combo box, a slider or a tab bar that
+   merely happens to sit under the pointer -- no click, no focus, no warning.
+   In this GUI many of those widgets write real instrument state (a solver mode,
+   a motor target, a detector count time), and the controls live in tall scroll
+   areas that the operator scrolls with that same wheel.  A scroll aimed at the
+   column was quietly re-tuning whatever it passed over.
+
+   So the wheel never changes a value here.  One event filter on the
+   ``QApplication`` catches every wheel event on its way to a value widget and
+   hands it to the enclosing scroll area instead: the column still scrolls, the
+   value does not move.  Keyboard and clicks are untouched, and an *open* combo
+   popup is a separate view widget, so scrolling inside it still works.
+
+   The redirect is explicit because Qt will not do it for us.  Qt propagates an
+   *ignored* wheel event up the parent chain, but only for a spontaneous one --
+   a re-sent event is delivered to its receiver and stops there -- so the guard
+   looks the ancestor up itself and sends to that scroll area's viewport, the
+   widget that actually does the scrolling.
+
+   Plot canvases are deliberately not covered: pyqtgraph does its wheel zoom
+   inside a ``QGraphicsView``, which is none of the guarded types.
+
+   Install it once, right after the ``QApplication`` exists and before any
+   widget is built::
+
+       app = QApplication.instance() or QApplication(sys.argv[:1])
+       install_wheel_guard(app)
+
+
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: GUARDED
+
+.. py:class:: WheelGuard
+
+   Bases: :py:obj:`qtpy.QtCore.QObject`
+
+
+   Event filter that keeps the wheel from changing a widget's value.
+
+
+   .. py:method:: eventFilter(obj, event)
+
+      Redirect a wheel event on a guarded widget to its scroll area.
+
+
+
+.. py:function:: install_wheel_guard(app=None)
+
+   Install the wheel guard on ``app`` (the running one by default).
+
+   Returns the :class:`WheelGuard`, which is kept alive on the application
+   object -- a filter that goes out of scope stops filtering.  Calling this
+   twice on the same application returns the guard already installed.
+
+
