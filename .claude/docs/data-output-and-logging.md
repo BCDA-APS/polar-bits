@@ -53,7 +53,7 @@ setpoints (`temps.setpoint1`/`setpoint2`) are reachable through
 
 Once set, ``mv tc 295`` and ``RE(count(1, 1, detectors=[ts]))`` work; ``ts``
 is added to ``sd.baseline`` by default so the sample temperature lands in
-every scan.  ``te(temperature)`` in ``shorts.py`` is now a thin shortcut
+every scan.  ``te(temperature)`` in ``utilities.py`` is now a thin shortcut
 over the active ``tc``.
 
 Adding a new controller is a one-line edit to the ``TEMPERATURE_CONTROLLERS``
