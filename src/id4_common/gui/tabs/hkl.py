@@ -726,13 +726,14 @@ class HklTab(BaseTab):
     def _update_banner(self):
         """Say whether the displayed diffractometer is the one plans will use.
 
-        POLAR has no simulator -- both devices drive real motors -- so the
-        distinction worth showing here is a different one.  ``hscan``,
-        ``hklscan``, ``psiscan`` and ``th2th`` take no device argument: they
-        act on whichever diffractometer is *active*.  Displaying one while
-        another is active is legitimate (looking up the other's UB, say) but
-        it is exactly the state in which a scan goes somewhere unexpected, so
-        it is called out rather than left to be inferred.
+        Real-versus-simulated is shown by the warning in the Move confirmation
+        (driven by ``real_motor_devices``); the distinction worth showing here
+        is a different one.  ``hscan``, ``hklscan``, ``psiscan`` and ``th2th``
+        take no device argument: they act on whichever diffractometer is
+        *active*.  Displaying one while another is active is legitimate
+        (looking up the other's UB, say) but it is exactly the state in which
+        a scan goes somewhere unexpected, so it is called out rather than left
+        to be inferred.
         """
         active = self._state.get("active") if self._state else None
         if active is None:
@@ -972,10 +973,8 @@ class HklTab(BaseTab):
         angles = "\n".join(
             f"    {k2} = {v:.4f}" for k2, v in self._calculated.items()
         )
-        # Unconditional at POLAR: there is no simulated diffractometer, so
-        # every device this tab can address drives real motors.  Kept as a
-        # lookup rather than a constant string because the same tab is used
-        # at stations that do have one.
+        # The simulated twins (sim_euler, sim_hp) are left out of
+        # real_motor_devices, so they get no warning.
         warning = (
             "REAL MOTORS WILL MOVE.\n\n"
             if self.device in config.profile().real_motor_devices

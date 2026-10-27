@@ -108,9 +108,23 @@ def test_id4_g_has_both_machines(at_station):
     profile = at_station("id4_g")
     assert profile.display == "4IDG"
     assert profile.has_diffractometer
-    assert profile.diffractometers == ("huber_euler", "huber_hp")
-    assert profile.mcp_allowed_devices == {"huber_euler", "huber_hp"}
+    assert profile.diffractometers == (
+        "huber_euler",
+        "huber_hp",
+        "sim_euler",
+        "sim_hp",
+    )
+    assert profile.mcp_allowed_devices == {
+        "huber_euler",
+        "huber_hp",
+        "sim_euler",
+        "sim_hp",
+    }
+    # The simulators are offered, but are not real and never the default.
+    assert profile.real_motor_devices == {"huber_euler", "huber_hp"}
     assert profile.mcp_default_device == "huber_euler"
+    assert profile.psi_geometry["sim_euler"] == "sim_euler_psi"
+    assert profile.psi_geometry["sim_hp"] == "sim_hp_psi"
     assert profile.has_flyscan
     assert profile.unsupported_reason is None
 

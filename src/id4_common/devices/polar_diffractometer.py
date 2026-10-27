@@ -221,8 +221,12 @@ class AnalyzerDevice(PseudoPositioner):
             self.set_energy(energy)
         elif acal == "r":
             print("Releasing calibration for ath!")
-            self.th_motor.user_offset.put(45, wait=True, force=True)
-            self.tth_trans.user_offset.put(0, wait=True, force=True)
+            self.release_calibration()
+
+    def release_calibration(self):
+        """Restore the nominal theta and two-theta translation offsets."""
+        self.th_motor.user_offset.put(45, wait=True, force=True)
+        self.tth_trans.user_offset.put(0, wait=True, force=True)
 
     def setup(
         self, analyzer_energy=None, analyzer_list_path=ANALYZER_LIST_PATH
@@ -339,40 +343,13 @@ class AnalyzerDevice(PseudoPositioner):
             self.crystal.put(cryst)
 
 
-class DiffractometerMixin(Device):
+class DiffractometerCoreMixin(Device):
     """
-    Mixin adding table, area-detector, filter, slit, and analyzer components to
-    a diffractometer.
+    Hardware-free behavior shared by the real and simulated diffractometers.
     """
 
     # Subscribable signal wrapping sample.UB for UB-matrix sync
     _ub_sync = Component(UBMatrixSignal, "", kind="omitted")
-
-    # Table vertical/horizontal
-    tablex = Component(EpicsMotor, "m3", labels=("motor",))
-    tabley = Component(EpicsMotor, "m1", labels=("motor",))
-
-    # Area detector motors
-    pad_rail = Component(EpicsMotor, "m21", labels=("motor",))
-    point_rail = Component(EpicsMotor, "m22", labels=("motor",))
-
-    # # Guard slit
-    # guardslt  = ...
-
-    # Filters
-    filter = Component(HuberFilter, "atten:", labels=("filter",))
-
-    # Detector JJ slit
-    detslt = Component(
-        SlitDevice,
-        "",
-        motorsDict={"top": "m31", "bot": "m32", "out": "m34", "inb": "m33"},
-        slitnum=2,
-        labels=("slit",),
-    )
-
-    # Analyzer
-    ana = Component(AnalyzerDevice, "", labels=("track_energy",))
 
     @property
     def hints(self):
@@ -416,6 +393,48 @@ class DiffractometerMixin(Device):
         """
         pass
         # self._update_calc_energy()
+
+
+class DiffractometerMixin(DiffractometerCoreMixin):
+    """
+    Mixin adding table, area-detector, filter, slit, and analyzer components to
+    a diffractometer.
+    """
+
+    # Table vertical/horizontal
+    tablex = Component(EpicsMotor, "m3", labels=("motor",))
+    tabley = Component(EpicsMotor, "m1", labels=("motor",))
+
+    # Area detector motors
+    pad_rail = Component(EpicsMotor, "m21", labels=("motor",))
+    point_rail = Component(EpicsMotor, "m22", labels=("motor",))
+
+    # # Guard slit
+    # guardslt  = ...
+
+    # Filters
+    filter = Component(HuberFilter, "atten:", labels=("filter",))
+
+    # Detector JJ slit
+    detslt = Component(
+        SlitDevice,
+        "",
+        motorsDict={"top": "m31", "bot": "m32", "out": "m34", "inb": "m33"},
+        slitnum=2,
+        labels=("slit",),
+    )
+
+    # Analyzer
+    ana = Component(AnalyzerDevice, "", labels=("track_energy",))
+
+
+def _set_axes_kind(diffractometer_class):
+    """Set the real and pseudo axes kind to config | normal.
+
+    This will prevent busy plotting.
+    """
+    for pos in diffractometer_class._real + diffractometer_class._pseudo:
+        getattr(diffractometer_class, pos).kind = Kind.config | Kind.normal
 
 
 class _DeferredEpicsSignalRO(EpicsSignalRO):
@@ -506,10 +525,7 @@ CradleDiffractometerBase = diffractometer_class_factory(
     beam_kwargs=mono_kwargs.copy(),
 )
 
-# Changes the positioners kind to config or normal. This will prevent busy
-# plotting.
-for pos in CradleDiffractometerBase._real + CradleDiffractometerBase._pseudo:
-    getattr(CradleDiffractometerBase, pos).kind = Kind.config | Kind.normal
+_set_axes_kind(CradleDiffractometerBase)
 
 
 class CradleDiffractometer(
@@ -533,10 +549,7 @@ HPDiffractometerBase = diffractometer_class_factory(
     beam_kwargs=mono_kwargs.copy(),
 )
 
-# Changes the positioners kind to config or normal. This will prevent busy
-# plotting.
-for pos in HPDiffractometerBase._real + HPDiffractometerBase._pseudo:
-    getattr(HPDiffractometerBase, pos).kind = Kind.config | Kind.normal
+_set_axes_kind(HPDiffractometerBase)
 
 
 class HPDiffractometer(

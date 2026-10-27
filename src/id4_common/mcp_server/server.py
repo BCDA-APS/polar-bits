@@ -14,11 +14,11 @@ rather than a promise in a docstring.
 
 Orientation tools take ``device``, defaulting to
 :func:`~id4_common.mcp_server.bridge.default_device`.  **That default is a real
-machine.**  6-ID-B could default to a simulator, so touching hardware was
-always an explicit act; POLAR has no simulated diffractometer, so that layer
-does not exist here and the approval gate is the only thing in front of the
-motors.  The allow-list and the per-op scope are checked again in the kernel,
-so a bug here cannot address an op to a device it was not written for.
+machine.**  6-ID-B defaulted to a simulator, so touching hardware was always
+an explicit act; POLAR has simulated twins (``sim_*``) but still defaults to a
+real machine, so the approval gate is the only thing in front of the motors.
+The allow-list and the per-op scope are checked again in the kernel, so a bug
+here cannot address an op to a device it was not written for.
 
 **The tool set depends on the station.**  ``ID4_STATION`` picks a profile in
 :mod:`id4_common.gui.config`; at a station with no diffractometer (4IDB, 4IDH)
@@ -66,11 +66,10 @@ hklscan, th2th, psiscan) will not run -- ask for a real-space scan instead
 """
 
 _DEVICES = """\
-Two diffractometers, {devices}, and **both are real** -- there is no
-simulator here, so there is nowhere to try something out first. `{default}` is
-the default; name the other one explicitly. Each has its own sample list,
+Diffractometers: {devices}. **Real motors:** {real}.{sim} `{default}` is the
+default; name any other one explicitly. Each has its own sample list,
 reflections, UB and mode, so read hkl_get_state for the device you mean rather
-than assuming the two agree.
+than assuming they agree.
 
 The reciprocal-space scan plans (hscan, kscan, lscan, hklscan, th2th, psiscan)
 take no device argument: they act on whichever diffractometer the session has
@@ -144,11 +143,23 @@ def instructions(profile=None):
     """
     profile = profile or _config.profile()
     if profile.has_diffractometer:
+        devices = profile.mcp_allowed_devices
+        real = devices & profile.real_motor_devices
+        simulated = sorted(devices - real)
+        sim = (
+            f" **Simulated** (soft motors and their own energy, no hardware):"
+            f" {', '.join(simulated)} -- try something out there before doing"
+            " it on a real one."
+            if simulated
+            else ""
+        )
         head = (
             _HEADER
             + "\n"
             + _DEVICES.format(
                 devices=", ".join(sorted(allowed_devices())),
+                real=", ".join(sorted(real)) or "none",
+                sim=sim,
                 default=default_device(),
             )
         )

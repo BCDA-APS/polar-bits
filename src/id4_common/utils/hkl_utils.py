@@ -186,7 +186,18 @@ geometries = Geometries(
     "huber_euler", "huber_euler_psi", "huber_hp", "huber_hp_psi"
 )
 
-_DIFFRACTOMETER_NAMES = ["huber_euler", "huber_hp"]
+_DIFFRACTOMETER_NAMES = ["huber_euler", "huber_hp", "sim_euler", "sim_hp"]
+
+# set_constraints() arguments applied by change_diffractometer(). The
+# simulated diffractometers use the same limits as their real counterpart.
+_EULER_CONSTRAINTS = (-1, 1, 0, 90, -20, 200, -180, 180, -2, 140, -5, 50)
+_HP_CONSTRAINTS = (-1, 1, 0, 90, 80, 100, -7, 7, -2, 140, -5, 50)
+_DEFAULT_CONSTRAINTS = {
+    "huber_euler": _EULER_CONSTRAINTS,
+    "sim_euler": _EULER_CONSTRAINTS,
+    "huber_hp": _HP_CONSTRAINTS,
+    "sim_hp": _HP_CONSTRAINTS,
+}
 
 
 def set_diffractometer(diffractometer):
@@ -254,10 +265,7 @@ def change_diffractometer(diffractometer=None):
     set_diffractometer(new_geom)
     print(f"Active diffractometer: {new_geom.name}")
 
-    if new_geom.name == "huber_euler":
-        set_constraints(-1, 1, 0, 90, -20, 200, -180, 180, -2, 140, -5, 50)
-    elif new_geom.name == "huber_hp":
-        set_constraints(-1, 1, 0, 90, 80, 100, -7, 7, -2, 140, -5, 50)
+    set_constraints(*_DEFAULT_CONSTRAINTS[new_geom.name])
 
     aliases = {
         axis: getattr(new_geom, axis) for axis in new_geom.real_axis_names
@@ -566,6 +574,10 @@ def compute_UB():
         print("UB not calculated. Check geometry.")
         traceback.print_exc()
 
+    # A simulated UB must not reach the beamline soft IOC or the Eiger.
+    if _geom_.is_simulator:
+        return
+
     # The soft-IOC UB matrix array is not modeled by any device.
     caput(
         UB_MATRIX_PV,
@@ -591,7 +603,11 @@ def update_eiger():
     The beam center is taken as the center of ROI1 and the distance as the
     current position of the diffractometer pad rail. The soft-IOC center and
     distance PVs are not part of any device, so they use a raw ``caput``.
+    Skipped when the active diffractometer is simulated.
     """
+    if get_diffractometer().is_simulator:
+        return
+
     eiger = oregistry.find("eiger")
     roi = eiger.roi1
     eiger_x = int(roi.min_xyz.min_x.get() + roi.size.x.get() / 2)

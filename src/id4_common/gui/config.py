@@ -118,9 +118,9 @@ class StationProfile:
     #:
     #: The POLAR geometry is ``APS POLAR`` under ``hkl_soleil`` with six real
     #: axes -- ``tau mu chi phi gamma delta`` -- and there are *two* machines
-    #: on the same solver, the Euler cradle and the high-pressure press.
-    #: 6-ID-B had one machine (``psic``) plus its simulator; here the pairing
-    #: is by role, not by real-versus-simulated.
+    #: on the same solver, the Euler cradle and the high-pressure press, plus
+    #: a simulated twin of each (``sim_euler``, ``sim_hp``: soft motors and a
+    #: user-set energy, see ``devices/sim_diffractometer.py``).
     diffractometers: tuple[str, ...] = ()
 
     #: ``device -> psi-engine partner``.  hklpy2 keeps psi in a separate
@@ -136,18 +136,16 @@ class StationProfile:
     #: :attr:`diffractometers` listed here gets the red "REAL MOTORS WILL
     #: MOVE" banner and the extra line in the Move confirmation.
     #:
-    #: At POLAR **both** machines are real -- there is no simulator in
-    #: ``devices.yml`` -- so this is the whole list.  Add a simulated twin by
-    #: leaving it *out*.
+    #: At POLAR the two Huber machines are real; the ``sim_*`` twins are
+    #: left *out*, which is what marks them as simulated.
     real_motor_devices: frozenset[str] = frozenset()
 
     #: Device an MCP tool call defaults to when it does not name one.
     #:
     #: 6-ID-B defaulted to the *simulator*, so reaching the real machine was
-    #: always an explicit act.  POLAR has no simulator, so that protection is
-    #: not available and the default is a real machine -- which is precisely
-    #: why the approval gate is the load-bearing control here, not the
-    #: default.
+    #: always an explicit act.  POLAR keeps a real machine as the default even
+    #: though simulators exist -- which is precisely why the approval gate is
+    #: the load-bearing control here, not the default.
     mcp_default_device: str | None = None
 
     #: Station has the softglue and piezo hardware the flyscan viewer reads.
@@ -190,11 +188,13 @@ STATIONS: dict[str, StationProfile] = {
     "id4_g": StationProfile(
         package="id4_g",
         display="4IDG",
-        diffractometers=("huber_euler", "huber_hp"),
+        diffractometers=("huber_euler", "huber_hp", "sim_euler", "sim_hp"),
         psi_geometry=MappingProxyType(
             {
                 "huber_euler": "huber_euler_psi",
                 "huber_hp": "huber_hp_psi",
+                "sim_euler": "sim_euler_psi",
+                "sim_hp": "sim_hp_psi",
             }
         ),
         real_motor_devices=frozenset({"huber_euler", "huber_hp"}),

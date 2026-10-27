@@ -330,6 +330,28 @@ id4_common.devices.polar_diffractometer.HPDiffractometerPSI:
   prefix: "4idgSoft:"
   labels: ["4idg", "diffractometer", "baseline"]
 
+# Simulated diffractometers (soft motors, user-defined energy, no EPICS).
+# Each *_psi entry mirrors the motors of its partner, list the partner first.
+id4_common.devices.sim_diffractometer.SimDiffractometer:
+- name: sim_euler
+  prefix: ""
+  real_diffractometer: huber_euler  # used by the sync_* methods
+  labels: ["4idg", "sim", "diffractometer"]
+
+- name: sim_hp
+  prefix: ""
+  real_diffractometer: huber_hp  # used by the sync_* methods
+  labels: ["4idg", "sim", "diffractometer"]
+
+id4_common.devices.sim_diffractometer.SimDiffractometerPSI:
+- name: sim_euler_psi
+  prefix: ""
+  labels: ["4idg", "sim", "diffractometer"]
+
+- name: sim_hp_psi
+  prefix: ""
+  labels: ["4idg", "sim", "diffractometer"]
+
 id4_common.devices.ad_eiger1M.Eiger1MDetector:
 - name: eiger
   prefix: "4idEiger:"

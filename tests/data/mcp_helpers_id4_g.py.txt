@@ -2,7 +2,7 @@ _gui_mcp_ub_backup = {}
 _gui_mcp_last = "{}"
 
 #: Filled in from id4_common.mcp_server.bridge, so there is one source of truth.
-_GUI_MCP_DEVICES = {'huber_euler', 'huber_hp'}
+_GUI_MCP_DEVICES = {'huber_euler', 'huber_hp', 'sim_euler', 'sim_hp'}
 _GUI_MCP_SESSION = 'session'
 _GUI_MCP_FAILURE_PREFIXES = ('Could not', 'Cannot', 'Unknown', 'The current sample cannot', 'Psi can only', 'UB not computed', 'The two orienting', 'No UB backup', 'Fixed angles must be')
 

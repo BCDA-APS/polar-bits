@@ -308,8 +308,8 @@ def _gui_hkl_state(name):
 
     # Readback PV per real axis, so the GUI can follow a move over Channel
     # Access while the kernel's shell channel is blocked by the move itself.
-    # None for a soft axis, which has no PV to watch.  POLAR has no
-    # simulated diffractometer, so in practice every axis here has one.
+    # None for a soft axis (the sim_* diffractometers), which has no PV to
+    # watch.
     real_pvs = {}
     for _f in dev.real_positioners._fields:
         _ax = getattr(dev, _f, None)
