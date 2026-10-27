@@ -51,10 +51,10 @@ Module Contents
 
    Diffractometers the MCP layer may address at this station.
 
-   The psi partners (``huber_euler_psi``, ``huber_hp_psi``) stay out: they
-   are separate engines on the same motors and nothing here needs them.  The
-   kernel copy in :func:`mcp_helpers_code` is generated from this set, which
-   is what makes the allow-list a control rather than a comment.
+   The psi partners (``huber_euler_psi``, ``huber_hp_psi``, ...) stay out:
+   they are separate engines on the same motors and nothing here needs them.
+   The kernel copy in :func:`mcp_helpers_code` is generated from this set,
+   which is what makes the allow-list a control rather than a comment.
 
    Empty at a station with no diffractometer, so every hkl op is refused in
    the kernel there even if a client somehow reaches one.
@@ -70,12 +70,11 @@ Module Contents
    ``None`` at a station with no diffractometer -- where no tool that takes a
    device is registered in the first place.
 
-   **Both POLAR machines are real.**  6-ID-B defaulted to a simulator, so
-   reaching real motors was always an explicit act; there is no simulator
-   here, so that layer of protection does not exist and the approval gate is
-   the only thing standing in front of the hardware.  The tool descriptions
-   say so rather than repeating 6-ID-B's "try it on the simulator first",
-   which here would be advice a client cannot follow.
+   **The POLAR default is a real machine.**  6-ID-B defaulted to a
+   simulator, so reaching real motors was always an explicit act.  POLAR has
+   simulated twins (``sim_euler``, ``sim_hp``) but a client must name one to
+   use it, so the approval gate is still the only thing standing in front of
+   the hardware by default.
 
 
 .. py:data:: SESSION_DEVICE

@@ -135,7 +135,7 @@ succeeds.
 - X-ray diagnostics: `aps_xbpm`, `aps_undulator`, `aps_status`
 - Optics: `kb_generic` (KB mirror factory), `crl_device` (CRL factory)
 - Monochromator / energy: `monochromator`, `energy_device`, `mono_feedback`
-- Diffractometer: `polar_diffractometer_hklpy2` (Cradle / HP cradles + `_psi` engines)
+- Diffractometer: `polar_diffractometer` (Cradle / HP cradles + `_psi` engines), `sim_diffractometer` (simulated twins)
 - Fluorescence detectors: `vortex_xmap`, `vortex_xspress3_me{4,7}`, `vortex_dante_me{1,4}`
 - Area detectors: `ad_eiger1M`, `ad_lambda`, `ad_lightfield`, `ad_vimba`
 - Scalers / electrometers: `scaler`, `quadems`, `sydor_device`

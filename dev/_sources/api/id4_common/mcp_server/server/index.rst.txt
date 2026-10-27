@@ -21,11 +21,11 @@ id4_common.mcp_server.server
 
    Orientation tools take ``device``, defaulting to
    :func:`~id4_common.mcp_server.bridge.default_device`.  **That default is a real
-   machine.**  6-ID-B could default to a simulator, so touching hardware was
-   always an explicit act; POLAR has no simulated diffractometer, so that layer
-   does not exist here and the approval gate is the only thing in front of the
-   motors.  The allow-list and the per-op scope are checked again in the kernel,
-   so a bug here cannot address an op to a device it was not written for.
+   machine.**  6-ID-B defaulted to a simulator, so touching hardware was always
+   an explicit act; POLAR has simulated twins (``sim_*``) but still defaults to a
+   real machine, so the approval gate is the only thing in front of the motors.
+   The allow-list and the per-op scope are checked again in the kernel, so a bug
+   here cannot address an op to a device it was not written for.
 
    **The tool set depends on the station.**  ``ID4_STATION`` picks a profile in
    :mod:`id4_common.gui.config`; at a station with no diffractometer (4IDB, 4IDH)

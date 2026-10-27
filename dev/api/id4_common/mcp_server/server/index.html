@@ -581,11 +581,11 @@ at all (<a class="reference internal" href="../motion/index.html#module-id4_comm
 rather than a promise in a docstring.</p>
 <p>Orientation tools take <code class="docutils literal notranslate"><span class="pre">device</span></code>, defaulting to
 <a class="reference internal" href="../bridge/index.html#id4_common.mcp_server.bridge.default_device" title="id4_common.mcp_server.bridge.default_device"><code class="xref py py-func docutils literal notranslate"><span class="pre">default_device()</span></code></a>.  <strong>That default is a real
-machine.</strong>  6-ID-B could default to a simulator, so touching hardware was
-always an explicit act; POLAR has no simulated diffractometer, so that layer
-does not exist here and the approval gate is the only thing in front of the
-motors.  The allow-list and the per-op scope are checked again in the kernel,
-so a bug here cannot address an op to a device it was not written for.</p>
+machine.</strong>  6-ID-B defaulted to a simulator, so touching hardware was always
+an explicit act; POLAR has simulated twins (<code class="docutils literal notranslate"><span class="pre">sim_*</span></code>) but still defaults to a
+real machine, so the approval gate is the only thing in front of the motors.
+The allow-list and the per-op scope are checked again in the kernel, so a bug
+here cannot address an op to a device it was not written for.</p>
 <p><strong>The tool set depends on the station.</strong>  <code class="docutils literal notranslate"><span class="pre">ID4_STATION</span></code> picks a profile in
 <a class="reference internal" href="../../gui/config/index.html#module-id4_common.gui.config" title="id4_common.gui.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">id4_common.gui.config</span></code></a>; at a station with no diffractometer (4IDB, 4IDH)
 the eighteen orientation tools are not declared at all and the instructions

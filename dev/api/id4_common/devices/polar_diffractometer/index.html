@@ -553,6 +553,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../scaler/index.html">id4_common.devices.scaler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scaler_dual_ctr8/index.html">id4_common.devices.scaler_dual_ctr8</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../shutters/index.html">id4_common.devices.shutters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sim_diffractometer/index.html">id4_common.devices.sim_diffractometer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_g/index.html">id4_common.devices.softgluezynq_g</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_parts/index.html">id4_common.devices.softgluezynq_parts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../softgluezynq_vortex/index.html">id4_common.devices.softgluezynq_vortex</a></li>
@@ -823,6 +824,12 @@ beamline energy.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.AnalyzerDevice.release_calibration">
+<span class="sig-name descname"><span class="pre">release_calibration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.release_calibration" title="Link to this definition">#</a></dt>
+<dd><p>Restore the nominal theta and two-theta translation offsets.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.AnalyzerDevice.setup">
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analyzer_energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analyzer_list_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ANALYZER_LIST_PATH</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.setup" title="Link to this definition">#</a></dt>
 <dd><p>List compatible analyzer crystals and interactively configure d-spacing
@@ -832,9 +839,46 @@ and crystal.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerCoreMixin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">DiffractometerCoreMixin</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<p>Hardware-free behavior shared by the real and simulated diffractometers.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.hints">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.hints" title="Link to this definition">#</a></dt>
+<dd><p>Return only explicitly-hinted sub-components to avoid busy plotting.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Kind</span></code> is a bitfield: <code class="docutils literal notranslate"><span class="pre">Kind.hinted</span></code> (0b101) shares the
+<code class="docutils literal notranslate"><span class="pre">Kind.normal</span></code> bit (0b001). <code class="docutils literal notranslate"><span class="pre">_get_components_of_kind(Kind.hinted)</span></code>
+therefore yields <em>both</em> normal and hinted components. The mask
+<code class="docutils literal notranslate"><span class="pre">(~Kind.normal</span> <span class="pre">&amp;</span> <span class="pre">Kind.hinted)</span></code> isolates the “hinted-only” bit so
+only components explicitly tagged <code class="docutils literal notranslate"><span class="pre">Kind.hinted</span></code> contribute fields.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.auxiliary_axis_names">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">auxiliary_axis_names</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.auxiliary_axis_names" title="Link to this definition">#</a></dt>
+<dd><p>Drop nested PseudoPositioner sub-devices from auxiliaries.</p>
+<p>hklpy2’s <code class="docutils literal notranslate"><span class="pre">wh(full=True)</span></code>/<code class="docutils literal notranslate"><span class="pre">pa()</span></code> formats each auxiliary axis with
+<code class="docutils literal notranslate"><span class="pre">round(component.position,</span> <span class="pre">ndigits=...)</span></code>. <code class="docutils literal notranslate"><span class="pre">PseudoPositioner</span></code>
+sub-devices (e.g. <code class="docutils literal notranslate"><span class="pre">ana</span></code>) return a <code class="docutils literal notranslate"><span class="pre">PseudoPosition</span></code> namedtuple,
+which has no <code class="docutils literal notranslate"><span class="pre">__round__</span></code> and crashes the print step. Filter them
+out here; scalar single-axis auxiliaries (the case hklpy2 was
+designed for) still pass through.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.default_settings">
+<span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.default_settings" title="Link to this definition">#</a></dt>
+<dd><p>Apply default settings for the diffractometer mixin (no-op; subclasses
+override).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerMixin">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">DiffractometerMixin</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin" title="id4_common.devices.polar_diffractometer.DiffractometerCoreMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerCoreMixin</span></code></a></p>
 <p>Mixin adding table, area-detector, filter, slit, and analyzer components to
 a diffractometer.</p>
 <dl class="py attribute">
@@ -871,36 +915,6 @@ a diffractometer.</p>
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerMixin.ana">
 <span class="sig-name descname"><span class="pre">ana</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.ana" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerMixin.hints">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.hints" title="Link to this definition">#</a></dt>
-<dd><p>Return only explicitly-hinted sub-components to avoid busy plotting.</p>
-<p><code class="docutils literal notranslate"><span class="pre">Kind</span></code> is a bitfield: <code class="docutils literal notranslate"><span class="pre">Kind.hinted</span></code> (0b101) shares the
-<code class="docutils literal notranslate"><span class="pre">Kind.normal</span></code> bit (0b001). <code class="docutils literal notranslate"><span class="pre">_get_components_of_kind(Kind.hinted)</span></code>
-therefore yields <em>both</em> normal and hinted components. The mask
-<code class="docutils literal notranslate"><span class="pre">(~Kind.normal</span> <span class="pre">&amp;</span> <span class="pre">Kind.hinted)</span></code> isolates the “hinted-only” bit so
-only components explicitly tagged <code class="docutils literal notranslate"><span class="pre">Kind.hinted</span></code> contribute fields.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerMixin.auxiliary_axis_names">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">auxiliary_axis_names</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.auxiliary_axis_names" title="Link to this definition">#</a></dt>
-<dd><p>Drop nested PseudoPositioner sub-devices from auxiliaries.</p>
-<p>hklpy2’s <code class="docutils literal notranslate"><span class="pre">wh(full=True)</span></code>/<code class="docutils literal notranslate"><span class="pre">pa()</span></code> formats each auxiliary axis with
-<code class="docutils literal notranslate"><span class="pre">round(component.position,</span> <span class="pre">ndigits=...)</span></code>. <code class="docutils literal notranslate"><span class="pre">PseudoPositioner</span></code>
-sub-devices (e.g. <code class="docutils literal notranslate"><span class="pre">ana</span></code>) return a <code class="docutils literal notranslate"><span class="pre">PseudoPosition</span></code> namedtuple,
-which has no <code class="docutils literal notranslate"><span class="pre">__round__</span></code> and crashes the print step. Filter them
-out here; scalar single-axis auxiliaries (the case hklpy2 was
-designed for) still pass through.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerMixin.default_settings">
-<span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.default_settings" title="Link to this definition">#</a></dt>
-<dd><p>Apply default settings for the diffractometer mixin (no-op; subclasses
-override).</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -1130,7 +1144,14 @@ while the VDCM IOC is offline. <code class="docutils literal notranslate"><span 
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.ath_reset_offset"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.ath_reset_offset()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.set_energy"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.set_energy()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.calc"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.calc()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.release_calibration"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.release_calibration()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.setup"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.setup()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin"><code class="docutils literal notranslate"><span class="pre">DiffractometerCoreMixin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.hints"><code class="docutils literal notranslate"><span class="pre">DiffractometerCoreMixin.hints</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.auxiliary_axis_names"><code class="docutils literal notranslate"><span class="pre">DiffractometerCoreMixin.auxiliary_axis_names</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.default_settings"><code class="docutils literal notranslate"><span class="pre">DiffractometerCoreMixin.default_settings()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin</span></code></a><ul class="nav section-nav flex-column">
@@ -1141,9 +1162,6 @@ while the VDCM IOC is offline. <code class="docutils literal notranslate"><span 
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.filter"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.filter</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.detslt"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.detslt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.ana"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.ana</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.hints"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.hints</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.auxiliary_axis_names"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.auxiliary_axis_names</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin.default_settings"><code class="docutils literal notranslate"><span class="pre">DiffractometerMixin.default_settings()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.DeferredEpicsMonochromatorRO"><code class="docutils literal notranslate"><span class="pre">DeferredEpicsMonochromatorRO</span></code></a><ul class="nav section-nav flex-column">

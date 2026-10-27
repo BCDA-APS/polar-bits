@@ -205,6 +205,7 @@ Module Contents
    The beam center is taken as the center of ROI1 and the distance as the
    current position of the diffractometer pad rail. The soft-IOC center and
    distance PVs are not part of any device, so they use a raw ``caput``.
+   Skipped when the active diffractometer is simulated.
 
 
 .. py:class:: Sync_UB_Matrix(source, target)

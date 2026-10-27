@@ -108,6 +108,10 @@ These are shared across the three downstream hutches.
 | `huber_euler_psi` | `CradleDiffractometerPSI` (`polar_diffractometer`) | `4idgSoft:` | Huber Euler — psi engine | `4idg`, `diffractometer`, `baseline` |
 | `huber_hp` | `HPDiffractometer` (`polar_diffractometer`) | `4idgSoft:` | HP (high-pressure) diffractometer | `4idg`, `diffractometer`, `baseline` |
 | `huber_hp_psi` | `HPDiffractometerPSI` (`polar_diffractometer`) | `4idgSoft:` | HP diffractometer — psi engine | `4idg`, `diffractometer`, `baseline` |
+| `sim_euler` | `SimDiffractometer` (`sim_diffractometer`) | — | Simulated twin of `huber_euler` (soft motors, user-set energy) | `4idg`, `sim`, `diffractometer` |
+| `sim_euler_psi` | `SimDiffractometerPSI` (`sim_diffractometer`) | — | Simulated Euler — psi engine (mirrors `sim_euler`) | `4idg`, `sim`, `diffractometer` |
+| `sim_hp` | `SimDiffractometer` (`sim_diffractometer`) | — | Simulated twin of `huber_hp` (soft motors, user-set energy) | `4idg`, `sim`, `diffractometer` |
+| `sim_hp_psi` | `SimDiffractometerPSI` (`sim_diffractometer`) | — | Simulated HP — psi engine (mirrors `sim_hp`) | `4idg`, `sim`, `diffractometer` |
 | `gkb` | `GKBDevice` | `4idgKB:` | KB mirror pair (4IDG) | `optics`, `kb`, `baseline` |
 | `crl` | `CRLClass` | `4idPyCRL:CRL4ID:` | Compound refractive lens (CRL, shared 4IDG/4IDH) | `optics`, `track_energy`, `baseline` |
 | `gslt` | `SlitDevice` (`jj_slits`) | `4idgSoft:` | 4IDG slits (`top, bot, out, inb`) | `slit`, `baseline` |

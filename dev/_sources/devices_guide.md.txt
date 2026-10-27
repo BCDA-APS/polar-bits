@@ -132,6 +132,7 @@ Real examples in the codebase:
 |-------|--------|-------|
 | `CradleDiffractometer` / `HPDiffractometer` | `polar_diffractometer` | Huber Euler / HP cradles (hklpy2) |
 | `CradleDiffractometerPSI` / `HPDiffractometerPSI` | `polar_diffractometer` | Companion `_psi` engines |
+| `SimDiffractometer` / `SimDiffractometerPSI` | `sim_diffractometer` | Simulated twins (soft motors, user-set energy) with `sync_motors`, `sync_energy`, `sync_setup`, `sync_all` |
 
 ### Experiment Utilities
 
