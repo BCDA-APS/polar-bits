@@ -704,6 +704,9 @@ class KernelSession(QObject):
         self.poll_client = None
         #: Where this session advertises its kernel for the MCP server.
         self.pointer_path = None
+        #: msg_id of the last bootstrap cell, so the poller can hold off until
+        #: the kernel has finished running it.
+        self.bootstrap_msg_id = None
         self._ready_timer = None
         self._ready_deadline = 0.0
         self._ready_last_request = 0.0
@@ -899,7 +902,7 @@ class KernelSession(QObject):
                 "finishes will run afterwards.\n"
             )
 
-        console.kernel_client.execute(
+        self.bootstrap_msg_id = console.kernel_client.execute(
             "\n".join(parts),
             silent=True,
             store_history=False,
@@ -964,6 +967,10 @@ class StatusPoller(QObject):
         #: to every tab once a second.
         self._metadata = None
         self._busy = False
+        #: The bootstrap msg_id whose ``idle`` status has been seen.  Polling
+        #: waits until it matches ``session.bootstrap_msg_id``; see
+        #: :meth:`_poll_kernel`.
+        self._bootstrapped_id = None
         self._state = None
         self._pending = None
         self._once = {}
@@ -1031,6 +1038,13 @@ class StatusPoller(QObject):
                 if state in ("busy", "idle"):
                     self._busy = state == "busy"
             parent = (msg.get("parent_header") or {}).get("msg_id")
+            if (
+                msg.get("msg_type") == "status"
+                and msg.get("content", {}).get("execution_state") == "idle"
+                and parent is not None
+                and parent == self._session.bootstrap_msg_id
+            ):
+                self._bootstrapped_id = parent
             if parent in self._own_requests:
                 continue
             self.iopub_message.emit(msg)
@@ -1080,6 +1094,18 @@ class StatusPoller(QObject):
             self._collect_reply(client)
             return
         if self._busy:
+            return
+        # Nothing to ask before the bootstrap cell has run.  It goes out on the
+        # console's client and this on the poll client, and separate sockets
+        # give no ordering guarantee: the first poll, sent the instant the
+        # poller starts, can reach the kernel ahead of the (much larger)
+        # bootstrap and be evaluated in an empty namespace -- every expression
+        # but ``cwd`` raising NameError.  Keyed on the msg_id rather than a
+        # flag so a restart, which re-runs the bootstrap, waits again on its
+        # own.  A bootstrap that raises still ends ``idle``, so a broken
+        # startup is still reported by :meth:`_log_failed`.
+        bootstrap_id = self._session.bootstrap_msg_id
+        if bootstrap_id is None or self._bootstrapped_id != bootstrap_id:
             return
         expressions = dict(KERNEL_EXPRESSIONS)
         expressions.update(self._once)
