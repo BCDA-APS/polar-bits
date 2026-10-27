@@ -23,6 +23,7 @@ from ophyd import PseudoSingle
 from ophyd import Signal
 from ophyd.pseudopos import pseudo_position_argument
 from ophyd.pseudopos import real_position_argument
+from ophyd.utils import DisconnectedError
 from scipy.constants import Planck
 from scipy.constants import speed_of_light
 
@@ -416,42 +417,43 @@ class DiffractometerMixin(Device):
 
 
 class _DeferredEpicsSignalRO(EpicsSignalRO):
-    """EpicsSignalRO that returns a fallback value before EPICS is connected.
+    """EpicsSignalRO with a fallback value usable only during construction.
 
     Why: hklpy2's ``DiffractometerBase.__init__`` calls
-    ``beam.wavelength.get()`` (and indirectly ``beam.energy``) while seeding
-    the solver. With a plain ``EpicsSignalRO`` this triggers
-    ``wait_for_connection()``, which times out after 60 s when the IOC is
-    off and breaks ``make_devices(connect=False)``. This subclass returns
-    the fallback only while the signal is unconnected; once EPICS connects,
-    the normal ``EpicsSignalRO.get()`` path takes over.
+    ``beam.wavelength.get()`` while seeding the solver. With a plain
+    ``EpicsSignalRO`` this triggers ``wait_for_connection()``, which times
+    out after 60 s when the IOC is off and breaks
+    ``make_devices(connect=False)``.
 
-    How to apply: set ``_fallback_value`` to a sane default for the PV (a
-    plausible wavelength in angstroms / energy in keV). The value is only
-    ever returned during the disconnected-startup window.
+    How to apply: ``_fallback_value`` is returned only while the signal is
+    unconnected *and* the fallback is still enabled. ``_InitFallbackMixin``
+    sets it to ``None`` at the end of the diffractometer ``__init__``, after
+    which ``get()`` raises ``DisconnectedError`` immediately while the PV is
+    down, so the placeholder never reaches a calculation. Raising instead of
+    waiting the 60 s connection timeout matters because hklpy2 reads the
+    wavelength from motor readback callbacks (``inverse()``), and blocking
+    there stalls the CA callback thread.
+
+    TODO: remove once hklpy2 seeds the solver lazily in ``set_solver``.
     """
 
     _fallback_value = 1.0
 
     def get(self, *args, **kwargs):
-        """Return the fallback value if not yet connected, else read EPICS."""
+        """Read EPICS; if unconnected, return the fallback or raise."""
         if not self.connected:
-            return self._fallback_value
+            if self._fallback_value is not None:
+                return self._fallback_value
+            raise DisconnectedError(f"{self.pvname} is not connected")
         return super().get(*args, **kwargs)
 
 
-class _DeferredEnergySignalRO(_DeferredEpicsSignalRO):
-    """Deferred wavelength signal with an X-ray-like fallback (8 keV)."""
-
-    _fallback_value = 8.0
-
-
 class DeferredEpicsMonochromatorRO(EpicsMonochromatorRO):
-    """``EpicsMonochromatorRO`` whose wavelength/energy don't block on init.
+    """``EpicsMonochromatorRO`` whose wavelength doesn't block on init.
 
     See ``_DeferredEpicsSignalRO`` for the rationale. Used as the ``beam``
     component for the POLAR diffractometers so they can be instantiated
-    while the VDCM IOC is offline.
+    while the VDCM IOC is offline. ``energy`` is the stock ``EpicsSignalRO``.
     """
 
     wavelength = FormattedComponent(
@@ -459,11 +461,21 @@ class DeferredEpicsMonochromatorRO(EpicsMonochromatorRO):
         "{prefix}{_pv_wavelength}",
         kind="hinted",
     )
-    energy = FormattedComponent(
-        _DeferredEnergySignalRO,
-        "{prefix}{_pv_energy}",
-        kind="hinted",
-    )
+
+
+class _InitFallbackMixin(Device):
+    """Disable the beam wavelength fallback once construction is done.
+
+    Also marks the solver dirty so the placeholder wavelength used while
+    seeding the solver is replaced by a real EPICS read (or a connection
+    error) on the next calculation.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Construct the diffractometer, then disable the fallback."""
+        super().__init__(*args, **kwargs)
+        self.beam.wavelength._fallback_value = None
+        self.core.request_solver_update(True)
 
 
 mono_kwargs = {
@@ -498,7 +510,9 @@ for pos in CradleDiffractometerBase._real + CradleDiffractometerBase._pseudo:
     getattr(CradleDiffractometerBase, pos).kind = Kind.config | Kind.normal
 
 
-class CradleDiffractometer(DiffractometerMixin, CradleDiffractometerBase):
+class CradleDiffractometer(
+    _InitFallbackMixin, DiffractometerMixin, CradleDiffractometerBase
+):
     """hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation."""
 
     x = Component(EpicsMotor, "m40", labels=("motor",))
@@ -523,7 +537,9 @@ for pos in HPDiffractometerBase._real + HPDiffractometerBase._pseudo:
     getattr(HPDiffractometerBase, pos).kind = Kind.config | Kind.normal
 
 
-class HPDiffractometer(DiffractometerMixin, HPDiffractometerBase):
+class HPDiffractometer(
+    _InitFallbackMixin, DiffractometerMixin, HPDiffractometerBase
+):
     """
     hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
     """
@@ -557,7 +573,7 @@ class HPDiffractometer(DiffractometerMixin, HPDiffractometerBase):
     )
 
 
-CradleDiffractometerPSI = diffractometer_class_factory(
+CradleDiffractometerPSIBase = diffractometer_class_factory(
     solver="hkl_soleil",
     solver_kwargs={"engine": "psi"},
     geometry="APS POLAR",
@@ -570,7 +586,7 @@ CradleDiffractometerPSI = diffractometer_class_factory(
 )
 
 
-HPDiffractometerPSI = diffractometer_class_factory(
+HPDiffractometerPSIBase = diffractometer_class_factory(
     solver="hkl_soleil",
     solver_kwargs={"engine": "psi"},
     geometry="APS POLAR",
@@ -581,3 +597,11 @@ HPDiffractometerPSI = diffractometer_class_factory(
     _real="tau mu chi phi gamma delta".split(),
     beam_kwargs=mono_kwargs.copy(),
 )
+
+
+class CradleDiffractometerPSI(_InitFallbackMixin, CradleDiffractometerPSIBase):
+    """hklpy2 APS-POLAR cradle diffractometer using the psi engine."""
+
+
+class HPDiffractometerPSI(_InitFallbackMixin, HPDiffractometerPSIBase):
+    """hklpy2 APS-POLAR HP-press diffractometer using the psi engine."""
