@@ -53,6 +53,7 @@ Submodules
    /api/id4_common/devices/phaseplates/index
    /api/id4_common/devices/piezo_jena/index
    /api/id4_common/devices/polar_diffractometer/index
+   /api/id4_common/devices/polar_diffractometer_bkp_Oct2026/index
    /api/id4_common/devices/polar_status/index
    /api/id4_common/devices/polarimeter/index
    /api/id4_common/devices/preamps/index

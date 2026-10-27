@@ -104,6 +104,8 @@ Module Contents
 
 
 .. py:data:: ALLOWED_PLANS
+   :value: ('count', 'ascan', 'lup', 'grid_scan', 'rel_grid_scan', 'th2th', 'hscan', 'kscan', 'lscan',...
+
 
 .. py:data:: MOTION_READ_OPS
 

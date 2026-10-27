@@ -696,6 +696,11 @@ Module Contents
 
 
 
+   .. py:attribute:: bootstrap_msg_id
+      :value: None
+
+
+
    .. py:method:: start()
 
       Start the kernel and both clients.
