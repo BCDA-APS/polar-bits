@@ -96,16 +96,13 @@ def abs_set(*args, **kwargs):
 
     Parameters
     ----------
-    obj : Device
-    group : string (or any hashable object), optional
-        identifier used by 'wait'
-    wait : boolean, optional
-        If True, wait for completion before processing any more messages.
-        False by default.
     args :
-        passed to obj.set()
+        device1, value1, device2, value2, ... passed to
+        bluesky.plan_stubs.abs_set
     kwargs :
-        passed to obj.set()
+        passed to bluesky.plan_stubs.abs_set. Notably ``group`` (identifier
+        used by 'wait') and ``wait`` (if True, wait for completion before
+        processing any more messages; False by default).
 
     Yields
     ------

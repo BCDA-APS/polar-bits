@@ -7,7 +7,12 @@ Two configurations are available depending on which insert is mounted:
 - `huber_euler` — Huber Eulerian cradle
 - `huber_hp` — high-precision goniometer
 
-The HKL utility functions are provided by `hkl_utils_hklpy2.py` and cover
+Each one also has a simulated twin, `sim_euler` and `sim_hp`, with soft
+motors and a user-defined energy. Use them to try out an orientation or a
+calculation without moving hardware (see
+[Simulated Diffractometers](#simulated-diffractometers)).
+
+The HKL utility functions are provided by `hkl_utils.py` and cover
 sample management, orientation, forward/inverse calculations, mode selection,
 constraint management, and configuration save/restore.
 
@@ -21,6 +26,17 @@ constraint management, and configuration save/restore.
 |---------|-------------|
 | `change_diffractometer(name)` | Select active diffractometer; update motor aliases, h/k/l aliases, and axis constraints |
 | `set_detector()` | Select Eiger or point detector/analyzer arm |
+
+### Simulated diffractometers
+
+| Command | Description |
+|---------|-------------|
+| `change_diffractometer("sim_euler")` | Work on the simulator (`"sim_hp"` for the HP twin) |
+| `sim_euler.beam.energy.put(keV)` | Set the simulated energy |
+| `sim_euler.sync_setup()` | Copy samples, reflections, UB, constraints and mode from `huber_euler` |
+| `sim_euler.sync_energy()` | Copy the beamline energy |
+| `sim_euler.sync_motors()` | Copy the diffractometer and analyzer motor positions |
+| `sim_euler.sync_all()` | All of the above |
 
 ### Moving
 
@@ -122,7 +138,9 @@ This activates the `polar-bits` conda environment and launches IPython with all
 
 ## Selecting the Active Diffractometer
 
-Two diffractometers are available. Call `change_diffractometer()` to select one.
+Two diffractometers are available, plus their simulated twins (see
+[Simulated Diffractometers](#simulated-diffractometers)). Call
+`change_diffractometer()` to select one.
 This sets the active diffractometer for all HKL utility functions, applies the
 appropriate axis constraints, and injects motor aliases into the session
 namespace:
@@ -130,6 +148,8 @@ namespace:
 ```python
 change_diffractometer("huber_euler")   # Eulerian cradle
 change_diffractometer("huber_hp")      # High-precision goniometer
+change_diffractometer("sim_euler")     # simulated Eulerian cradle
+change_diffractometer("sim_hp")        # simulated high-precision goniometer
 change_diffractometer()                # interactive prompt
 ```
 
@@ -159,6 +179,111 @@ into the session namespace by `change_diffractometer()`. They behave like
 ophyd positioners — anywhere a real motor is accepted you can pass `h`, `k`,
 or `l` instead, e.g. `mv(l, 2.0)`, `lup(l, -0.05, 0.05, 21, 0.5)`,
 `ascan(k, -0.1, 0.1, 40, 0.5)`, or `cen(l)` after a scan.
+
+---
+
+## Simulated Diffractometers
+
+`sim_euler` and `sim_hp` are geometry-only copies of `huber_euler` and
+`huber_hp`. They use the same APS POLAR geometry and hkl solver, but every
+motor is a soft (simulated) positioner and the energy is a value you set. No
+EPICS is involved, so nothing physical moves. Each also has a `_psi` partner
+(`sim_euler_psi`, `sim_hp_psi`), like the real devices.
+
+What they include:
+
+- The six diffractometer circles (`tau`, `mu`, `chi`, `phi`, `gamma`,
+  `delta`) and the `h`, `k`, `l` pseudo-axes.
+- The polarization analyzer (`ana`), with simulated `ath`, `atth`, `eta`
+  and `achi` motors.
+
+They do **not** include the sample stages, tables, detector rails, the
+detector slit, or the Huber filter.
+
+### Selecting a simulator
+
+```python
+change_diffractometer("sim_euler")   # same constraints as huber_euler
+change_diffractometer("sim_hp")      # same constraints as huber_hp
+```
+
+All the HKL utility functions (`newsample`, `setor0`, `compute_UB`, `ca`,
+`wh`, `setmode`, `setaz`, `freeze`, `analyzer_configuration`, …) and
+reciprocal-space scans then act on the simulator.
+
+```{warning}
+`change_diffractometer` rebinds the motor aliases (`mu`, `delta`, …, `h`,
+`k`, `l`, `ath`, `atth`, `eta`, `achi`) to the simulator. While a simulator
+is active, `mv(mu, 10)` moves the **simulated** `mu`. Call
+`change_diffractometer("huber_euler")` (or `"huber_hp"`) to go back to the
+real motors.
+```
+
+The simulators never write to beamline hardware. `compute_UB()` does not
+update the soft-IOC UB matrix PV, and the Eiger beam center and distance
+are not changed.
+
+### Setting the energy
+
+The simulated energy starts at 10 keV and is independent of the
+monochromator:
+
+```python
+sim_euler.beam.energy.put(8.9)       # keV, the wavelength follows
+sim_euler.beam.wavelength.get()      # Å
+```
+
+### Copying the beamline state into a simulator
+
+Each simulator knows its real counterpart (`sim_euler` ↔ `huber_euler`,
+`sim_hp` ↔ `huber_hp`) and can copy its state:
+
+| Method | What it copies |
+|--------|----------------|
+| `sync_setup()` | Samples (lattice, reflections, U and UB), the selected sample, constraints, mode, mode extras (e.g. the `h2 k2 l2` azimuthal reference) and presets. The `_psi` partner is updated from the real `_psi` partner too. Motor positions and energy are not changed. |
+| `sync_energy()` | The beamline energy. |
+| `sync_motors()` | The six diffractometer circles, the analyzer motors and the analyzer crystal (`d_spacing`, `crystal`). A motor that cannot be read (e.g. its IOC is down) is skipped and listed. |
+| `sync_all()` | `sync_setup()`, then `sync_energy()`, then `sync_motors()`. |
+
+```python
+sim_euler.sync_all()                 # start from the current beamline state
+sim_euler.sync_setup()               # only the orientation
+sim_euler.sync_setup("huber_hp")     # copy from a different diffractometer
+```
+
+`sync_setup()` only needs the orientation data, so it works even when the
+monochromator or the motor IOCs are down.
+
+The copies are one-off snapshots. If the real diffractometer moves or the
+beamline energy changes later, sync again. Nothing is copied back from a
+simulator to the real diffractometer.
+
+A typical "try it first" workflow:
+
+```python
+sim_euler.sync_all()
+change_diffractometer("sim_euler")
+setmode()                            # try a different mode
+ca(1, 0, 3)                          # check the angles it would use
+RE(br(1, 0, 3))                      # "move" the simulator
+wh
+change_diffractometer("huber_euler") # back to the real motors
+```
+
+### Simulated analyzer
+
+`analyzer_configuration()` and moving `ana.energy` work as on the real
+analyzer and use the simulated energy. Calibrating with `analyzer_set()`
+(answer `y`) sets the simulated positions directly, because there are no
+motor offsets to write. Releasing the calibration (answer `r`) does nothing
+on a simulator. The analyzer two-theta detector distance is 1 m
+(`sim_euler.ana.tth_detector_distance`).
+
+### GUI and MCP
+
+The HKL tab of the GUI lists `sim_euler` and `sim_hp`. Moves on a simulator
+do not show the "REAL MOTORS WILL MOVE" warning. MCP clients can address
+the simulators by name, but the default device is still `huber_euler`.
 
 ---
 

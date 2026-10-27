@@ -359,3 +359,72 @@ def test_restore_session_state_with_explicit_state_skips_re_md(fresh_module):
 
     assert status["qxscan"].startswith("applied")
     qx.load_params_json.assert_called_once_with("right.json")
+
+
+# ---------------------------------------------------------------------------
+# Counters restore (the GUI bootstrap's single-knob entry point)
+# ---------------------------------------------------------------------------
+
+
+def _stub_counters(monkeypatch):
+    """Install a counters stub with a three-row plot-options table."""
+    import pandas as pd
+
+    fake_c = ModuleType("id4_common.utils.counters_class")
+    fake_c.counters = SimpleNamespace(
+        detectors_plot_options=pd.DataFrame(
+            {
+                "detectors": ["scaler1", "scaler1", "scalers"],
+                "channels": ["Mn", "I0", "Time"],
+            }
+        ),
+        plotselect=MagicMock(name="plotselect"),
+    )
+    monkeypatch.setitem(sys.modules, "id4_common.utils.counters_class", fake_c)
+    return fake_c.counters
+
+
+def test_restore_counters_selection_no_snapshot(fresh_module):
+    ss, _, _ = fresh_module
+    assert ss.restore_counters_selection() == (
+        "skipped: no saved counters selection"
+    )
+
+
+def test_restore_counters_selection_applies_saved_rows(
+    fresh_module, monkeypatch
+):
+    ss, _, re_md = fresh_module
+    ctr = _stub_counters(monkeypatch)
+    re_md["session_state"] = {
+        "counters": {
+            "detectors": [["scaler1", "Mn"]],
+            "monitor": ["scalers", "Time"],
+            "extra_read": [["scaler1", "I0"]],
+        }
+    }
+
+    assert ss.restore_counters_selection() == "applied"
+    ctr.plotselect.assert_called_once_with(dets=[0], mon=2, extra_read=[1])
+
+
+def test_restore_counters_selection_stale_channels_skip(
+    fresh_module, monkeypatch
+):
+    """A renamed channel leaves the selection alone rather than half-applying.
+
+    This is the case that sends the GUI bootstrap on to the config block.
+    """
+    ss, _, re_md = fresh_module
+    ctr = _stub_counters(monkeypatch)
+    re_md["session_state"] = {
+        "counters": {
+            "detectors": [["scaler1", "gone"]],
+            "monitor": ["scalers", "Time"],
+            "extra_read": [],
+        }
+    }
+
+    status = ss.restore_counters_selection()
+    assert status == "skipped: saved channels not in current options"
+    ctr.plotselect.assert_not_called()

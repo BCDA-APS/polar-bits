@@ -43,6 +43,7 @@ from .run_engine import RE
 logger = logging.getLogger(__name__)
 
 __all__ = [
+    "restore_counters_selection",
     "restore_session_state",
     "save_session_state",
 ]
@@ -224,6 +225,24 @@ def restore_session_state(state: dict | None = None) -> dict:
         status["qxscan"] = _restore_qxscan(state["qxscan"])
 
     return status
+
+
+def restore_counters_selection() -> str:
+    """Re-apply only the saved ``counters`` selection.
+
+    Same contract as :func:`restore_session_state` — ``"applied"`` /
+    ``"skipped: <reason>"`` / ``"failed: <Exception>"``, and it never
+    raises.
+
+    Split out for the GUI bootstrap, which wants this one knob: the others
+    belong to whatever ran at startup, and re-applying them from the GUI
+    would be a second opinion on state the session may have changed on
+    purpose.
+    """
+    snapshot = _state().get("counters")
+    if not snapshot:
+        return "skipped: no saved counters selection"
+    return _restore_counters(snapshot)
 
 
 # ---------------------------------------------------------------------------

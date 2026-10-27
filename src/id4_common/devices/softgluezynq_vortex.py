@@ -1,5 +1,7 @@
 """SoftGlue Zynq device for histogram-mode Vortex detector triggering."""
 
+from time import sleep as time_sleep
+
 from bluesky.plan_stubs import mv
 from bluesky.plan_stubs import sleep
 from ophyd import Component
@@ -172,7 +174,7 @@ class SGZVortex(Device):
                 # Turn off the enable
                 # Not sure .set is the best thing to do here.
                 self.buffers.in1.signal.set("0").wait()
-                sleep(self._read_delay)
+                time_sleep(self._read_delay)
                 self._status.set_finished()
                 self._status = None
 

@@ -3,6 +3,8 @@ Re-exports of hkl/polartools user-facing symbols for hklpy2-based sessions.
 """
 
 from hklpy2.run_utils import list_orientation_runs  # noqa: F401
+from hklpy2.user import cahkl  # noqa: F401
+from hklpy2.user import cahkl_table  # noqa: F401
 from hklpy2.user import pa  # noqa: F401
 from polartools.absorption import load_absorption  # noqa: F401
 from polartools.absorption import load_dichro  # noqa: F401

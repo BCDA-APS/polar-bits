@@ -844,7 +844,17 @@ class SpecWriterCallback2(FileWriterCallbackBase):
             _knowns = labels + dets
             others = [k for k in doc["data_keys"] if k not in _knowns]
 
-            return labels + others + dets
+            # Drop non-numeric columns (string paths, image arrays).  SPEC
+            # data is a numeric matrix; keeping them forced inline `#U` lines
+            # between data rows, which breaks parsers like pymca.  Synthetic
+            # Epoch/Epoch_float labels are absent from data_keys -> kept.
+            data_keys = doc["data_keys"]
+
+            def is_numeric(k):
+                dk = data_keys.get(k)
+                return dk is None or dk.get("dtype") not in ("string", "array")
+
+            return [k for k in (labels + others + dets) if is_numeric(k)]
 
         self.data_labels = get_data_labels()
 
@@ -1077,7 +1087,6 @@ class SpecWriterCallback2(FileWriterCallbackBase):
         from apstools.utils.misc import render
 
         line = []
-        remarks = []
         for label in self.data_labels:
             if label in ("Epoch", "Epoch_float"):
                 value = doc["time"] - self.start_time
@@ -1088,15 +1097,15 @@ class SpecWriterCallback2(FileWriterCallbackBase):
             if isinstance(value, (float, int)):
                 line.append(render(value))
             else:
-                # Scan data is expected to be numbers. This is not.  Substitute
-                # the row number and report after this line in a #U line.
+                # Non-numeric columns are dropped from data_labels (see
+                # descriptor()).  This is only a defensive fallback for an
+                # unexpected non-numeric/missing value: substitute the row
+                # number inline.  Never emit an interleaved `#U` line here --
+                # that breaks the contiguous data block parsers like pymca
+                # require.
                 line.append(str(doc["seq_num"]))
-                # Single-line so newlines/multi-line reprs cannot leak bare
-                # lines without a leading SPEC tag.
-                remarks.append(f"#U {label} = {_one_line(value)}")
 
-        lines = [" ".join(line)]
-        self._write_lines_(lines + remarks, mode="a+")
+        self._write_lines_([" ".join(line)], mode="a+")
 
     def write_scan_end(self, doc):
         """Write scan ending to file."""

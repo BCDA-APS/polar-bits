@@ -17,9 +17,12 @@ Auxilary HKL functions.
     ~or0
     ~or1
     ~compute_UB
+    ~update_eiger
     ~setmode
+    ~ca_all
     ~ca
     ~wh
+    ~pa_new
     ~ubr
     ~br
     ~uan
@@ -32,10 +35,11 @@ Auxilary HKL functions.
     ~set_constraints
     ~analyzer_configuration
     ~analyzer_set
+    ~analyzer_get
     ~update_lattice
-    ~write_config
-    ~read_config
-    ~restore_huber_from_scan
+    ~write_diffractometer_config_file
+    ~read_diffractometer_config_file
+    ~read_diffractometer_config_scan
     ~set_detector
     ~theta0
 
@@ -50,6 +54,7 @@ import asyncio
 import logging
 import math
 import pathlib
+import traceback
 
 import yaml
 
@@ -58,19 +63,15 @@ try:
     from bluesky import RunEngine
     from bluesky import RunEngineInterrupted
     from bluesky.plan_stubs import mv
-    from bluesky.utils import ProgressBarManager
-    from epics import caget
     from epics import caput
-    from hkl.util import restore_constraints
-    from hkl.util import restore_reflections
-    from hkl.util import restore_sample
-    from hkl.util import run_orientation_info
     from hklpy2 import ConfigurationRunWrapper
+    from hklpy2.run_utils import get_run_orientation
     from hklpy2.user import add_sample
-    from hklpy2.user import cahkl
+    from hklpy2.user import cahkl_table
     from hklpy2.user import get_diffractometer
     from hklpy2.user import set_diffractometer as hklpy2_set_diffract
 
+    from .progress_bar import progress_bar_manager
     from .run_engine import RE as polar_RE
     from .run_engine import cat
 except ModuleNotFoundError:
@@ -92,9 +93,12 @@ __all__ = """
     or0
     or1
     compute_UB
+    update_eiger
     setmode
+    ca_all
     ca
     wh
+    pa_new
     ubr
     br
     uan
@@ -107,10 +111,11 @@ __all__ = """
     set_constraints
     analyzer_configuration
     analyzer_set
+    analyzer_get
     update_lattice
-    write_config
-    read_config
-    restore_huber_from_scan
+    write_diffractometer_config_file
+    read_diffractometer_config_file
+    read_diffractometer_config_scan
     set_detector
     theta0
     geometries
@@ -119,8 +124,13 @@ __all__ = """
 
 polar_config = pathlib.Path("polar-config.json")
 
+#: 4-ID-G soft-IOC PVs that are not modeled by any ophyd device.
+UB_MATRIX_PV = "4idgSoftX:Bluesky:UB_matrix"
+EIGER_CENTER_PV = "4idgSoftX:Eiger:Center"
+EIGER_DISTANCE_PV = "4idgSoftX:Eiger:Distance"
+
 RE = RunEngine({}, loop=asyncio.new_event_loop())
-pbar_manager = ProgressBarManager()
+pbar_manager = progress_bar_manager()
 
 logging.getLogger("hklpy2").setLevel(logging.WARNING)
 # Levels: DEBUG, INFO, WARNING (default), ERROR, CRITICAL
@@ -176,7 +186,18 @@ geometries = Geometries(
     "huber_euler", "huber_euler_psi", "huber_hp", "huber_hp_psi"
 )
 
-_DIFFRACTOMETER_NAMES = ["huber_euler", "huber_hp"]
+_DIFFRACTOMETER_NAMES = ["huber_euler", "huber_hp", "sim_euler", "sim_hp"]
+
+# set_constraints() arguments applied by change_diffractometer(). The
+# simulated diffractometers use the same limits as their real counterpart.
+_EULER_CONSTRAINTS = (-1, 1, 0, 90, -20, 200, -180, 180, -2, 140, -5, 50)
+_HP_CONSTRAINTS = (-1, 1, 0, 90, 80, 100, -7, 7, -2, 140, -5, 50)
+_DEFAULT_CONSTRAINTS = {
+    "huber_euler": _EULER_CONSTRAINTS,
+    "sim_euler": _EULER_CONSTRAINTS,
+    "huber_hp": _HP_CONSTRAINTS,
+    "sim_hp": _HP_CONSTRAINTS,
+}
 
 
 def set_diffractometer(diffractometer):
@@ -244,10 +265,7 @@ def change_diffractometer(diffractometer=None):
     set_diffractometer(new_geom)
     print(f"Active diffractometer: {new_geom.name}")
 
-    if new_geom.name == "huber_euler":
-        set_constraints(-1, 1, 0, 90, -20, 200, -180, 180, -2, 140, -5, 50)
-    elif new_geom.name == "huber_hp":
-        set_constraints(-1, 1, 0, 90, 80, 100, -7, 7, -2, 140, -5, 50)
+    set_constraints(*_DEFAULT_CONSTRAINTS[new_geom.name])
 
     aliases = {
         axis: getattr(new_geom, axis) for axis in new_geom.real_axis_names
@@ -354,7 +372,6 @@ def newsample():
         ref2_pos = dict(gamma=40, mu=20, chi=0, phi=0, delta=0, tau=0)
         _geom_.add_reflection(ref2_hkl, [ref2_pos[m] for m in motors])
         list_reflections()
-        compute_UB()
         # Use the primitive direction of ref2 as the azimuthal reference
         from functools import reduce
         from math import gcd
@@ -362,6 +379,7 @@ def newsample():
         g = reduce(gcd, (abs(x) for x in ref2_hkl if x != 0))
         az_hkl = tuple(x // g for x in ref2_hkl)
         setaz(*az_hkl)
+        compute_UB()
 
 
 def sampleList():
@@ -472,6 +490,7 @@ def list_reflections(all_samples=False):
                 for m in _geom_.pseudo_positioners._fields
             ).upper()
             + "".join(f"{k:>{real_width}}" for k in real_headers)
+            + f"{'Lambda':>{real_width}}"
             + "   orienting"
         )
         print(header)
@@ -502,6 +521,7 @@ def list_reflections(all_samples=False):
                 f"{key:>{refl_width}}"
                 f"{h:{pseudo_width}.3f}{k:{pseudo_width}.3f}{l:{pseudo_width}.3f}"
                 + "".join(f"{v:{real_width}.3f}" for v in pos_vals)
+                + f"{ref.wavelength:{real_width}.4f}"
                 + (f"   {tag}" if tag else "")
             )
             print(row)
@@ -540,12 +560,108 @@ def compute_UB():
     sample.core.calc_UB(
         sample.reflections.order[0], sample.reflections.order[1]
     )
-    Sync_UB_Matrix(_geom_, _geom_for_psi_)
+    try:
+        Sync_UB_Matrix(_geom_, _geom_for_psi_)
+    except Exception:
+        print("sync UB problem!")
+        traceback.print_exc()
+
     first_ref = sample.reflections[sample.reflections.order[0]]
     h, k, l = list(first_ref.pseudos.values())
-    _geom_.forward(h, k, l)
+    try:
+        _geom_.forward(h, k, l)
+    except Exception:
+        print("UB not calculated. Check geometry.")
+        traceback.print_exc()
+
+    # A simulated UB must not reach the beamline soft IOC or the Eiger.
+    if _geom_.is_simulator:
+        return
+
+    # The soft-IOC UB matrix array is not modeled by any device.
+    caput(
+        UB_MATRIX_PV,
+        [
+            sample.UB[0][0],
+            sample.UB[0][1],
+            sample.UB[0][2],
+            sample.UB[1][0],
+            sample.UB[1][1],
+            sample.UB[1][2],
+            sample.UB[2][0],
+            sample.UB[2][1],
+            sample.UB[2][2],
+        ],
+    )
+    update_eiger()
 
 
+def update_eiger():
+    """
+    Write the beam center and sample-detector distance to the Eiger.
+
+    The beam center is taken as the center of ROI1 and the distance as the
+    current position of the diffractometer pad rail. The soft-IOC center and
+    distance PVs are not part of any device, so they use a raw ``caput``.
+    Skipped when the active diffractometer is simulated.
+    """
+    if get_diffractometer().is_simulator:
+        return
+
+    eiger = oregistry.find("eiger")
+    roi = eiger.roi1
+    eiger_x = int(roi.min_xyz.min_x.get() + roi.size.x.get() / 2)
+    eiger_y = int(roi.min_xyz.min_y.get() + roi.size.y.get() / 2)
+    caput(EIGER_CENTER_PV, [eiger_x, eiger_y])
+    eiger.cam.beam_center_x.set(eiger_x).wait(timeout=10)
+    eiger.cam.beam_center_y.set(eiger_y).wait(timeout=10)
+
+    eiger_distance = get_diffractometer().pad_rail.user_readback.get()
+    eiger.cam.det_distance.set(eiger_distance).wait(timeout=10)
+    caput(EIGER_DISTANCE_PV, eiger_distance)
+
+
+def _copy_sample_to_psi(source, target, ub=None):
+    """
+    Copy ``source``'s lattice and UB onto ``target``'s sample.
+
+    The psi geometry is a separate device with its own sample, so copying UB
+    alone leaves it on hklpy2's default 1 angstrom cubic lattice.  psi is
+    measured against ``UB . (h2, k2, l2)``, so the reference vector is then
+    computed for the wrong crystal -- silently, since nothing raises.
+
+    Lattice first: writing a lattice parameter flags the solver SAMPLE|UB
+    dirty, and hklpy2 warns that some backends discard U/UB as a side effect
+    of the sample write.
+
+    Parameter by parameter, not ``target.sample.lattice = source...``:
+    ``Sample.lattice``'s setter rebinds ``_on_change`` on whatever object it
+    is handed, so assigning the source's ``Lattice`` would redirect the
+    *source* sample's change notification to the target.
+
+    The equality guard matters because one caller is a subscription callback:
+    every assignment flags the solver dirty, and an unguarded copy would do
+    so on each UB update whether the lattice actually moved or not.
+
+    Parameters
+    ----------
+    source, target : Diffractometer
+        Devices whose ``.sample`` is read from and written to.
+    ub : array-like, optional
+        UB to write instead of ``source.sample.UB`` -- used by the sync
+        subscription, which is handed the new matrix as its payload.
+    """
+    _src = source.sample.lattice
+    _dst = target.sample.lattice
+    for _p in ("a", "b", "c", "alpha", "beta", "gamma"):
+        _v = getattr(_src, _p)
+        if getattr(_dst, _p) != _v:
+            setattr(_dst, _p, _v)
+    target.sample.UB = source.sample.UB if ub is None else ub
+
+
+# TODO: Do we really need this? Could put the UB matrix as part of the
+# diffractometer, then sync with a callback.
 class Sync_UB_Matrix:
     """
     Keep the UB matrix of target in sync with source via an ophyd subscription.
@@ -571,7 +687,7 @@ class Sync_UB_Matrix:
         if value is None:
             return
         print(f"Copy UB from {self.source.name} to {self.target.name}")
-        self.target.sample.UB = value
+        _copy_sample_to_psi(self.source, self.target, ub=value)
 
         # Sync real motor positions if target has simulated motors
         for axis_name in self.source.real_axis_names:
@@ -656,6 +772,7 @@ def setor0():
         )
     except Exception as e:
         print(f"Error adding reflection: {e}")
+        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(0)
@@ -713,6 +830,7 @@ def setor1():
         _geom_.add_reflection((float(h), float(k), float(l)), or0pos)
     except Exception as e:
         print(f"Error adding reflection: {e}")
+        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(1)
@@ -748,7 +866,14 @@ def or0(h=None, k=None, l=None):
         h = (input("H ({})? ".format(hr)) if not h else h) or hr
         k = (input("K ({})? ".format(kr)) if not k else k) or kr
         l = (input("L ({})? ".format(lr)) if not l else l) or lr
-    _geom_.add_reflection((float(h), float(k), float(l)), _geom_.real_position)
+    try:
+        _geom_.add_reflection(
+            (float(h), float(k), float(l)),
+            _geom_.real_position,
+        )
+    except Exception as e:
+        print(f"Error adding reflection: {e}")
+        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 1:
         sample.reflections.order.pop(0)
@@ -784,7 +909,14 @@ def or1(h=None, k=None, l=None):
         h = (input("H ({})? ".format(hr)) if not h else h) or hr
         k = (input("K ({})? ".format(kr)) if not k else k) or kr
         l = (input("L ({})? ".format(lr)) if not l else l) or lr
-    _geom_.add_reflection((float(h), float(k), float(l)), _geom_.real_position)
+    try:
+        _geom_.add_reflection(
+            (float(h), float(k), float(l)),
+            _geom_.real_position,
+        )
+    except Exception as e:
+        print(f"Error adding reflection: {e}")
+        print("Use del_reflection() and/or set_orienting() if needed.")
 
     if len(orienting_refl) > 2:
         sample.reflections.order.pop(1)
@@ -1170,57 +1302,92 @@ def freeze_general():
         print(f"  {axis} = {val}")
 
 
-def ca(h, k, l):
+def ca_all(h, k, l):
+    cahkl_table((h, k, l))
+
+
+def ca(h, k, l, energy=None):  # noqa: E741
     """
     Calculate the motors position of a reflection.
+
+    Accepts an optional ``energy`` used only for this single calculation.  The
+    diffractometer beam (monochromator) is never modified: the solver
+    wavelength is temporarily overridden for the forward calculation and then
+    restored to the live beamline value, so subsequent ``ca``/``cahkl`` calls
+    are unaffected.
 
     Parameters
     ----------
     h, k, l : float
         H, K, and L values.
+    energy : float, optional
+        Energy in keV to use for this calculation.  When ``None`` (default)
+        the current beamline energy is used.
     """
     _geom_ = get_diffractometer()
-    pos = cahkl(h, k, l)
-    if "No solutions" in pos:
-        print(pos)
+
+    if energy is None:
+        # Use the live beamline wavelength/energy for the calculation.
+        wavelength = _geom_.beam.wavelength.get()
+        energy = _geom_.beam.energy.get()
     else:
-        # print(pos)
-        print("\n   Calculated Positions:")
-        print(
-            "\n   H K L = {:5f}, {:5f}, {:5f}".format(
-                h,
-                k,
-                l,
-            )
+        # hc in keV*angstrom, converting the requested energy to a wavelength.
+        wavelength = 12.398_419_843_320_026 / energy
+
+    try:
+        solutions = _geom_.core.forward(
+            pseudos=(h, k, l), wavelength=wavelength
         )
-        print(
-            f"\n   Lambda (Energy) = {_geom_.beam.wavelength.get():6.4f} \u212b"
-            f" ({_geom_.beam.energy.get():6.4f}) keV"
-        )
-        if len(_geom_.real_positioners) == 6:
-            pos_dict = dict(
-                zip(_geom_.real_positioners._fields, pos, strict=False)
-            )
-            print(
-                "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
-                    "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
-                )
-            )
-            print(
-                "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
-                    pos_dict["gamma"],
-                    pos_dict["mu"],
-                    pos_dict["chi"],
-                    pos_dict["phi"],
-                    pos_dict["delta"],
-                    pos_dict["tau"],
-                )
+        if not solutions:
+            pos = (
+                f"No solutions for ({h}, {k}, {l}) at "
+                f"lambda = {wavelength:.4f} Å. The solver found no solutions "
+                "or all were rejected by constraints. Check constraint limits."
             )
         else:
-            print(
-                f"\n{''.join(f'{k:>10}' for k in _geom_.real_positioners._fields)}"
-                f"\n{''.join(f'{v:>10.3f}' for v in pos)}"
+            pos = _geom_._forward_solution(_geom_.real_position, solutions)
+    except Exception as exc:  # e.g. NoForwardSolutions
+        pos = str(exc)
+    finally:
+        # Restore the solver wavelength to the live beamline value so that
+        # later calculations are not affected by this temporary override.
+        _geom_.core.update_solver(wavelength=_geom_.beam.wavelength.get())
+
+    if isinstance(pos, str):
+        print(pos)
+        return
+
+    print("\n   Calculated Positions:")
+    print(
+        "\n   H K L = {:5f}, {:5f}, {:5f}".format(
+            h,
+            k,
+            l,
+        )
+    )
+    print(f"\n   Lambda (Energy) = {wavelength:6.4f} Å ({energy:6.4f}) keV")
+    if len(_geom_.real_positioners) == 6:
+        pos_dict = dict(zip(_geom_.real_positioners._fields, pos, strict=False))
+        print(
+            "\n{:>9}{:>9}{:>9}{:>9}{:>9}{:>9}".format(
+                "Gamma", "Mu", "Chi", "Phi", "Delta", "Tau"
             )
+        )
+        print(
+            "{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}{:>9.3f}".format(
+                pos_dict["gamma"],
+                pos_dict["mu"],
+                pos_dict["chi"],
+                pos_dict["phi"],
+                pos_dict["delta"],
+                pos_dict["tau"],
+            )
+        )
+    else:
+        print(
+            f"\n{''.join(f'{k:>10}' for k in _geom_.real_positioners._fields)}"
+            f"\n{''.join(f'{v:>10.3f}' for v in pos)}"
+        )
 
 
 def _wh():
@@ -1232,7 +1399,7 @@ def _wh():
     """
     _geom_ = get_diffractometer()
     _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
-    _geom_for_psi_.sample.UB = _geom_.sample.UB
+    _copy_sample_to_psi(_geom_, _geom_for_psi_)
     print(
         f"\n   {' '.join(_geom_.pseudo_positioners._fields).upper()}"
         f" = {', '.join([f'{v.position:5f}' for v in _geom_.pseudo_positioners])}"
@@ -1289,6 +1456,165 @@ def _wh():
             _l2,
         )
     )
+    update_eiger()
+
+
+def _reciprocal_lattice(lattice):
+    """
+    Return the reciprocal lattice constants for a hklpy2 ``Lattice``.
+
+    Parameters
+    ----------
+    lattice : hklpy2.blocks.lattice.Lattice
+        The direct-space lattice (``a, b, c`` in length units, ``alpha, beta,
+        gamma`` in degrees).
+
+    Returns
+    -------
+    tuple
+        ``(a*, b*, c*, alpha*, beta*, gamma*)`` using the crystallographic
+        convention (no 2*pi factor); reciprocal angles are in degrees.
+    """
+    a, b, c = lattice.a, lattice.b, lattice.c
+    alpha = math.radians(lattice.alpha)
+    beta = math.radians(lattice.beta)
+    gamma = math.radians(lattice.gamma)
+    ca, cb, cg = math.cos(alpha), math.cos(beta), math.cos(gamma)
+    sa, sb, sg = math.sin(alpha), math.sin(beta), math.sin(gamma)
+    vol = (
+        a
+        * b
+        * c
+        * math.sqrt(max(0.0, 1 - ca**2 - cb**2 - cg**2 + 2 * ca * cb * cg))
+    )
+    a_r = b * c * sa / vol
+    b_r = a * c * sb / vol
+    c_r = a * b * sg / vol
+    alpha_r = math.degrees(math.acos((cb * cg - ca) / (sb * sg)))
+    beta_r = math.degrees(math.acos((ca * cg - cb) / (sa * sg)))
+    gamma_r = math.degrees(math.acos((ca * cb - cg) / (sa * sb)))
+    return a_r, b_r, c_r, alpha_r, beta_r, gamma_r
+
+
+def pa_new(full=False):
+    """
+    Print a full summary of the diffractometer and sample configuration.
+
+    Reports the diffractometer class / geometry / mode, the primary and
+    secondary orienting reflections (with the wavelength each was measured
+    at), the sample lattice constants in real and reciprocal space, the U and
+    UB orientation matrices, the azimuthal reference (psi and reference
+    vector), the real-axis constraints, and the monochromator
+    energy/wavelength.
+
+    Parameters
+    ----------
+    full : bool, optional
+        If True, also list every reflection defined for the current sample
+        (see :func:`list_reflections`). Defaults to False.
+    """
+    _geom_ = get_diffractometer()
+    sample = _geom_.sample
+    geometry = _geom_.core.geometry
+    current_mode = _geom_.core.mode
+    orienting_refl = sample.reflections.order
+    six_circle = len(_geom_.real_positioners) == 6
+
+    print(
+        f"{_geom_.__class__.__name__},  {geometry} geometry, "
+        f"{_geom_.name} diffractometer"
+    )
+    print(f"{current_mode} mode")
+    print(f"\nSample = {sample.name}")
+
+    for label, key in zip(
+        ["Primary", "Secondary"], orienting_refl[:2], strict=False
+    ):
+        if key not in sample.reflections:
+            continue
+        ref = sample.reflections[key]
+        h, k, l = list(ref.pseudos.values())  # noqa: E741
+        print(f"\n{label} reflection (lambda = {ref.wavelength:.4f} Å):")
+        if six_circle:
+            reals = ref.reals
+            angle_label = "     Gamma, Mu, Chi, Phi, Delta, Tau"
+            angle_vals = (
+                "{:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}".format(
+                    reals["gamma"],
+                    reals["mu"],
+                    reals["chi"],
+                    reals["phi"],
+                    reals["delta"],
+                    reals["tau"],
+                )
+            )
+        else:
+            angle_label = "     " + ", ".join(ref.reals.keys())
+            angle_vals = ", ".join(f"{v:.3f}" for v in ref.reals.values())
+        # Pad the H K L label so its '=' lines up under the angles' '='.
+        width = len(angle_label)
+        print(f"{angle_label} = {angle_vals}")
+        print(f"{'     H K L':>{width}} = {h:.3f}, {k:.3f}, {l:.3f}")
+
+    if full:
+        print("\nAll reflections:")
+        list_reflections()
+
+    lat = sample.lattice
+    print("\nLattice constants:")
+    print(
+        "          real space = "
+        "{:.4f}, {:.4f}, {:.4f}, {:.4f}, {:.4f}, {:.4f}".format(
+            lat.a, lat.b, lat.c, lat.alpha, lat.beta, lat.gamma
+        )
+    )
+    ra, rb, rc, ral, rbe, rga = _reciprocal_lattice(lat)
+    print(
+        "    reciprocal space = "
+        "{:.4f}, {:.4f}, {:.4f}, {:.4f}, {:.4f}, {:.4f}".format(
+            ra, rb, rc, ral, rbe, rga
+        )
+    )
+
+    print("\nU matrix:")
+    for row in sample.U:
+        print("     " + "  ".join(f"{v:>12.6f}" for v in row))
+
+    print("\nUB matrix:")
+    for row in sample.UB:
+        print("     " + "  ".join(f"{v:>12.6f}" for v in row))
+
+    _geom_for_psi_ = oregistry.find(_geom_.name + "_psi")
+    _copy_sample_to_psi(_geom_, _geom_for_psi_)
+    _h2, _k2, _l2 = _geom_for_psi_.core.extras.values()
+    print("\nAzimuthal reference:")
+    psi_label = "     H K L"
+    width = len(psi_label)
+    print(f"{psi_label} = {_h2:.3f}, {_k2:.3f}, {_l2:.3f}")
+    print(f"{'     Psi':>{width}} = {_geom_for_psi_.inverse(0).psi:.4f}")
+
+    print("\nConstraints:")
+    for axis in _geom_.real_axis_names:
+        c = _geom_.core.constraints[axis]
+        print(
+            "     {:>6} - [{:>9.3f}, {:>9.3f}] cut = {:>9.3f}".format(
+                axis, c.low_limit, c.high_limit, c.cut_point
+            )
+        )
+
+    print("\nMonochromator:")
+    mono_width = len("     Wavelength")
+    try:
+        two_d = oregistry.find("mono").crystal_2d.get()
+    except Exception:
+        two_d = None
+    d_str = f"{two_d / 2:.4f} Å" if two_d is not None else "N/A"
+    print(f"{'     Energy':>{mono_width}} = {_geom_.beam.energy.get():.4f} keV")
+    print(
+        f"{'     Wavelength':>{mono_width}} = "
+        f"{_geom_.beam.wavelength.get():.4f} Å"
+    )
+    print(f"{'     d-spacing':>{mono_width}} = {d_str}")
 
 
 def _ensure_idle():
@@ -1428,11 +1754,12 @@ def setlat(*args):
 
     # Recompute UB if orienting reflections exist
     if len(sample.reflections.order) > 1:
-        print("Computing UB...")
-        sample.core.calc_UB(
-            sample.reflections.order[0], sample.reflections.order[1]
-        )
-        _geom_.forward(1, 0, 0)
+        compute_UB()
+        # print("Computing UB...")
+        # sample.core.calc_UB(
+        #    sample.reflections.order[0], sample.reflections.order[1]
+        # )
+        # _geom_.forward(1, 0, 0)
 
     # Final confirmation
     print("\nUpdated lattice parameters:")
@@ -1529,8 +1856,9 @@ def reset_constraints():
     Reset all constraints
     """
     _geom_ = get_diffractometer()
-    _geom_.reset_constraints()
-    _geom_.show_constraints()
+    _geom_.core.reset_constraints()
+    print("New constraints:")
+    show_constraints()
 
 
 def set_constraints(*args):
@@ -1611,7 +1939,7 @@ def set_constraints(*args):
     show_constraints()
 
 
-def analyzer_configuration(energy=None):
+def analyzer_configuration():
     """
     Configure analyzer
         - Select analyzer crystal and determine d-spacing
@@ -1621,7 +1949,17 @@ def analyzer_configuration(energy=None):
 
     """
     _geom_ = get_diffractometer()
-    _geom_.ana.setup(energy)
+    # d_ana = _geom_.ana.d_spacing.get()
+    # crystal_current = _geom_.ana.crystal.get()
+
+    # if d_ana != 1e4 or d_spacing:
+    #    print(f"Current analyzer: {crystal_current} with d_spacing = {d_ana}")
+    #    print(f"change to: {crystal} with d_spacing = {d_spacing}")
+    #    _geom_.ana.d_spacing.put(d_spacing)
+    #    if crystal:
+    #        _geom_.ana.crystal.put(crystal)
+    # else:
+    _geom_.ana.setup()
 
 
 def analyzer_set():
@@ -1634,6 +1972,24 @@ def analyzer_set():
     """
     _geom_ = get_diffractometer()
     _geom_.ana.calc()
+
+
+def analyzer_get():
+    """
+    Get current analyzer
+
+    Parameters
+    ----------
+
+    """
+    _geom_ = get_diffractometer()
+    d_ana = _geom_.ana.d_spacing.get()
+    crystal = _geom_.ana.crystal.get()
+
+    if d_ana != 1e4:
+        print(f"Current analyzer: {crystal} with d_spacing = {d_ana}")
+    else:
+        print("Aanalyzer not selected yet. Run analyzer_configuration() first!")
 
 
 def update_lattice(lattice_constant=None):
@@ -1696,12 +2052,13 @@ def update_lattice(lattice_constant=None):
     sample.lattice.beta = float(beta)
     sample.lattice.gamma = float(gamma)
     if len(sample.reflections.order) > 1:
-        print("Computing UB...")
-        sample.core.calc_UB(
-            sample.reflections.order[0],
-            sample.reflections.order[1],
-        )
-        _geom_.forward(1, 0, 0)
+        compute_UB()
+        # print("Computing UB...")
+        # sample.core.calc_UB(
+        #    sample.reflections.order[0],
+        #    sample.reflections.order[1],
+        # )
+        # _geom_.forward(1, 0, 0)
     print(
         "\n   H K L = {:5.4f} {:5.4f} {:5.4f}".format(
             _geom_.h.position,
@@ -1721,7 +2078,7 @@ def update_lattice(lattice_constant=None):
     )
 
 
-def write_config(filename="default", overwrite=False):
+def write_diffractometer_config_file(filename="default", overwrite=False):
     """
     Write diffractometer configuration to file in current directory.
 
@@ -1743,7 +2100,49 @@ def write_config(filename="default", overwrite=False):
     print(f"Configuration written to '{file}'.")
 
 
-def read_config():
+def _prompt_clear_mode(config, source="file"):
+    """
+    List user-defined samples and ask whether to overwrite or append.
+
+    Parameters
+    ----------
+    config : dict
+        Configuration mapping (expects an optional ``"samples"`` key).
+    source : str
+        Noun used in the "samples in this ..." message (e.g. ``"file"`` or
+        ``"configuration"``).
+
+    Returns
+    -------
+    bool or None
+        ``True`` to overwrite, ``False`` to append, or ``None`` if the user
+        cancelled (caller should abort without loading).
+    """
+    file_samples = [k for k in config.get("samples", {}) if k != "sample"]
+    if file_samples:
+        print(f"\nSamples in this {source}:")
+        for s in file_samples:
+            print(f"  {s}")
+    else:
+        print("\nNo user-defined samples found in this file.")
+
+    mode = (
+        input(
+            "\nOverwrite current configuration or append? "
+            "([o]verwrite/[a]ppend): "
+        )
+        .strip()
+        .lower()
+    )
+    if mode == "a":
+        return False
+    elif mode == "o":
+        return True
+    print("Configuration not loaded.")
+    return None
+
+
+def read_diffractometer_config_file():
     """
     Read diffractometer configuration from file in current directory.
 
@@ -1755,12 +2154,15 @@ def read_config():
     if not files:
         print("No *_polar_config.yml files found in current directory.")
         return
+
     default_file = pathlib.Path("default_polar_config.yml")
     default_idx = next((i for i, f in enumerate(files) if f == default_file), 0)
+
     print("\nAvailable configuration files:")
     for i, f in enumerate(files):
         marker = " (default)" if f == default_file else ""
         print(f"  {i}: {f}{marker}")
+
     answer = input(f"\nSelect file to load [{default_idx}]: ").strip()
     try:
         idx = int(answer) if answer else default_idx
@@ -1768,29 +2170,14 @@ def read_config():
     except (ValueError, IndexError):
         print("Invalid selection. Configuration not loaded.")
         return
+
     with open(file) as f:
         config = yaml.safe_load(f)
-    file_samples = [k for k in config.get("samples", {}) if k != "sample"]
-    if file_samples:
-        print("\nSamples in this file:")
-        for s in file_samples:
-            print(f"  {s}")
-    else:
-        print("\nNo user-defined samples found in this file.")
-    mode = (
-        input(
-            "\nOverwrite current configuration or append? ([o]verwrite/[a]ppend): "
-        )
-        .strip()
-        .lower()
-    )
-    if mode == "a":
-        clear = False
-    elif mode == "o":
-        clear = True
-    else:
-        print("Configuration not loaded.")
+
+    clear = _prompt_clear_mode(config, source="file")
+    if clear is None:
         return
+
     print(f"Loading '{file}'...")
     # hklpy2 changed restore() defaults: on hardware-backed diffractometers
     # `restore_samples` / `restore_extras` default to False. Pass them
@@ -1811,9 +2198,7 @@ def read_config():
     compute_UB()
 
 
-def restore_huber_from_scan(
-    scan_id, diffractometer=None, sample_name=None, force=False
-):
+def read_diffractometer_config_scan(scan_id, diffractometer=None, clear=None):
     """
     Restore diffractometer orientation from a previous scan.
 
@@ -1823,44 +2208,62 @@ def restore_huber_from_scan(
         Scan ID to restore orientation from.
     diffractometer : diffractometer object, optional
         Diffractometer to restore. Defaults to the current diffractometer.
-    sample_name : string, optional
-        Override the sample name stored in the scan.
-    force : bool, optional
-        If True, use the first available diffractometer info even if the
-        name does not match. Defaults to False.
+    clear : bool or None
+        Option to clear any previous diffractometer setup or append it. User
+        will be asked if None.
     """
-    info = run_orientation_info(cat[scan_id])
+
+    info = get_run_orientation(cat[scan_id])
 
     if diffractometer is None:
         diffractometer = get_diffractometer()
 
-    if diffractometer.name not in info.keys():
-        if force:
-            print(
-                "WARNING: could not find information on the "
-                f"{diffractometer.name} in the scan {scan_id}. "
-                "Since force = True, then will try to setup using "
-                f"{list(info.keys())[0]}."
-            )
-        else:
-            raise NameError(
-                f"Could not find a setup for {diffractometer.name} in scan {scan_id}."
-            )
-        inp = list(info.items())[0]
-    else:
-        inp = info[diffractometer.name]
+    name = diffractometer.name
+    labels = list(info.keys())
 
-    if sample_name is not None:
-        inp["sample_name"] = sample_name
-
-    try:
-        restore_sample(inp, diffractometer)
-    except ValueError as exc:
+    if not labels:
+        uid = cat[scan_id].metadata["start"]["uid"]
         raise ValueError(
-            f"{exc} Use the sample_name keyword argument to change the name."
-        ) from exc
-    restore_constraints(inp, diffractometer)
-    restore_reflections(inp, diffractometer)
+            f"The scan #{scan_id} ({uid = }) does not have any hklpy2 "
+            "configuration saved."
+        )
+
+    if name not in labels:
+        uid = cat[scan_id].metadata["start"]["uid"]
+
+        print(f"{name} was not found in the scan #{scan_id} ({uid = }).")
+
+        print("Available options are: ")
+        for label in labels:
+            print(label)
+
+        name = input(f"Enter diffractometer name ({labels[0]}): ") or labels[0]
+        if name not in labels:
+            raise ValueError(
+                f"'{name}' is not in scan #{scan_id}. "
+                f"Available: {', '.join(labels)}."
+            )
+
+    config = info[name]
+
+    if clear is None:
+        clear = _prompt_clear_mode(config, source="configuration")
+        if clear is None:
+            return
+
+    diffractometer.restore(
+        config,
+        clear=clear,
+        restore_samples=True,
+        restore_extras=True,
+        restore_constraints=True,
+    )
+
+    # Mirror read_config(): surface a missing psi-mode geometry here and
+    # recompute the UB from the restored reflections rather than trusting the
+    # stored matrix.
+    _ = oregistry.find(diffractometer.name + "_psi")
+    compute_UB()
 
 
 def set_detector():
@@ -1873,7 +2276,8 @@ def set_detector():
 
     Uses defaults if the user just presses Enter.
     """
-    offset = caget("4idgSoft:m20.OFF")
+    delta_offset = get_diffractometer().delta.user_offset
+    offset = delta_offset.get()
     if offset == 25:
         dets = "Eiger"
     elif offset == 0:
@@ -1881,11 +2285,17 @@ def set_detector():
     else:
         dets = "undefined"
     det = input(f"(E)iger or (P)oint Detector/Analyzer [{dets}]: ") or dets
-    if det in ("Point detector/Analyzer", "Point detector", "p", "P"):
-        caput("4idgSoft:m20.OFF", 0)
+    if det in (
+        "Point detector/Analyzer",
+        "point detector",
+        "point",
+        "p",
+        "P",
+    ):
+        delta_offset.set(0).wait(timeout=10)
         print("Current detector: Point detector/Aanalyzer")
-    elif det in ("Eiger", "e", "E"):
-        caput("4idgSoft:m20.OFF", 25)
+    elif det in ("Eiger", "eiger", "e", "E"):
+        delta_offset.set(25).wait(timeout=10)
         print("Current detector: Eiger")
     else:
         print("Select Eiger or Point Detector")
@@ -1899,7 +2309,10 @@ class whClass:
 
     def __repr__(self):
         print("")
-        _wh()
+        try:
+            _wh()
+        except Exception:
+            pass
         return ""
 
 
@@ -2032,6 +2445,5 @@ def theta0():
     print(f"\n   2*THETA ZERO-SHIFT      = {2 * xtet0:10.4f} deg")
     print(f"   A0 (from refl {i1}, {i2})  = {a01:10.5f}  {a02:10.5f} Å")
     print(
-        f"   CORRECTED 2*THETA       = {zt1_corr:10.4f}  "
-        f"{zt2_corr:10.4f} deg"
+        f"   CORRECTED 2*THETA       = {zt1_corr:10.4f}  {zt2_corr:10.4f} deg"
     )

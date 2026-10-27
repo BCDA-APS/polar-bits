@@ -90,6 +90,11 @@ def th2th(
             triggers. This is a special mode that requires the 'vortex'
             and 'sgz_vortex' devices to
             exist otherwise an error will be thrown.
+    g_sgz : boolean, optional
+            Adds the 'pos_stream' device to the scan so that motor
+            positions are captured through the 4IDG softgluezynq
+            pipeline. Requires the 'gsgz' and 'pos_stream' devices to
+            exist otherwise an error will be thrown.
     per_step: callable, optional
             hook for customizing action of inner loop (messages per step).
             See docstring of

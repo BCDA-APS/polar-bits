@@ -134,31 +134,71 @@ def get_current_run():
     return bss_api.getCurrentRun()
 
 
-def get_current_run_name():
+def dm_ds_reachable():
+    """Cheap, read-only probe of the DM Data Storage (experiment) service.
+
+    Raises on failure (same contract as ``get_current_run()``) so callers
+    can use their own try/except to decide DM is unreachable.
+
+    This calls the same ``getExperimentsByStation`` endpoint that
+    ``get_experiment()``/``dm_experiment_setup()`` use, so success here is a
+    direct predictor of whether ``experiment_setup(server="data
+    management")`` will be able to look up or create the DM experiment.
+
+    Deliberately NOT ``get_current_run()``: that hits a different backend
+    (the APS DB/BSS service, not the DS/experiment service) and raises
+    ``ObjectNotFound`` whenever *today* falls outside any scheduled run
+    period (e.g. between runs) -- a scheduling gap, not a DM outage. Using
+    it as an availability gauge produces false negatives that have nothing
+    to do with DM's health.
+    """
+    exp_api.getExperimentsByStation(STATION)
+
+
+def get_current_run_info():
+    """Like get_current_run(), but falls back to a synthetic run if DM is down.
+
+    Fallback run periods (used only when DM is unreachable):
+    run 1: Jan 1 - Apr 20, run 2: Apr 21 - Aug 4, run 3: Aug 5 - Dec 31.
+    """
     try:
-        run = get_current_run()["name"]
+        return get_current_run()
     # This is needed in case the DM server is down.
     except DmException:
         print(
             "WARNING: could not reach the DM server, the run information may be wrong!"
         )
-        from datetime import datetime
-
         now = datetime.now()
-        for i, date in zip(
-            (1, 2, 3),
+        for i, threshold, start, end in (
             (
-                datetime(now.year, 5, 1),
-                datetime(now.year, 9, 15),
+                1,
+                datetime(now.year, 4, 21),
+                datetime(now.year, 1, 1),
+                datetime(now.year, 4, 21),
+            ),
+            (
+                2,
+                datetime(now.year, 8, 5),
+                datetime(now.year, 4, 21),
+                datetime(now.year, 8, 5),
+            ),
+            (
+                3,
+                datetime(now.year + 1, 1, 1),
+                datetime(now.year, 8, 5),
                 datetime(now.year + 1, 1, 1),
             ),
-            strict=False,
         ):
-            if now < date:
-                run = f"{now.year}-{i}"
-                break
+            if now < threshold:
+                return {
+                    "name": f"{now.year}-{i}",
+                    "startTime": start.isoformat(),
+                    "endTime": end.isoformat(),
+                }
 
-    return run
+
+def get_current_run_name():
+    return get_current_run_info()["name"]
 
 
 def dm_experiment_setup(
@@ -187,7 +227,7 @@ def dm_experiment_setup(
         kwargs["startDate"] = datetime.now().strftime("%d-%b-%y")
     if kwargs.get("endDate", None) is None:
         kwargs["endDate"] = datetime.fromisoformat(
-            get_current_run()["endTime"]
+            get_current_run_info()["endTime"]
         ).strftime("%d-%b-%y")
 
     exp = create_dm_experiment(experiment_name, **kwargs)
@@ -199,7 +239,7 @@ def create_dm_experiment(
     experiment_name, description="", rootPath=None, startDate=None, endDate=None
 ):
     if rootPath is None:
-        rootPath = get_current_run()["name"]
+        rootPath = get_current_run_name()
     return exp_api.addExperiment(
         experiment_name,
         stationName=STATION,
@@ -259,17 +299,17 @@ def get_experiments_names(since="2018-01-01", until="2100-01-01"):
 
 
 def current_run_experiments_names():
-    _run = get_current_run()
+    _run = get_current_run_info()
     return get_experiments_names(since=_run["startTime"], until=_run["endTime"])
 
 
 def get_proposal_info(proposal_id: int, run: str = None):
     if run is None:
-        run = get_current_run()["name"]
+        run = get_current_run_name()
     return bss_api.getStationProposalById(STATION, proposal_id, runName=run)
 
 
 def list_proposals(run: str = None):
     if run is None:
-        run = get_current_run()["name"]
+        run = get_current_run_name()
     return bss_api.listStationProposals(STATION, runName=run)

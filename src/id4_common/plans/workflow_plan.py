@@ -112,6 +112,34 @@ def run_workflow(
 ):
     """
     Submit a DM workflow plan and optionally share Bluesky run metadata with DM.
+
+    Parameters
+    ----------
+    bluesky_id : str, int or BlueskyRun, optional
+        Scan whose metadata is shared with DM. A str or int is looked up in
+        the catalog and raises a KeyError if not found; a BlueskyRun is used
+        directly. Anything else (including the default None) logs a warning
+        and skips the metadata upload.
+    dm_concise : boolean, optional
+        Use concise reporting in the DM workflow. Defaults to False.
+    dm_wait : boolean, optional
+        If True, wait for the workflow job to finish before continuing.
+        Defaults to False.
+    dm_reporting_period : float, optional
+        How often the DM workflow reports progress, in seconds. Defaults to
+        10 minutes.
+    dm_reporting_time_limit : float, optional
+        How long bluesky keeps reporting on the DM workflow, in seconds.
+    settings_file_path : str, optional
+        Path to a YAML file holding the workflow kwargs. Keyword arguments
+        given in the function call take priority over the file. Raises a
+        FileExistsError if the path does not exist.
+    **_kwargs :
+        Arguments passed to the DM workflow. The ``workflow`` key is required
+        and must be one of the keys of ``EXPECTED_KWARGS``; every entry that
+        ``EXPECTED_KWARGS[workflow]`` lists must be present, otherwise a
+        ValueError is raised. The strings "None" and "none" are converted to
+        None.
     """
     # Option to import workflow parameters from file.
     kwargs = {}

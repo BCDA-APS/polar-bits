@@ -5,6 +5,8 @@ import io
 import logging
 import os
 import pathlib
+import shutil
+import socket
 import tempfile
 
 import yaml
@@ -16,12 +18,32 @@ import yaml
 # Both are immediately replaced by the centralized override below, so
 # silence the import-time print/log output here and tear down the stray
 # handler in `setup_logging()`.
+#
+# apsbits resolves that wrong location to `<cwd>/.logs` (its package-root
+# helper falls back to the cwd in an interactive session).  At the beamline
+# the cwd is the read-only DM experiment directory (e.g.
+# `/gdata/dm/4ID/<cycle>/`), so the import-time `os.makedirs()` raises
+# `PermissionError` and aborts the whole import before we can redirect it.
+# Run the import from a private temp dir so the throwaway `.logs` lands
+# somewhere writable; `setup_logging()` removes the handler and the temp dir.
 _silenced_init = io.StringIO()
+_init_cwd = os.getcwd()
+_init_tmp = tempfile.mkdtemp(prefix="polar-apsbits-init-")
 with (
     contextlib.redirect_stdout(_silenced_init),
     contextlib.redirect_stderr(_silenced_init),
 ):
-    from apsbits.utils.logging_setup import configure_logging
+    try:
+        os.chdir(_init_tmp)
+    except OSError:
+        pass
+    try:
+        from apsbits.utils.logging_setup import configure_logging
+    finally:
+        try:
+            os.chdir(_init_cwd)
+        except OSError:
+            pass
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +59,21 @@ _FILE_LOGS_KEY_MAP = {
     "NUMBER_OF_PREVIOUS_BACKUPS": "backupCount",
 }
 
-# Filename for the IPython session log.  Override the apsbits default
-# (`ipython_log.py`) so the file is clearly a log, not a runnable script.
-_IPYTHON_LOG_FILENAME = "ipython_logs.log"
+# Filename stems for the session logs.  Each session gets its own file
+# (``<stem>.<host>.<pid>.log``) so that concurrent sessions never rotate or
+# delete the file another session holds open — a shared RotatingFileHandler on
+# NFS produces "[Errno 116] Stale file handle" errors when one process rotates
+# the file others have open.  The IPython stem also overrides the apsbits
+# default (`ipython_log.py`) so the file reads as a log, not a runnable script.
+_IPYTHON_LOG_STEM = "ipython_logs"
+_FILE_LOG_STEM = "logging"
+
+# Loggers whose DEBUG output floods the session log (and, once a file handle
+# goes stale, floods the console with "Logging error" tracebacks).  pymongo's
+# monitor thread emits a "Server heartbeat" DEBUG record every few seconds.
+# Setting an explicit level here survives the root-logger DEBUG that startup
+# applies later (an explicit child level wins over the root effective level).
+_SILENCED_MODULES = {"pymongo": "warning"}
 
 # Idempotency guard: every beamline's package `__init__.py` calls
 # `setup_logging()` and they all transitively import id4_common (which also
@@ -60,8 +94,9 @@ def setup_logging():
     Falls back to the apsbits default directory (``<cwd>/.logs/``) when no
     LOG_PATH is configured or when the centralized directory cannot be
     created — typically a developer machine without access to the beamline
-    filesystem.  The IPython log file always uses our filename
-    (``ipython_logs.log``), regardless of which directory wins.
+    filesystem.  Each session writes its own files
+    (``logging.<host>.<pid>.log`` and ``ipython_logs.<host>.<pid>.log``),
+    regardless of which directory wins, and pymongo is silenced to WARNING.
 
     Idempotent: subsequent calls are no-ops so importing several beamline
     packages (or importing one whose ``__init__.py`` chains through
@@ -76,6 +111,9 @@ def setup_logging():
     # `%logstart` actually lands on our override path.
     _drop_apsbits_init_file_handlers()
     _stop_active_ipython_log()
+    # The throwaway `.logs` apsbits created during import (under the temp dir
+    # used while importing) is now orphaned; remove the temp tree.
+    shutil.rmtree(_init_tmp, ignore_errors=True)
 
     cfg = _read_iconfig_logging_block()
     log_path = cfg.get("LOG_PATH")
@@ -84,15 +122,16 @@ def setup_logging():
         try:
             _apply_overrides(log_path=log_path, cfg=cfg)
         except (PermissionError, OSError) as exc:
+            fallback = _fallback_log_dir()
             print(
                 "POLAR centralized log directory unavailable "
-                f"({exc}); falling back to <cwd>/.logs/."
+                f"({exc}); falling back to {fallback}."
             )
             # Tear down whatever partial handlers the failed run left behind
-            # and try again with the apsbits default directory.
+            # and try again with a guaranteed-writable directory.
             _drop_apsbits_init_file_handlers()
             _stop_active_ipython_log()
-            _apply_overrides(log_path=None, cfg=cfg)
+            _apply_overrides(log_path=fallback, cfg=cfg)
     else:
         _apply_overrides(log_path=None, cfg=cfg)
 
@@ -118,12 +157,13 @@ def _apply_overrides(log_path, cfg):
 def _build_overrides(log_path, cfg):
     """Build the apsbits-shape override dict for one configure_logging run.
 
-    The IPython filename override is always applied.  The directory override
-    and any file_logs knobs (max bytes, backup count) are applied only when
-    log_path is non-None.
+    Per-session filenames and the pymongo silence are always applied.  The
+    directory override and any file_logs knobs (max bytes, backup count) are
+    applied only when log_path is non-None.
     """
-    ipython_logs = {"log_filename_base": _IPYTHON_LOG_FILENAME}
-    file_logs = {}
+    suffix = _session_suffix()
+    ipython_logs = {"log_filename_base": f"{_IPYTHON_LOG_STEM}.{suffix}.log"}
+    file_logs = {"log_filename_base": f"{_FILE_LOG_STEM}.{suffix}.log"}
     if log_path:
         ipython_logs["log_directory"] = log_path
         file_logs["log_directory"] = log_path
@@ -131,10 +171,30 @@ def _build_overrides(log_path, cfg):
             if src_key in cfg:
                 file_logs[dst_key] = cfg[src_key]
 
-    overrides = {"ipython_logs": ipython_logs}
-    if file_logs:
-        overrides["file_logs"] = file_logs
-    return overrides
+    return {
+        "ipython_logs": ipython_logs,
+        "file_logs": file_logs,
+        "modules": dict(_SILENCED_MODULES),
+    }
+
+
+def _session_suffix():
+    """Return a per-session filename suffix: ``<short-host>.<pid>``."""
+    return f"{socket.gethostname().split('.')[0]}.{os.getpid()}"
+
+
+def _fallback_log_dir():
+    """Return a guaranteed-writable directory for logs.
+
+    Prefer ``<cwd>/.logs`` (apsbits' historical default, convenient on a
+    developer machine).  At the beamline the cwd is the read-only DM
+    experiment directory, so when it isn't writable fall back to a private
+    temp directory instead of letting ``os.makedirs`` raise PermissionError.
+    """
+    cwd = pathlib.Path.cwd()
+    if os.access(cwd, os.W_OK):
+        return str(cwd / ".logs")
+    return tempfile.mkdtemp(prefix="polar-logs-")
 
 
 def _read_iconfig_logging_block():

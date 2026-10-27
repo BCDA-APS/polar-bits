@@ -32,8 +32,8 @@ from dm import DmException
 from dm import ObjectNotFound
 
 from ..callbacks.spec_data_file_writer import specwriter
+from .dm_utils import dm_ds_reachable
 from .dm_utils import dm_experiment_setup as dm_create_experiment
-from .dm_utils import get_current_run
 from .dm_utils import get_current_run_name
 from .dm_utils import get_esaf_info
 from .dm_utils import get_experiment
@@ -72,10 +72,18 @@ def _dm_available() -> bool:
     failures plus OSError/timeouts for transport problems) and logs a
     single warning on failure so the user knows why ESAF/proposal
     prompts were skipped.
+
+    Probes the DS/experiment service via ``dm_ds_reachable()`` rather than
+    ``get_current_run()``: the latter hits a different backend and raises
+    even when DM is perfectly healthy but today falls between scheduled
+    runs, which would incorrectly skip DM prompts. ``dm_ds_reachable()``
+    calls the same endpoint ``dm_experiment_setup()`` needs, so it directly
+    predicts whether ``experiment_setup(server="data management")`` will
+    work.
     """
     try:
         dm_setup(get_config()["DM_SETUP_FILE"])
-        get_current_run()
+        dm_ds_reachable()
         return True
     except Exception as exc:  # noqa: BLE001 — explicitly any DM failure
         logger.warning("DM not reachable (%s); falling back to dserv.", exc)
@@ -757,7 +765,7 @@ class ExperimentClass:
         sample: str | None = None,
         server: str | None = None,
         experiment_name: str | None = None,
-        reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+        reset_scan_id: int | None = None,
     ) -> None:
         """Run the full experiment setup.
 
@@ -766,6 +774,10 @@ class ExperimentClass:
         ``"dserv"``, and metadata is stamped as ``"dev"``. To force
         bypass even when DM is up, pass ``server="dserv"`` or use
         ``esaf_id="dev"``/``proposal_id="dev"``.
+
+        ``reset_scan_id`` defaults to ``None``, which prompts the user
+        interactively. Pass ``RESET_SCAN_ID_NOOP`` to silently keep the
+        existing ``RE.md["scan_id"]``, or a non-negative int to set it.
         """
         dm_ok = _dm_available()
 
@@ -830,9 +842,14 @@ class ExperimentClass:
         self,
         sample_name: str | None = None,
         base_name: str | None = None,
-        reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+        reset_scan_id: int | None = None,
     ) -> None:
-        """Switch sample, refresh paths, and start a new SPEC file."""
+        """Switch sample, refresh paths, and start a new SPEC file.
+
+        ``reset_scan_id`` defaults to ``None``, which prompts the user
+        interactively. Pass ``RESET_SCAN_ID_NOOP`` to silently keep the
+        existing ``RE.md["scan_id"]``, or a non-negative int to set it.
+        """
         self.sample_input(sample_name)
         self.setup_path()
         self.scan_number_input(reset_scan_id)
@@ -847,7 +864,7 @@ class ExperimentClass:
         sample: str | None = None,
         server: str | None = None,
         experiment_name: str | None = None,
-        reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+        reset_scan_id: int | None = None,
     ) -> None:
         """Shortcut for :meth:`setup`."""
         self.setup(
@@ -871,7 +888,7 @@ def experiment_setup(
     sample: str | None = None,
     server: str | None = None,
     experiment_name: str | None = None,
-    reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+    reset_scan_id: int | None = None,
 ) -> None:
     """Run the full experiment setup (delegates to ``experiment.setup``)."""
     experiment.setup(
@@ -888,7 +905,7 @@ def experiment_setup(
 def experiment_change_sample(
     sample_name: str | None = None,
     base_name: str | None = None,
-    reset_scan_id: int | None = RESET_SCAN_ID_NOOP,
+    reset_scan_id: int | None = None,
 ) -> None:
     """Switch sample (delegates to ``experiment.change_sample``)."""
     experiment.change_sample(

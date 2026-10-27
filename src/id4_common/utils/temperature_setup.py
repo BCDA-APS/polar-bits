@@ -57,8 +57,8 @@ TEMPERATURE_CONTROLLERS = {
 
 
 # Module-level cache so re-running `temperature_setup()` keeps the previous
-# choice as the prompt default and `te()` (in shorts.py) can find the active
-# `tc` without going through `sys.modules["__main__"]`.
+# choice as the prompt default and `te()` (in utilities.py) can find the
+# active `tc` without going through `sys.modules["__main__"]`.
 _active_label: str | None = None
 _active_tc = None
 _active_ts = None

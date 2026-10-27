@@ -297,7 +297,7 @@ if you need to introspect or rotate it manually.
 
 ---
 
-## Quick shortcuts (`shorts.py`)
+## Quick shortcuts (`utilities.py`)
 
 A handful of one-liners for very common operations.
 

@@ -186,11 +186,25 @@ def _stub_specwriter() -> None:
     pkg.nexus_data_file_writer = nx
 
 
+def _stub_polartools() -> None:
+    """Stub polartools.load_data so importing wax does not hit databroker.
+
+    ``id4_common.utils.wax`` calls ``load_catalog("4id_polar")`` at module
+    scope, and the real ``load_catalog`` opens a databroker connection.
+    """
+    pkg = _ensure_module("polartools")
+    pkg.__path__ = []  # marks it as a package
+    mod = _ensure_module("polartools.load_data")
+    mod.load_catalog = MagicMock(name="load_catalog")
+    pkg.load_data = mod
+
+
 def _stub_dm_utils() -> None:
     """Stub the project's own dm_utils module before experiment_utils imports it."""
     mod = _ensure_module("id4_common.utils.dm_utils")
     mod.get_current_run = MagicMock(return_value={"name": "2026-2"})
     mod.get_current_run_name = MagicMock(return_value="2026-2")
+    mod.dm_ds_reachable = MagicMock(return_value=None)
     mod.get_esaf_info = MagicMock()
     mod.get_proposal_info = MagicMock()
     mod.get_experiment = MagicMock()
@@ -204,4 +218,5 @@ def pytest_configure(config):
     _stub_apstools()
     _stub_specwriter()
     _stub_run_engine()
+    _stub_polartools()
     _stub_dm_utils()

@@ -135,7 +135,7 @@ succeeds.
 - X-ray diagnostics: `aps_xbpm`, `aps_undulator`, `aps_status`
 - Optics: `kb_generic` (KB mirror factory), `crl_device` (CRL factory)
 - Monochromator / energy: `monochromator`, `energy_device`, `mono_feedback`
-- Diffractometer: `polar_diffractometer_hklpy2` (Cradle / HP cradles + `_psi` engines)
+- Diffractometer: `polar_diffractometer` (Cradle / HP cradles + `_psi` engines), `sim_diffractometer` (simulated twins)
 - Fluorescence detectors: `vortex_xmap`, `vortex_xspress3_me{4,7}`, `vortex_dante_me{1,4}`
 - Area detectors: `ad_eiger1M`, `ad_lambda`, `ad_lightfield`, `ad_vimba`
 - Scalers / electrometers: `scaler`, `quadems`, `sydor_device`
@@ -146,6 +146,8 @@ succeeds.
 
 - `base_scans` — `lup`, `ascan`, `count`, `qxscan`, `th2th`
 - `grid_scans` — `grid_scan`, `rel_grid_scan`
+- `list_scans` — `list_scan`, `rel_list_scan`, `list_grid_scan`,
+  `rel_list_grid_scan`
 - `hkl_scans` — `hklscan`, `hscan`, `kscan`, `lscan`, `psiscan`
 - `move_plans` — `mv`, `mvr`, `abs_set` (with magnet911 staging)
 - `peak_position` — `cen` / `com` / `maxi` / `mini` / `peak` / `peak_pos` /
@@ -195,6 +197,8 @@ succeeds.
   `RE.md["session_state"]`
 - `experiment_utils` — `experiment_setup`, `experiment_resume`,
   `experiment_load_from_scan`
-- `hkl_utils_hklpy2` — hklpy2 wrappers
+- `hkl_utils` — hklpy2 wrappers
 - `polartools_hklpy2_imports` — re-exports
-- `shorts` — `crl_setup`, `crl_size`, `te`, `opt`
+- `utilities` — `set_counting_time`, `list_functions`, and shortcuts
+  (`crl_setup`, `crl_size`, `te`, `opt`, `spec_on`/`spec_off`,
+  `plots_on`/`plots_off`)

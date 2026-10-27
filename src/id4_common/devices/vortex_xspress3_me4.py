@@ -30,7 +30,7 @@ from .counters_mixin import ROICountersMixin
 
 logger = getLogger(__name__)
 
-MAX_IMAGES = 12216
+MAX_IMAGES = 12000
 MAX_ROIS = 8
 
 
@@ -57,6 +57,7 @@ class Trigger(TriggerBase):
         self._status_arm = None
         self._arm_plan_delay = 0.1
         self._sleep_after_trigger = 0.1
+        self.max_images = MAX_IMAGES
 
     def setup_manual_trigger(self):
         """
@@ -71,8 +72,9 @@ class Trigger(TriggerBase):
         """Configure stage_sigs for TTL-veto flyscan triggering."""
         # Stage signals
         self.cam.stage_sigs["trigger_mode"] = "TTL Veto Only"
-        self.cam.stage_sigs["num_images"] = MAX_IMAGES
+        self.cam.stage_sigs["num_images"] = self.max_images
         self.cam.stage_sigs["wait_for_plugins"] = "No"
+        self._flysetup = True
 
     def setup_sgzbca_trigger(self):
         """Configure stage_sigs for SoftGlue BCA TTL-veto triggering."""
@@ -104,6 +106,7 @@ class Trigger(TriggerBase):
 
         super().stage()
 
+        # print(f"{self._flysetup = }")
         if self._flysetup:
             self._acquisition_signal.set(1).wait(timeout=10)
 
@@ -581,3 +584,46 @@ class VortexXspress34(Trigger, ROICountersMixin, DetectorBase):
         _hdf1_auto = True if self.hdf1.autosave.get() == "on" else False
         _hdf1_on = True if self.hdf1.enable.get() == "Enable" else False
         return _hdf1_on or _hdf1_auto
+
+    def setup_flyscan_mode(self, *, num_images, acq_time, hdf_images):
+        """Configure stage_sigs for a TTL-veto gated fly-scan.
+
+        Wraps :meth:`setup_external_trigger` to get the default TTL Veto
+        Only stage signals, then overrides the scan-specific image count
+        and per-image acquire time. Call this *before* ``stage()`` so the
+        new ``stage_sigs`` are applied when the RunEngine stages the
+        detector.
+
+        Unlike the Eiger's equivalent, this leaves ``_flysetup`` True
+        (:meth:`setup_external_trigger` sets it): :meth:`Trigger.stage`
+        keys the ``Acquire`` put off that flag, so clearing it here would
+        stage the detector without ever arming it.
+
+        Parameters
+        ----------
+        num_images : int
+            Total number of frames the scan will collect.
+        acq_time : float
+            Per-frame acquire time in seconds.
+        hdf_images : int
+            Accepted for signature compatibility with the other flyscan
+            detectors, but unused -- the Xspress3 writes one HDF5 per
+            scan (``num_capture = 0``) rather than one file per line.
+        """
+        if int(num_images) > MAX_IMAGES:
+            raise ValueError(
+                f"{self.name} cannot collect {int(num_images)} frames in "
+                f"one scan; the Xspress3 limit is {MAX_IMAGES}. Reduce "
+                "x_npts / y_npts."
+            )
+        # setup_external_trigger() stages num_images from self.max_images,
+        # and stage() calls it a *second* time while _flysetup is True --
+        # so the scan's count has to go through max_images, or that
+        # re-call puts MAX_IMAGES back.
+        self.max_images = int(num_images)
+        self.setup_external_trigger()
+        self.cam.stage_sigs["num_images"] = int(num_images)
+        self.cam.stage_sigs["acquire_time"] = float(acq_time)
+        # One HDF5 per scan, unbounded capture -- matches the Eiger, and
+        # the <folder>/vortex/scan_<n>.h5 layout the flyscan GUI reads.
+        self.hdf1.stage_sigs["num_capture"] = 0
