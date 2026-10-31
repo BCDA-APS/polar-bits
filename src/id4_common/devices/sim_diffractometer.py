@@ -11,7 +11,6 @@ To start from the beamline state, copy it from the real diffractometer with
 UB, constraints, mode) or ``sync_all()``.
 """
 
-import copy
 import logging
 
 from apsbits.core.instrument_init import oregistry
@@ -20,6 +19,7 @@ from ophyd import Component
 from ophyd import Signal
 from ophyd import SoftPositioner
 
+from ..utils.diffractometer_setup import copy_setup
 from .hklpy2_workarounds import _ThreadSafeSolverMixin
 from .polar_diffractometer import AnalyzerDevice
 from .polar_diffractometer import DiffractometerCoreMixin
@@ -210,12 +210,12 @@ class SimDiffractometer(
             Device to copy from. Defaults to ``self.real_diffractometer``.
         """
         real = self._find_real(real_diffractometer)
-        _copy_setup(real, self)
+        copy_setup(real, self)
 
         psi = oregistry.find(f"{self.name}_psi", allow_none=True)
         real_psi = oregistry.find(f"{real.name}_psi", allow_none=True)
         if psi is not None and real_psi is not None:
-            _copy_setup(real_psi, psi)
+            copy_setup(real_psi, psi)
 
         print(
             f"Copied samples, reflections, UB, constraints and mode from "
@@ -234,35 +234,6 @@ class SimDiffractometer(
         self.sync_setup(real_diffractometer)
         self.sync_energy(real_diffractometer)
         self.sync_motors(real_diffractometer)
-
-
-def _copy_setup(source, target):
-    """Copy the orientation setup of ``source`` into soft ``target``.
-
-    ``source.configuration`` would also read the beam wavelength and the
-    auxiliary motors over EPICS, so the target's own configuration is used as
-    the template and only the orientation sections are taken from the source.
-    """
-    core = source.core
-    config = target.configuration
-    config["samples"] = copy.deepcopy(
-        {name: sample._asdict() for name, sample in core._samples.items()}
-    )
-    config["sample_name"] = core.sample.name
-    config["constraints"] = copy.deepcopy(core.constraints._asdict())
-    config["axes"]["extra_axes"] = dict(core.all_extras)
-    config["presets"] = copy.deepcopy(core._mode_presets)
-    target.restore(
-        config,
-        clear=True,
-        restore_constraints=True,
-        restore_wavelength=False,
-        restore_mode=False,
-        restore_samples=True,
-        restore_extras=True,
-        restore_presets=True,
-    )
-    target.core.mode = core.mode
 
 
 SimDiffractometerPSIBase = diffractometer_class_factory(

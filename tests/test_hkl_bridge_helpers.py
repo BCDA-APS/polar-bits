@@ -207,9 +207,8 @@ def hkl_tab(monkeypatch):
     monkeypatch.setenv("QT_QPA_PLATFORM", "offscreen")
     monkeypatch.setenv("ID4_STATION", "id4_g")
     pytest.importorskip("qtpy", reason="Qt is in the gui extra only")
-    from qtpy.QtWidgets import QApplication
-
     from id4_common.gui.tabs.hkl import HklTab
+    from qtpy.QtWidgets import QApplication
 
     app = QApplication.instance() or QApplication([])
     tab = HklTab()
@@ -293,9 +292,8 @@ def test_move_drives_the_calculated_angles(hkl_tab, monkeypatch):
 
 
 def test_add_sample_asks_before_replacing(hkl_tab, monkeypatch):
-    from qtpy.QtWidgets import QMessageBox
-
     from id4_common.gui.tabs.hkl import ACTION_KEY
+    from qtpy.QtWidgets import QMessageBox
 
     hkl_tab.poller = object()  # _act needs one to send anything
     asked = []
@@ -320,9 +318,8 @@ def test_add_sample_asks_before_replacing(hkl_tab, monkeypatch):
 
 
 def test_add_sample_with_a_new_name_does_not_ask(hkl_tab, monkeypatch):
-    from qtpy.QtWidgets import QMessageBox
-
     from id4_common.gui.tabs.hkl import ACTION_KEY
+    from qtpy.QtWidgets import QMessageBox
 
     hkl_tab.poller = object()
 

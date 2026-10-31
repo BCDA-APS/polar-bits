@@ -410,16 +410,26 @@ def reload_all_devices(file="devices.yml", stations=None):
        rebuild and register devices from the specified configuration file.
     2. Searches the registry for devices matching the given station labels
        and attempts to connect them without raising errors on failure.
+    3. Carries each diffractometer's orientation over to its new object and
+       re-selects the active one (see
+       :func:`~id4_common.utils.hkl_utils.restore_diffractometers`).
     """
+    # Local import: hkl_utils pulls in hklpy2 and the RunEngine's catalog.
+    from .hkl_utils import restore_diffractometers
+    from .hkl_utils import snapshot_diffractometers
 
     if stations is None:
         stations = ["core", "4idb", "4idg", "4idh"]
+
+    old_diffractometers = snapshot_diffractometers()
 
     # Create the devices.
     RE(make_devices(clear=True, file=file, connect=False))
 
     for device in oregistry.findall(stations):
         connect_device(device, raise_error=False)
+
+    restore_diffractometers(old_diffractometers)
 
 
 def remove_device(device):

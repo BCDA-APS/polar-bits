@@ -74,6 +74,7 @@ try:
     from .progress_bar import progress_bar_manager
     from .run_engine import RE as polar_RE
     from .run_engine import cat
+    from .run_engine import sd
 except ModuleNotFoundError:
     print("gi module is not installed, the hkl_utils functions will not work!")
 
@@ -213,10 +214,16 @@ def set_diffractometer(diffractometer):
 
     hklpy2_set_diffract(diffractometer)
 
-    try:
-        polar_RE.preprocessors.remove(geometries.configuration_wrapper)
-    except ValueError:
-        pass
+    # Remove the bound method that was appended, not the wrapper object:
+    # that never matched, so every switch left the previous wrapper in place
+    # and each run read the configuration of every device ever selected.
+    if geometries.configuration_wrapper is not None:
+        try:
+            polar_RE.preprocessors.remove(
+                geometries.configuration_wrapper.wrapper
+            )
+        except ValueError:
+            pass
 
     geometries.configuration_wrapper = ConfigurationRunWrapper(diffractometer)
     polar_RE.preprocessors.append(geometries.configuration_wrapper.wrapper)
@@ -310,6 +317,130 @@ def change_diffractometer(diffractometer=None):
     except NameError:
         globals().update(aliases)
     print(f"Aliases created: {', '.join(aliases)}")
+
+
+#: Motor-shortcut macros that bind diffractometer (and magnet) sub-devices
+#: into ``__main__`` at import time; re-imported after a device reload.
+_SHORTCUT_MODULES_PREFIX = "id4_common.macros.shortcuts_"
+
+
+def _diffractometer_device_names():
+    """Every diffractometer this package manages, psi partners included."""
+    return [
+        name for base in _DIFFRACTOMETER_NAMES for name in (base, f"{base}_psi")
+    ]
+
+
+def snapshot_diffractometers():
+    """
+    Return the diffractometers in the registry, before a device reload.
+
+    ``reload_all_devices()`` builds new objects, each with hklpy2's default
+    sample. Pass this snapshot to :func:`restore_diffractometers` afterwards
+    to carry the orientation over and to re-select the active one.
+
+    Returns
+    -------
+    dict
+        Device name -> device, for those currently registered.
+    """
+    old = {}
+    for name in _diffractometer_device_names():
+        device = oregistry.find(name, allow_none=True)
+        if device is not None:
+            old[name] = device
+    return old
+
+
+def restore_diffractometers(old):
+    """
+    Point the session at the reloaded diffractometers, with their setup.
+
+    After ``make_devices(clear=True)``, hklpy2's selection, the plans
+    (through ``get_diffractometer()``), the console aliases and the shortcut
+    macros still hold the old objects, while ``oregistry`` lookups (the GUI,
+    the ``<name>_psi`` partners) return new ones with a default sample.
+
+    1. Re-imports any loaded shortcut macro, so its names are rebound.
+    2. Re-selects the active diffractometer with
+       :func:`change_diffractometer`, which also re-creates its aliases.
+    3. Copies each old diffractometer's samples, reflections, UB,
+       constraints, extras, presets and mode onto its replacement (after
+       step 2, which resets the constraints to the defaults).
+    4. Destroys each old object whose copy succeeded, after taking it out
+       of the baseline and monitors. Otherwise its motors' readbacks keep
+       running ``inverse()`` on it. This is safe for the replacement: the
+       two share pyepics PVs, and ophyd only closes a channel once no
+       signal uses it. Only diffractometers are destroyed, because their
+       references are the ones refreshed here. A user macro that captured
+       an old object now raises when used, instead of quietly driving a
+       stale copy.
+
+    Nothing moves. A copy that fails is reported; that diffractometer keeps
+    hklpy2's default sample, and its old object is left alive.
+
+    Parameters
+    ----------
+    old : dict
+        The :func:`snapshot_diffractometers` taken before the reload.
+    """
+    import importlib
+    import sys
+
+    from .diffractometer_setup import copy_setup
+
+    for module_name, module in list(sys.modules.items()):
+        if module_name.startswith(_SHORTCUT_MODULES_PREFIX):
+            try:
+                importlib.reload(module)
+            except Exception as exc:
+                print(f"Could not re-import {module_name}: {exc}")
+
+    active = get_diffractometer()
+    if active is not None and active.name in old:
+        if oregistry.find(active.name, allow_none=True) is None:
+            print(
+                f"{active.name} is no longer loaded; select another with "
+                "change_diffractometer()."
+            )
+        else:
+            change_diffractometer(active.name)
+
+    carried = []
+    for name, old_device in old.items():
+        new_device = oregistry.find(name, allow_none=True)
+        if new_device is None or new_device is old_device:
+            continue
+        try:
+            copy_setup(old_device, new_device)
+        except Exception as exc:
+            print(
+                f"Could not carry {name}'s orientation over the reload "
+                f"({exc}). Restore it with read_diffractometer_config_scan()"
+                " or read_diffractometer_config_file()."
+            )
+        else:
+            carried.append(name)
+            _release_old_device(old_device)
+    if carried:
+        print(
+            "Orientation carried over the reload (old objects released): "
+            + ", ".join(carried)
+        )
+
+
+def _release_old_device(device):
+    """Take a replaced device out of the baseline/monitors and destroy it."""
+    for streamed in (sd.baseline, sd.monitors):
+        # By identity: the replacement has the same name and may be there.
+        streamed[:] = [d for d in streamed if d is not device]
+    try:
+        device.destroy()
+    except Exception as exc:
+        print(
+            f"Could not release the old {device.name} ({exc}); it keeps "
+            "receiving updates until the session restarts."
+        )
 
 
 def newsample():
