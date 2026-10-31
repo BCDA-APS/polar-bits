@@ -20,6 +20,7 @@ from ophyd import Component
 from ophyd import Signal
 from ophyd import SoftPositioner
 
+from .hklpy2_workarounds import _ThreadSafeSolverMixin
 from .polar_diffractometer import AnalyzerDevice
 from .polar_diffractometer import DiffractometerCoreMixin
 from .polar_diffractometer import _set_axes_kind
@@ -91,7 +92,11 @@ SimDiffractometerBase = diffractometer_class_factory(
 _set_axes_kind(SimDiffractometerBase)
 
 
-class SimDiffractometer(DiffractometerCoreMixin, SimDiffractometerBase):
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
+class SimDiffractometer(
+    _ThreadSafeSolverMixin, DiffractometerCoreMixin, SimDiffractometerBase
+):
     """
     hklpy2 APS-POLAR diffractometer with simulated motors and analyzer.
 
@@ -271,7 +276,9 @@ SimDiffractometerPSIBase = diffractometer_class_factory(
 )
 
 
-class SimDiffractometerPSI(SimDiffractometerPSIBase):
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
+class SimDiffractometerPSI(_ThreadSafeSolverMixin, SimDiffractometerPSIBase):
     """
     Simulated hklpy2 APS-POLAR diffractometer using the psi engine.
 

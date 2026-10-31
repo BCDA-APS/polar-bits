@@ -29,6 +29,7 @@ from scipy.constants import speed_of_light
 
 from ..utils.analyzer_utils import calcdhkl
 from ..utils.analyzer_utils import check_structure_factor
+from .hklpy2_workarounds import _ThreadSafeSolverMixin
 from .huber_filter import HuberFilter
 from .jj_slits import SlitDevice
 
@@ -528,8 +529,13 @@ CradleDiffractometerBase = diffractometer_class_factory(
 _set_axes_kind(CradleDiffractometerBase)
 
 
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
 class CradleDiffractometer(
-    _InitFallbackMixin, DiffractometerMixin, CradleDiffractometerBase
+    _ThreadSafeSolverMixin,
+    _InitFallbackMixin,
+    DiffractometerMixin,
+    CradleDiffractometerBase,
 ):
     """hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation."""
 
@@ -552,8 +558,13 @@ HPDiffractometerBase = diffractometer_class_factory(
 _set_axes_kind(HPDiffractometerBase)
 
 
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
 class HPDiffractometer(
-    _InitFallbackMixin, DiffractometerMixin, HPDiffractometerBase
+    _ThreadSafeSolverMixin,
+    _InitFallbackMixin,
+    DiffractometerMixin,
+    HPDiffractometerBase,
 ):
     """
     hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
@@ -614,9 +625,17 @@ HPDiffractometerPSIBase = diffractometer_class_factory(
 )
 
 
-class CradleDiffractometerPSI(_InitFallbackMixin, CradleDiffractometerPSIBase):
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
+class CradleDiffractometerPSI(
+    _ThreadSafeSolverMixin, _InitFallbackMixin, CradleDiffractometerPSIBase
+):
     """hklpy2 APS-POLAR cradle diffractometer using the psi engine."""
 
 
-class HPDiffractometerPSI(_InitFallbackMixin, HPDiffractometerPSIBase):
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
+class HPDiffractometerPSI(
+    _ThreadSafeSolverMixin, _InitFallbackMixin, HPDiffractometerPSIBase
+):
     """hklpy2 APS-POLAR HP-press diffractometer using the psi engine."""

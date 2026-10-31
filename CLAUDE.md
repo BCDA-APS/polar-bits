@@ -112,6 +112,38 @@ Don't add more of it when touching that code; migrate opportunistically if a
 change already touches it, but don't scope-creep an unrelated task into a
 refactor.
 
+## Temporary hklpy2 workarounds
+
+These are stopgaps for hklpy2 bugs and are **expected to be reverted** once
+hklpy2 is fixed. When upgrading hklpy2, check its release notes (or
+`hklpy2/incident.py` and `hklpy2/ops.py`) to see if they can go.
+
+Everything lives in `_ThreadSafeSolverMixin`
+(`src/id4_common/devices/hklpy2_workarounds.py`), which is the first base of
+the six diffractometer classes in `polar_diffractometer.py` and
+`sim_diffractometer.py`. It does two independent things:
+
+- **(a) Wavelength callback override** (`_on_wavelength_change`). hklpy2's
+  beam callback calls `request_solver_update(True)`, so every wavelength
+  change rebuilds the solver sample and replays the reflections, swapping
+  the solver λ for each one. The override flags only
+  `_SolverDirty.WAVELENGTH`. Revert when hklpy2's `_wavelength_changed`
+  flags only the wavelength.
+- **(b) Core solver lock** (`_solver_lock`, `_locked`, `_solver_methods`,
+  `restore` override). hklpy2's `Core` has no locking, but ophyd runs
+  `inverse()` on its monitor thread while plans and the console call
+  `forward()`/`calc_UB()`. Revert when hklpy2 serializes `Core` itself.
+
+When both are reverted: delete `hklpy2_workarounds.py` and
+`tests/test_solver_thread_safety.py`, drop the mixin from the class bases
+(each has a comment), and remove this section. Upstream issue: filed
+2026-10-31 in bluesky/hklpy2 (https://github.com/bluesky/hklpy2/issues/436).
+
+Not part of this removal: the wavelength fallback
+(`_DeferredEpicsSignalRO`/`_InitFallbackMixin`) is a separate workaround
+with its own TODO, and the wavelength deadband (#92) and fixq change (#93)
+are permanent fixes.
+
 ## Documentation
 
 The docs site (Sphinx + PyData theme + sphinx-autoapi, hosted on GitHub
