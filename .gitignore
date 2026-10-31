@@ -183,7 +183,7 @@ qserver/existing_plans_and_devices.yaml
 .re_md_dict.yml
 
 # Mac file
-.DS_Store
+*.DS_Store
 
 # Unix
 .loglogin
