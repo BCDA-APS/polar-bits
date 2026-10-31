@@ -281,7 +281,7 @@ Module Contents
 
 .. py:class:: CradleDiffractometer(*args, **kwargs)
 
-   Bases: :py:obj:`_InitFallbackMixin`, :py:obj:`DiffractometerMixin`, :py:obj:`CradleDiffractometerBase`
+   Bases: :py:obj:`id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin`, :py:obj:`_InitFallbackMixin`, :py:obj:`DiffractometerMixin`, :py:obj:`CradleDiffractometerBase`
 
 
    hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation.
@@ -300,7 +300,7 @@ Module Contents
 
 .. py:class:: HPDiffractometer(*args, **kwargs)
 
-   Bases: :py:obj:`_InitFallbackMixin`, :py:obj:`DiffractometerMixin`, :py:obj:`HPDiffractometerBase`
+   Bases: :py:obj:`id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin`, :py:obj:`_InitFallbackMixin`, :py:obj:`DiffractometerMixin`, :py:obj:`HPDiffractometerBase`
 
 
    hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
@@ -357,7 +357,7 @@ Module Contents
 
 .. py:class:: CradleDiffractometerPSI(*args, **kwargs)
 
-   Bases: :py:obj:`_InitFallbackMixin`, :py:obj:`CradleDiffractometerPSIBase`
+   Bases: :py:obj:`id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin`, :py:obj:`_InitFallbackMixin`, :py:obj:`CradleDiffractometerPSIBase`
 
 
    hklpy2 APS-POLAR cradle diffractometer using the psi engine.
@@ -365,7 +365,7 @@ Module Contents
 
 .. py:class:: HPDiffractometerPSI(*args, **kwargs)
 
-   Bases: :py:obj:`_InitFallbackMixin`, :py:obj:`HPDiffractometerPSIBase`
+   Bases: :py:obj:`id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin`, :py:obj:`_InitFallbackMixin`, :py:obj:`HPDiffractometerPSIBase`
 
 
    hklpy2 APS-POLAR HP-press diffractometer using the psi engine.

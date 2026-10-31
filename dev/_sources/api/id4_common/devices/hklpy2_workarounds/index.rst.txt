@@ -1,0 +1,19 @@
+id4_common.devices.hklpy2_workarounds
+=====================================
+
+.. py:module:: id4_common.devices.hklpy2_workarounds
+
+.. autoapi-nested-parse::
+
+   Temporary workarounds for hklpy2 solver problems.
+
+   TEMPORARY: everything in this module is expected to be removed after an
+   hklpy2 update. See the comment above ``_ThreadSafeSolverMixin`` for what to
+   remove and when, and the "Temporary hklpy2 workarounds" section of
+   CLAUDE.md.
+
+   Kept apart from ``polar_diffractometer`` (which builds ``hkl_soleil``
+   classes at import time and so needs libhkl) so it can be tested anywhere.
+
+
+
