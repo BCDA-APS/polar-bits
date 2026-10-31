@@ -49,7 +49,7 @@ Module Contents
 
 
 
-.. py:class:: LF_HDF(*args, write_path_template='', **kwargs)
+.. py:class:: LF_HDF
 
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 

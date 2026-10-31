@@ -44,7 +44,9 @@ RE(lup(energy, -0.05, 0.05, 50, 1.0, lockin=True))
 Keeps the diffractometer at a fixed HKL position throughout the scan by
 adjusting the real-space angles after each motor move. Useful for energy scans
 where you want to track a specific Bragg reflection as the energy changes.
-The HKL correction is applied *after* all other motors have moved.
+The HKL correction is applied *after* all other motors have moved. The HKL
+that is held is the one computed from the motor positions when the scan
+starts, so a position fine-tuned with real-motor scans is kept.
 
 ```python
 RE(qxscan(7.514, 1.0, fixq=True))

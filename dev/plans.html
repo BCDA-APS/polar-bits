@@ -600,7 +600,9 @@ signal instead of the scaler. Use for high-sensitivity dichroism measurements.</
 <p>Keeps the diffractometer at a fixed HKL position throughout the scan by
 adjusting the real-space angles after each motor move. Useful for energy scans
 where you want to track a specific Bragg reflection as the energy changes.
-The HKL correction is applied <em>after</em> all other motors have moved.</p>
+The HKL correction is applied <em>after</em> all other motors have moved. The HKL
+that is held is the one computed from the motor positions when the scan
+starts, so a position fine-tuned with real-motor scans is kept.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">qxscan</span><span class="p">(</span><span class="mf">7.514</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">fixq</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">fixq</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 </pre></div>
