@@ -32,6 +32,7 @@ from ..utils.analyzer_utils import check_structure_factor
 from .hklpy2_workarounds import _ThreadSafeSolverMixin
 from .huber_filter import HuberFilter
 from .jj_slits import SlitDevice
+from .pseudo_targets import _TargetsFollowMotorsMixin
 
 # Constants
 WAVELENGTH_CONSTANT = 12.39
@@ -321,9 +322,13 @@ class AnalyzerDevice(PseudoPositioner):
             self.crystal.put(cryst)
 
 
-class DiffractometerCoreMixin(Device):
+class DiffractometerCoreMixin(_TargetsFollowMotorsMixin, Device):
     """
     Hardware-free behavior shared by the real and simulated diffractometers.
+
+    Includes :class:`_TargetsFollowMotorsMixin`, so a single-axis hkl move
+    keeps the other axes where the diffractometer is, not where it was last
+    sent.
     """
 
     @property

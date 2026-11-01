@@ -478,6 +478,13 @@ RE(ascan(k, -0.1, 0.1, 40, 0.5))       # absolute K-scan
 RE(cen(l))                             # center l on the last scan's COM
 ```
 
+Moving one of `h`, `k`, `l` keeps the other two where the diffractometer
+**is**, including after you have moved real motors: an alignment scan,
+`cen()` on mu or chi, `th2th`. Plain ophyd would use the other axes' last
+*commanded* values instead and could drive the diffractometer back to an old
+position. The diffractometers clear those commanded values whenever the real
+motors move away from them.
+
 See [Scans in reciprocal space](#scans-in-reciprocal-space) for the
 dedicated `hscan` / `kscan` / `lscan` / `hklscan` plans.
 

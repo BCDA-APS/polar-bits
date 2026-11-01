@@ -329,6 +329,9 @@ RE(kscan(start, stop, number_of_points, count_time))   # vary K
 RE(lscan(start, stop, number_of_points, count_time))   # vary L
 ```
 
+The fixed coordinates are the ones the diffractometer is at when the scan
+starts, even after real-motor alignment, not the last commanded hkl.
+
 A general HKL scan moves between two arbitrary points in HKL space:
 
 ```python
