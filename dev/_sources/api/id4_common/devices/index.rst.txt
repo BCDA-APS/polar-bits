@@ -58,6 +58,7 @@ Submodules
    /api/id4_common/devices/polar_status/index
    /api/id4_common/devices/polarimeter/index
    /api/id4_common/devices/preamps/index
+   /api/id4_common/devices/pseudo_targets/index
    /api/id4_common/devices/quadems/index
    /api/id4_common/devices/qxscan_device/index
    /api/id4_common/devices/ringlight/index

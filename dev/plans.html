@@ -850,6 +850,8 @@ directions while keeping the rest of the HKL coordinates fixed:</p>
 <span class="n">RE</span><span class="p">(</span><span class="n">lscan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">,</span> <span class="n">count_time</span><span class="p">))</span>   <span class="c1"># vary L</span>
 </pre></div>
 </div>
+<p>The fixed coordinates are the ones the diffractometer is at when the scan
+starts, even after real-motor alignment, not the last commanded hkl.</p>
 <p>A general HKL scan moves between two arbitrary points in HKL space:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">hklscan</span><span class="p">(</span>
     <span class="n">h_start</span><span class="p">,</span> <span class="n">h_stop</span><span class="p">,</span>

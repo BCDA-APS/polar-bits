@@ -1222,6 +1222,12 @@ each reflection), and the corrected 2θ values.</p></li>
 <span class="n">RE</span><span class="p">(</span><span class="n">cen</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>                             <span class="c1"># center l on the last scan's COM</span>
 </pre></div>
 </div>
+<p>Moving one of <code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code> keeps the other two where the diffractometer
+<strong>is</strong>, including after you have moved real motors: an alignment scan,
+<code class="docutils literal notranslate"><span class="pre">cen()</span></code> on mu or chi, <code class="docutils literal notranslate"><span class="pre">th2th</span></code>. Plain ophyd would use the other axes’ last
+<em>commanded</em> values instead and could drive the diffractometer back to an old
+position. The diffractometers clear those commanded values whenever the real
+motors move away from them.</p>
 <p>See <a class="reference internal" href="#scans-in-reciprocal-space"><span class="std std-ref">Scans in reciprocal space</span></a> for the
 dedicated <code class="docutils literal notranslate"><span class="pre">hscan</span></code> / <code class="docutils literal notranslate"><span class="pre">kscan</span></code> / <code class="docutils literal notranslate"><span class="pre">lscan</span></code> / <code class="docutils literal notranslate"><span class="pre">hklscan</span></code> plans.</p>
 </section>

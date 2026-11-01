@@ -171,10 +171,14 @@ Module Contents
 
 .. py:class:: DiffractometerCoreMixin
 
-   Bases: :py:obj:`ophyd.Device`
+   Bases: :py:obj:`id4_common.devices.pseudo_targets._TargetsFollowMotorsMixin`, :py:obj:`ophyd.Device`
 
 
    Hardware-free behavior shared by the real and simulated diffractometers.
+
+   Includes :class:`_TargetsFollowMotorsMixin`, so a single-axis hkl move
+   keeps the other axes where the diffractometer is, not where it was last
+   sent.
 
 
    .. py:property:: hints
