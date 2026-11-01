@@ -1,10 +1,14 @@
 """Session status tab: catalog, user, scan number, output files, console log."""
 
+import datetime
 import time
 from pathlib import Path
 
+from qtpy.QtCore import QRegularExpression
 from qtpy.QtCore import QSettings
+from qtpy.QtCore import Qt
 from qtpy.QtCore import QTimer
+from qtpy.QtGui import QRegularExpressionValidator
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QFormLayout
 from qtpy.QtWidgets import QGroupBox
@@ -12,9 +16,14 @@ from qtpy.QtWidgets import QHBoxLayout
 from qtpy.QtWidgets import QLabel
 from qtpy.QtWidgets import QLineEdit
 from qtpy.QtWidgets import QPushButton
+from qtpy.QtWidgets import QSpinBox
 from qtpy.QtWidgets import QVBoxLayout
 
 from .. import config
+from ..transcript import BYTES_PER_MB
+from ..transcript import DEFAULT_MAX_MB
+from ..transcript import DEFAULT_PREFIX
+from ..transcript import log_file_name
 from .base import PLACEHOLDER
 from .base import BaseTab
 from .base import value_label
@@ -25,16 +34,21 @@ _BUSY_STATES = ("busy", "dead")
 #: Shared with ``app.py`` and ``tabs/macro.py``, which re-declare them for the
 #: same reason: importing from ``app`` would be circular.
 #: The application half is ``config.qsettings_app()``, per station and so
-#: called at each use.  It matters most here: ``LOG_PATH_KEY`` below is what
-#: ``app.MainWindow`` reads to auto-start the transcript, and a shared scope
-#: would have a 4IDB session appending its console to 4IDG's log file.
+#: called at each use.  It matters most here: the ``LOG_*`` keys below are
+#: what ``app.MainWindow`` reads to auto-start the transcript, and a shared
+#: scope would have a 4IDB session appending its console to 4IDG's log files.
 SETTINGS_ORG = config.QSETTINGS_ORG
-LOG_PATH_KEY = "console/log_path"
+LOG_DIR_KEY = "console/log_dir"
+LOG_PREFIX_KEY = "console/log_prefix"
+LOG_MAX_MB_KEY = "console/log_max_mb"
 LOG_ENABLED_KEY = "console/log_enabled"
 
-#: Used when nothing is remembered yet, under the kernel's working directory --
-#: where the data already goes -- rather than the GUI process's cwd.
-DEFAULT_LOG_NAME = "console.log"
+#: The single log file of earlier versions.  Read once, to seed the
+#: directory and prefix when neither has been stored yet.
+LOG_PATH_KEY = "console/log_path"
+
+#: Bounds of the "Split at" spin box.
+LOG_MAX_MB_RANGE = (1, 1000)
 
 #: How often the "12.4 kB since 15:04" line is refreshed.  Its own timer, not
 #: ``kernel_values_changed``: those stop arriving during a scan, which is
@@ -49,6 +63,27 @@ def _format_size(count):
     if count < 1024 * 1024:
         return f"{count / 1024:.1f} kB"
     return f"{count / (1024 * 1024):.1f} MB"
+
+
+def stored_log_target(settings):
+    """Return the remembered ``(directory, prefix, max_mb)`` of the log.
+
+    ``directory`` is ``""`` when nothing has been chosen yet, leaving the
+    caller to default it to the working directory.  A path stored by the
+    single-file log of earlier versions stands in for both directory and
+    prefix -- ``/data/console.log`` becomes ``/data`` and ``console`` -- so an
+    upgrade carries on logging where it did before.
+    """
+    directory = settings.value(LOG_DIR_KEY, "", type=str)
+    prefix = settings.value(LOG_PREFIX_KEY, "", type=str)
+    if not directory:
+        legacy = settings.value(LOG_PATH_KEY, "", type=str)
+        if legacy:
+            directory = str(Path(legacy).parent)
+            prefix = prefix or Path(legacy).stem
+    max_mb = settings.value(LOG_MAX_MB_KEY, DEFAULT_MAX_MB, type=int)
+    low, high = LOG_MAX_MB_RANGE
+    return directory, prefix or DEFAULT_PREFIX, min(max(max_mb, low), high)
 
 
 class StatusTab(BaseTab):
@@ -134,32 +169,74 @@ class StatusTab(BaseTab):
     # -- console log ----------------------------------------------------------
 
     def _build_log_group(self):
-        """Path, Browse, Start/Stop and a live status line for the transcript.
+        """Directory, prefix, split size, Start/Stop and a live status line.
 
         The console is the only record of what was done to the instrument, and
         it does not survive: qtconsole trims its scrollback, Restart clears the
         pane, and closing the window loses everything.  This group points that
-        traffic at a file.
+        traffic at a series of files, ``<prefix>_<date>_<NNN>.log``.
         """
         box = QGroupBox("Console log")
         form = QFormLayout(box)
 
-        self._log_path_edit = QLineEdit()
-        self._log_path_edit.setPlaceholderText(str(self._default_path()))
-        self._log_path_edit.setToolTip(
-            "File to append the console's input and output to.  Missing "
-            "directories are created."
+        self._log_dir_edit = QLineEdit()
+        self._log_dir_edit.setPlaceholderText(str(self._default_dir()))
+        self._log_dir_edit.setToolTip(
+            "Folder the console log files are written to.  Missing folders "
+            "are created."
         )
         self._log_browse = QPushButton("Browse…")
         self._log_browse.clicked.connect(self._browse_log)
-        path_row = QHBoxLayout()
-        path_row.addWidget(self._log_path_edit, 1)
-        path_row.addWidget(self._log_browse)
-        form.addRow("File:", path_row)
+        dir_row = QHBoxLayout()
+        dir_row.addWidget(self._log_dir_edit, 1)
+        dir_row.addWidget(self._log_browse)
+        form.addRow("Directory:", dir_row)
+
+        self._log_prefix_edit = QLineEdit()
+        self._log_prefix_edit.setPlaceholderText(DEFAULT_PREFIX)
+        # A name, not a path: the directory has its own field.
+        self._log_prefix_edit.setValidator(
+            QRegularExpressionValidator(
+                QRegularExpression(r"[^/\\]*"), self._log_prefix_edit
+            )
+        )
+        self._log_prefix_edit.setToolTip(
+            "Start of every file name.  The date and a file number are "
+            "added automatically."
+        )
+        self._log_prefix_edit.textChanged.connect(self._refresh_log_pattern)
+        self._log_pattern = QLabel()
+        self._log_pattern.setEnabled(False)
+        prefix_row = QHBoxLayout()
+        prefix_row.addWidget(self._log_prefix_edit, 1)
+        prefix_row.addWidget(self._log_pattern)
+        form.addRow("Prefix:", prefix_row)
+
+        self._log_max_mb = QSpinBox()
+        self._log_max_mb.setRange(*LOG_MAX_MB_RANGE)
+        self._log_max_mb.setValue(DEFAULT_MAX_MB)
+        self._log_max_mb.setSuffix(" MB")
+        self._log_max_mb.setKeyboardTracking(False)
+        # Focus on a click only.  The application's wheel guard (nowheel.py)
+        # already keeps a scroll from stepping it; this keeps Tab from
+        # landing on it too.
+        self._log_max_mb.setFocusPolicy(Qt.ClickFocus)
+        self._log_max_mb.setToolTip(
+            "Start the next file once the current one is this big.  A new "
+            "file is also started when the date changes.  Takes effect "
+            "immediately, even while logging."
+        )
+        self._log_max_mb.valueChanged.connect(self._set_log_max_mb)
+        size_row = QHBoxLayout()
+        size_row.addWidget(self._log_max_mb)
+        size_row.addStretch(1)
+        form.addRow("Split at:", size_row)
 
         self._log_button = QPushButton("Start logging")
         self._log_button.clicked.connect(self._toggle_log)
-        hint = QLabel("Appended to, never overwritten.")
+        hint = QLabel(
+            "New file each day or past the size limit; never overwritten."
+        )
         hint.setEnabled(False)
         button_row = QHBoxLayout()
         button_row.addWidget(self._log_button)
@@ -172,9 +249,10 @@ class StatusTab(BaseTab):
         status_row.addWidget(self._log_status)
         status_row.addStretch(1)
         form.addRow("Status:", status_row)
+        self._refresh_log_pattern()
         return box
 
-    def _default_path(self):
+    def _default_dir(self):
         """Where to log when nothing has been chosen yet.
 
         The polled ``cwd`` -- what the Working directory field shows -- is
@@ -184,27 +262,35 @@ class StatusTab(BaseTab):
         would put the log next to the source checkout instead of the data.
         """
         base = self._kernel_cwd or self.session_cwd
-        return (Path(base) if base else Path.cwd()) / DEFAULT_LOG_NAME
+        return Path(base) if base else Path.cwd()
+
+    def _log_prefix(self):
+        return self._log_prefix_edit.text().strip() or DEFAULT_PREFIX
+
+    def _refresh_log_pattern(self):
+        """Show the file names the prefix will produce."""
+        name = log_file_name(self._log_prefix(), datetime.date.today())
+        self._log_pattern.setText(f"→ {name}")
 
     def _follow_cwd(self, cwd):
-        """Move the default log file with the kernel's working directory.
+        """Move the default log directory with the kernel's working directory.
 
-        Only an untouched default follows.  A path the user typed or browsed
-        to, one remembered from a previous session, and the file of a log that
-        is already running are all left where they are -- the point is to
+        Only an untouched default follows.  A directory the user typed or
+        browsed to, one remembered from a previous session, and that of a log
+        that is already running are all left where they are -- the point is to
         default sensibly, not to move the log out from under anyone.
         """
         if cwd == self._kernel_cwd:
             return
-        stale = str(self._default_path())
+        stale = str(self._default_dir())
         self._kernel_cwd = cwd
-        fresh = str(self._default_path())
-        self._log_path_edit.setPlaceholderText(fresh)
+        fresh = str(self._default_dir())
+        self._log_dir_edit.setPlaceholderText(fresh)
         transcript = self.transcript
         if transcript is not None and transcript.active:
             return
-        if self._log_path_edit.text().strip() in ("", stale):
-            self._log_path_edit.setText(fresh)
+        if self._log_dir_edit.text().strip() in ("", stale):
+            self._log_dir_edit.setText(fresh)
 
     def sync_transcript(self):
         """Show the state of the shared transcript.
@@ -213,37 +299,39 @@ class StatusTab(BaseTab):
         set -- which is *after* the window has already auto-resumed logging, so
         the tab has to read the transcript rather than assume it is idle.
         """
+        directory, prefix, max_mb = stored_log_target(self._settings)
         transcript = self.transcript
         if transcript is not None and transcript.active:
-            self._log_path_edit.setText(str(transcript.path))
-        elif not self._log_path_edit.text().strip():
-            remembered = self._settings.value(LOG_PATH_KEY, "", type=str)
-            self._log_path_edit.setText(remembered or str(self._default_path()))
-        self._log_path_edit.setPlaceholderText(str(self._default_path()))
+            self._log_dir_edit.setText(str(transcript.directory))
+            self._log_prefix_edit.setText(transcript.prefix)
+        else:
+            if not self._log_dir_edit.text().strip():
+                self._log_dir_edit.setText(
+                    directory or str(self._default_dir())
+                )
+            if not self._log_prefix_edit.text().strip():
+                self._log_prefix_edit.setText(prefix)
+        self._log_max_mb.setValue(max_mb)
+        self._log_dir_edit.setPlaceholderText(str(self._default_dir()))
         self._update_log_controls()
 
     def _browse_log(self):
-        """Pick a log file.
-
-        ``DontConfirmOverwrite`` because an existing file is appended to, so
-        Qt's "replace it?" prompt would be describing something that does not
-        happen.
-        """
-        current = self._log_path_edit.text().strip() or str(
-            self._default_path()
-        )
-        path, _filter = QFileDialog.getSaveFileName(
-            self,
-            "Console log file",
-            current,
-            "Log files (*.log);;All files (*)",
-            options=QFileDialog.DontConfirmOverwrite,
+        """Pick the folder the log files go in."""
+        current = self._log_dir_edit.text().strip() or str(self._default_dir())
+        path = QFileDialog.getExistingDirectory(
+            self, "Console log folder", current
         )
         if path:
-            self._log_path_edit.setText(path)
+            self._log_dir_edit.setText(path)
+
+    def _set_log_max_mb(self, value):
+        """Remember the split size, and apply it to a log already running."""
+        self._settings.setValue(LOG_MAX_MB_KEY, value)
+        if self.transcript is not None:
+            self.transcript.max_bytes = value * BYTES_PER_MB
 
     def _toggle_log(self):
-        """Start logging to the named file, or stop the current log."""
+        """Start logging with the chosen directory and prefix, or stop."""
         transcript = self.transcript
         if transcript is None:
             self._log_status.setText("no transcript available")
@@ -252,28 +340,34 @@ class StatusTab(BaseTab):
             transcript.stop()
             self._settings.setValue(LOG_ENABLED_KEY, False)
         else:
-            path = self._log_path_edit.text().strip() or str(
-                self._default_path()
+            directory = self._log_dir_edit.text().strip() or str(
+                self._default_dir()
             )
-            self._log_path_edit.setText(path)
-            if transcript.start(path):
-                self._settings.setValue(LOG_PATH_KEY, str(transcript.path))
+            prefix = self._log_prefix()
+            self._log_dir_edit.setText(directory)
+            self._log_prefix_edit.setText(prefix)
+            # Remembered even if the start fails: an unwritable directory is
+            # usually a mount that is not up yet, and the next launch may well
+            # work.
+            self._settings.setValue(LOG_PREFIX_KEY, prefix)
+            self._settings.setValue(LOG_DIR_KEY, directory)
+            max_bytes = self._log_max_mb.value() * BYTES_PER_MB
+            if transcript.start(directory, prefix, max_bytes):
+                self._settings.setValue(LOG_DIR_KEY, str(transcript.directory))
                 self._settings.setValue(LOG_ENABLED_KEY, True)
-            else:
-                # Remember the choice anyway: an unwritable path is usually a
-                # mount that is not up yet, and the next launch may well work.
-                self._settings.setValue(LOG_PATH_KEY, path)
         self._update_log_controls()
 
     def _update_log_controls(self):
-        """Match the button, the path field and the timer to the log state."""
+        """Match the button, the fields and the timer to the log state."""
         transcript = self.transcript
         active = transcript is not None and transcript.active
         self._log_button.setText("Stop logging" if active else "Start logging")
         self._log_button.setEnabled(transcript is not None)
-        # Locked while writing, so the file cannot be swapped out from under an
-        # open handle -- stop first.
-        self._log_path_edit.setEnabled(not active)
+        # Locked while writing, so the files cannot be swapped out from under
+        # an open handle -- stop first.  The split size stays editable: it is
+        # read afresh before every write.
+        self._log_dir_edit.setEnabled(not active)
+        self._log_prefix_edit.setEnabled(not active)
         self._log_browse.setEnabled(not active)
         if active:
             self._log_timer.start()
