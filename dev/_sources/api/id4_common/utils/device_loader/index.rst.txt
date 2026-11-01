@@ -189,9 +189,6 @@ Module Contents
       rebuild and register devices from the specified configuration file.
    2. Searches the registry for devices matching the given station labels
       and attempts to connect them without raising errors on failure.
-   3. Carries each diffractometer's orientation over to its new object and
-      re-selects the active one (see
-      :func:`~id4_common.utils.hkl_utils.restore_diffractometers`).
 
 
 .. py:function:: remove_device(device)

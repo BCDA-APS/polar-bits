@@ -24,22 +24,6 @@ reload_all_devices()
 reload_all_devices(stations=["core", "4idh"])
 ```
 
-A reload builds new diffractometer objects. `reload_all_devices()` copies
-each one's samples, reflections, UB, constraints, mode, presets and psi
-reference onto its replacement, re-selects the active diffractometer and
-re-creates the console aliases (`mu`, `h`, ...). It also re-imports any loaded
-`shortcuts_*` macro. Nothing moves. If a copy fails, the message names the
-diffractometer; restore it with `read_diffractometer_config_scan()` or
-`read_diffractometer_config_file()`.
-
-Once a diffractometer's setup is copied, the old object is destroyed, so its
-motors no longer recompute hkl on every readback. The new object is not
-affected, because the two share their EPICS connections and a connection is
-only closed when nothing uses it. Other devices are not destroyed, since
-something else, such as a suspender, may still hold them. A macro of your own
-that kept a reference to an old diffractometer will now raise an error;
-re-import it.
-
 These are thin wrappers around
 `id4_common.utils.device_loader` — see the
 [API reference](api/id4_common/utils/device_loader/index.rst) for full

@@ -132,49 +132,6 @@ Module Contents
    :type diffractometer: str or DiffractometerBase, optional
 
 
-.. py:function:: snapshot_diffractometers()
-
-   Return the diffractometers in the registry, before a device reload.
-
-   ``reload_all_devices()`` builds new objects, each with hklpy2's default
-   sample. Pass this snapshot to :func:`restore_diffractometers` afterwards
-   to carry the orientation over and to re-select the active one.
-
-   :returns: Device name -> device, for those currently registered.
-   :rtype: dict
-
-
-.. py:function:: restore_diffractometers(old)
-
-   Point the session at the reloaded diffractometers, with their setup.
-
-   After ``make_devices(clear=True)``, hklpy2's selection, the plans
-   (through ``get_diffractometer()``), the console aliases and the shortcut
-   macros still hold the old objects, while ``oregistry`` lookups (the GUI,
-   the ``<name>_psi`` partners) return new ones with a default sample.
-
-   1. Re-imports any loaded shortcut macro, so its names are rebound.
-   2. Re-selects the active diffractometer with
-      :func:`change_diffractometer`, which also re-creates its aliases.
-   3. Copies each old diffractometer's samples, reflections, UB,
-      constraints, extras, presets and mode onto its replacement (after
-      step 2, which resets the constraints to the defaults).
-   4. Destroys each old object whose copy succeeded, after taking it out
-      of the baseline and monitors. Otherwise its motors' readbacks keep
-      running ``inverse()`` on it. This is safe for the replacement: the
-      two share pyepics PVs, and ophyd only closes a channel once no
-      signal uses it. Only diffractometers are destroyed, because their
-      references are the ones refreshed here. A user macro that captured
-      an old object now raises when used, instead of quietly driving a
-      stale copy.
-
-   Nothing moves. A copy that fails is reported; that diffractometer keeps
-   hklpy2's default sample, and its old object is left alive.
-
-   :param old: The :func:`snapshot_diffractometers` taken before the reload.
-   :type old: dict
-
-
 .. py:function:: newsample()
 
    Interactively add a new sample with lattice constants.
@@ -249,6 +206,31 @@ Module Contents
    current position of the diffractometer pad rail. The soft-IOC center and
    distance PVs are not part of any device, so they use a raw ``caput``.
    Skipped when the active diffractometer is simulated.
+
+
+.. py:class:: Sync_UB_Matrix(source, target)
+
+   Keep the UB matrix of target in sync with source via an ophyd subscription.
+
+   Subscribes to source._ub_sync (an ArrayAttributeSignal pointing at
+   core.sample.UB) so that whenever the signal is updated the callback
+   copies the new matrix to the target and syncs simulated motor positions.
+   Call cleanup() to remove the subscription when no longer needed.
+
+
+   .. py:attribute:: source
+
+
+   .. py:attribute:: target
+
+
+   .. py:method:: cleanup()
+
+      Remove the UB-sync subscription.
+
+
+
+   .. py:method:: sync_callback(value=None, **kwargs)
 
 
 .. py:function:: setor0()

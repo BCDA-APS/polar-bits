@@ -35,7 +35,6 @@ Submodules
    /api/id4_common/devices/ge_controller/index
    /api/id4_common/devices/gh_i0_motors/index
    /api/id4_common/devices/hhl_mirror/index
-   /api/id4_common/devices/hklpy2_workarounds/index
    /api/id4_common/devices/huber_filter/index
    /api/id4_common/devices/interferometers_4IDG/index
    /api/id4_common/devices/jj_slits/index
@@ -58,7 +57,6 @@ Submodules
    /api/id4_common/devices/polar_status/index
    /api/id4_common/devices/polarimeter/index
    /api/id4_common/devices/preamps/index
-   /api/id4_common/devices/pseudo_targets/index
    /api/id4_common/devices/quadems/index
    /api/id4_common/devices/qxscan_device/index
    /api/id4_common/devices/ringlight/index

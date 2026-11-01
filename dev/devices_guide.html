@@ -586,20 +586,6 @@
 <span class="n">reload_all_devices</span><span class="p">(</span><span class="n">stations</span><span class="o">=</span><span class="p">[</span><span class="s2">"core"</span><span class="p">,</span> <span class="s2">"4idh"</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>A reload builds new diffractometer objects. <code class="docutils literal notranslate"><span class="pre">reload_all_devices()</span></code> copies
-each one’s samples, reflections, UB, constraints, mode, presets and psi
-reference onto its replacement, re-selects the active diffractometer and
-re-creates the console aliases (<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">h</span></code>, …). It also re-imports any loaded
-<code class="docutils literal notranslate"><span class="pre">shortcuts_*</span></code> macro. Nothing moves. If a copy fails, the message names the
-diffractometer; restore it with <code class="docutils literal notranslate"><span class="pre">read_diffractometer_config_scan()</span></code> or
-<code class="docutils literal notranslate"><span class="pre">read_diffractometer_config_file()</span></code>.</p>
-<p>Once a diffractometer’s setup is copied, the old object is destroyed, so its
-motors no longer recompute hkl on every readback. The new object is not
-affected, because the two share their EPICS connections and a connection is
-only closed when nothing uses it. Other devices are not destroyed, since
-something else, such as a suspender, may still hold them. A macro of your own
-that kept a reference to an old diffractometer will now raise an error;
-re-import it.</p>
 <p>These are thin wrappers around
 <code class="docutils literal notranslate"><span class="pre">id4_common.utils.device_loader</span></code> — see the
 <a class="reference internal" href="api/id4_common/utils/device_loader/index.html"><span class="std std-doc">API reference</span></a> for full
