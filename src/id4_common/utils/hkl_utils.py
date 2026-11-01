@@ -692,7 +692,7 @@ def compute_UB():
         sample.reflections.order[0], sample.reflections.order[1]
     )
     try:
-        Sync_UB_Matrix(_geom_, _geom_for_psi_)
+        _sync_psi(_geom_, _geom_for_psi_)
     except Exception:
         print("sync UB problem!")
         traceback.print_exc()
@@ -752,7 +752,7 @@ def update_eiger():
     caput(EIGER_DISTANCE_PV, eiger_distance)
 
 
-def _copy_sample_to_psi(source, target, ub=None):
+def _copy_sample_to_psi(source, target):
     """
     Copy ``source``'s lattice and UB onto ``target``'s sample.
 
@@ -770,17 +770,14 @@ def _copy_sample_to_psi(source, target, ub=None):
     is handed, so assigning the source's ``Lattice`` would redirect the
     *source* sample's change notification to the target.
 
-    The equality guard matters because one caller is a subscription callback:
-    every assignment flags the solver dirty, and an unguarded copy would do
-    so on each UB update whether the lattice actually moved or not.
+    The equality guard matters because ``wh`` calls this every time: each
+    assignment flags the solver dirty, and an unguarded copy would force a
+    full re-sync whether the lattice actually moved or not.
 
     Parameters
     ----------
     source, target : Diffractometer
         Devices whose ``.sample`` is read from and written to.
-    ub : array-like, optional
-        UB to write instead of ``source.sample.UB`` -- used by the sync
-        subscription, which is handed the new matrix as its payload.
     """
     _src = source.sample.lattice
     _dst = target.sample.lattice
@@ -788,69 +785,48 @@ def _copy_sample_to_psi(source, target, ub=None):
         _v = getattr(_src, _p)
         if getattr(_dst, _p) != _v:
             setattr(_dst, _p, _v)
-    target.sample.UB = source.sample.UB if ub is None else ub
+    target.sample.UB = source.sample.UB
 
 
-# TODO: Do we really need this? Could put the UB matrix as part of the
-# diffractometer, then sync with a callback.
-class Sync_UB_Matrix:
+def _sync_psi(source, target):
     """
-    Keep the UB matrix of target in sync with source via an ophyd subscription.
+    Copy lattice, UB and the (h2, k2, l2) reference from source to target.
 
-    Subscribes to source._ub_sync (an ArrayAttributeSignal pointing at
-    core.sample.UB) so that whenever the signal is updated the callback
-    copies the new matrix to the target and syncs simulated motor positions.
-    Call cleanup() to remove the subscription when no longer needed.
+    ``target`` is the psi-engine partner of ``source``. Motor positions are
+    not copied: the real psi partner reads the same motor PVs, and the
+    simulated one mirrors its partner through its own subscriptions. (This
+    replaces ``Sync_UB_Matrix``, which commanded the six real motors to
+    their current positions on every ``compute_UB`` and left behind a
+    subscription that never fired again.)
+
+    The reference is read from ``source.core.all_extras``, so it works
+    whatever mode ``source`` is in, and written into the target's psi mode,
+    keeping the target's own ``psi``.
+
+    Parameters
+    ----------
+    source, target : Diffractometer
+        The diffractometer and its ``<name>_psi`` partner.
     """
+    print(f"Copy UB from {source.name} to {target.name}")
+    _copy_sample_to_psi(source, target)
 
-    def __init__(self, source, target):
-        self.source = source
-        self.target = target
-        self.source._ub_sync.subscribe(self.sync_callback)
-        # Trigger an immediate copy using the current value
-        self.sync_callback(value=self.source._ub_sync.get())
-
-    def cleanup(self):
-        """Remove the UB-sync subscription."""
-        self.source._ub_sync.clear_sub(self.sync_callback)
-
-    def sync_callback(self, value=None, **kwargs):
-        if value is None:
-            return
-        print(f"Copy UB from {self.source.name} to {self.target.name}")
-        _copy_sample_to_psi(self.source, self.target, ub=value)
-
-        # Sync real motor positions if target has simulated motors
-        for axis_name in self.source.real_axis_names:
-            ptarget = getattr(self.target, axis_name, None)
-            if ptarget is not None and hasattr(ptarget, "move"):
-                psource = getattr(self.source, axis_name)
-                ptarget.move(psource.position)
-
-        # Sync the azimuthal reference reflection (h2, k2, l2) extras of
-        # the psi constant mode. Read from source.core.all_extras so it
-        # works regardless of source's current mode, then push to target
-        # by temporarily switching to a psi-capable mode if needed.
-        src_extras = self.source.core.all_extras
-        h2k2l2 = {
-            k: src_extras[k] for k in ("h2", "k2", "l2") if k in src_extras
-        }
-        if len(h2k2l2) == 3:
-            psi_modes = [
-                m for m in self.target.core.modes if "psi" in m.lower()
-            ]
-            if psi_modes:
-                saved_mode = self.target.core.mode
-                if "psi" not in saved_mode.lower():
-                    self.target.core.mode = psi_modes[0]
-                try:
-                    current_extras = self.target.core.extras
-                    merged = {**h2k2l2}
-                    if "psi" in current_extras:
-                        merged["psi"] = current_extras.get("psi", 0.0)
-                    self.target.core.extras = merged
-                finally:
-                    self.target.core.mode = saved_mode
+    src_extras = source.core.all_extras
+    h2k2l2 = {k: src_extras[k] for k in ("h2", "k2", "l2") if k in src_extras}
+    psi_modes = [m for m in target.core.modes if "psi" in m.lower()]
+    if len(h2k2l2) != 3 or not psi_modes:
+        return
+    saved_mode = target.core.mode
+    if "psi" not in saved_mode.lower():
+        target.core.mode = psi_modes[0]
+    try:
+        merged = {**h2k2l2}
+        current_extras = target.core.extras
+        if "psi" in current_extras:
+            merged["psi"] = current_extras.get("psi", 0.0)
+        target.core.extras = merged
+    finally:
+        target.core.mode = saved_mode
 
 
 def setor0():
@@ -1437,6 +1413,33 @@ def ca_all(h, k, l):
     cahkl_table((h, k, l))
 
 
+def _stale_solver_wavelength(diffractometer):
+    """
+    Return the solver's wavelength if it disagrees with the beamline's.
+
+    ``wh`` prints the beamline wavelength, never the one libhkl is using, so
+    a stale solver (the 2026-10-31 incident: 5.6 keV in the solver, 2.968 keV
+    on the beamline) looked normal.  Call this right after a calculation,
+    which flushes any pending wavelength update, so a mismatch here means the
+    solver really is stale.  Twice the deadband allows for the drift the
+    deadband itself permits.
+
+    Parameters
+    ----------
+    diffractometer : Diffractometer
+        Device to check.
+
+    Returns
+    -------
+    float or None
+        The solver wavelength in angstrom when stale, otherwise ``None``.
+    """
+    solver_wl = diffractometer.core.solver.wavelength
+    beam_wl = diffractometer.beam.wavelength.get()
+    tolerance = 2 * diffractometer.beam.wavelength_deadband.get()
+    return solver_wl if abs(solver_wl - beam_wl) > tolerance else None
+
+
 def ca(h, k, l, energy=None):  # noqa: E741
     """
     Calculate the motors position of a reflection.
@@ -1456,6 +1459,16 @@ def ca(h, k, l, energy=None):  # noqa: E741
         the current beamline energy is used.
     """
     _geom_ = get_diffractometer()
+
+    # Flush pending updates first, so only a genuinely stale solver warns.
+    # Reported before the finally below resets it, which erases the evidence.
+    _geom_.core.update_solver()
+    stale = _stale_solver_wavelength(_geom_)
+    if stale is not None:
+        print(
+            f"WARNING: the hkl solver was at {stale:6.4f} \u212b; ca() resets"
+            " it to the beamline wavelength."
+        )
 
     if energy is None:
         # Use the live beamline wavelength/energy for the calculation.
@@ -1535,6 +1548,15 @@ def _wh():
         f"\n   {' '.join(_geom_.pseudo_positioners._fields).upper()}"
         f" = {', '.join([f'{v.position:5f}' for v in _geom_.pseudo_positioners])}"
     )
+    # After the line above: each .position re-ran inverse(), which flushed
+    # any pending wavelength update, so a mismatch now is real.
+    stale = _stale_solver_wavelength(_geom_)
+    if stale is not None:
+        print(
+            f"\n   WARNING: these hkl were computed with {stale:6.4f} Å,"
+            f" not the beamline {_geom_.beam.wavelength.get():6.4f} Å."
+            "\n   ca() resets the solver; please report it."
+        )
 
     # Snapshot the current (h, k, l) into uppercase H/K/L globals so the
     # user can reuse them at the prompt (e.g. `mv(diff.h, H+0.01, ...)`).
@@ -2443,7 +2465,7 @@ class whClass:
         try:
             _wh()
         except Exception:
-            pass
+            traceback.print_exc()
         return ""
 
 

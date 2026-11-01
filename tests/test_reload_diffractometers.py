@@ -57,16 +57,11 @@ def _device(name):
 
 
 @pytest.fixture
-def hkl_utils(monkeypatch):
+def hkl_utils(hkl_utils_module, monkeypatch):
     """hkl_utils with the registry, selection and copy faked, calls logged."""
-    # test_list_scans leaves bare stand-ins for hklpy2 in sys.modules, which
-    # hkl_utils cannot import from.  Set them aside for this test.
-    for name in ("hklpy2", "hklpy2.user"):
-        stub = sys.modules.get(name)
-        if stub is not None and getattr(stub, "__file__", None) is None:
-            monkeypatch.delitem(sys.modules, name)
     from id4_common.utils import diffractometer_setup
-    from id4_common.utils import hkl_utils as module
+
+    module = hkl_utils_module
 
     calls = []
     monkeypatch.setattr(

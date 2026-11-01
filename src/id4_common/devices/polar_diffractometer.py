@@ -42,29 +42,6 @@ PTH_MAX_DEGREES = 51
 ANALYZER_LIST_PATH = Path(__file__).parent / "analyzerlist.dat"
 
 
-class UBMatrixSignal(Signal):
-    """
-    In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
-
-    Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
-    other components can subscribe to UB matrix changes via .subscribe().
-    """
-
-    def __init__(self, pv_name, *, parent=None, name=None, **kwargs):
-        """Initialize, ignoring the PV name (Component-required, unused here)."""
-        super().__init__(name=name, parent=parent, **kwargs)
-
-    def get(self, **kwargs):
-        """Return the parent diffractometer's current UB matrix."""
-        self._readback = self.parent.sample.UB
-        return self._readback
-
-    def put(self, value, *, timestamp=None, force=False, **kwargs):
-        """Write the UB matrix back to the parent and notify subscribers."""
-        self.parent.sample.UB = value
-        super().put(value, timestamp=timestamp, force=force, **kwargs)
-
-
 class AnalyzerDevice(PseudoPositioner):
     """
     Crystal polarization analyzer with pseudo-energy axis and crystal setup.
@@ -348,9 +325,6 @@ class DiffractometerCoreMixin(Device):
     """
     Hardware-free behavior shared by the real and simulated diffractometers.
     """
-
-    # Subscribable signal wrapping sample.UB for UB-matrix sync
-    _ub_sync = Component(UBMatrixSignal, "", kind="omitted")
 
     @property
     def hints(self):
