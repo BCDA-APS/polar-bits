@@ -665,27 +665,6 @@
 <dd></dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.UBMatrixSignal">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">UBMatrixSignal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pv_name</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Signal</span></code></p>
-<p>In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.</p>
-<p>Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
-other components can subscribe to UB matrix changes via .subscribe().</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.UBMatrixSignal.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal.get" title="Link to this definition">#</a></dt>
-<dd><p>Return the parent diffractometer’s current UB matrix.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.UBMatrixSignal.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal.put" title="Link to this definition">#</a></dt>
-<dd><p>Write the UB matrix back to the parent and notify subscribers.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.AnalyzerDevice">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">AnalyzerDevice</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.PseudoPositioner</span></code></p>
@@ -1116,11 +1095,6 @@ while the VDCM IOC is offline. <code class="docutils literal notranslate"><span 
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.PTH_MIN_DEGREES"><code class="docutils literal notranslate"><span class="pre">PTH_MIN_DEGREES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.PTH_MAX_DEGREES"><code class="docutils literal notranslate"><span class="pre">PTH_MAX_DEGREES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.ANALYZER_LIST_PATH"><code class="docutils literal notranslate"><span class="pre">ANALYZER_LIST_PATH</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal"><code class="docutils literal notranslate"><span class="pre">UBMatrixSignal</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal.get"><code class="docutils literal notranslate"><span class="pre">UBMatrixSignal.get()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal.put"><code class="docutils literal notranslate"><span class="pre">UBMatrixSignal.put()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.energy"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.energy</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.th"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.th</span></code></a></li>
