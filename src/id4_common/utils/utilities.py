@@ -356,9 +356,9 @@ def piezo_jena_setup():
         print(f"  {axis}: {current} -> {new_state}")
 
 
-def te(temperature):
+def te(temperature=None):
     """
-    Set the active temperature controller's setpoint.
+    Set the active temperature controller's setpoint, or show it.
 
     Thin shortcut over the ``tc`` signal installed by
     :func:`id4_common.utils.temperature_setup.temperature_setup`.  Writes
@@ -367,8 +367,15 @@ def te(temperature):
 
     Parameters
     ----------
-    temperature : float
-        Target temperature setpoint.
+    temperature : float, optional
+        Target temperature setpoint.  If ``None`` (default), nothing is
+        written and the current setpoint is printed and returned.
+
+    Returns
+    -------
+    float or None
+        The current setpoint when ``temperature`` is ``None``, otherwise
+        ``None``.
 
     Raises
     ------
@@ -387,6 +394,10 @@ def te(temperature):
             "id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS "
             "for the available labels)."
         )
+    if temperature is None:
+        setpoint = tc.setpoint.get()
+        print(f"{get_active_label()}: setpoint is {setpoint}")
+        return setpoint
     tc.setpoint.put(float(temperature))
     print(f"{get_active_label()}: setpoint -> {float(temperature)}")
 
