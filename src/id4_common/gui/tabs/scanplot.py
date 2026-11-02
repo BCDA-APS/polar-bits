@@ -333,6 +333,9 @@ class ScanPlotTab(BaseTab):
         layout.addWidget(self._status)
 
         self._monitor_group = None
+        # The "÷ by" channel the user last picked, kept across runs.  Unlike
+        # _monitor it is not cleared by _reset_state; see _on_descriptor.
+        self._monitor_pref = None
         self._axis_fields = {}
         self._kernel_idle = False
         self._scan_running = False
@@ -750,12 +753,18 @@ class ScanPlotTab(BaseTab):
             self._add_series(field, checked=field in hinted)
         if not plottable:
             self._status.setText("No numeric detector field to plot.")
+        if self._monitor_pref in self._series:
+            # Same channel as the last run, if this one has it.  Otherwise the
+            # run stays on "none (raw)" and the choice waits for a later run.
+            self._series[self._monitor_pref]["radio"].setChecked(True)
         if self._grid:
             # An image can show one channel at a time, so the check boxes act
-            # as a selector here rather than as independent curves.
+            # as a selector here rather than as independent curves.  Never the
+            # channel being divided by, which the image cannot show as itself.
+            candidates = [f for f in plottable if f != self._monitor]
             self._select_grid_field(
-                next((f for f in plottable if f in hinted), None)
-                or (plottable[0] if plottable else None)
+                next((f for f in candidates if f in hinted), None)
+                or (candidates[0] if candidates else None)
             )
         self._update_peak()
 
@@ -895,6 +904,7 @@ class ScanPlotTab(BaseTab):
         if field == self._monitor:
             return
         self._monitor = field
+        self._monitor_pref = field
         for name, series in self._series.items():
             series["box"].setEnabled(name != field)
 
