@@ -13,8 +13,6 @@ id4_common.gui.tabs.status
 
 
 
-
-
 Module Contents
 ---------------
 
@@ -22,43 +20,20 @@ Module Contents
    :value: 'APS'
 
 
-.. py:data:: LOG_DIR_KEY
-   :value: 'console/log_dir'
-
-
-.. py:data:: LOG_PREFIX_KEY
-   :value: 'console/log_prefix'
-
-
-.. py:data:: LOG_MAX_MB_KEY
-   :value: 'console/log_max_mb'
+.. py:data:: LOG_PATH_KEY
+   :value: 'console/log_path'
 
 
 .. py:data:: LOG_ENABLED_KEY
    :value: 'console/log_enabled'
 
 
-.. py:data:: LOG_PATH_KEY
-   :value: 'console/log_path'
-
-
-.. py:data:: LOG_MAX_MB_RANGE
-   :value: (1, 1000)
+.. py:data:: DEFAULT_LOG_NAME
+   :value: 'console.log'
 
 
 .. py:data:: LOG_STATUS_INTERVAL_MS
    :value: 1000
-
-
-.. py:function:: stored_log_target(settings)
-
-   Return the remembered ``(directory, prefix, max_mb)`` of the log.
-
-   ``directory`` is ``""`` when nothing has been chosen yet, leaving the
-   caller to default it to the working directory.  A path stored by the
-   single-file log of earlier versions stands in for both directory and
-   prefix -- ``/data/console.log`` becomes ``/data`` and ``console`` -- so an
-   upgrade carries on logging where it did before.
 
 
 .. py:class:: StatusTab(parent=None)

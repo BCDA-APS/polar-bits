@@ -5,7 +5,7 @@ id4_common.gui.transcript
 
 .. autoapi-nested-parse::
 
-   Append the console's traffic to plain text files.
+   Append the console's traffic to a plain text file.
 
    Everything the session does passes through the IPython console -- typed
    commands, the device-loading log, BEC's scan tables, tracebacks, and every
@@ -21,21 +21,6 @@ id4_common.gui.transcript
    scrollback limit or by clearing the console, and it keeps filling **while a
    scan is running**, which is when it matters most.
 
-   Two things keep the files a manageable size:
-
-   * **Progress bars are left out.**  Bluesky redraws a motor's progress bar
-     several times a second -- ``"\r" + meter``, a newline, then a cursor-up --
-     and with the cursor movement stripped every redraw became a line of its own.
-     One long session put ~2 GB of ``huber_euler: 100%|███…`` in a log whose real
-     content was a few hundred scan-table rows.  Stream text is assembled into
-     lines, and a line that a carriage return led into and that looks like a bar
-     is dropped; the console still shows the bars.  Nothing else is filtered:
-     prints, warnings, and above all tracebacks are always kept.
-   * **The output is split across files** named
-     ``<prefix>_<YYYY-MM-DD>_<NNN>.log`` in a chosen directory.  The next file is
-     opened when the current one passes a size limit or the date changes, and
-     starting again appends to the newest file of the day if it still has room.
-
    Not IPython's ``%logstart``: that records input and results but not stream
    output, tracebacks or the device-loading log, which is most of what is wanted
    here.  ``apsbits``' ``logging_setup`` already starts one, into
@@ -49,59 +34,23 @@ id4_common.gui.transcript
 
 
 
-
-
 Module Contents
 ---------------
 
 .. py:data:: logger
 
-.. py:data:: DEFAULT_PREFIX
-   :value: 'console'
-
-
-.. py:data:: DEFAULT_MAX_MB
-   :value: 10
-
-
-.. py:data:: BYTES_PER_MB
-   :value: 1048576
-
-
-.. py:function:: log_file_name(prefix, day, index=None)
-
-   Return the name of file number *index* for *prefix* on *day*.
-
-   With no *index* the number reads ``NNN``, for showing the pattern.
-
-
 .. py:class:: ConsoleTranscript
 
-   Write the console's input and output to files, as the session runs.
+   Write the console's input and output to a file, as the session runs.
 
    Feed :meth:`handle` every iopub message; call :meth:`start` and
-   :meth:`stop` to open and close the log.  Writing never raises: an
+   :meth:`stop` to open and close the file.  Writing never raises: an
    :class:`OSError` stops logging and is reported through :attr:`error`,
    because this is driven from a timer that must keep running.
 
 
    .. py:attribute:: path
       :value: None
-
-
-
-   .. py:attribute:: directory
-      :value: None
-
-
-
-   .. py:attribute:: prefix
-      :value: 'console'
-
-
-
-   .. py:attribute:: max_bytes
-      :value: 10485760
 
 
 
@@ -125,15 +74,14 @@ Module Contents
       Whether a file is currently open for writing.
 
 
-   .. py:method:: start(directory, prefix=DEFAULT_PREFIX, max_bytes=None)
+   .. py:method:: start(path)
 
-      Start logging into *directory*, and write the session header.
+      Open *path* for appending and write the session header.
 
-      Today's newest ``<prefix>_<date>_<NNN>.log`` is appended to if it is
-      under *max_bytes*, so one experiment stays together and pressing
-      Start by mistake cannot destroy an earlier transcript; otherwise the
-      next number is opened.  Returns True on success; on failure
-      :attr:`error` says why.
+      Appends rather than truncates: one file can then hold a whole
+      experiment, and pressing Start by mistake cannot destroy the earlier
+      transcript.  Returns True on success; on failure :attr:`error` says
+      why.
 
 
 
@@ -156,8 +104,8 @@ Module Contents
 
       Write one iopub message.
 
-      Unknown message types are ignored, so comm traffic and anything a
-      future kernel adds cost nothing.
+      Unknown message types are ignored, so ``status``, ``clear_output``,
+      comm traffic and anything a future kernel adds cost nothing.
 
 
 

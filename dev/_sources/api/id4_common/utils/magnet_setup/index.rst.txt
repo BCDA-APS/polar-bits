@@ -1,0 +1,84 @@
+id4_common.utils.magnet_setup
+=============================
+
+.. py:module:: id4_common.utils.magnet_setup
+
+.. autoapi-nested-parse::
+
+   Label-keyed setup helper for the 4-ID-G superconducting magnet.
+
+   Asks whether each registered magnet is the one to select and, on a yes,
+   injects two positioners into the interactive session:
+
+   - ``mfield`` — the magnet field positioner (use ``set_field()`` to move it)
+   - ``mcurrent`` — the magnet current positioner
+   - ``MAGNET`` — the active magnet label (or ``None``)
+
+   Only ``hts110`` (``gmag``, 2 T superconducting magnet, 4-ID-G) is listed in
+   :data:`MAGNETS` for now. Adding another magnet later is a one-line edit to
+   that dict — no class changes, no devices.yml edits.
+
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: MAGNETS
+
+.. py:function:: get_active_label()
+
+   Return the currently-active magnet label, or ``None``.
+
+
+.. py:function:: get_active_field()
+
+   Return the currently-active field positioner, or ``None``.
+
+
+.. py:function:: get_active_current()
+
+   Return the currently-active current positioner, or ``None``.
+
+
+.. py:function:: set_field(value=None, *, wait=True)
+
+   Move the active magnet to a field setpoint, or report the current field.
+
+   :param value: Field setpoint, in the units of the ``gmag.field`` positioner.  If
+                 ``None`` (default), nothing is moved and the current field readback
+                 is returned.
+   :type value: float, optional
+   :param wait: If ``True`` (default), block until the move finishes.  If ``False``,
+                return immediately and leave the move running in the background.
+   :type wait: bool, optional
+
+   :returns: The field readback when ``value`` is ``None``, otherwise ``None``.
+   :rtype: float or None
+
+   :raises RuntimeError: No magnet has been selected yet; run :func:`magnet_setup` first.
+
+
+.. py:function:: magnet_setup(label=None)
+
+   Bind ``mfield`` and ``mcurrent`` to the selected magnet.
+
+   :param label: Key into :data:`MAGNETS`.  If ``None`` (default), ask yes/no for
+                 each magnet in turn and select the first one confirmed.
+   :type label: str, optional
+   :param Side effects:
+   :param ------------:
+   :param On success:
+   :param sets the following attributes on ``__main__``:
+   :param - ``mfield`` — the resolved field positioner (movable).:
+   :param - ``mcurrent`` — the resolved current positioner (movable).:
+   :param - ``MAGNET`` — the active magnet label string.:
+
+   :raises KeyError: ``label`` is not in :data:`MAGNETS`.
+   :raises LookupError: The mapped device is not in ``oregistry``.
+   :raises AttributeError: One of the dotted attribute paths does not resolve on the device.
+
+

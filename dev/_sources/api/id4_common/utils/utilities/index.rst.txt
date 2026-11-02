@@ -116,17 +116,22 @@ Module Contents
    Enter keeps the current state.
 
 
-.. py:function:: te(temperature)
+.. py:function:: te(temperature=None)
 
-   Set the active temperature controller's setpoint.
+   Set the active temperature controller's setpoint, or show it.
 
    Thin shortcut over the ``tc`` signal installed by
    :func:`id4_common.utils.temperature_setup.temperature_setup`.  Writes
    the setpoint and returns immediately; the controller continues ramping
    toward the target on its own.
 
-   :param temperature: Target temperature setpoint.
-   :type temperature: float
+   :param temperature: Target temperature setpoint.  If ``None`` (default), nothing is
+                       written and the current setpoint is printed and returned.
+   :type temperature: float, optional
+
+   :returns: The current setpoint when ``temperature`` is ``None``, otherwise
+             ``None``.
+   :rtype: float or None
 
    :raises RuntimeError: ``temperature_setup()`` has not been run, so there is no active
        controller to talk to.
