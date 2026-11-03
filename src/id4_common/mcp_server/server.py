@@ -261,7 +261,10 @@ def _add_tools(mcp, session):
         gamma: float = 90.0,
         device: str = fallback_device,
     ) -> dict:
-        """Add a sample with a lattice, replacing one of the same name.
+        """Add a sample with a lattice.  An existing name is refused.
+
+        Replacing a sample would wipe its reflections and UB, so remove the
+        old one first (hkl_remove_sample) if that is really intended.
 
         Lengths in angstroms, angles in degrees.  Adding does not select:
         follow with hkl_select_sample.  A new sample has no reflections and no
@@ -465,8 +468,9 @@ def _add_tools(mcp, session):
     ) -> dict:
         """Compute the angles that would reach a given hkl.  Nothing moves.
 
-        *fixed_angles* and *psi*, if given, are applied first and persist
-        afterwards, exactly as the separate tools would leave them.
+        *fixed_angles* and *psi*, if given, apply to this solve only; the
+        session's own are restored afterwards.  To change them for good, use
+        hkl_set_fixed_angles and hkl_set_psi.
 
         A failure here usually means the reflection is unreachable in this mode
         with these fixed angles, not that the hkl is wrong: try relaxing a

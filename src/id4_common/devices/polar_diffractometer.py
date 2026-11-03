@@ -29,8 +29,10 @@ from scipy.constants import speed_of_light
 
 from ..utils.analyzer_utils import calcdhkl
 from ..utils.analyzer_utils import check_structure_factor
+from .hklpy2_workarounds import _ThreadSafeSolverMixin
 from .huber_filter import HuberFilter
 from .jj_slits import SlitDevice
+from .pseudo_targets import _TargetsFollowMotorsMixin
 
 # Constants
 WAVELENGTH_CONSTANT = 12.39
@@ -39,29 +41,6 @@ PTTH_MAX_DEGREES = 101
 PTH_MIN_DEGREES = 39
 PTH_MAX_DEGREES = 51
 ANALYZER_LIST_PATH = Path(__file__).parent / "analyzerlist.dat"
-
-
-class UBMatrixSignal(Signal):
-    """
-    In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.
-
-    Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
-    other components can subscribe to UB matrix changes via .subscribe().
-    """
-
-    def __init__(self, pv_name, *, parent=None, name=None, **kwargs):
-        """Initialize, ignoring the PV name (Component-required, unused here)."""
-        super().__init__(name=name, parent=parent, **kwargs)
-
-    def get(self, **kwargs):
-        """Return the parent diffractometer's current UB matrix."""
-        self._readback = self.parent.sample.UB
-        return self._readback
-
-    def put(self, value, *, timestamp=None, force=False, **kwargs):
-        """Write the UB matrix back to the parent and notify subscribers."""
-        self.parent.sample.UB = value
-        super().put(value, timestamp=timestamp, force=force, **kwargs)
 
 
 class AnalyzerDevice(PseudoPositioner):
@@ -343,13 +322,14 @@ class AnalyzerDevice(PseudoPositioner):
             self.crystal.put(cryst)
 
 
-class DiffractometerCoreMixin(Device):
+class DiffractometerCoreMixin(_TargetsFollowMotorsMixin, Device):
     """
     Hardware-free behavior shared by the real and simulated diffractometers.
-    """
 
-    # Subscribable signal wrapping sample.UB for UB-matrix sync
-    _ub_sync = Component(UBMatrixSignal, "", kind="omitted")
+    Includes :class:`_TargetsFollowMotorsMixin`, so a single-axis hkl move
+    keeps the other axes where the diffractometer is, not where it was last
+    sent.
+    """
 
     @property
     def hints(self):
@@ -509,7 +489,7 @@ mono_kwargs = {
     "energy_units": "keV",
     "pv_wavelength": "BraggLambdaRdbkAO",  # the wavelength readback PV
     "wavelength_units": "angstrom",
-    "wavelength_deadband": 0.000_150,
+    "wavelength_deadband": 0.000_012_4,
     "kind": "config",
 }
 
@@ -528,8 +508,13 @@ CradleDiffractometerBase = diffractometer_class_factory(
 _set_axes_kind(CradleDiffractometerBase)
 
 
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
 class CradleDiffractometer(
-    _InitFallbackMixin, DiffractometerMixin, CradleDiffractometerBase
+    _ThreadSafeSolverMixin,
+    _InitFallbackMixin,
+    DiffractometerMixin,
+    CradleDiffractometerBase,
 ):
     """hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation."""
 
@@ -552,8 +537,13 @@ HPDiffractometerBase = diffractometer_class_factory(
 _set_axes_kind(HPDiffractometerBase)
 
 
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
 class HPDiffractometer(
-    _InitFallbackMixin, DiffractometerMixin, HPDiffractometerBase
+    _ThreadSafeSolverMixin,
+    _InitFallbackMixin,
+    DiffractometerMixin,
+    HPDiffractometerBase,
 ):
     """
     hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.
@@ -614,9 +604,17 @@ HPDiffractometerPSIBase = diffractometer_class_factory(
 )
 
 
-class CradleDiffractometerPSI(_InitFallbackMixin, CradleDiffractometerPSIBase):
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
+class CradleDiffractometerPSI(
+    _ThreadSafeSolverMixin, _InitFallbackMixin, CradleDiffractometerPSIBase
+):
     """hklpy2 APS-POLAR cradle diffractometer using the psi engine."""
 
 
-class HPDiffractometerPSI(_InitFallbackMixin, HPDiffractometerPSIBase):
+# _ThreadSafeSolverMixin is a temporary hklpy2 workaround; drop it from
+# the bases when the class is removed.
+class HPDiffractometerPSI(
+    _ThreadSafeSolverMixin, _InitFallbackMixin, HPDiffractometerPSIBase
+):
     """hklpy2 APS-POLAR HP-press diffractometer using the psi engine."""

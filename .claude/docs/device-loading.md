@@ -24,6 +24,25 @@ reload_all_devices()                             # reload all from YAML (all sta
 reload_all_devices(stations=["core", "4idh"])  # reload for a specific beamline
 ```
 
+`reload_all_devices()` runs `make_devices(clear=True)`, which builds **new**
+diffractometer objects. It brackets that with
+`hkl_utils.snapshot_diffractometers()` / `restore_diffractometers()`. These
+re-import loaded `macros.shortcuts_*` modules, call `change_diffractometer()`
+for the active device (re-binding hklpy2's selection and the aliases), then
+copy each old diffractometer's setup onto its replacement with
+`utils/diffractometer_setup.copy_setup()`. The copy comes after the
+re-select because `change_diffractometer()` resets constraints. After a
+successful copy, each old diffractometer is taken out of
+`sd.baseline`/`sd.monitors` and `destroy()`ed. That is safe for the
+replacement because ophyd ref-counts the shared pyepics PVs
+(`release_pvs` only clears a channel at count 0). It is diffractometer-only:
+other old devices may still be held, for example by suspenders. This depends
+on `set_diffractometer()` swapping the single `ConfigurationRunWrapper`;
+a leftover wrapper would read a destroyed device on every run. Any new
+module-level reference to a diffractometer object (rather than a name looked
+up through `oregistry`/`get_diffractometer()`) goes stale on reload, so avoid
+adding one.
+
 `load_device(name)` is also the canonical way to **reconnect** a device that
 is already in the registry — it routes existing entries through
 `connect_device(...)` rather than skipping. Users who want to retry a flaky

@@ -17,6 +17,8 @@ import time
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QTimer
 from qtpy.QtWidgets import QAbstractItemView
+from qtpy.QtWidgets import QAbstractSpinBox
+from qtpy.QtWidgets import QApplication
 from qtpy.QtWidgets import QCheckBox
 from qtpy.QtWidgets import QComboBox
 from qtpy.QtWidgets import QDoubleSpinBox
@@ -166,6 +168,7 @@ class HklTab(BaseTab):
         self._real_fields = []
         self._lattice_names = []
         self._calculated = None
+        self._calc_solved = {}
         self._loading = False
 
         # Coalesces edits to the three psi-reference boxes into one write.
@@ -568,6 +571,8 @@ class HklTab(BaseTab):
                 and position.get("device") == self.device
             ):
                 self._apply_position(position)
+                if self._kernel_fixed_changed(position):
+                    self.refresh()
         if ACTION_KEY in values:
             self._status.setText(str(values[ACTION_KEY]))
             self.refresh()
@@ -576,6 +581,29 @@ class HklTab(BaseTab):
         # Keep the cheap readout coming while this tab is on screen.
         if self.isVisible() and self._kernel_idle:
             self._request_position()
+
+    def _kernel_fixed_changed(self, position):
+        """Whether the console changed the mode or fixed values under us.
+
+        The tab otherwise re-reads state only after its own actions or at run
+        stop, so after a console ``setmode``/``freeze`` its boxes held the old
+        values, and the next debounced write or Calculate pushed them back.
+
+        Held off while a write of ours is pending, so it is not undone, and
+        while one of our boxes has focus, so a value being typed is not
+        overwritten.  The next poll asks again.
+        """
+        if not self._state:
+            return False
+        if self._presets_timer.isActive() or self._reference_timer.isActive():
+            return False
+        focus = QApplication.focusWidget()
+        if isinstance(focus, QAbstractSpinBox) and self.isAncestorOf(focus):
+            return False
+        return any(
+            key in position and position[key] != self._state.get(key)
+            for key in ("mode", "presets", "extras", "psi_reference")
+        )
 
     def on_document(self, name, doc):
         """A finished run may have moved the diffractometer."""
@@ -713,10 +741,19 @@ class HklTab(BaseTab):
             return
         if result.get("error"):
             self._calculated = None
+            self._calc_solved = {}
             self._calc_result.setText(f"No solution: {result['error']}")
         else:
             reals = result.get("reals") or {}
             self._calculated = reals
+            # What this solution was solved for, which Move shows: the boxes
+            # may have been edited since.
+            self._calc_solved = {
+                "hkl": tuple(result.get(n) for n in ("h", "k", "l")),
+                "fixed": dict(result.get("presets") or {}),
+            }
+            if result.get("psi") is not None:
+                self._calc_solved["fixed"]["psi"] = result["psi"]
             self.model3d.set_calculated(reals)
             self._calc_result.setText(
                 "  ".join(f"{k}={v:.4f}" for k, v in reals.items())
@@ -823,12 +860,26 @@ class HklTab(BaseTab):
         if not name:
             self._status.setText("Enter a name for the new sample.")
             return
+        # Re-using a name replaces the sample, reflections and UB included.
+        replace = name in ((self._state or {}).get("samples") or {})
+        if replace:
+            answer = QMessageBox.question(
+                self,
+                "Replace sample?",
+                f"Replace sample {name}?\n\n"
+                "Its reflections and UB will be lost.",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if answer != QMessageBox.Yes:
+                self._status.setText("Add sample cancelled.")
+                return
         values = {n: box.value() for n, box in self._lattice_boxes.items()}
         self._act(
             "_gui_hkl_add_sample("
             f"{self.device!r}, {name!r}, {values['a']!r}, {values['b']!r}, "
             f"{values['c']!r}, {values['alpha']!r}, {values['beta']!r}, "
-            f"{values['gamma']!r})"
+            f"{values['gamma']!r}, replace={replace!r})"
         )
         self._sample_name.clear()
 
@@ -967,9 +1018,7 @@ class HklTab(BaseTab):
     def _move(self):
         if not self._calculated:
             return
-        h = self._calc_boxes["h"].value()
-        k = self._calc_boxes["k"].value()
-        pos_l = self._calc_boxes["l"].value()
+        h, k, pos_l = self._calc_solved.get("hkl") or (None, None, None)
         angles = "\n".join(
             f"    {k2} = {v:.4f}" for k2, v in self._calculated.items()
         )
@@ -982,9 +1031,9 @@ class HklTab(BaseTab):
         )
         # A fixed angle decides which of many solutions this is, so it belongs
         # in the box that asks whether to go there.  ψ decides it just as much,
-        # so the mode's extras are listed with the presets.
-        fixed = dict(self._preset_values())
-        fixed.update(self._extra_values())
+        # so it is listed with the presets.  Both are the ones the solve used,
+        # not whatever the boxes hold now.
+        fixed = dict(self._calc_solved.get("fixed") or {})
         fixed_text = (
             "\nFixed: "
             + ", ".join(f"{a}={v:g}" for a, v in fixed.items())
@@ -1004,10 +1053,20 @@ class HklTab(BaseTab):
         if answer != QMessageBox.Yes:
             self._status.setText("Move cancelled.")
             return
-        code = (
-            f"RE(bps.mv({self.device}.h, {h!r}, "
-            f"{self.device}.k, {k!r}, {self.device}.l, {pos_l!r}))"
+        # The angles, not h/k/l: what is approved has to be what runs (as in
+        # _gui_mcp_request_hkl).  Calculate leaves the session's presets as
+        # they were, so solving h/k/l again in the console could pick another
+        # solution, and bps.mv on h, k, l solves three off-path points in
+        # turn.  sync() then points the h/k/l targets at where the motors
+        # ended up, which a later hscan or mvr(h, ...) starts from.
+        dev = self.device
+        moves = ", ".join(
+            f"{dev}.{axis}, {float(value)!r}"
+            for axis, value in self._calculated.items()
         )
+        pseudo_fields = (self._state or {}).get("pseudo_fields") or []
+        syncs = "".join(f"; {dev}.{axis}.sync()" for axis in pseudo_fields)
+        code = f"RE(bps.mv({moves})){syncs}"
         if self.run_in_console(code):
             self._status.setText(f"Move sent to the console: {code}")
             self._start_progress()
