@@ -118,8 +118,15 @@ class PRSetup:
             _setup["oscillate"] = saved.get("oscillate", "no")
             _setup["method"] = saved.get("method", "pzt")
 
-        _setup["offset"] = pr.pzt.offset_degrees.get()
-        _setup["center"] = pr.pzt.center.get()
+        # PRs without a PZT (e.g. pr3) can only oscillate the motor.
+        pzt = getattr(pr, "pzt", None)
+        if pzt is None:
+            _setup["method"] = "motor"
+            _setup["offset"] = pr.offset_degrees.get()
+            _setup["center"] = None
+        else:
+            _setup["offset"] = pzt.offset_degrees.get()
+            _setup["center"] = pzt.center.get()
 
         return _setup
 

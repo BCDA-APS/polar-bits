@@ -16,12 +16,24 @@ from ophyd import Kind
 
 from ..callbacks.dichro_stream import dichro_bec
 from ..callbacks.dichro_stream import plot_dichro_settings
+from ..devices.phaseplates import PRPzt
 from ..utils.counters_class import counters
 from ..utils.pr_setup import pr_setup
 from ..utils.run_engine import bec
 
 logger = getLogger(__name__)
 logger.info(__file__)
+
+
+def _oscillating_pr_pzt():
+    """Return the PZT of the oscillating phase retarder, or None."""
+    # Positioner is pr.th (parent=pr) or pr.pzt.localdc (parent=pzt).
+    pos = pr_setup.positioner
+    if pos is None:
+        return None
+    if isinstance(pos.parent, PRPzt):
+        return pos.parent
+    return getattr(pos.parent, "pzt", None)
 
 
 def extra_devices_wrapper(plan, extras):
@@ -268,11 +280,14 @@ def stage_dichro_wrapper(plan, dichro, lockin, sgz, positioner):
                     pr_setup.positioner, pr_setup.positioner.parent.center.get()
                 )
 
-            yield from mv(pr_setup.positioner.parent.selectDC, 1)
+            pzt = _oscillating_pr_pzt()
+            if pzt is not None:
+                yield from mv(pzt.selectDC, 1)
 
     def _unstage():
-        if pr_setup.positioner is not None:
-            yield from mv(pr_setup.positioner.parent.selectDC, 1)
+        pzt = _oscillating_pr_pzt()
+        if pzt is not None:
+            yield from mv(pzt.selectDC, 1)
 
         if lockin:
             for dev in _lockin_devices:
