@@ -1,0 +1,24 @@
+id4_common.devices.pseudo_targets
+=================================
+
+.. py:module:: id4_common.devices.pseudo_targets
+
+.. autoapi-nested-parse::
+
+   Keep pseudo-axis targets in step with where the real motors are.
+
+   ophyd's ``PseudoSingle.move()`` goes through
+   ``PseudoPositioner.move_single()``, which solves for the new value of that
+   axis together with the *target* of every other axis.  A target is the last
+   value commanded on that axis, and nothing clears it when the real motors move
+   on their own (an alignment scan, ``cen()``, ``th2th``, ``mvr(chi, ...)``).
+   So after ``ubr(1, 1, 0)`` and a chi alignment that leaves the diffractometer
+   at (1.003, 0.997, 0.020), ``mov huber_euler.h 1.01`` solved for
+   (1.01, 1, 0) and moved all six angles back, undoing the alignment.  The same
+   went for ``hscan``/``kscan``/``lscan``, ``mvr(h, ...)`` and ``cen()`` after an
+   hkl scan.
+
+   Imports only ophyd, so it can be tested where libhkl is not installed.
+
+
+

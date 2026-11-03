@@ -91,7 +91,7 @@ Module Contents
 
 .. py:class:: SimDiffractometer(*args, real_diffractometer=None, **kwargs)
 
-   Bases: :py:obj:`id4_common.devices.polar_diffractometer.DiffractometerCoreMixin`, :py:obj:`SimDiffractometerBase`
+   Bases: :py:obj:`id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin`, :py:obj:`id4_common.devices.polar_diffractometer.DiffractometerCoreMixin`, :py:obj:`SimDiffractometerBase`
 
 
    hklpy2 APS-POLAR diffractometer with simulated motors and analyzer.
@@ -158,7 +158,7 @@ Module Contents
 
 .. py:class:: SimDiffractometerPSI(*args, **kwargs)
 
-   Bases: :py:obj:`SimDiffractometerPSIBase`
+   Bases: :py:obj:`id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin`, :py:obj:`SimDiffractometerPSIBase`
 
 
    Simulated hklpy2 APS-POLAR diffractometer using the psi engine.

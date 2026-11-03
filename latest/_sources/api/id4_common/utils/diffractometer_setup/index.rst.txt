@@ -1,0 +1,43 @@
+id4_common.utils.diffractometer_setup
+=====================================
+
+.. py:module:: id4_common.utils.diffractometer_setup
+
+.. autoapi-nested-parse::
+
+   Copy an hklpy2 diffractometer's orientation setup onto another one.
+
+   Used by the simulated diffractometers' ``sync_setup()`` and by
+   ``reload_all_devices()``, which rebuilds every diffractometer and would
+   otherwise leave the new objects with hklpy2's default sample.
+
+   Imports nothing beyond the standard library, so it loads (and can be tested)
+   where libhkl is not installed.
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: copy_setup(source, target)
+
+   Copy the orientation setup of ``source`` into ``target``.
+
+   Replaces the target's samples (lattice, reflections, U and UB), active
+   sample, constraints, extras, presets and mode.  Never moves a motor, and
+   leaves the target's wavelength alone.
+
+   ``source.configuration`` would also read the beam wavelength and the
+   auxiliary motors over EPICS, so the target's own configuration is used as
+   the template and only the orientation sections are taken from the source.
+   Every ``restore_*`` flag is passed explicitly: hklpy2 skips samples,
+   extras and mode by default on a hardware-backed target.
+
+   :param source: Device copied from, and device written to.
+   :type source: hklpy2 DiffractometerBase
+   :param target: Device copied from, and device written to.
+   :type target: hklpy2 DiffractometerBase
+
+
