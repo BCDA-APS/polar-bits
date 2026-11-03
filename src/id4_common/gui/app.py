@@ -50,10 +50,10 @@ from .tabs.macro import MacroTab
 from .tabs.scan import ScanTab
 from .tabs.scanhistory import ScanHistoryTab
 from .tabs.scanplot import ScanPlotTab
-from .tabs.status import DEFAULT_LOG_NAME
 from .tabs.status import LOG_ENABLED_KEY
-from .tabs.status import LOG_PATH_KEY
 from .tabs.status import StatusTab
+from .tabs.status import stored_log_target
+from .transcript import BYTES_PER_MB
 from .transcript import ConsoleTranscript
 
 logger = logging.getLogger(__name__)
@@ -277,10 +277,8 @@ class MainWindow(QMainWindow):
         settings = QSettings(SETTINGS_ORG, config.qsettings_app())
         if not settings.value(LOG_ENABLED_KEY, False, type=bool):
             return
-        path = settings.value(LOG_PATH_KEY, "", type=str)
-        if not path:
-            path = os.path.join(cwd, DEFAULT_LOG_NAME)
-        self.transcript.start(path)
+        directory, prefix, max_mb = stored_log_target(settings)
+        self.transcript.start(directory or cwd, prefix, max_mb * BYTES_PER_MB)
 
     def _on_kernel_ready(self):
         """Bootstrap Bluesky and begin polling, once the kernel can answer."""
