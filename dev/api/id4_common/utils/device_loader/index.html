@@ -511,6 +511,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../counters_class/index.html">id4_common.utils.counters_class</a></li>
 <li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">id4_common.utils.device_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../diffractometer_setup/index.html">id4_common.utils.diffractometer_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../eiger_setup/index.html">id4_common.utils.eiger_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
@@ -818,6 +819,9 @@ all stations: [“core”, “4idb”, “4idg”, “4idh”].</p></li>
 <ol class="arabic simple" start="2">
 <li><p>Searches the registry for devices matching the given station labels
 and attempts to connect them without raising errors on failure.</p></li>
+<li><p>Carries each diffractometer’s orientation over to its new object and
+re-selects the active one (see
+<a class="reference internal" href="../hkl_utils/index.html#id4_common.utils.hkl_utils.restore_diffractometers" title="id4_common.utils.hkl_utils.restore_diffractometers"><code class="xref py py-func docutils literal notranslate"><span class="pre">restore_diffractometers()</span></code></a>).</p></li>
 </ol>
 </dd></dl>
 

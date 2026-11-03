@@ -606,8 +606,18 @@
 <dd></dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="id4_common.gui.tabs.status.LOG_PATH_KEY">
-<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">LOG_PATH_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'console/log_path'</span></span><a class="headerlink" href="#id4_common.gui.tabs.status.LOG_PATH_KEY" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.gui.tabs.status.LOG_DIR_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">LOG_DIR_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'console/log_dir'</span></span><a class="headerlink" href="#id4_common.gui.tabs.status.LOG_DIR_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.status.LOG_PREFIX_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">LOG_PREFIX_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'console/log_prefix'</span></span><a class="headerlink" href="#id4_common.gui.tabs.status.LOG_PREFIX_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.status.LOG_MAX_MB_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">LOG_MAX_MB_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'console/log_max_mb'</span></span><a class="headerlink" href="#id4_common.gui.tabs.status.LOG_MAX_MB_KEY" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
@@ -616,14 +626,30 @@
 <dd></dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="id4_common.gui.tabs.status.DEFAULT_LOG_NAME">
-<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LOG_NAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'console.log'</span></span><a class="headerlink" href="#id4_common.gui.tabs.status.DEFAULT_LOG_NAME" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.gui.tabs.status.LOG_PATH_KEY">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">LOG_PATH_KEY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'console/log_path'</span></span><a class="headerlink" href="#id4_common.gui.tabs.status.LOG_PATH_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.status.LOG_MAX_MB_RANGE">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">LOG_MAX_MB_RANGE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(1,</span> <span class="pre">1000)</span></span><a class="headerlink" href="#id4_common.gui.tabs.status.LOG_MAX_MB_RANGE" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="id4_common.gui.tabs.status.LOG_STATUS_INTERVAL_MS">
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">LOG_STATUS_INTERVAL_MS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></span><a class="headerlink" href="#id4_common.gui.tabs.status.LOG_STATUS_INTERVAL_MS" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.tabs.status.stored_log_target">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.tabs.status.</span></span><span class="sig-name descname"><span class="pre">stored_log_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.tabs.status.stored_log_target" title="Link to this definition">#</a></dt>
+<dd><p>Return the remembered <code class="docutils literal notranslate"><span class="pre">(directory,</span> <span class="pre">prefix,</span> <span class="pre">max_mb)</span></code> of the log.</p>
+<p><code class="docutils literal notranslate"><span class="pre">directory</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> when nothing has been chosen yet, leaving the
+caller to default it to the working directory.  A path stored by the
+single-file log of earlier versions stands in for both directory and
+prefix – <code class="docutils literal notranslate"><span class="pre">/data/console.log</span></code> becomes <code class="docutils literal notranslate"><span class="pre">/data</span></code> and <code class="docutils literal notranslate"><span class="pre">console</span></code> – so an
+upgrade carries on logging where it did before.</p>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.gui.tabs.status.StatusTab">
@@ -708,10 +734,14 @@ the scan it belongs to is still running.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.SETTINGS_ORG"><code class="docutils literal notranslate"><span class="pre">SETTINGS_ORG</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.LOG_PATH_KEY"><code class="docutils literal notranslate"><span class="pre">LOG_PATH_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.LOG_DIR_KEY"><code class="docutils literal notranslate"><span class="pre">LOG_DIR_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.LOG_PREFIX_KEY"><code class="docutils literal notranslate"><span class="pre">LOG_PREFIX_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.LOG_MAX_MB_KEY"><code class="docutils literal notranslate"><span class="pre">LOG_MAX_MB_KEY</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.LOG_ENABLED_KEY"><code class="docutils literal notranslate"><span class="pre">LOG_ENABLED_KEY</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.DEFAULT_LOG_NAME"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LOG_NAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.LOG_PATH_KEY"><code class="docutils literal notranslate"><span class="pre">LOG_PATH_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.LOG_MAX_MB_RANGE"><code class="docutils literal notranslate"><span class="pre">LOG_MAX_MB_RANGE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.LOG_STATUS_INTERVAL_MS"><code class="docutils literal notranslate"><span class="pre">LOG_STATUS_INTERVAL_MS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.stored_log_target"><code class="docutils literal notranslate"><span class="pre">stored_log_target()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.StatusTab"><code class="docutils literal notranslate"><span class="pre">StatusTab</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.StatusTab.title"><code class="docutils literal notranslate"><span class="pre">StatusTab.title</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.tabs.status.StatusTab.sync_transcript"><code class="docutils literal notranslate"><span class="pre">StatusTab.sync_transcript()</span></code></a></li>

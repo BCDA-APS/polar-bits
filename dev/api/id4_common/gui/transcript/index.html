@@ -597,7 +597,7 @@
                   
   <section id="module-id4_common.gui.transcript">
 <span id="id4-common-gui-transcript"></span><h1>id4_common.gui.transcript<a class="headerlink" href="#module-id4_common.gui.transcript" title="Link to this heading">#</a></h1>
-<p>Append the console’s traffic to a plain text file.</p>
+<p>Append the console’s traffic to plain text files.</p>
 <p>Everything the session does passes through the IPython console – typed
 commands, the device-loading log, BEC’s scan tables, tracebacks, and every
 command a tab runs through <a class="reference internal" href="../tabs/base/index.html#id4_common.gui.tabs.base.BaseTab.run_in_console" title="id4_common.gui.tabs.base.BaseTab.run_in_console"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run_in_console()</span></code></a>
@@ -610,6 +610,21 @@ console renders even though the console is on a different client
 track busy/idle).  Taking it from there means the file is unaffected by the
 scrollback limit or by clearing the console, and it keeps filling <strong>while a
 scan is running</strong>, which is when it matters most.</p>
+<p>Two things keep the files a manageable size:</p>
+<ul class="simple">
+<li><p><strong>Progress bars are left out.</strong>  Bluesky redraws a motor’s progress bar
+several times a second – <code class="docutils literal notranslate"><span class="pre">&quot;\r&quot;</span> <span class="pre">+</span> <span class="pre">meter</span></code>, a newline, then a cursor-up –
+and with the cursor movement stripped every redraw became a line of its own.
+One long session put ~2 GB of <code class="docutils literal notranslate"><span class="pre">huber_euler:</span> <span class="pre">100%|███…</span></code> in a log whose real
+content was a few hundred scan-table rows.  Stream text is assembled into
+lines, and a line that a carriage return led into and that looks like a bar
+is dropped; the console still shows the bars.  Nothing else is filtered:
+prints, warnings, and above all tracebacks are always kept.</p></li>
+<li><p><strong>The output is split across files</strong> named
+<code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;_&lt;YYYY-MM-DD&gt;_&lt;NNN&gt;.log</span></code> in a chosen directory.  The next file is
+opened when the current one passes a size limit or the date changes, and
+starting again appends to the newest file of the day if it still has room.</p></li>
+</ul>
 <p>Not IPython’s <code class="docutils literal notranslate"><span class="pre">%logstart</span></code>: that records input and results but not stream
 output, tracebacks or the device-loading log, which is most of what is wanted
 here.  <code class="docutils literal notranslate"><span class="pre">apsbits</span></code>’ <code class="docutils literal notranslate"><span class="pre">logging_setup</span></code> already starts one, into
@@ -622,17 +637,54 @@ here.  <code class="docutils literal notranslate"><span class="pre">apsbits</spa
 <span class="sig-prename descclassname"><span class="pre">id4_common.gui.transcript.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#id4_common.gui.transcript.logger" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.transcript.DEFAULT_PREFIX">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.transcript.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_PREFIX</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'console'</span></span><a class="headerlink" href="#id4_common.gui.transcript.DEFAULT_PREFIX" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.transcript.DEFAULT_MAX_MB">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.transcript.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_MAX_MB</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></span><a class="headerlink" href="#id4_common.gui.transcript.DEFAULT_MAX_MB" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="id4_common.gui.transcript.BYTES_PER_MB">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.transcript.</span></span><span class="sig-name descname"><span class="pre">BYTES_PER_MB</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1048576</span></span><a class="headerlink" href="#id4_common.gui.transcript.BYTES_PER_MB" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.gui.transcript.log_file_name">
+<span class="sig-prename descclassname"><span class="pre">id4_common.gui.transcript.</span></span><span class="sig-name descname"><span class="pre">log_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.transcript.log_file_name" title="Link to this definition">#</a></dt>
+<dd><p>Return the name of file number <em>index</em> for <em>prefix</em> on <em>day</em>.</p>
+<p>With no <em>index</em> the number reads <code class="docutils literal notranslate"><span class="pre">NNN</span></code>, for showing the pattern.</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.gui.transcript.ConsoleTranscript">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.gui.transcript.</span></span><span class="sig-name descname"><span class="pre">ConsoleTranscript</span></span><a class="headerlink" href="#id4_common.gui.transcript.ConsoleTranscript" title="Link to this definition">#</a></dt>
-<dd><p>Write the console’s input and output to a file, as the session runs.</p>
+<dd><p>Write the console’s input and output to files, as the session runs.</p>
 <p>Feed <a class="reference internal" href="#id4_common.gui.transcript.ConsoleTranscript.handle" title="id4_common.gui.transcript.ConsoleTranscript.handle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">handle()</span></code></a> every iopub message; call <a class="reference internal" href="#id4_common.gui.transcript.ConsoleTranscript.start" title="id4_common.gui.transcript.ConsoleTranscript.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code></a> and
-<a class="reference internal" href="#id4_common.gui.transcript.ConsoleTranscript.stop" title="id4_common.gui.transcript.ConsoleTranscript.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a> to open and close the file.  Writing never raises: an
+<a class="reference internal" href="#id4_common.gui.transcript.ConsoleTranscript.stop" title="id4_common.gui.transcript.ConsoleTranscript.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a> to open and close the log.  Writing never raises: an
 <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#OSError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OSError</span></code></a> stops logging and is reported through <a class="reference internal" href="#id4_common.gui.transcript.ConsoleTranscript.error" title="id4_common.gui.transcript.ConsoleTranscript.error"><code class="xref py py-attr docutils literal notranslate"><span class="pre">error</span></code></a>,
 because this is driven from a timer that must keep running.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.gui.transcript.ConsoleTranscript.path">
 <span class="sig-name descname"><span class="pre">path</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.gui.transcript.ConsoleTranscript.path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.transcript.ConsoleTranscript.directory">
+<span class="sig-name descname"><span class="pre">directory</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.gui.transcript.ConsoleTranscript.directory" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.transcript.ConsoleTranscript.prefix">
+<span class="sig-name descname"><span class="pre">prefix</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'console'</span></span><a class="headerlink" href="#id4_common.gui.transcript.ConsoleTranscript.prefix" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.gui.transcript.ConsoleTranscript.max_bytes">
+<span class="sig-name descname"><span class="pre">max_bytes</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10485760</span></span><a class="headerlink" href="#id4_common.gui.transcript.ConsoleTranscript.max_bytes" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -658,12 +710,13 @@ because this is driven from a timer that must keep running.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id4_common.gui.transcript.ConsoleTranscript.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.transcript.ConsoleTranscript.start" title="Link to this definition">#</a></dt>
-<dd><p>Open <em>path</em> for appending and write the session header.</p>
-<p>Appends rather than truncates: one file can then hold a whole
-experiment, and pressing Start by mistake cannot destroy the earlier
-transcript.  Returns True on success; on failure <a class="reference internal" href="#id4_common.gui.transcript.ConsoleTranscript.error" title="id4_common.gui.transcript.ConsoleTranscript.error"><code class="xref py py-attr docutils literal notranslate"><span class="pre">error</span></code></a> says
-why.</p>
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_PREFIX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_bytes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.transcript.ConsoleTranscript.start" title="Link to this definition">#</a></dt>
+<dd><p>Start logging into <em>directory</em>, and write the session header.</p>
+<p>Today’s newest <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;_&lt;date&gt;_&lt;NNN&gt;.log</span></code> is appended to if it is
+under <em>max_bytes</em>, so one experiment stays together and pressing
+Start by mistake cannot destroy an earlier transcript; otherwise the
+next number is opened.  Returns True on success; on failure
+<a class="reference internal" href="#id4_common.gui.transcript.ConsoleTranscript.error" title="id4_common.gui.transcript.ConsoleTranscript.error"><code class="xref py py-attr docutils literal notranslate"><span class="pre">error</span></code></a> says why.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -684,8 +737,8 @@ restart, say, which clears the console but leaves the file intact.</p>
 <dt class="sig sig-object py" id="id4_common.gui.transcript.ConsoleTranscript.handle">
 <span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.gui.transcript.ConsoleTranscript.handle" title="Link to this definition">#</a></dt>
 <dd><p>Write one iopub message.</p>
-<p>Unknown message types are ignored, so <code class="docutils literal notranslate"><span class="pre">status</span></code>, <code class="docutils literal notranslate"><span class="pre">clear_output</span></code>,
-comm traffic and anything a future kernel adds cost nothing.</p>
+<p>Unknown message types are ignored, so comm traffic and anything a
+future kernel adds cost nothing.</p>
 </dd></dl>
 
 </dd></dl>
@@ -724,8 +777,15 @@ comm traffic and anything a future kernel adds cost nothing.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.DEFAULT_PREFIX"><code class="docutils literal notranslate"><span class="pre">DEFAULT_PREFIX</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.DEFAULT_MAX_MB"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MAX_MB</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.BYTES_PER_MB"><code class="docutils literal notranslate"><span class="pre">BYTES_PER_MB</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.log_file_name"><code class="docutils literal notranslate"><span class="pre">log_file_name()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.ConsoleTranscript"><code class="docutils literal notranslate"><span class="pre">ConsoleTranscript</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.ConsoleTranscript.path"><code class="docutils literal notranslate"><span class="pre">ConsoleTranscript.path</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.ConsoleTranscript.directory"><code class="docutils literal notranslate"><span class="pre">ConsoleTranscript.directory</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.ConsoleTranscript.prefix"><code class="docutils literal notranslate"><span class="pre">ConsoleTranscript.prefix</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.ConsoleTranscript.max_bytes"><code class="docutils literal notranslate"><span class="pre">ConsoleTranscript.max_bytes</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.ConsoleTranscript.started_at"><code class="docutils literal notranslate"><span class="pre">ConsoleTranscript.started_at</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.ConsoleTranscript.bytes_written"><code class="docutils literal notranslate"><span class="pre">ConsoleTranscript.bytes_written</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.gui.transcript.ConsoleTranscript.error"><code class="docutils literal notranslate"><span class="pre">ConsoleTranscript.error</span></code></a></li>

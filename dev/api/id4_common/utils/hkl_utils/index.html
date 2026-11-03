@@ -511,6 +511,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../attenuator_utils/index.html">id4_common.utils.attenuator_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../counters_class/index.html">id4_common.utils.counters_class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device_loader/index.html">id4_common.utils.device_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../diffractometer_setup/index.html">id4_common.utils.diffractometer_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dm_utils/index.html">id4_common.utils.dm_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../eiger_setup/index.html">id4_common.utils.eiger_setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../experiment_utils/index.html">id4_common.utils.experiment_utils</a></li>
@@ -706,6 +707,56 @@ interactively with the current diffractometer as the default.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.snapshot_diffractometers">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">snapshot_diffractometers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.snapshot_diffractometers" title="Link to this definition">#</a></dt>
+<dd><p>Return the diffractometers in the registry, before a device reload.</p>
+<p><code class="docutils literal notranslate"><span class="pre">reload_all_devices()</span></code> builds new objects, each with hklpy2’s default
+sample. Pass this snapshot to <a class="reference internal" href="#id4_common.utils.hkl_utils.restore_diffractometers" title="id4_common.utils.hkl_utils.restore_diffractometers"><code class="xref py py-func docutils literal notranslate"><span class="pre">restore_diffractometers()</span></code></a> afterwards
+to carry the orientation over and to re-select the active one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Device name -&gt; device, for those currently registered.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.restore_diffractometers">
+<span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">restore_diffractometers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.restore_diffractometers" title="Link to this definition">#</a></dt>
+<dd><p>Point the session at the reloaded diffractometers, with their setup.</p>
+<p>After <code class="docutils literal notranslate"><span class="pre">make_devices(clear=True)</span></code>, hklpy2’s selection, the plans
+(through <code class="docutils literal notranslate"><span class="pre">get_diffractometer()</span></code>), the console aliases and the shortcut
+macros still hold the old objects, while <code class="docutils literal notranslate"><span class="pre">oregistry</span></code> lookups (the GUI,
+the <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;_psi</span></code> partners) return new ones with a default sample.</p>
+<ol class="arabic simple">
+<li><p>Re-imports any loaded shortcut macro, so its names are rebound.</p></li>
+<li><p>Re-selects the active diffractometer with
+<a class="reference internal" href="#id4_common.utils.hkl_utils.change_diffractometer" title="id4_common.utils.hkl_utils.change_diffractometer"><code class="xref py py-func docutils literal notranslate"><span class="pre">change_diffractometer()</span></code></a>, which also re-creates its aliases.</p></li>
+<li><p>Copies each old diffractometer’s samples, reflections, UB,
+constraints, extras, presets and mode onto its replacement (after
+step 2, which resets the constraints to the defaults).</p></li>
+<li><p>Destroys each old object whose copy succeeded, after taking it out
+of the baseline and monitors. Otherwise its motors’ readbacks keep
+running <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> on it. This is safe for the replacement: the
+two share pyepics PVs, and ophyd only closes a channel once no
+signal uses it. Only diffractometers are destroyed, because their
+references are the ones refreshed here. A user macro that captured
+an old object now raises when used, instead of quietly driving a
+stale copy.</p></li>
+</ol>
+<p>Nothing moves. A copy that fails is reported; that diffractometer keeps
+hklpy2’s default sample, and its old object is left alive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>old</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><em>dict</em></a>) – The <a class="reference internal" href="#id4_common.utils.hkl_utils.snapshot_diffractometers" title="id4_common.utils.hkl_utils.snapshot_diffractometers"><code class="xref py py-func docutils literal notranslate"><span class="pre">snapshot_diffractometers()</span></code></a> taken before the reload.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="id4_common.utils.hkl_utils.newsample">
 <span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">newsample</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.newsample" title="Link to this definition">#</a></dt>
 <dd><p>Interactively add a new sample with lattice constants.</p>
@@ -795,37 +846,6 @@ for it.</p></li>
 current position of the diffractometer pad rail. The soft-IOC center and
 distance PVs are not part of any device, so they use a raw <code class="docutils literal notranslate"><span class="pre">caput</span></code>.
 Skipped when the active diffractometer is simulated.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.utils.hkl_utils.</span></span><span class="sig-name descname"><span class="pre">Sync_UB_Matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix" title="Link to this definition">#</a></dt>
-<dd><p>Keep the UB matrix of target in sync with source via an ophyd subscription.</p>
-<p>Subscribes to source._ub_sync (an ArrayAttributeSignal pointing at
-core.sample.UB) so that whenever the signal is updated the callback
-copies the new matrix to the target and syncs simulated motor positions.
-Call cleanup() to remove the subscription when no longer needed.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.source">
-<span class="sig-name descname"><span class="pre">source</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.source" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.target">
-<span class="sig-name descname"><span class="pre">target</span></span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.target" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.cleanup">
-<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.cleanup" title="Link to this definition">#</a></dt>
-<dd><p>Remove the UB-sync subscription.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.utils.hkl_utils.Sync_UB_Matrix.sync_callback">
-<span class="sig-name descname"><span class="pre">sync_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.sync_callback" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py function">
@@ -1307,6 +1327,8 @@ those two reflections (Brueckel 1994).</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.geometries"><code class="docutils literal notranslate"><span class="pre">geometries</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.set_diffractometer"><code class="docutils literal notranslate"><span class="pre">set_diffractometer()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.change_diffractometer"><code class="docutils literal notranslate"><span class="pre">change_diffractometer()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.snapshot_diffractometers"><code class="docutils literal notranslate"><span class="pre">snapshot_diffractometers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.restore_diffractometers"><code class="docutils literal notranslate"><span class="pre">restore_diffractometers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.newsample"><code class="docutils literal notranslate"><span class="pre">newsample()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.sampleList"><code class="docutils literal notranslate"><span class="pre">sampleList()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.sampleChange"><code class="docutils literal notranslate"><span class="pre">sampleChange()</span></code></a></li>
@@ -1315,13 +1337,6 @@ those two reflections (Brueckel 1994).</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.or_swap"><code class="docutils literal notranslate"><span class="pre">or_swap()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.compute_UB"><code class="docutils literal notranslate"><span class="pre">compute_UB()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.update_eiger"><code class="docutils literal notranslate"><span class="pre">update_eiger()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.source"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix.source</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.target"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix.target</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.cleanup"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix.cleanup()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.Sync_UB_Matrix.sync_callback"><code class="docutils literal notranslate"><span class="pre">Sync_UB_Matrix.sync_callback()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setor0"><code class="docutils literal notranslate"><span class="pre">setor0()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.setor1"><code class="docutils literal notranslate"><span class="pre">setor1()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.utils.hkl_utils.or0"><code class="docutils literal notranslate"><span class="pre">or0()</span></code></a></li>

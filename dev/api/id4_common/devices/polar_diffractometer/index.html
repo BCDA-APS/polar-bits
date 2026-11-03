@@ -525,6 +525,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../ge_controller/index.html">id4_common.devices.ge_controller</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gh_i0_motors/index.html">id4_common.devices.gh_i0_motors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hhl_mirror/index.html">id4_common.devices.hhl_mirror</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hklpy2_workarounds/index.html">id4_common.devices.hklpy2_workarounds</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../huber_filter/index.html">id4_common.devices.huber_filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interferometers_4IDG/index.html">id4_common.devices.interferometers_4IDG</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jj_slits/index.html">id4_common.devices.jj_slits</a></li>
@@ -547,6 +548,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../polar_status/index.html">id4_common.devices.polar_status</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../polarimeter/index.html">id4_common.devices.polarimeter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../preamps/index.html">id4_common.devices.preamps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pseudo_targets/index.html">id4_common.devices.pseudo_targets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quadems/index.html">id4_common.devices.quadems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../qxscan_device/index.html">id4_common.devices.qxscan_device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ringlight/index.html">id4_common.devices.ringlight</a></li>
@@ -662,27 +664,6 @@
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.ANALYZER_LIST_PATH">
 <span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">ANALYZER_LIST_PATH</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.ANALYZER_LIST_PATH" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.UBMatrixSignal">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">UBMatrixSignal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pv_name</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Signal</span></code></p>
-<p>In-memory ophyd Signal that wraps the UB matrix on the parent diffractometer.</p>
-<p>Reads/writes parent.sample.UB and fires ophyd subscribers on put(), so
-other components can subscribe to UB matrix changes via .subscribe().</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.UBMatrixSignal.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal.get" title="Link to this definition">#</a></dt>
-<dd><p>Return the parent diffractometer’s current UB matrix.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.UBMatrixSignal.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal.put" title="Link to this definition">#</a></dt>
-<dd><p>Write the UB matrix back to the parent and notify subscribers.</p>
-</dd></dl>
-
-</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.AnalyzerDevice">
@@ -841,8 +822,11 @@ and crystal.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerCoreMixin">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">DiffractometerCoreMixin</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.pseudo_targets._TargetsFollowMotorsMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.Device</span></code></p>
 <p>Hardware-free behavior shared by the real and simulated diffractometers.</p>
+<p>Includes <code class="xref py py-class docutils literal notranslate"><span class="pre">_TargetsFollowMotorsMixin</span></code>, so a single-axis hkl move
+keeps the other axes where the diffractometer is, not where it was last
+sent.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.hints">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.DiffractometerCoreMixin.hints" title="Link to this definition">#</a></dt>
@@ -946,7 +930,7 @@ while the VDCM IOC is offline. <code class="docutils literal notranslate"><span 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.CradleDiffractometer">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">CradleDiffractometer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.CradleDiffractometer" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_InitFallbackMixin</span></code>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin" title="id4_common.devices.polar_diffractometer.DiffractometerMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerMixin</span></code></a>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.CradleDiffractometerBase" title="id4_common.devices.polar_diffractometer.CradleDiffractometerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CradleDiffractometerBase</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">_InitFallbackMixin</span></code>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin" title="id4_common.devices.polar_diffractometer.DiffractometerMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerMixin</span></code></a>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.CradleDiffractometerBase" title="id4_common.devices.polar_diffractometer.CradleDiffractometerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CradleDiffractometerBase</span></code></a></p>
 <p>hklpy2 APS-POLAR cradle diffractometer with sample XYZ translation.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.CradleDiffractometer.x">
@@ -973,7 +957,7 @@ while the VDCM IOC is offline. <code class="docutils literal notranslate"><span 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.HPDiffractometer">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">HPDiffractometer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.HPDiffractometer" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_InitFallbackMixin</span></code>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin" title="id4_common.devices.polar_diffractometer.DiffractometerMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerMixin</span></code></a>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.HPDiffractometerBase" title="id4_common.devices.polar_diffractometer.HPDiffractometerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HPDiffractometerBase</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">_InitFallbackMixin</span></code>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.DiffractometerMixin" title="id4_common.devices.polar_diffractometer.DiffractometerMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerMixin</span></code></a>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.HPDiffractometerBase" title="id4_common.devices.polar_diffractometer.HPDiffractometerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HPDiffractometerBase</span></code></a></p>
 <p>hklpy2 APS-POLAR HP-press diffractometer with base, nano, and tilt motors.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.HPDiffractometer.chi">
@@ -1065,14 +1049,14 @@ while the VDCM IOC is offline. <code class="docutils literal notranslate"><span 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.CradleDiffractometerPSI">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">CradleDiffractometerPSI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.CradleDiffractometerPSI" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_InitFallbackMixin</span></code>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.CradleDiffractometerPSIBase" title="id4_common.devices.polar_diffractometer.CradleDiffractometerPSIBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CradleDiffractometerPSIBase</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">_InitFallbackMixin</span></code>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.CradleDiffractometerPSIBase" title="id4_common.devices.polar_diffractometer.CradleDiffractometerPSIBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CradleDiffractometerPSIBase</span></code></a></p>
 <p>hklpy2 APS-POLAR cradle diffractometer using the psi engine.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.polar_diffractometer.HPDiffractometerPSI">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.polar_diffractometer.</span></span><span class="sig-name descname"><span class="pre">HPDiffractometerPSI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.polar_diffractometer.HPDiffractometerPSI" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">_InitFallbackMixin</span></code>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.HPDiffractometerPSIBase" title="id4_common.devices.polar_diffractometer.HPDiffractometerPSIBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HPDiffractometerPSIBase</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.hklpy2_workarounds._ThreadSafeSolverMixin</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">_InitFallbackMixin</span></code>, <a class="reference internal" href="#id4_common.devices.polar_diffractometer.HPDiffractometerPSIBase" title="id4_common.devices.polar_diffractometer.HPDiffractometerPSIBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HPDiffractometerPSIBase</span></code></a></p>
 <p>hklpy2 APS-POLAR HP-press diffractometer using the psi engine.</p>
 </dd></dl>
 
@@ -1115,11 +1099,6 @@ while the VDCM IOC is offline. <code class="docutils literal notranslate"><span 
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.PTH_MIN_DEGREES"><code class="docutils literal notranslate"><span class="pre">PTH_MIN_DEGREES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.PTH_MAX_DEGREES"><code class="docutils literal notranslate"><span class="pre">PTH_MAX_DEGREES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.ANALYZER_LIST_PATH"><code class="docutils literal notranslate"><span class="pre">ANALYZER_LIST_PATH</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal"><code class="docutils literal notranslate"><span class="pre">UBMatrixSignal</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal.get"><code class="docutils literal notranslate"><span class="pre">UBMatrixSignal.get()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.UBMatrixSignal.put"><code class="docutils literal notranslate"><span class="pre">UBMatrixSignal.put()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.energy"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.energy</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.polar_diffractometer.AnalyzerDevice.th"><code class="docutils literal notranslate"><span class="pre">AnalyzerDevice.th</span></code></a></li>
