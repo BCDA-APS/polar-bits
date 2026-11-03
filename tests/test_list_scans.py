@@ -510,3 +510,31 @@ def test_rel_list_grid_scan_sets_its_plan_name(list_scans, monkeypatch):
     )
 
     assert seen["md"]["plan_name"] == "rel_list_grid_scan"
+
+
+def test_fixq_holds_the_current_hkl_not_the_last_command(
+    scan_utils, monkeypatch
+):
+    """fixq holds where the diffractometer is, not the last commanded hkl.
+
+    Real-motor alignment scans move the diffractometer away from the last
+    ``ubr``/``br`` target without updating the h/k/l setpoints (#93).
+    """
+    axis_h, axis_k, axis_l = (MagicMock(name=n) for n in "hkl")
+    for axis in (axis_h, axis_k, axis_l):
+        axis.get.return_value = types.SimpleNamespace(setpoint=99.0)
+    diff = types.SimpleNamespace(
+        h=axis_h,
+        k=axis_k,
+        l=axis_l,
+        position=types.SimpleNamespace(h=1.002, k=0.998, l=0.001),
+    )
+    monkeypatch.setattr(scan_utils, "get_diffractometer", lambda: diff)
+
+    scan_utils._configure_fixq(True)
+
+    assert scan_utils.flag.hkl_pos == {
+        axis_h: 1.002,
+        axis_k: 0.998,
+        axis_l: 0.001,
+    }

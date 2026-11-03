@@ -161,15 +161,10 @@ def one_local_step(detectors, step, pos_cache, take_reading=trigger_and_read):
     if flag.fixq:
         huber = get_diffractometer()
         devices_to_read += [huber]
-        args = (
-            huber.h,
-            flag.hkl_pos[huber.h],
-            huber.k,
-            flag.hkl_pos[huber.k],
-            huber.l,
-            flag.hkl_pos[huber.l],
-        )
-        yield from bps_mv(*args)
+        # One tuple move, so all three axes are solved together rather than
+        # as three single-axis moves with stale targets for the others.
+        hkl = tuple(flag.hkl_pos[axis] for axis in (huber.h, huber.k, huber.l))
+        yield from bps_mv(huber, hkl)
 
     if flag.dichro:
         yield from dichro_steps(devices_to_read, take_reading)
@@ -318,6 +313,9 @@ def _configure_dichro(dichro):
 def _configure_fixq(fixq):
     """Set flag.fixq and snapshot current HKL position into flag.hkl_pos.
 
+    The snapshot comes from the current motor positions, not the last
+    commanded hkl, so a position fine-tuned with real-motor scans is kept.
+
     Refuses rather than raising ``AttributeError`` on ``None`` where no
     diffractometer is active -- 4IDB and 4IDH never call
     ``set_diffractometer()``.  This is the entry point: the per-step
@@ -332,10 +330,13 @@ def _configure_fixq(fixq):
                 "fixq=True needs an active diffractometer, and this session "
                 "has none -- run set_diffractometer() first, or drop fixq."
             )
+        # ``.setpoint`` is the last *commanded* hkl, which goes stale after
+        # real-motor moves (alignment scans, cen, th2th).
+        position = huber.position
         flag.hkl_pos = {
-            huber.h: huber.h.get().setpoint,
-            huber.k: huber.k.get().setpoint,
-            huber.l: huber.l.get().setpoint,
+            huber.h: position.h,
+            huber.k: position.k,
+            huber.l: position.l,
         }
 
 

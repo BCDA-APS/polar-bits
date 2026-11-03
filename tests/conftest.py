@@ -14,6 +14,8 @@ import sys
 import types
 from unittest.mock import MagicMock
 
+import pytest
+
 
 def _ensure_module(name: str) -> types.ModuleType:
     """Insert an empty module into sys.modules if it isn't already there."""
@@ -220,3 +222,20 @@ def pytest_configure(config):
     _stub_run_engine()
     _stub_polartools()
     _stub_dm_utils()
+
+
+@pytest.fixture
+def hkl_utils_module(monkeypatch):
+    """Return ``id4_common.utils.hkl_utils``, imported against real hklpy2.
+
+    ``test_list_scans`` leaves bare stand-ins for ``hklpy2`` and
+    ``hklpy2.user`` in ``sys.modules``, which ``hkl_utils`` cannot import
+    from.  They are set aside for the test and put back afterwards.
+    """
+    for name in ("hklpy2", "hklpy2.user"):
+        stub = sys.modules.get(name)
+        if stub is not None and getattr(stub, "__file__", None) is None:
+            monkeypatch.delitem(sys.modules, name)
+    from id4_common.utils import hkl_utils
+
+    return hkl_utils

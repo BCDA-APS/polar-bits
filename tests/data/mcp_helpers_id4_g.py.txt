@@ -98,8 +98,9 @@ def _gui_mcp_ops():
         "set_fixed_angles": (_gui_hkl_set_presets, ("values",), True, "hkl"),
         "set_psi_reference": (_gui_hkl_set_azimuth, ("h2", "k2", "l2"), True, "hkl"),
         "set_psi": (_gui_hkl_set_psi, ("psi",), True, "hkl"),
-        # calc_angles writes presets and extras as a side effect, so it counts
-        # as mutating even though it moves nothing and returns a reading.
+        # calc_angles changes presets and psi for the length of the solve and
+        # puts the session's back afterwards.  It stays mutating so the call
+        # is still echoed and the UB is still backed up first.
         "calc_angles": (
             _gui_hkl_calc,
             ("h", "k", "l", "psi", "presets"),

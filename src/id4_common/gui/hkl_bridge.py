@@ -258,6 +258,20 @@ def _gui_hkl_position(name):
     out["psi"] = psi
     out["psi_reference"] = reference
     out["mode"] = dev.core.mode
+    # The fixed values too, so the tab notices a console setmode/freeze
+    # within one poll instead of writing its stale copy back later.
+    try:
+        out["presets"] = {
+            k: _gui_hkl_f(v) for k, v in dev.core.presets.items()
+        }
+    except Exception:
+        out["presets"] = {}
+    try:
+        out["extras"] = {
+            k: _gui_hkl_f(v) for k, v in dev.core.extras.items()
+        }
+    except Exception:
+        out["extras"] = {}
     return out
 
 
@@ -378,11 +392,18 @@ def _gui_hkl_select_sample(name, sample):
         return f"Could not select sample: {exc}"
 
 
-def _gui_hkl_add_sample(name, sample, a, b, c, alpha, beta, gamma):
+def _gui_hkl_add_sample(
+    name, sample, a, b, c, alpha, beta, gamma, replace=False
+):
+    """Add a sample; an existing name is refused unless *replace* is set.
+
+    Replacing wipes that sample's reflections and UB, so the tab asks first
+    and MCP, which never passes *replace*, cannot do it at all.
+    """
     try:
         _gui_hkl_dev(name).add_sample(
             sample, a, b=b, c=c, alpha=alpha, beta=beta, gamma=gamma,
-            replace=True,
+            replace=bool(replace),
         )
         return f"Added sample {sample}."
     except Exception as exc:
@@ -676,38 +697,69 @@ def _gui_hkl_set_psi(name, psi):
 def _gui_hkl_calc(name, h, k, l, psi=None, presets=None):
     """Compute real angles for an hkl, optionally fixing psi and angles first.
 
-    ``presets`` is re-sent with every calculation rather than relied upon from
-    an earlier write: the tab applies fixed angles on a debounce timer, so
-    pressing Calculate straight after typing could otherwise solve against the
-    previous value.
+    A what-if: ``presets`` and ``psi`` hold for this one solve, and the
+    session's own are put back afterwards, even when the solve fails.  It
+    used to leave them in place, so pressing Calculate with nothing ticked
+    wiped the console's ``setmode``/``freeze`` presets, and every console
+    scan after it solved with different frozen angles.  A lasting change
+    goes through :func:`_gui_hkl_set_fixed`, which the tab's debounce calls.
+
+    ``presets`` is still re-sent with every calculation rather than relied
+    upon from an earlier write: the tab applies fixed angles on a debounce
+    timer, so pressing Calculate straight after typing could otherwise solve
+    against the previous value.
+
+    ``out["presets"]`` and ``out["psi"]`` are what this solve used, so the
+    tab's Move confirmation can show them.
     """
     dev = _gui_hkl_dev(name)
     out = {"device": name, "h": h, "k": k, "l": l}
-    if presets is not None:
-        try:
-            constant = list(dev.core.constant_axis_names)
-            dev.core.presets = {
-                _k: float(_v) for _k, _v in presets.items() if _k in constant
-            }
-            out["presets"] = {_k: _gui_hkl_f(_v) for _k, _v in dev.core.presets.items()}
-        except Exception as exc:
-            out["error"] = f"Could not fix the angles: {exc}"
-            return out
-    if psi is not None and "psi_constant" in _gui_hkl_mode_key(dev.core.mode):
-        try:
-            dev.core.extras = {"psi": float(psi)}
-            out["psi"] = float(psi)
-        except Exception as exc:
-            out["error"] = f"Could not fix psi: {exc}"
-            return out
+    saved_presets = None
+    saved_psi = None
     try:
-        pos = dev.forward(float(h), float(k), float(l))
-        out["reals"] = {
-            f: _gui_hkl_f(getattr(pos, f)) for f in dev.real_positioners._fields
-        }
-    except Exception as exc:
-        out["error"] = str(exc)
-    return out
+        if presets is not None:
+            try:
+                constant = list(dev.core.constant_axis_names)
+                # A copy: the getter hands back the live per-mode dict.
+                saved_presets = dict(dev.core.presets)
+                dev.core.presets = {
+                    _k: float(_v)
+                    for _k, _v in presets.items()
+                    if _k in constant
+                }
+                out["presets"] = {
+                    _k: _gui_hkl_f(_v) for _k, _v in dev.core.presets.items()
+                }
+            except Exception as exc:
+                out["error"] = f"Could not fix the angles: {exc}"
+                return out
+        psi_mode = "psi_constant" in _gui_hkl_mode_key(dev.core.mode)
+        if psi is not None and psi_mode:
+            try:
+                saved_psi = dict(dev.core.extras).get("psi")
+                dev.core.extras = {"psi": float(psi)}
+                out["psi"] = float(psi)
+            except Exception as exc:
+                out["error"] = f"Could not fix psi: {exc}"
+                return out
+        try:
+            pos = dev.forward(float(h), float(k), float(l))
+            out["reals"] = {
+                f: _gui_hkl_f(getattr(pos, f))
+                for f in dev.real_positioners._fields
+            }
+        except Exception as exc:
+            out["error"] = str(exc)
+        return out
+    finally:
+        # Only what was changed: an extras write flags the solver dirty.
+        try:
+            if saved_presets is not None:
+                dev.core.presets = saved_presets
+            if saved_psi is not None:
+                dev.core.extras = {"psi": saved_psi}
+        except Exception as exc:
+            out["error"] = f"Could not restore the fixed angles: {exc}"
 '''
 
 
