@@ -103,6 +103,8 @@ else:
     from id4_common.utils.counters_class import counters  # noqa: F401
     from id4_common.utils.dm_utils import *  # noqa: F403
     from id4_common.utils.experiment_utils import *  # noqa: F403
+    from id4_common.utils.magnet_setup import magnet_setup  # noqa: F401
+    from id4_common.utils.magnet_setup import set_field  # noqa: F401
     from id4_common.utils.pr_setup import pr_setup  # noqa: F401
     from id4_common.utils.temperature_setup import (
         temperature_setup,  # noqa: F401
