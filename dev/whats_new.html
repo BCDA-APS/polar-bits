@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
@@ -43,7 +43,7 @@
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'whats_new';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -563,14 +563,14 @@
                 <article class="bd-article">
                   
   <section id="what-s-new">
-<h1>What’s New<a class="headerlink" href="#what-s-new" title="Link to this heading">#</a></h1>
+<span id="whats-new"></span><h1>What’s New<a class="headerlink" href="#what-s-new" title="Link to this heading">#</a></h1>
 <p>A short summary of the user-visible changes since the previous APS run.
 This page is updated once per APS run cycle (three runs per year);
 older entries are kept for reference.</p>
 <p>For the full commit history see <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/commits/main">GitHub</a>.</p>
 <hr class="docutils" />
 <section id="run-2026-2-spring-summer-2026">
-<h2>Run 2026-2 (Spring/Summer 2026)<a class="headerlink" href="#run-2026-2-spring-summer-2026" title="Link to this heading">#</a></h2>
+<span id="run-2026-2-springsummer-2026"></span><h2>Run 2026-2 (Spring/Summer 2026)<a class="headerlink" href="#run-2026-2-spring-summer-2026" title="Link to this heading">#</a></h2>
 <p>Covers changes merged since <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/30">PR #30</a>
 (“Update repository to match latest apsbits”), which was the baseline
 for the 2026-1 run. Roughly 15 PRs landed during the shutdown — this
@@ -580,7 +580,7 @@ the change — restart workflow first, day-to-day scan helpers next,
 then per-experiment setup, then the lower-level work that’s mostly
 transparent.</p>
 <section id="restarting-a-session-one-line-instead-of-a-startup-file">
-<h3>Restarting a session — one line instead of a startup file<a class="headerlink" href="#restarting-a-session-one-line-instead-of-a-startup-file" title="Link to this heading">#</a></h3>
+<span id="restarting-a-session--one-line-instead-of-a-startup-file"></span><h3>Restarting a session — one line instead of a startup file<a class="headerlink" href="#restarting-a-session-one-line-instead-of-a-startup-file" title="Link to this heading">#</a></h3>
 <p>The setup helpers (<code class="docutils literal notranslate"><span class="pre">pr_setup</span></code>, <code class="docutils literal notranslate"><span class="pre">energy.tracking_setup</span></code>,
 <code class="docutils literal notranslate"><span class="pre">counters.plotselect</span></code>, <code class="docutils literal notranslate"><span class="pre">undulator_setup</span></code>,
 <code class="docutils literal notranslate"><span class="pre">qxscan_setup.load_params_json</span></code>) now auto-save their values into
@@ -624,7 +624,7 @@ available as <code class="docutils literal notranslate"><span class="pre">cen2</
 <p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/62">#62</a>.</p>
 </section>
 <section id="temperature-controllers-tc-ts-te">
-<h3>Temperature controllers — <code class="docutils literal notranslate"><span class="pre">tc</span></code> / <code class="docutils literal notranslate"><span class="pre">ts</span></code> / <code class="docutils literal notranslate"><span class="pre">te</span></code><a class="headerlink" href="#temperature-controllers-tc-ts-te" title="Link to this heading">#</a></h3>
+<span id="temperature-controllers--tc--ts--te"></span><h3>Temperature controllers — <code class="docutils literal notranslate"><span class="pre">tc</span></code> / <code class="docutils literal notranslate"><span class="pre">ts</span></code> / <code class="docutils literal notranslate"><span class="pre">te</span></code><a class="headerlink" href="#temperature-controllers-tc-ts-te" title="Link to this heading">#</a></h3>
 <p>A new <code class="docutils literal notranslate"><span class="pre">temperature_setup(label)</span></code> helper picks the active controller
 from a labelled lookup table and injects three names into the session:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">temperature_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>        <span class="c1"># 4IDG LakeShore 336</span>
@@ -642,7 +642,7 @@ scan automatically. Adding a new controller is a one-line edit to
 <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/61">#61</a>.</p>
 </section>
 <section id="crl-focusing-new-shortcuts-and-microns-handle">
-<h3>CRL focusing — new shortcuts and microns handle<a class="headerlink" href="#crl-focusing-new-shortcuts-and-microns-handle" title="Link to this heading">#</a></h3>
+<span id="crl-focusing--new-shortcuts-and-microns-handle"></span><h3>CRL focusing — new shortcuts and microns handle<a class="headerlink" href="#crl-focusing-new-shortcuts-and-microns-handle" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">crl_setup(hutch)</span></code> switches the CRL sample-position offset between
 4IDG and 4IDH (<code class="docutils literal notranslate"><span class="pre">&quot;g&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;h&quot;</span></code> / interactive).</p></li>
@@ -694,7 +694,7 @@ from a previous Bluesky run document.</p>
 <p>PRs: <a class="reference external" href="https://github.com/BCDA-APS/polar-bits/pull/52">#52</a>.</p>
 </section>
 <section id="devices-baseline-cleanup-missing-devices-wired-up">
-<h3>Devices — baseline cleanup + missing devices wired up<a class="headerlink" href="#devices-baseline-cleanup-missing-devices-wired-up" title="Link to this heading">#</a></h3>
+<span id="devices--baseline-cleanup--missing-devices-wired-up"></span><h3>Devices — baseline cleanup + missing devices wired up<a class="headerlink" href="#devices-baseline-cleanup-missing-devices-wired-up" title="Link to this heading">#</a></h3>
 <p>Several rarely-changed signals were demoted from <code class="docutils literal notranslate"><span class="pre">kind=&quot;hinted&quot;</span></code> /
 <code class="docutils literal notranslate"><span class="pre">kind=&quot;normal&quot;</span></code> to <code class="docutils literal notranslate"><span class="pre">kind=&quot;config&quot;</span></code> so the baseline stream is no longer
 flooded with values that don’t change over an experiment.</p>

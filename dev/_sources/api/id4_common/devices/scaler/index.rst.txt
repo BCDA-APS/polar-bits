@@ -81,11 +81,6 @@ Module Contents
 
    .. py:attribute:: preset_monitor
 
-      Return the ophyd signal used to control scan count time.
-
-      Resolved by walking the dotted path in _preset_monitor_attr. Set
-      that class attribute in subclasses instead of overriding this property.
-
 
    .. py:attribute:: freq
 

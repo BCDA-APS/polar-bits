@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
@@ -43,7 +43,7 @@
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'queueserver';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -602,7 +602,7 @@ QS host process and configuration.</p>
 </section>
 <hr class="docutils" />
 <section id="starting-stopping-the-qs-host">
-<h2>Starting / Stopping the QS Host<a class="headerlink" href="#starting-stopping-the-qs-host" title="Link to this heading">#</a></h2>
+<span id="starting--stopping-the-qs-host"></span><h2>Starting / Stopping the QS Host<a class="headerlink" href="#starting-stopping-the-qs-host" title="Link to this heading">#</a></h2>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">qs_host.sh</span></code> script for your beamline. The <code class="docutils literal notranslate"><span class="pre">restart</span></code> command is the
 normal way to (re)start — it stops any running instance first, then starts
 fresh in a <code class="docutils literal notranslate"><span class="pre">screen</span></code> session in the background.</p>
@@ -682,7 +682,7 @@ be running before starting the QS host:</p>
 </section>
 <hr class="docutils" />
 <section id="qs-config-yml-key-settings">
-<h2><code class="docutils literal notranslate"><span class="pre">qs-config.yml</span></code> Key Settings<a class="headerlink" href="#qs-config-yml-key-settings" title="Link to this heading">#</a></h2>
+<span id="qs-configyml-key-settings"></span><h2><code class="docutils literal notranslate"><span class="pre">qs-config.yml</span></code> Key Settings<a class="headerlink" href="#qs-config-yml-key-settings" title="Link to this heading">#</a></h2>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># IPython kernel backend</span>
 <span class="nt">worker_class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bluesky_queueserver.manager.worker.IPythonWorker</span>
 

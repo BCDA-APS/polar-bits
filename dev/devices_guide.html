@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
@@ -43,7 +43,7 @@
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'devices_guide';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -614,7 +614,7 @@ EPICS network being reachable.</p>
 <p>Only <code class="docutils literal notranslate"><span class="pre">connect_device()</span></code> — called internally by <code class="docutils literal notranslate"><span class="pre">load_device()</span></code> — triggers actual
 EPICS interaction via <code class="docutils literal notranslate"><span class="pre">wait_for_connection()</span></code>.</p>
 <section id="post-connect-setup-hook">
-<h3><code class="docutils literal notranslate"><span class="pre">_post_connect_setup()</span></code> hook<a class="headerlink" href="#post-connect-setup-hook" title="Link to this heading">#</a></h3>
+<span id="_post_connect_setup-hook"></span><h3><code class="docutils literal notranslate"><span class="pre">_post_connect_setup()</span></code> hook<a class="headerlink" href="#post-connect-setup-hook" title="Link to this heading">#</a></h3>
 <p>If your device needs to subscribe to PV values or perform any post-connection
 work, implement this method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">EpicsSignalRO</span>

@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
@@ -43,7 +43,7 @@
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'useful_functions';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -580,7 +580,7 @@ setup helpers in the first section auto-snapshot their values into
 knob and auto-saves the resulting state into <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code>.
 After a bluesky restart, <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> re-applies them.</p>
 <section id="temperature-setup-label-active-temperature-controller">
-<h3><code class="docutils literal notranslate"><span class="pre">temperature_setup(label)</span></code> — active temperature controller<a class="headerlink" href="#temperature-setup-label-active-temperature-controller" title="Link to this heading">#</a></h3>
+<span id="temperature_setuplabel--active-temperature-controller"></span><h3><code class="docutils literal notranslate"><span class="pre">temperature_setup(label)</span></code> — active temperature controller<a class="headerlink" href="#temperature-setup-label-active-temperature-controller" title="Link to this heading">#</a></h3>
 <p>Resolves the requested controller from
 <code class="docutils literal notranslate"><span class="pre">id4_common.utils.temperature_setup.TEMPERATURE_CONTROLLERS</span></code> and
 injects three names into the session: <code class="docutils literal notranslate"><span class="pre">tc</span></code> (setpoint, movable), <code class="docutils literal notranslate"><span class="pre">ts</span></code>
@@ -602,7 +602,7 @@ scan.</p>
 tuple). No class changes, no <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code> edits.</p>
 </section>
 <section id="pr-setup-phase-retarders-for-xmcd">
-<h3><code class="docutils literal notranslate"><span class="pre">pr_setup()</span></code> — phase retarders for XMCD<a class="headerlink" href="#pr-setup-phase-retarders-for-xmcd" title="Link to this heading">#</a></h3>
+<span id="pr_setup--phase-retarders-for-xmcd"></span><h3><code class="docutils literal notranslate"><span class="pre">pr_setup()</span></code> — phase retarders for XMCD<a class="headerlink" href="#pr-setup-phase-retarders-for-xmcd" title="Link to this heading">#</a></h3>
 <p>Interactive setup for the phase-retarder stack used in helicity
 switching: which PR to track, which PR to oscillate, the offset
 positioner and value, and the PZT center. Call with no arguments to
@@ -621,7 +621,7 @@ what you want:</p>
 current configuration with <code class="docutils literal notranslate"><span class="pre">print(pr_setup)</span></code>.</p>
 </section>
 <section id="qxscan-setup-xafs-style-energy-scans">
-<h3><code class="docutils literal notranslate"><span class="pre">qxscan_setup()</span></code> — XAFS-style energy scans<a class="headerlink" href="#qxscan-setup-xafs-style-energy-scans" title="Link to this heading">#</a></h3>
+<span id="qxscan_setup--xafs-style-energy-scans"></span><h3><code class="docutils literal notranslate"><span class="pre">qxscan_setup()</span></code> — XAFS-style energy scans<a class="headerlink" href="#qxscan-setup-xafs-style-energy-scans" title="Link to this heading">#</a></h3>
 <p>Interactive wizard that configures the pre-edge / edge / post-edge
 regions for the <code class="docutils literal notranslate"><span class="pre">qxscan</span></code> plan. Energies are stored relative to the
 absorption edge.</p>
@@ -638,7 +638,7 @@ absorption edge.</p>
 plans.md</span></a> for the scan plan itself.</p>
 </section>
 <section id="undulator-setup-undulator-offsets-and-harmonics">
-<h3><code class="docutils literal notranslate"><span class="pre">undulator_setup(...)</span></code> — undulator offsets and harmonics<a class="headerlink" href="#undulator-setup-undulator-offsets-and-harmonics" title="Link to this heading">#</a></h3>
+<span id="undulator_setup--undulator-offsets-and-harmonics"></span><h3><code class="docutils literal notranslate"><span class="pre">undulator_setup(...)</span></code> — undulator offsets and harmonics<a class="headerlink" href="#undulator-setup-undulator-offsets-and-harmonics" title="Link to this heading">#</a></h3>
 <p>Sets the upstream (us) / downstream (ds) undulator energy offset
 relative to the monochromator and picks the harmonic. Pass nothing for
 an interactive prompt; pass keyword args for a non-interactive setup:</p>
@@ -651,7 +651,7 @@ an interactive prompt; pass keyword args for a non-interactive setup:</p>
 separately via <code class="docutils literal notranslate"><span class="pre">energy.tracking_setup</span></code> (below).</p>
 </section>
 <section id="energy-tracking-setup-names-which-devices-follow-the-mono">
-<h3><code class="docutils literal notranslate"><span class="pre">energy.tracking_setup([names])</span></code> — which devices follow the mono<a class="headerlink" href="#energy-tracking-setup-names-which-devices-follow-the-mono" title="Link to this heading">#</a></h3>
+<span id="energytracking_setupnames--which-devices-follow-the-mono"></span><h3><code class="docutils literal notranslate"><span class="pre">energy.tracking_setup([names])</span></code> — which devices follow the mono<a class="headerlink" href="#energy-tracking-setup-names-which-devices-follow-the-mono" title="Link to this heading">#</a></h3>
 <p>Picks the energy-trackable devices that should move when the
 monochromator energy changes (typically the undulators and one phase
 retarder).</p>
@@ -664,7 +664,7 @@ retarder).</p>
 <p>Auto-saves into <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code>.</p>
 </section>
 <section id="counters-plotselect-active-detectors-and-monitor">
-<h3><code class="docutils literal notranslate"><span class="pre">counters.plotselect(...)</span></code> — active detectors and monitor<a class="headerlink" href="#counters-plotselect-active-detectors-and-monitor" title="Link to this heading">#</a></h3>
+<span id="countersplotselect--active-detectors-and-monitor"></span><h3><code class="docutils literal notranslate"><span class="pre">counters.plotselect(...)</span></code> — active detectors and monitor<a class="headerlink" href="#counters-plotselect-active-detectors-and-monitor" title="Link to this heading">#</a></h3>
 <p>Configures which scaler channels every scan plan plots, monitors, and
 reads. Accepts indices, single device objects, or lists of either.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counters</span><span class="o">.</span><span class="n">plotselect</span><span class="p">()</span>                  <span class="c1"># interactive prompt</span>
@@ -679,7 +679,7 @@ reads. Accepts indices, single device objects, or lists of either.</p>
 <p>Auto-saves into <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code>.</p>
 </section>
 <section id="crl-setup-hutch-and-crl-size-focal-size-crl-focusing">
-<h3><code class="docutils literal notranslate"><span class="pre">crl_setup(hutch)</span></code> and <code class="docutils literal notranslate"><span class="pre">crl_size(focal_size)</span></code> — CRL focusing<a class="headerlink" href="#crl-setup-hutch-and-crl-size-focal-size-crl-focusing" title="Link to this heading">#</a></h3>
+<span id="crl_setuphutch-and-crl_sizefocal_size--crl-focusing"></span><h3><code class="docutils literal notranslate"><span class="pre">crl_setup(hutch)</span></code> and <code class="docutils literal notranslate"><span class="pre">crl_size(focal_size)</span></code> — CRL focusing<a class="headerlink" href="#crl-setup-hutch-and-crl-size-focal-size-crl-focusing" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crl_setup</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>           <span class="c1"># apply the 4IDG sample-position offset</span>
 <span class="n">crl_setup</span><span class="p">(</span><span class="s2">"h"</span><span class="p">)</span>           <span class="c1"># apply the 4IDH offset</span>
 <span class="n">crl_setup</span><span class="p">()</span>              <span class="c1"># interactive prompt</span>
@@ -704,7 +704,7 @@ experiment is the prebuilt one-liner:</p>
 <p>That import runs <code class="docutils literal notranslate"><span class="pre">experiment_resume()</span></code> followed by
 <code class="docutils literal notranslate"><span class="pre">restore_session_state()</span></code> and prints a per-knob status summary.</p>
 <section id="restore-session-state-state-none-re-apply-auto-saved-knobs">
-<h3><code class="docutils literal notranslate"><span class="pre">restore_session_state(state=None)</span></code> — re-apply auto-saved knobs<a class="headerlink" href="#restore-session-state-state-none-re-apply-auto-saved-knobs" title="Link to this heading">#</a></h3>
+<span id="restore_session_statestatenone--re-apply-auto-saved-knobs"></span><h3><code class="docutils literal notranslate"><span class="pre">restore_session_state(state=None)</span></code> — re-apply auto-saved knobs<a class="headerlink" href="#restore-session-state-state-none-re-apply-auto-saved-knobs" title="Link to this heading">#</a></h3>
 <p>Reads <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;session_state&quot;]</span></code> (or the <code class="docutils literal notranslate"><span class="pre">state</span></code> dict you pass) and
 re-applies every saved sub-key. Returns a <code class="docutils literal notranslate"><span class="pre">{knob_group:</span> <span class="pre">status}</span></code> dict;
 restore never raises — a missing device or single failed <code class="docutils literal notranslate"><span class="pre">.put()</span></code> is
@@ -719,7 +719,7 @@ logged and the rest of the restore continues.</p>
 <code class="docutils literal notranslate"><span class="pre">_common_startup.py</span></code>, so no extra <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">…</span> <span class="pre">import</span></code> is needed.</p>
 </section>
 <section id="save-session-state-manual-snapshot-escape-hatch">
-<h3><code class="docutils literal notranslate"><span class="pre">save_session_state()</span></code> — manual snapshot (escape hatch)<a class="headerlink" href="#save-session-state-manual-snapshot-escape-hatch" title="Link to this heading">#</a></h3>
+<span id="save_session_state--manual-snapshot-escape-hatch"></span><h3><code class="docutils literal notranslate"><span class="pre">save_session_state()</span></code> — manual snapshot (escape hatch)<a class="headerlink" href="#save-session-state-manual-snapshot-escape-hatch" title="Link to this heading">#</a></h3>
 <p>You normally don’t need this — every supported setup helper auto-saves
 when you call it. <code class="docutils literal notranslate"><span class="pre">save_session_state()</span></code> is the explicit API if you
 want to force a snapshot without re-running the helpers:</p>
@@ -733,7 +733,7 @@ want to force a snapshot without re-running the helpers:</p>
 <section id="experiment-lifecycle">
 <h2>Experiment lifecycle<a class="headerlink" href="#experiment-lifecycle" title="Link to this heading">#</a></h2>
 <section id="experiment-setup-start-or-re-configure-an-experiment">
-<h3><code class="docutils literal notranslate"><span class="pre">experiment_setup(...)</span></code> — start or re-configure an experiment<a class="headerlink" href="#experiment-setup-start-or-re-configure-an-experiment" title="Link to this heading">#</a></h3>
+<span id="experiment_setup--start-or-re-configure-an-experiment"></span><h3><code class="docutils literal notranslate"><span class="pre">experiment_setup(...)</span></code> — start or re-configure an experiment<a class="headerlink" href="#experiment-setup-start-or-re-configure-an-experiment" title="Link to this heading">#</a></h3>
 <p>Collects the metadata that organizes data into the right folders and
 associates it with an APS proposal and ESAF. Run interactively (no
 args) or non-interactively (all kwargs):</p>
@@ -754,7 +754,7 @@ See <a class="reference internal" href="examples/general.html#experiment-setup">
 full parameter description and the <code class="docutils literal notranslate"><span class="pre">reset_scan_id</span></code> table.</p>
 </section>
 <section id="experiment-resume-path-none-restore-from-the-yaml-snapshot">
-<h3><code class="docutils literal notranslate"><span class="pre">experiment_resume(path=None)</span></code> — restore from the YAML snapshot<a class="headerlink" href="#experiment-resume-path-none-restore-from-the-yaml-snapshot" title="Link to this heading">#</a></h3>
+<span id="experiment_resumepathnone--restore-from-the-yaml-snapshot"></span><h3><code class="docutils literal notranslate"><span class="pre">experiment_resume(path=None)</span></code> — restore from the YAML snapshot<a class="headerlink" href="#experiment-resume-path-none-restore-from-the-yaml-snapshot" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_resume</span><span class="p">()</span>              <span class="c1"># auto-discover (cwd or cat[-1])</span>
 <span class="n">experiment_resume</span><span class="p">(</span><span class="s2">"/path/to/dir"</span><span class="p">)</span>  <span class="c1"># explicit base path or .yml file</span>
 </pre></div>
@@ -762,7 +762,7 @@ full parameter description and the <code class="docutils literal notranslate"><s
 <p>Does not contact DM; works even when DM is down.</p>
 </section>
 <section id="experiment-load-from-scan-scan-id-1-restore-from-a-bluesky-run">
-<h3><code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan(scan_id=-1)</span></code> — restore from a Bluesky run<a class="headerlink" href="#experiment-load-from-scan-scan-id-1-restore-from-a-bluesky-run" title="Link to this heading">#</a></h3>
+<span id="experiment_load_from_scanscan_id-1--restore-from-a-bluesky-run"></span><h3><code class="docutils literal notranslate"><span class="pre">experiment_load_from_scan(scan_id=-1)</span></code> — restore from a Bluesky run<a class="headerlink" href="#experiment-load-from-scan-scan-id-1-restore-from-a-bluesky-run" title="Link to this heading">#</a></h3>
 <p>Re-derives the metadata from a specific run document; restores
 <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;scan_id&quot;]</span></code> so numbering continues from the loaded run.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_load_from_scan</span><span class="p">()</span>       <span class="c1"># last scan (cat[-1])</span>
@@ -771,7 +771,7 @@ full parameter description and the <code class="docutils literal notranslate"><s
 </div>
 </section>
 <section id="experiment-change-sample-sample-name-rotate-sample-mid-experiment">
-<h3><code class="docutils literal notranslate"><span class="pre">experiment_change_sample(sample_name=...)</span></code> — rotate sample mid-experiment<a class="headerlink" href="#experiment-change-sample-sample-name-rotate-sample-mid-experiment" title="Link to this heading">#</a></h3>
+<span id="experiment_change_samplesample_name--rotate-sample-mid-experiment"></span><h3><code class="docutils literal notranslate"><span class="pre">experiment_change_sample(sample_name=...)</span></code> — rotate sample mid-experiment<a class="headerlink" href="#experiment-change-sample-sample-name-rotate-sample-mid-experiment" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">experiment_change_sample</span><span class="p">(</span><span class="n">sample_name</span><span class="o">=</span><span class="s2">"Fe3O4"</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="s2">"scan"</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -796,7 +796,7 @@ deferred-EPICS-connection rule.</p>
 </pre></div>
 </div>
 <section id="load-vortex-electronics-pick-the-vortex-electronics-at-runtime">
-<h3><code class="docutils literal notranslate"><span class="pre">load_vortex(electronics,</span> <span class="pre">...)</span></code> — pick the vortex electronics at runtime<a class="headerlink" href="#load-vortex-electronics-pick-the-vortex-electronics-at-runtime" title="Link to this heading">#</a></h3>
+<span id="load_vortexelectronics---pick-the-vortex-electronics-at-runtime"></span><h3><code class="docutils literal notranslate"><span class="pre">load_vortex(electronics,</span> <span class="pre">...)</span></code> — pick the vortex electronics at runtime<a class="headerlink" href="#load-vortex-electronics-pick-the-vortex-electronics-at-runtime" title="Link to this heading">#</a></h3>
 <p>Vortex electronics (xspress3 vs dante, 1-element vs 4/7-element) are
 chosen per session rather than hardcoded in <code class="docutils literal notranslate"><span class="pre">devices.yml</span></code>. After
 loading, the device is added to <code class="docutils literal notranslate"><span class="pre">__main__</span></code> regardless of whether the
@@ -826,7 +826,7 @@ if you need to introspect or rotate it manually.</p>
 </section>
 <hr class="docutils" />
 <section id="quick-shortcuts-utilities-py">
-<h2>Quick shortcuts (<code class="docutils literal notranslate"><span class="pre">utilities.py</span></code>)<a class="headerlink" href="#quick-shortcuts-utilities-py" title="Link to this heading">#</a></h2>
+<span id="quick-shortcuts-utilitiespy"></span><h2>Quick shortcuts (<code class="docutils literal notranslate"><span class="pre">utilities.py</span></code>)<a class="headerlink" href="#quick-shortcuts-utilities-py" title="Link to this heading">#</a></h2>
 <p>A handful of one-liners for very common operations.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">te</span><span class="p">(</span><span class="mi">295</span><span class="p">)</span>              <span class="c1"># set active temperature controller setpoint to 295</span>
                      <span class="c1"># (equivalent to: mv tc 295)</span>
@@ -841,7 +841,7 @@ if you need to introspect or rotate it manually.</p>
 </section>
 <hr class="docutils" />
 <section id="ipython-magics-local-magics-py">
-<h2>IPython magics (<code class="docutils literal notranslate"><span class="pre">local_magics.py</span></code>)<a class="headerlink" href="#ipython-magics-local-magics-py" title="Link to this heading">#</a></h2>
+<span id="ipython-magics-local_magicspy"></span><h2>IPython magics (<code class="docutils literal notranslate"><span class="pre">local_magics.py</span></code>)<a class="headerlink" href="#ipython-magics-local-magics-py" title="Link to this heading">#</a></h2>
 <p>Available without parentheses at the prompt:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">mov</span> <span class="n">motor</span> <span class="n">position</span>             <span class="c1"># absolute move (waits for completion)</span>
 <span class="o">%</span><span class="n">mov</span> <span class="n">motor1</span> <span class="n">pos1</span> <span class="n">motor2</span> <span class="n">pos2</span>    <span class="c1"># multi-motor parallel move</span>
@@ -853,7 +853,7 @@ if you need to introspect or rotate it manually.</p>
 </section>
 <hr class="docutils" />
 <section id="listing-what-s-available">
-<h2>Listing what’s available<a class="headerlink" href="#listing-what-s-available" title="Link to this heading">#</a></h2>
+<span id="listing-whats-available"></span><h2>Listing what’s available<a class="headerlink" href="#listing-what-s-available" title="Link to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>list_functions()                 # print every callable in __main__
 list_functions("scan")           # filter by substring
 %whos                            # IPython: list all variables with types

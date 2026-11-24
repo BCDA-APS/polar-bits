@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
@@ -43,7 +43,7 @@
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'plans';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -578,7 +578,7 @@ measurement modes.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">dichro</span></code> and <code class="docutils literal notranslate"><span class="pre">lockin</span></code> flags require running <code class="docutils literal notranslate"><span class="pre">pr_setup</span></code> first to configure
 the scan (see <a class="reference internal" href="examples/4idh_magnet.html"><span class="std std-doc">Phase Retarder setup</span></a>).</p>
 <section id="dichro-circular-dichroism">
-<h3><code class="docutils literal notranslate"><span class="pre">dichro</span></code> — circular dichroism<a class="headerlink" href="#dichro-circular-dichroism" title="Link to this heading">#</a></h3>
+<span id="dichro--circular-dichroism"></span><h3><code class="docutils literal notranslate"><span class="pre">dichro</span></code> — circular dichroism<a class="headerlink" href="#dichro-circular-dichroism" title="Link to this heading">#</a></h3>
 <p>Switches the X-ray helicity at every point using the phase retarder (PR2) in a
 user defined sequence (usually <code class="docutils literal notranslate"><span class="pre">+,</span> <span class="pre">−,</span> <span class="pre">−,</span> <span class="pre">+</span></code>). The readings are accumulated
 by the dichro data stream into XAS and XMCD signals.</p>
@@ -588,7 +588,7 @@ by the dichro data stream into XAS and XMCD signals.</p>
 </div>
 </section>
 <section id="lockin-lock-in-detection">
-<h3><code class="docutils literal notranslate"><span class="pre">lockin</span></code> — lock-in detection<a class="headerlink" href="#lockin-lock-in-detection" title="Link to this heading">#</a></h3>
+<span id="lockin--lock-in-detection"></span><h3><code class="docutils literal notranslate"><span class="pre">lockin</span></code> — lock-in detection<a class="headerlink" href="#lockin-lock-in-detection" title="Link to this heading">#</a></h3>
 <p>Oscillates the phase retarder continuously and reads the lock-in amplifier
 signal instead of the scaler. Use for high-sensitivity dichroism measurements.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">lockin</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -596,7 +596,7 @@ signal instead of the scaler. Use for high-sensitivity dichroism measurements.</
 </div>
 </section>
 <section id="fixq-fixed-reciprocal-space-position">
-<h3><code class="docutils literal notranslate"><span class="pre">fixq</span></code> — fixed reciprocal-space position<a class="headerlink" href="#fixq-fixed-reciprocal-space-position" title="Link to this heading">#</a></h3>
+<span id="fixq--fixed-reciprocal-space-position"></span><h3><code class="docutils literal notranslate"><span class="pre">fixq</span></code> — fixed reciprocal-space position<a class="headerlink" href="#fixq-fixed-reciprocal-space-position" title="Link to this heading">#</a></h3>
 <p>Keeps the diffractometer at a fixed HKL position throughout the scan by
 adjusting the real-space angles after each motor move. Useful for energy scans
 where you want to track a specific Bragg reflection as the energy changes.
@@ -638,9 +638,9 @@ starts, so a position fine-tuned with real-motor scans is kept.</p>
 </section>
 <hr class="docutils" />
 <section id="d-scans">
-<h2>1-D Scans<a class="headerlink" href="#d-scans" title="Link to this heading">#</a></h2>
+<span id="1-d-scans"></span><h2>1-D Scans<a class="headerlink" href="#d-scans" title="Link to this heading">#</a></h2>
 <section id="lup-relative-scan">
-<h3><code class="docutils literal notranslate"><span class="pre">lup</span></code> — relative scan<a class="headerlink" href="#lup-relative-scan" title="Link to this heading">#</a></h3>
+<span id="lup--relative-scan"></span><h3><code class="docutils literal notranslate"><span class="pre">lup</span></code> — relative scan<a class="headerlink" href="#lup-relative-scan" title="Link to this heading">#</a></h3>
 <p>Scan <code class="docutils literal notranslate"><span class="pre">motor</span></code> from <code class="docutils literal notranslate"><span class="pre">start</span></code> to <code class="docutils literal notranslate"><span class="pre">stop</span></code> relative to its current position, collecting <code class="docutils literal notranslate"><span class="pre">npts</span></code> points.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span>
 <span class="n">RE</span><span class="p">(</span><span class="n">lup</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="p">{</span><span class="s2">"sample"</span><span class="p">:</span> <span class="s2">"Fe3O4"</span><span class="p">}))</span>
@@ -648,14 +648,14 @@ starts, so a position fine-tuned with real-motor scans is kept.</p>
 </div>
 </section>
 <section id="ascan-absolute-scan">
-<h3><code class="docutils literal notranslate"><span class="pre">ascan</span></code> — absolute scan<a class="headerlink" href="#ascan-absolute-scan" title="Link to this heading">#</a></h3>
+<span id="ascan--absolute-scan"></span><h3><code class="docutils literal notranslate"><span class="pre">ascan</span></code> — absolute scan<a class="headerlink" href="#ascan-absolute-scan" title="Link to this heading">#</a></h3>
 <p>Scan <code class="docutils literal notranslate"><span class="pre">motor</span></code> from <code class="docutils literal notranslate"><span class="pre">start</span></code> to <code class="docutils literal notranslate"><span class="pre">stop</span></code> in absolute coordinates.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">ascan</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">npts</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>
 <section id="th2th-relative-theta-2theta-scan">
-<h3><code class="docutils literal notranslate"><span class="pre">th2th</span></code> — relative theta/2theta scan<a class="headerlink" href="#th2th-relative-theta-2theta-scan" title="Link to this heading">#</a></h3>
+<span id="th2th--relative-theta2theta-scan"></span><h3><code class="docutils literal notranslate"><span class="pre">th2th</span></code> — relative theta/2theta scan<a class="headerlink" href="#th2th-relative-theta-2theta-scan" title="Link to this heading">#</a></h3>
 <p>Coupled scan of <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (theta and 2theta) relative to their current
 positions. <code class="docutils literal notranslate"><span class="pre">tth_start</span></code>/<code class="docutils literal notranslate"><span class="pre">tth_end</span></code> set the 2theta range; theta moves at half that
 rate.</p>
@@ -683,7 +683,7 @@ list must have the same length. Lists may be Python lists, tuples or numpy
 arrays. To combine the lists into a <strong>mesh</strong> instead of stepping them
 together, use list_grid_scan.</p>
 <section id="list-scan-absolute-list-of-positions">
-<h3><code class="docutils literal notranslate"><span class="pre">list_scan</span></code> — absolute list of positions<a class="headerlink" href="#list-scan-absolute-list-of-positions" title="Link to this heading">#</a></h3>
+<span id="list_scan--absolute-list-of-positions"></span><h3><code class="docutils literal notranslate"><span class="pre">list_scan</span></code> — absolute list of positions<a class="headerlink" href="#list-scan-absolute-list-of-positions" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Single motor, uneven spacing.</span>
@@ -702,7 +702,7 @@ together, use list_grid_scan.</p>
 </div>
 </section>
 <section id="rel-list-scan-relative-list-of-positions">
-<h3><code class="docutils literal notranslate"><span class="pre">rel_list_scan</span></code> — relative list of positions<a class="headerlink" href="#rel-list-scan-relative-list-of-positions" title="Link to this heading">#</a></h3>
+<span id="rel_list_scan--relative-list-of-positions"></span><h3><code class="docutils literal notranslate"><span class="pre">rel_list_scan</span></code> — relative list of positions<a class="headerlink" href="#rel-list-scan-relative-list-of-positions" title="Link to this heading">#</a></h3>
 <p>Same as <code class="docutils literal notranslate"><span class="pre">list_scan</span></code>, but each list holds offsets from the motor’s current
 position. The motors are returned to where they started when the scan
 finishes.</p>
@@ -719,9 +719,9 @@ described in <a class="reference internal" href="#common-scan-flags"><span class
 </section>
 <hr class="docutils" />
 <section id="d-n-d-scans">
-<h2>2-D / N-D Scans<a class="headerlink" href="#d-n-d-scans" title="Link to this heading">#</a></h2>
+<span id="2-d--n-d-scans"></span><h2>2-D / N-D Scans<a class="headerlink" href="#d-n-d-scans" title="Link to this heading">#</a></h2>
 <section id="grid-scan-absolute-grid">
-<h3><code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> — absolute grid<a class="headerlink" href="#grid-scan-absolute-grid" title="Link to this heading">#</a></h3>
+<span id="grid_scan--absolute-grid"></span><h3><code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> — absolute grid<a class="headerlink" href="#grid-scan-absolute-grid" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">grid_scan</span><span class="p">(</span>
     <span class="n">motor1</span><span class="p">,</span> <span class="n">start1</span><span class="p">,</span> <span class="n">stop1</span><span class="p">,</span> <span class="n">npts1</span><span class="p">,</span>
     <span class="n">motor2</span><span class="p">,</span> <span class="n">start2</span><span class="p">,</span> <span class="n">stop2</span><span class="p">,</span> <span class="n">npts2</span><span class="p">,</span>
@@ -731,11 +731,11 @@ described in <a class="reference internal" href="#common-scan-flags"><span class
 </div>
 </section>
 <section id="rel-grid-scan-relative-grid">
-<h3><code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code> — relative grid<a class="headerlink" href="#rel-grid-scan-relative-grid" title="Link to this heading">#</a></h3>
+<span id="rel_grid_scan--relative-grid"></span><h3><code class="docutils literal notranslate"><span class="pre">rel_grid_scan</span></code> — relative grid<a class="headerlink" href="#rel-grid-scan-relative-grid" title="Link to this heading">#</a></h3>
 <p>Same as <code class="docutils literal notranslate"><span class="pre">grid_scan</span></code> but offsets are relative to current motor positions.</p>
 </section>
 <section id="list-grid-scan-absolute-grid-of-positions">
-<h3><code class="docutils literal notranslate"><span class="pre">list_grid_scan</span></code> — absolute grid of positions<a class="headerlink" href="#list-grid-scan-absolute-grid-of-positions" title="Link to this heading">#</a></h3>
+<span id="list_grid_scan--absolute-grid-of-positions"></span><h3><code class="docutils literal notranslate"><span class="pre">list_grid_scan</span></code> — absolute grid of positions<a class="headerlink" href="#list-grid-scan-absolute-grid-of-positions" title="Link to this heading">#</a></h3>
 <p>The mesh equivalent of <a class="reference internal" href="#list-scans"><span class="std std-ref">list_scan</span></a>: each motor gets an
 <strong>explicit list of positions</strong> instead of <code class="docutils literal notranslate"><span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">npts</span></code>, and the scan
 visits every combination of them (the outer product), first motor slowest.
@@ -766,7 +766,7 @@ flying back to its start on every row (the slowest axis is never snaked):</p>
 </div>
 </section>
 <section id="rel-list-grid-scan-relative-grid-of-positions">
-<h3><code class="docutils literal notranslate"><span class="pre">rel_list_grid_scan</span></code> — relative grid of positions<a class="headerlink" href="#rel-list-grid-scan-relative-grid-of-positions" title="Link to this heading">#</a></h3>
+<span id="rel_list_grid_scan--relative-grid-of-positions"></span><h3><code class="docutils literal notranslate"><span class="pre">rel_list_grid_scan</span></code> — relative grid of positions<a class="headerlink" href="#rel-list-grid-scan-relative-grid-of-positions" title="Link to this heading">#</a></h3>
 <p>Same as <code class="docutils literal notranslate"><span class="pre">list_grid_scan</span></code> but each list holds offsets from the motor’s current
 position. The motors are returned to where they started when the scan
 finishes.</p>
@@ -799,7 +799,7 @@ regions. The post-edge step size is defined in k-space (Å⁻¹) and converted t
 energy internally, so the energy step increases with energy above the edge.</p>
 <p>All energies in <code class="docutils literal notranslate"><span class="pre">qxscan_setup</span></code> are <strong>relative to the absorption edge</strong>.</p>
 <section id="step-1-configure-qxscan-setup">
-<h3>Step 1 — Configure <code class="docutils literal notranslate"><span class="pre">qxscan_setup</span></code><a class="headerlink" href="#step-1-configure-qxscan-setup" title="Link to this heading">#</a></h3>
+<span id="step-1--configure-qxscan_setup"></span><h3>Step 1 — Configure <code class="docutils literal notranslate"><span class="pre">qxscan_setup</span></code><a class="headerlink" href="#step-1-configure-qxscan-setup" title="Link to this heading">#</a></h3>
 <p>Call the device to enter the interactive setup wizard:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qxscan_setup</span><span class="p">()</span>
 </pre></div>
@@ -823,7 +823,7 @@ step, time factor). It then computes and stores the full energy list.</p>
 state</span></a>).</p>
 </section>
 <section id="step-2-run-the-scan">
-<h3>Step 2 — Run the scan<a class="headerlink" href="#step-2-run-the-scan" title="Link to this heading">#</a></h3>
+<span id="step-2--run-the-scan"></span><h3>Step 2 — Run the scan<a class="headerlink" href="#step-2-run-the-scan" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="p">(</span><span class="n">qxscan</span><span class="p">(</span><span class="n">edge_energy</span><span class="p">,</span> <span class="n">time</span><span class="p">))</span>
 </pre></div>
 </div>

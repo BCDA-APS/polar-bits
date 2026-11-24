@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=69256293" />
   
   <!-- So that users can add custom icons -->
@@ -43,7 +43,7 @@
     <script src="_static/documentation_options.js?v=f539c95a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'callbacks';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -587,7 +587,7 @@ After startup, three helpers are available:</p>
 resets <code class="docutils literal notranslate"><span class="pre">RE.md[&quot;scan_id&quot;]</span></code> to the last scan number in the file if the file
 already exists.</p>
 <section id="iconfig-yml-settings">
-<h3><code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code> settings<a class="headerlink" href="#iconfig-yml-settings" title="Link to this heading">#</a></h3>
+<span id="iconfigyml-settings"></span><h3><code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code> settings<a class="headerlink" href="#iconfig-yml-settings" title="Link to this heading">#</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">SPEC_DATA_FILES</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">ENABLE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">  </span><span class="nt">FILE_EXTENSION</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dat</span>
@@ -598,7 +598,7 @@ already exists.</p>
 </section>
 <hr class="docutils" />
 <section id="nexus-hdf5-data-files">
-<h2>NeXus / HDF5 Data Files<a class="headerlink" href="#nexus-hdf5-data-files" title="Link to this heading">#</a></h2>
+<span id="nexus--hdf5-data-files"></span><h2>NeXus / HDF5 Data Files<a class="headerlink" href="#nexus-hdf5-data-files" title="Link to this heading">#</a></h2>
 <p><strong>Status:</strong> Opt-in (disabled by default).</p>
 <p>NeXus output is written by <code class="docutils literal notranslate"><span class="pre">id4_common.callbacks.nexus_data_file_writer</span></code>.
 Enable it in <code class="docutils literal notranslate"><span class="pre">iconfig.yml</span></code>:</p>

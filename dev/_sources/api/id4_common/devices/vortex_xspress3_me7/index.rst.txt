@@ -208,7 +208,7 @@ Module Contents
    .. py:attribute:: dt_percent
 
 
-.. py:class:: VortexHDF1Plugin
+.. py:class:: VortexHDF1Plugin(*args, write_path_template='', **kwargs)
 
    Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
 
