@@ -12,6 +12,7 @@ from ophyd.areadetector import DetectorBase
 from ophyd.mca import EpicsMCARecord
 
 from .ad_mixins import ADTriggerStatus
+from .ad_mixins import IOCPathMixin
 from .ad_mixins import TriggerBase
 from .counters_mixin import ROICountersMixin
 from .vortex_dante_parts import DanteCAM4
@@ -190,7 +191,7 @@ def _scas(num_channels):
     return defn
 
 
-class VortexDante4(Trigger, ROICountersMixin, DetectorBase):
+class VortexDante4(Trigger, IOCPathMixin, ROICountersMixin, DetectorBase):
     """
     Four-element Vortex detector driven by a Dante MCA with HDF5 file saving.
     """
@@ -211,12 +212,10 @@ class VortexDante4(Trigger, ROICountersMixin, DetectorBase):
 
     hdf1 = ADComponent(DanteHDF1Plugin, "HDF1:")
 
-    # TODO: TEMPORARY!
-    _local_folder = "/local/home/dpuser/sector4/"
-
     def __init__(
         self,
         *args,
+        ioc_files_root="/local/home/dpuser/sector4",
         default_folder=Path(
             "/net/s4data/export/sector4/4idd/bluesky_images/vortex"
         ),
@@ -226,7 +225,13 @@ class VortexDante4(Trigger, ROICountersMixin, DetectorBase):
         """
         Initialize VortexDante4 with default HDF5 save folder and file-name
         format.
+
+        The HDF5 files are written under ``ioc_files_root`` on the IOC host
+        and have to be moved afterwards (see ``IOCPathMixin``). Use
+        ``ioc_files_root=None`` when the IOC can write to the experiment
+        folder (e.g. IOC run by the polar user and the dserv server).
         """
+        self.ioc_files_root = ioc_files_root
         self.default_folder = default_folder
         self.hdf1_file_format = hdf1_file_format
         super().__init__(*args, **kwargs)
@@ -268,7 +273,7 @@ class VortexDante4(Trigger, ROICountersMixin, DetectorBase):
     def default_settings(self):
         """Configure HDF5 path, stage signals, ROIs, and manual-trigger mode."""
         self.hdf1.file_template.put(self.hdf1_file_format)
-        self.hdf1.file_path.put(str(self.default_folder))
+        self.hdf1.file_path.put(self.default_write_folder)
         self.hdf1.num_capture.put(0)
 
         if "enable" in self.hdf1.stage_sigs.keys():
@@ -413,14 +418,12 @@ class VortexDante4(Trigger, ROICountersMixin, DetectorBase):
         self.auto_save_on()
         self._flysetup = flyscan
 
-        base_folder = str(base_folder) + f"/{self.name}/"
-        # self.hdf1.file_path.set(base_folder).wait(timeout=10)
-        # TODO: need to temporarily change the saving folder.
-        base_folder2 = self._local_folder
-        self.hdf1.file_path.set(base_folder2).wait(timeout=10)
+        # The IOC writes to the folder mapped from base_folder/<name> (see
+        # IOCPathMixin); the returned paths are the final ones.
+        write_path = self.hdf1.set_write_folder(Path(base_folder) / self.name)
 
         _, full_path, relative_path = self.hdf1.make_write_read_paths(
-            base_folder
+            write_path
         )
 
         return Path(full_path), Path(relative_path)

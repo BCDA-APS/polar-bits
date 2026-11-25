@@ -1,11 +1,18 @@
 """
 LightField based area detector
+
+The LightField IOC runs on Windows and cannot write to the experiment file
+server, so both the SPE files (saved by LightField) and the HDF5 file are
+written under ``ioc_files_root`` (e.g. a dserv share) and moved into the
+experiment folder afterwards. See ``IOCPathMixin`` for the folder layout.
 """
 
-import time as ttime
 from os.path import join
 from pathlib import Path
+from time import sleep
+from time import time as ttime
 
+from apstools.devices import CamMixin_V34
 from ophyd import ADComponent
 from ophyd import Device
 from ophyd import EpicsSignalRO
@@ -15,52 +22,77 @@ from ophyd.areadetector import DetectorBase
 from ophyd.areadetector import EpicsSignal
 from ophyd.areadetector import EpicsSignalWithRBV
 from ophyd.areadetector import LightFieldDetectorCam
-from ophyd.areadetector import TriggerBase
 from ophyd.areadetector.filestore_mixins import FileStoreBase
-from ophyd.areadetector.trigger_mixins import ADTriggerStatus
 
+from .ad_mixins import ADTriggerStatus
 from .ad_mixins import ImagePlugin
-from .ad_mixins import PolarHDF5Plugin
+from .ad_mixins import IOCPathMixin
+from .ad_mixins import MappedPathHDF5Plugin
+from .ad_mixins import TriggerBase
 from .counters_mixin import CountersMixin
 
 
-class MySingleTrigger(TriggerBase):
+class Trigger(TriggerBase):
     """
     This trigger mixin class takes one acquisition per trigger.
-    Examples
-    --------
-    >>> class SimDetector(SingleTrigger):
-    ...     pass
-    >>> det = SimDetector('..pv..')
-    # optionally, customize name of image
-    >>> det = SimDetector('..pv..', image_name='fast_detector_image')
     """
 
     _status_type = ADTriggerStatus
 
-    def __init__(self, *args, image_name=None, delay_time=0.1, **kwargs):
+    def __init__(self, *args, image_name=None, delay=0.1, **kwargs):
         """
-        Initialize MySingleTrigger with optional image name and settling delay.
+        Initialize Trigger with an optional image name and post-acquisition
+        delay.
         """
         super().__init__(*args, **kwargs)
         if image_name is None:
             image_name = "_".join([self.name, "image"])
         self._image_name = image_name
-        self._monitor_status = self.cam.detector_state
-        self._sleep_time = delay_time
+        self._flysetup = False
+        self._status = None
+        self._delay = delay
+        # ImageMode 1 is "Preview" in LightField, 0 is "Normal".
+        self.stage_sigs["cam.image_mode"] = 0
+
+    def setup_manual_trigger(self):
+        """Configure stage_sigs for manual-trigger mode."""
+        self.cam.stage_sigs["wait_for_plugins"] = "Yes"
+
+    def setup_external_trigger(self):
+        """Raise NotImplementedError; flyscans are not supported."""
+        raise NotImplementedError(
+            f"Cannot use external trigger with the {self.name} detector."
+        )
 
     def stage(self):
-        """Subscribe to detector state changes and stage the detector."""
-        self._monitor_status.subscribe(self._acquire_changed)
+        """
+        Stop any acquisition, subscribe to the busy signal, and stage.
+        """
+        if self._flysetup:
+            self.setup_external_trigger()
+
+        # Make sure that detector is not acquiring.
+        self._acquisition_signal.set(0).wait(timeout=10)
+        self._acquire_busy_signal.subscribe(self._acquire_changed)
+
         super().stage()
 
     def unstage(self):
-        """Unstage the detector and unsubscribe from detector state changes."""
+        """
+        Unstage, stop acquisition, clear the busy subscription, and restore
+        manual trigger.
+        """
         super().unstage()
-        self._monitor_status.clear_sub(self._acquire_changed)
+        self._acquisition_signal.set(0).wait(timeout=10)
+        self._flysetup = False
+        self._acquire_busy_signal.clear_sub(self._acquire_changed)
+        self.setup_manual_trigger()
 
     def trigger(self):
-        "Trigger one acquisition."
+        """
+        Trigger one acquisition and return a status object that completes when
+        acquire_busy drops.
+        """
         if self._staged != Staged.yes:
             raise RuntimeError(
                 "This detector is not ready to trigger."
@@ -69,60 +101,33 @@ class MySingleTrigger(TriggerBase):
 
         self._status = self._status_type(self)
         self._acquisition_signal.put(1, wait=False)
-        self.generate_datum(self._image_name, ttime.time(), {})
+        # LightField always saves the SPE file.
+        timestamp = ttime()
+        self.file.generate_datum(self._image_name, timestamp, {})
+        if self.hdf1.enable.get() in (True, 1, "on", "Enable"):
+            self.hdf1.generate_datum(self._image_name, timestamp, {})
+
         return self._status
 
     def _acquire_changed(self, value=None, old_value=None, **kwargs):
-        "This is called when the 'acquire' signal changes."
+        "This is called when the 'acquire_busy' signal changes."
+
         if self._status is None:
             return
         if (old_value != 0) and (value == 0):
             # Negative-going edge means an acquisition just finished.
-            ttime.sleep(self._sleep_time)
+            sleep(self._delay)
             self._status.set_finished()
             self._status = None
 
 
-class LF_HDF(PolarHDF5Plugin):
-    """
-    HDF5 plugin for LightField that translates Windows paths to Linux read
-    paths.
-    """
-
-    def make_write_read_paths(self, write_path=None, read_path=None):
-        """
-        Return write path, full read path, and relative read path for HDF5 file.
-        """
-
-        if write_path is None:
-            write_path = Path(self.file_path.get(as_string=True))
-        if read_path is None:
-            _rel_path = Path(str(write_path).replace("\\", "/")).relative_to(
-                str(self.parent.windows_files_root).replace("\\", "/")
-            )
-            read_path = Path(self.parent.bluesky_files_root) / _rel_path
-
-        fname_template = self.file_template.get(as_string=True)
-        fname_base = self.file_name.get()
-        fname_number = self.file_number.get()
-
-        full_path = fname_template % (read_path, fname_base, fname_number)
-        relative_path = fname_template % (
-            read_path.name,
-            fname_base,
-            fname_number,
-        )
-
-        return str(write_path), Path(full_path), Path(relative_path)
-
-
-# Based on Eiger
 class LightFieldFilePlugin(Device, FileStoreBase):
     """
-    Using the filename from EPICS.
-    """
+    SPE files saved by LightField, one file per point.
 
-    # Note: all PVs are defined in cam.
+    The file PVs are in the cam, the folder is mapped by the parent's
+    ``IOCPathMixin``.
+    """
 
     enable = ADComponent(Signal, value=True, kind="config")
 
@@ -150,45 +155,43 @@ class LightFieldFilePlugin(Device, FileStoreBase):
         """Set the base filename on the LightField camera."""
         self.parent.cam.file_name_base.put(value)
 
-    def make_write_read_paths(self, write_path=None, read_path=None):
+    def make_write_read_paths(self, write_path=None):
         """
-        Return write path, full read path, and relative read path for SPE file.
+        Return the IOC folder, full SPE file path, and relative SPE file path.
+
+        ``write_path`` is the IOC-side folder (defaults to the cam
+        ``file_path``); the full path returned is the bluesky-side one.
         """
         if write_path is None:
-            write_path = Path(self.parent.cam.file_path.get(as_string=True))
-        if read_path is None:
-            _rel_path = Path(str(write_path).replace("\\", "/")).relative_to(
-                str(self.parent.windows_files_root).replace("\\", "/")
-            )
-            read_path = Path(self.parent.bluesky_files_root) / _rel_path
+            write_path = self.parent.cam.file_path.get(as_string=True)
+        read_path = self.parent.ioc_to_bluesky_path(write_path)
 
         fname_template = (
             self.parent.cam.file_template.get(as_string=True) + ".spe"
         )
-
         fname_base = self.parent.cam.file_name_base.get()
         fname_number = self.parent.cam.file_number.get()
         fname = fname_template % (fname_base, fname_number)
 
-        full_path = Path(read_path) / fname
-        relative_path = Path(f"{read_path.name}/{fname}")
+        full_path = read_path / fname
+        relative_path = Path(read_path.name) / fname
 
-        return read_path, full_path, relative_path
+        return str(write_path), full_path, relative_path
 
     def stage(self):
         """
         Stage the file plugin, verifying the output file does not already exist.
         """
-        # TODO: is there a way to check if the file already exists? The issue is
-        # that the IOC is in another windows machine.
-        read_path, full_path, _ = self.make_write_read_paths()
+        _, full_path, _ = self.make_write_read_paths()
 
+        # Only checks the final location, the IOC may not see it.
         if full_path.is_file():
             raise FileExistsError(
-                f"The file {full_path} already exists! Please change the file name."
+                f"The file {full_path} already exists! "
+                "Please change the file name."
             )
 
-        self._fn = str(read_path)
+        self._fn = str(full_path.parent)
 
         super().stage()
 
@@ -206,14 +209,14 @@ class LightFieldFilePlugin(Device, FileStoreBase):
         self._generate_resource(res_kwargs)
 
     def generate_datum(self, key, timestamp, datum_kwargs):
-        """Using the num_images_counter to pick image from scan."""
-        datum_kwargs.update(
-            {"point_number": int(self.parent.cam.file_number.get())}
-        )
+        """Using the cam file_number to pick image from scan."""
+        # Copy, the dict may be shared with other plugins.
+        datum_kwargs = dict(datum_kwargs or {})
+        datum_kwargs["point_number"] = int(self.parent.cam.file_number.get())
         return super().generate_datum(key + "_spe", timestamp, datum_kwargs)
 
 
-class MyLightFieldCam(LightFieldDetectorCam):
+class LightFieldCam(CamMixin_V34, LightFieldDetectorCam):
     """
     LightField camera with additional file naming and grating wavelength PVs.
     """
@@ -231,7 +234,6 @@ class MyLightFieldCam(LightFieldDetectorCam):
     # The PV below works better as an EpicsSignal as it gets reported done after
     # the grating reached the target.
     grating_wavelength = ADComponent(EpicsSignal, "LFGratingWL")
-    pool_max_buffers = None
     background_file = ADComponent(
         EpicsSignalWithRBV, "LFBackgroundFile", string=True
     )
@@ -243,43 +245,40 @@ class MyLightFieldCam(LightFieldDetectorCam):
     )
 
 
-class LightFieldDetector(MySingleTrigger, CountersMixin, DetectorBase):
+class LightFieldDetector(Trigger, IOCPathMixin, CountersMixin, DetectorBase):
     """
     Princeton Instruments LightField spectrometer detector with HDF5 and SPE
     file writing.
+
+    Both files are written under ``ioc_files_root/<experiment_name>`` and
+    have to be moved to the experiment folder after the scan.
     """
 
     _default_read_attrs = ("cam", "file", "hdf1")
-    _default_configuration_attrs = ("image",)
+    _default_configuration_attrs = ("cam", "image")
 
-    cam = ADComponent(MyLightFieldCam, "cam1:")
+    cam = ADComponent(LightFieldCam, "cam1:")
     image = ADComponent(ImagePlugin, "image1:")
-    hdf1 = ADComponent(LF_HDF, "HDF1:")
+    hdf1 = ADComponent(MappedPathHDF5Plugin, "HDF1:")
     file = ADComponent(LightFieldFilePlugin, "cam1:")
 
     def __init__(
         self,
         *args,
+        ioc_files_root=None,
+        default_folder="",
         hdf1_name_template="%s/%s_%6.6d",
         hdf1_file_extension="h5",
-        bluesky_files_root="",
-        windows_files_root="",
-        relative_default_folder="",
         **kwargs,
     ):
         """
-        Initialize LightFieldDetector with file path roots and HDF5 naming
-        settings.
+        Initialize LightFieldDetector with the IOC folder mapping and HDF5
+        file naming.
         """
+        self.ioc_files_root = ioc_files_root
+        self.default_folder = default_folder
         self.hdf1_name_format = hdf1_name_template + "." + hdf1_file_extension
-        self.default_ioc_folder = (
-            rf"{windows_files_root}\{relative_default_folder}"
-        ).replace("/", "\\")
-        self.bluesky_files_root = bluesky_files_root
-        self.windows_files_root = windows_files_root
-
         super().__init__(*args, **kwargs)
-        self._flyscan = False
 
     _preset_monitor_attr = "cam.acquire_time"
 
@@ -318,28 +317,28 @@ class LightFieldDetector(MySingleTrigger, CountersMixin, DetectorBase):
 
     def default_settings(self):
         """Apply default detector settings and stage signal configuration."""
-        self.stage_sigs["cam.image_mode"] = 0
-
-        # Default to preview mode
+        # TODO: confirm, kept from the previous setup.
         self.cam.trigger_mode.put(1)
-        self.cam.file_path.kind = "normal"
-        self.cam.file_name.kind = "normal"
 
         self.save_images_on()
         self.auto_save_on()
 
         self.hdf1.file_template.put(self.hdf1_name_format)
-        self.hdf1.file_path.put(str(self.default_ioc_folder))
+        if self.default_write_folder:
+            self.hdf1.file_path.put(self.default_write_folder)
         self.hdf1.num_capture.put(0)
 
-        self.hdf1.stage_sigs.pop("enable")
+        if "enable" in self.hdf1.stage_sigs.keys():
+            self.hdf1.stage_sigs.pop("enable")
         self.hdf1.stage_sigs["num_capture"] = 0
         self.hdf1.stage_sigs["capture"] = 1
+
+        self.setup_manual_trigger()
 
         self.hdf1.warmup_signals = [
             (self.hdf1.enable, 1),
             (self.hdf1.parent.cam.array_callbacks, 1),  # set by number
-            (self.hdf1.parent.cam.image_mode, 0),  # Single, set by number
+            (self.hdf1.parent.cam.image_mode, 0),  # Normal, set by number
             (self.hdf1.parent.cam.trigger_mode, 1),
             (self.hdf1.parent.cam.acquire_time, 0.01),
             (self.hdf1.parent.cam.acquire, 1),  # set by number
@@ -348,33 +347,33 @@ class LightFieldDetector(MySingleTrigger, CountersMixin, DetectorBase):
     def setup_images(
         self, base_path, name_template, file_number, flyscan=False
     ):
-        """Configure HDF5 and SPE file paths and names for the upcoming scan."""
+        """
+        Configure HDF5 and SPE folders and names for the upcoming scan.
+
+        The IOC writes to the folders mapped from ``base_path/<name>`` (see
+        ``IOCPathMixin``); the returned paths are the final HDF5 ones.
+        """
+        read_path = Path(base_path) / self.name
+
         # SPE has to be one file per point, so I'll put it in a new folder!
         # In the new folder, the file number will follow the point number.
+        # LightField creates the folder.
         scan_folder = self.cam.file_template.get(as_string=True) % (
             name_template,
             file_number,
         )
-        read_path_spe = base_path / self.name / scan_folder
-        _rel_spe = read_path_spe.relative_to(self.bluesky_files_root)
-        write_path_spe = Path(
-            str(self.windows_files_root / _rel_spe).replace("/", "\\")
-        )
-
-        self.cam.file_path.set(str(write_path_spe) + "\\").wait(timeout=10)
+        self.cam.file_path.set(
+            self.bluesky_to_ioc_path(read_path / scan_folder)
+        ).wait(timeout=10)
         self.cam.file_number.set(1).wait(timeout=10)
         self.cam.file_name_base.set(name_template).wait(timeout=10)
 
         # HDF1 is one file per scan
-        read_path = base_path / self.name
-        _rel = read_path.relative_to(self.bluesky_files_root)
-        write_path = Path(
-            str(self.windows_files_root / _rel).replace("/", "\\")
-        )
-
-        self.hdf1.file_path.set(str(write_path) + "\\").wait(timeout=10)
         self.hdf1.file_number.set(file_number).wait(timeout=10)
-        self.hdf1.file_path.set(str(write_path) + "\\").wait(timeout=10)
+        self.hdf1.file_name.set(name_template).wait(timeout=10)
+        # Re-assert the template, an IOC restart may have changed it.
+        self.hdf1.file_template.set(self.hdf1_name_format).wait(timeout=10)
+        write_path = self.hdf1.set_write_folder(read_path)
 
         # Changes the stage_sigs to the external trigger mode
         self._flysetup = flyscan
@@ -382,34 +381,12 @@ class LightFieldDetector(MySingleTrigger, CountersMixin, DetectorBase):
         self.auto_save_on()
 
         _, full_path, relative_path = self.hdf1.make_write_read_paths(
-            write_path, read_path
+            write_path
         )
 
-        return full_path, relative_path
+        return Path(full_path), Path(relative_path)
 
     @property
     def save_image_flag(self):
         """Return True; LightField detector always saves images."""
         return True  # Forced to always save images.
-
-    def predict_save_path(self, base_path, name_template, file_number):
-        """Return (full_path, relative_path) without any EPICS I/O.
-
-        Overrides CountersMixin default because LightField uses read_path.name
-        (not a trailing slash) as the directory token in make_write_read_paths.
-        """
-        read_path = Path(base_path) / self.name
-        full_path = Path(
-            self.hdf1_name_format
-            % (str(read_path), name_template, int(file_number))
-        )
-        relative_path = Path(
-            self.hdf1_name_format % (self.name, name_template, int(file_number))
-        )
-        return full_path, relative_path
-
-
-spectrometer = LightFieldDetector(
-    "4LF1:", name="spectrometer", labels=("detector", "raman")
-)
-spectrometer.default_settings()

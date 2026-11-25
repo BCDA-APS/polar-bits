@@ -1,10 +1,13 @@
 """AD mixins"""
 
+import re
 from collections import OrderedDict
 from itertools import count
 from logging import getLogger
 from os.path import isfile
 from pathlib import Path
+from pathlib import PurePosixPath
+from pathlib import PureWindowsPath
 from time import sleep
 from time import time as ttime
 
@@ -565,6 +568,130 @@ class PolarHDF5Plugin(HDF5Plugin, FileStoreHDF5IterativeWriteEpicsName):
                 "could not connect to a device with the following exception: "
                 f"{exc}."
             )
+
+
+def _ioc_pure_path(path):
+    """Return ``path`` as a PurePath using the IOC host's path semantics.
+
+    Windows semantics are used if the path has a drive letter or a
+    backslash (e.g. the LightField IOC), POSIX semantics otherwise.
+    """
+    path = str(path)
+    if "\\" in path or re.match(r"^[A-Za-z]:", path):
+        return PureWindowsPath(path)
+    return PurePosixPath(path)
+
+
+class IOCPathMixin:
+    """Map file folders between the IOC host and the bluesky host.
+
+    Some IOCs cannot write to the experiment file server (e.g. APS data
+    management). They write to a folder of their own instead, and the files
+    are moved to the experiment folder after the scan.
+
+    A folder ``<base_experiment_path>/<rel>`` of the current experiment is
+    written by the IOC to ``<ioc_files_root>/<experiment_name>/<rel>``, so
+    moving the ``<experiment_name>`` folder into ``base_experiment_path``
+    puts every file in its final place. With ``ioc_files_root=None`` the
+    IOC writes straight to the experiment folder.
+
+    Bluesky documents and the NeXus master file always use the final path.
+    """
+
+    ioc_files_root = None
+
+    @staticmethod
+    def _experiment_folders():
+        """Return the current (experiment_name, base_experiment_path)."""
+        from ..utils.experiment_utils import experiment
+
+        if None in (
+            experiment.experiment_name,
+            experiment.base_experiment_path,
+        ):
+            raise ValueError(
+                "The experiment needs to be setup, please run "
+                "experiment_setup()"
+            )
+        return experiment.experiment_name, PurePosixPath(
+            experiment.base_experiment_path
+        )
+
+    @property
+    def default_write_folder(self):
+        """Return the IOC folder used before any scan sets one."""
+        if self.ioc_files_root is not None:
+            return str(self.ioc_files_root)
+        return str(getattr(self, "default_folder", ""))
+
+    def bluesky_to_ioc_path(self, path):
+        """Return the IOC folder, with trailing separator, for ``path``."""
+        if self.ioc_files_root is None:
+            return str(PurePosixPath(path)) + "/"
+        name, base = self._experiment_folders()
+        try:
+            rel = PurePosixPath(path).relative_to(base)
+        except ValueError:
+            raise ValueError(
+                f"{path} is not in the experiment folder {base}, cannot map "
+                f"it to the {self.name} IOC."
+            ) from None
+        root = _ioc_pure_path(self.ioc_files_root)
+        sep = "\\" if isinstance(root, PureWindowsPath) else "/"
+        return str(root.joinpath(name, *rel.parts)) + sep
+
+    def ioc_to_bluesky_path(self, path):
+        """Return the final folder for the IOC folder ``path``."""
+        if self.ioc_files_root is None:
+            return Path(path)
+        name, base = self._experiment_folders()
+        root = _ioc_pure_path(self.ioc_files_root)
+        try:
+            rel = type(root)(path).relative_to(root.joinpath(name))
+        except ValueError:
+            raise ValueError(
+                f"The IOC folder {path} is not under "
+                f"{root.joinpath(name)}. Set the folder with "
+                f"{self.name}.setup_images() (the local scans do it)."
+            ) from None
+        return Path(base).joinpath(*rel.parts)
+
+
+class MappedPathHDF5Plugin(PolarHDF5Plugin):
+    """PolarHDF5Plugin for a parent detector that uses ``IOCPathMixin``.
+
+    ``file_path`` holds the IOC-side folder, while the full file path
+    returned by ``make_write_read_paths`` (and used in the resource
+    document) is the bluesky-side one.
+    """
+
+    def set_write_folder(self, read_path):
+        """Point the IOC at the folder mapped from ``read_path``.
+
+        When writing below ``ioc_files_root``, ``create_directory`` is set
+        so that the IOC creates every missing folder below that root, but
+        not the root itself (e.g. an unmounted disk). Returns the IOC folder.
+        """
+        parent = self.parent
+        write_path = parent.bluesky_to_ioc_path(read_path)
+        if parent.ioc_files_root is not None:
+            root = _ioc_pure_path(parent.ioc_files_root)
+            depth = len(type(root)(write_path).relative_to(root).parts)
+            self.create_directory.set(-depth).wait(timeout=10)
+        self.file_path.set(write_path).wait(timeout=10)
+        return write_path
+
+    def make_write_read_paths(self, path=None):
+        """Return the IOC folder, full file path, and relative file path.
+
+        ``path`` is the IOC-side folder (defaults to the EPICS
+        ``file_path``); the full path returned is the bluesky-side one.
+        """
+        if path is None:
+            path = self.file_path.get()
+        read_path = self.parent.ioc_to_bluesky_path(path)
+        _, full_path, relative_path = super().make_write_read_paths(read_path)
+        return str(path), full_path, relative_path
 
 
 class TriggerBase(BlueskyInterface):

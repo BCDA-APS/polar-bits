@@ -13,7 +13,7 @@ from ophyd.areadetector import ADComponent
 from ophyd.areadetector import EpicsSignalWithRBV
 from ophyd.areadetector import ad_group
 
-from .ad_mixins import PolarHDF5Plugin
+from .ad_mixins import MappedPathHDF5Plugin
 
 
 class DanteCAM1(ADBase):
@@ -190,7 +190,7 @@ class DanteSCA(ADBase):
     max_energy = ADComponent(EpicsSignalWithRBV, "MaxEnergy")
 
 
-class DanteHDF1Plugin(PolarHDF5Plugin):
+class DanteHDF1Plugin(MappedPathHDF5Plugin):
     """
     HDF5 plugin for the Dante detector with Dante-specific array counter and
     warmup.
