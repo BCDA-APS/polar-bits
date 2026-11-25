@@ -32,7 +32,7 @@ def _make_lenses_motors(motors: list):
         defn[f"l{n}"] = (
             EpicsMotor,
             f"{mot}",
-            dict(kind="config", labels=("motor",)),
+            dict(labels=("motor",)),
         )
     return defn
 
@@ -343,7 +343,6 @@ def make_crl_class(motors_ioc=DEFAULT_MOTORS_IOC):
         lens_motors = DynamicDeviceComponent(
             _make_lenses_motors(lens_list),
             component_class=FormattedComponent,
-            kind="config",
         )
 
         reference_data_x = Component(Signal, kind="config")

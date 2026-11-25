@@ -490,7 +490,7 @@ mono_kwargs = {
     "pv_wavelength": "BraggLambdaRdbkAO",  # the wavelength readback PV
     "wavelength_units": "angstrom",
     "wavelength_deadband": 0.000_012_4,
-    "kind": "config",
+    "kind": "normal",
 }
 
 

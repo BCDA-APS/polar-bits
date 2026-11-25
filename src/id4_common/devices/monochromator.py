@@ -35,9 +35,7 @@ class MonoDevice(PseudoPositioner):
     _real = ["th", "y2"]
 
     # Other motors
-    crystal_select = Component(
-        EpicsMotor, "m2", labels=("motor",), kind="config"
-    )
+    crystal_select = Component(EpicsMotor, "m2", labels=("motor",))
     thf2 = Component(EpicsMotor, "m4", labels=("motor",))
     chi2 = Component(EpicsMotor, "m5", labels=("motor",))
 

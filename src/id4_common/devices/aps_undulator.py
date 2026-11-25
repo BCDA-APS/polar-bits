@@ -104,9 +104,3 @@ class PolarUndulatorPair(Device):
     us = Component(PolarUndulator, "USID:", labels=("track_energy",))
     ds = Component(PolarUndulator, "DSID:", labels=("track_energy",))
     phase_shifter = Component(PhaseShifterDevice, "ILPS:")
-
-    def default_settings(self):
-        """Demote rarely-changed sub-signals to config so baseline stays slim."""
-        for dev in (self.us, self.ds):
-            for component in ("energy_taper", "gap", "gap_taper"):
-                getattr(dev, component).kind = "config"

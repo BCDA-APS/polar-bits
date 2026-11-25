@@ -34,7 +34,7 @@ sim_beam_kwargs = {
     "class": "hklpy2.incident.WavelengthXray",
     "source_type": "Simulated",
     "energy": 10.0,  # keV
-    "kind": "config",
+    "kind": "normal",
 }
 
 sim_reals = dict(tau=None, mu=None, gamma=None, delta=None, chi=None, phi=None)
