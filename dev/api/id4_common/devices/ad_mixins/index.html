@@ -980,6 +980,71 @@ templates.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.IOCPathMixin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">IOCPathMixin</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.IOCPathMixin" title="Link to this definition">#</a></dt>
+<dd><p>Map file folders between the IOC host and the bluesky host.</p>
+<p>Some IOCs cannot write to the experiment file server (e.g. APS data
+management). They write to a folder of their own instead, and the files
+are moved to the experiment folder after the scan.</p>
+<p>A folder <code class="docutils literal notranslate"><span class="pre">&lt;base_experiment_path&gt;/&lt;rel&gt;</span></code> of the current experiment is
+written by the IOC to <code class="docutils literal notranslate"><span class="pre">&lt;ioc_files_root&gt;/&lt;experiment_name&gt;/&lt;rel&gt;</span></code>, so
+moving the <code class="docutils literal notranslate"><span class="pre">&lt;experiment_name&gt;</span></code> folder into <code class="docutils literal notranslate"><span class="pre">base_experiment_path</span></code>
+puts every file in its final place. With <code class="docutils literal notranslate"><span class="pre">ioc_files_root=None</span></code> the
+IOC writes straight to the experiment folder.</p>
+<p>Bluesky documents and the NeXus master file always use the final path.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.IOCPathMixin.ioc_files_root">
+<span class="sig-name descname"><span class="pre">ioc_files_root</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.IOCPathMixin.ioc_files_root" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.IOCPathMixin.default_write_folder">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">default_write_folder</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.IOCPathMixin.default_write_folder" title="Link to this definition">#</a></dt>
+<dd><p>Return the IOC folder used before any scan sets one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.IOCPathMixin.bluesky_to_ioc_path">
+<span class="sig-name descname"><span class="pre">bluesky_to_ioc_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.IOCPathMixin.bluesky_to_ioc_path" title="Link to this definition">#</a></dt>
+<dd><p>Return the IOC folder, with trailing separator, for <code class="docutils literal notranslate"><span class="pre">path</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.IOCPathMixin.ioc_to_bluesky_path">
+<span class="sig-name descname"><span class="pre">ioc_to_bluesky_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.IOCPathMixin.ioc_to_bluesky_path" title="Link to this definition">#</a></dt>
+<dd><p>Return the final folder for the IOC folder <code class="docutils literal notranslate"><span class="pre">path</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.MappedPathHDF5Plugin">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">MappedPathHDF5Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_path_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.MappedPathHDF5Plugin" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_mixins.PolarHDF5Plugin" title="id4_common.devices.ad_mixins.PolarHDF5Plugin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PolarHDF5Plugin</span></code></a></p>
+<p>PolarHDF5Plugin for a parent detector that uses <code class="docutils literal notranslate"><span class="pre">IOCPathMixin</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">file_path</span></code> holds the IOC-side folder, while the full file path
+returned by <code class="docutils literal notranslate"><span class="pre">make_write_read_paths</span></code> (and used in the resource
+document) is the bluesky-side one.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.MappedPathHDF5Plugin.set_write_folder">
+<span class="sig-name descname"><span class="pre">set_write_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">read_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.MappedPathHDF5Plugin.set_write_folder" title="Link to this definition">#</a></dt>
+<dd><p>Point the IOC at the folder mapped from <code class="docutils literal notranslate"><span class="pre">read_path</span></code>.</p>
+<p>When writing below <code class="docutils literal notranslate"><span class="pre">ioc_files_root</span></code>, <code class="docutils literal notranslate"><span class="pre">create_directory</span></code> is set
+so that the IOC creates every missing folder below that root, but
+not the root itself (e.g. an unmounted disk). Returns the IOC folder.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.MappedPathHDF5Plugin.make_write_read_paths">
+<span class="sig-name descname"><span class="pre">make_write_read_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.MappedPathHDF5Plugin.make_write_read_paths" title="Link to this definition">#</a></dt>
+<dd><p>Return the IOC folder, full file path, and relative file path.</p>
+<p><code class="docutils literal notranslate"><span class="pre">path</span></code> is the IOC-side folder (defaults to the EPICS
+<code class="docutils literal notranslate"><span class="pre">file_path</span></code>); the full path returned is the bluesky-side one.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="id4_common.devices.ad_mixins.TriggerBase">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">TriggerBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisition_signal_dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cam.acquire'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquire_busy_signal_dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cam.acquire_busy'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_mixins.TriggerBase" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.BlueskyInterface</span></code></p>
@@ -1100,6 +1165,18 @@ completion.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.PolarHDF5Plugin.unstage"><code class="docutils literal notranslate"><span class="pre">PolarHDF5Plugin.unstage()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.PolarHDF5Plugin.warmup_signals"><code class="docutils literal notranslate"><span class="pre">PolarHDF5Plugin.warmup_signals</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.PolarHDF5Plugin.warmup"><code class="docutils literal notranslate"><span class="pre">PolarHDF5Plugin.warmup()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.IOCPathMixin"><code class="docutils literal notranslate"><span class="pre">IOCPathMixin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.IOCPathMixin.ioc_files_root"><code class="docutils literal notranslate"><span class="pre">IOCPathMixin.ioc_files_root</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.IOCPathMixin.default_write_folder"><code class="docutils literal notranslate"><span class="pre">IOCPathMixin.default_write_folder</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.IOCPathMixin.bluesky_to_ioc_path"><code class="docutils literal notranslate"><span class="pre">IOCPathMixin.bluesky_to_ioc_path()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.IOCPathMixin.ioc_to_bluesky_path"><code class="docutils literal notranslate"><span class="pre">IOCPathMixin.ioc_to_bluesky_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.MappedPathHDF5Plugin"><code class="docutils literal notranslate"><span class="pre">MappedPathHDF5Plugin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.MappedPathHDF5Plugin.set_write_folder"><code class="docutils literal notranslate"><span class="pre">MappedPathHDF5Plugin.set_write_folder()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.MappedPathHDF5Plugin.make_write_read_paths"><code class="docutils literal notranslate"><span class="pre">MappedPathHDF5Plugin.make_write_read_paths()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.TriggerBase"><code class="docutils literal notranslate"><span class="pre">TriggerBase</span></code></a></li>

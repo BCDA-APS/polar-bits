@@ -358,6 +358,76 @@ Module Contents
 
 
 
+.. py:class:: IOCPathMixin
+
+   Map file folders between the IOC host and the bluesky host.
+
+   Some IOCs cannot write to the experiment file server (e.g. APS data
+   management). They write to a folder of their own instead, and the files
+   are moved to the experiment folder after the scan.
+
+   A folder ``<base_experiment_path>/<rel>`` of the current experiment is
+   written by the IOC to ``<ioc_files_root>/<experiment_name>/<rel>``, so
+   moving the ``<experiment_name>`` folder into ``base_experiment_path``
+   puts every file in its final place. With ``ioc_files_root=None`` the
+   IOC writes straight to the experiment folder.
+
+   Bluesky documents and the NeXus master file always use the final path.
+
+
+   .. py:attribute:: ioc_files_root
+      :value: None
+
+
+
+   .. py:property:: default_write_folder
+
+      Return the IOC folder used before any scan sets one.
+
+
+   .. py:method:: bluesky_to_ioc_path(path)
+
+      Return the IOC folder, with trailing separator, for ``path``.
+
+
+
+   .. py:method:: ioc_to_bluesky_path(path)
+
+      Return the final folder for the IOC folder ``path``.
+
+
+
+.. py:class:: MappedPathHDF5Plugin(*args, write_path_template='', **kwargs)
+
+   Bases: :py:obj:`PolarHDF5Plugin`
+
+
+   PolarHDF5Plugin for a parent detector that uses ``IOCPathMixin``.
+
+   ``file_path`` holds the IOC-side folder, while the full file path
+   returned by ``make_write_read_paths`` (and used in the resource
+   document) is the bluesky-side one.
+
+
+   .. py:method:: set_write_folder(read_path)
+
+      Point the IOC at the folder mapped from ``read_path``.
+
+      When writing below ``ioc_files_root``, ``create_directory`` is set
+      so that the IOC creates every missing folder below that root, but
+      not the root itself (e.g. an unmounted disk). Returns the IOC folder.
+
+
+
+   .. py:method:: make_write_read_paths(path=None)
+
+      Return the IOC folder, full file path, and relative file path.
+
+      ``path`` is the IOC-side folder (defaults to the EPICS
+      ``file_path``); the full path returned is the bluesky-side one.
+
+
+
 .. py:class:: TriggerBase(*args, acquisition_signal_dev='cam.acquire', acquire_busy_signal_dev='cam.acquire_busy', **kwargs)
 
    Bases: :py:obj:`ophyd.BlueskyInterface`

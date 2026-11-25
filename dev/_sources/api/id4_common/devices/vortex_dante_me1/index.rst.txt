@@ -90,9 +90,9 @@ Module Contents
 
 
 
-.. py:class:: VortexDante1(*args, default_folder=Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex'), hdf1_file_format='%s/%s_%6.6d.h5', **kwargs)
+.. py:class:: VortexDante1(*args, ioc_files_root='/local/home/dpuser/sector4', default_folder=Path('/net/s4data/export/sector4/4idd/bluesky_images/vortex'), hdf1_file_format='%s/%s_%6.6d.h5', **kwargs)
 
-   Bases: :py:obj:`Trigger`, :py:obj:`id4_common.devices.counters_mixin.ROICountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
+   Bases: :py:obj:`Trigger`, :py:obj:`id4_common.devices.ad_mixins.IOCPathMixin`, :py:obj:`id4_common.devices.counters_mixin.ROICountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
    Single-element Vortex detector driven by a Dante MCA with HDF5 file saving.
@@ -111,6 +111,11 @@ Module Contents
 
 
    .. py:attribute:: hdf1
+
+
+   .. py:attribute:: ioc_files_root
+      :value: '/local/home/dpuser/sector4'
+
 
 
    .. py:attribute:: default_folder

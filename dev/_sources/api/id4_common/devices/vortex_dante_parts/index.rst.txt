@@ -252,7 +252,7 @@ Module Contents
 
 .. py:class:: DanteHDF1Plugin(*args, **kwargs)
 
-   Bases: :py:obj:`id4_common.devices.ad_mixins.PolarHDF5Plugin`
+   Bases: :py:obj:`id4_common.devices.ad_mixins.MappedPathHDF5Plugin`
 
 
    HDF5 plugin for the Dante detector with Dante-specific array counter and

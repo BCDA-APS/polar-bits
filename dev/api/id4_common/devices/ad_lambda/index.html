@@ -632,198 +632,291 @@
                   
   <section id="module-id4_common.devices.ad_lambda">
 <span id="id4-common-devices-ad-lambda"></span><h1>id4_common.devices.ad_lambda<a class="headerlink" href="#module-id4_common.devices.ad_lambda" title="Link to this heading">#</a></h1>
-<p>Lambda area detector</p>
+<p>X-Spectrum Lambda area detector</p>
+<p>The Lambda IOC cannot write to the experiment file server, so the HDF5 files
+are written to the IOC’s local disk and moved afterwards. See
+<code class="docutils literal notranslate"><span class="pre">IOCPathMixin</span></code> for the folder layout.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LAMBDA_FILES_ROOT">
-<span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">LAMBDA_FILES_ROOT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/extdisk/4idd/'</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LAMBDA_FILES_ROOT" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.BLUESKY_FILES_ROOT">
-<span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">BLUESKY_FILES_ROOT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/sector4/4idd/bluesky_images'</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.BLUESKY_FILES_ROOT" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.TEST_IMAGE_DIR">
-<span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">TEST_IMAGE_DIR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%Y/%m/%d/'</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.TEST_IMAGE_DIR" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 <dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MySingleTrigger">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">MySingleTrigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.MySingleTrigger" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.TriggerBase</span></code></p>
-<p>This trigger mixin class takes one acquisition per trigger.
-.. rubric:: Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">SimDetector</span><span class="p">(</span><span class="n">SingleTrigger</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">pass</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">det</span> <span class="o">=</span> <span class="n">SimDetector</span><span class="p">(</span><span class="s1">'..pv..'</span><span class="p">)</span>
-<span class="go"># optionally, customize name of image</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">det</span> <span class="o">=</span> <span class="n">SimDetector</span><span class="p">(</span><span class="s1">'..pv..'</span><span class="p">,</span> <span class="n">image_name</span><span class="o">=</span><span class="s1">'fast_detector_image'</span><span class="p">)</span>
-</pre></div>
-</div>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Trigger">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">Trigger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Trigger" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../ad_mixins/index.html#id4_common.devices.ad_mixins.TriggerBase" title="id4_common.devices.ad_mixins.TriggerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.ad_mixins.TriggerBase</span></code></a></p>
+<p>This trigger mixin class takes one acquisition per trigger.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MySingleTrigger.stage">
-<span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.MySingleTrigger.stage" title="Link to this definition">#</a></dt>
-<dd><p>Subscribe to detector state changes and stage the detector.</p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Trigger.setup_manual_trigger">
+<span class="sig-name descname"><span class="pre">setup_manual_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Trigger.setup_manual_trigger" title="Link to this definition">#</a></dt>
+<dd><p>Configure stage_sigs for single-image manual-trigger mode.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MySingleTrigger.unstage">
-<span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.MySingleTrigger.unstage" title="Link to this definition">#</a></dt>
-<dd><p>Unstage the detector and unsubscribe from detector state changes.</p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Trigger.setup_external_trigger">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setup_external_trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Trigger.setup_external_trigger" title="Link to this definition">#</a></dt>
+<dd><p>Raise NotImplementedError; flyscans are not supported yet.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MySingleTrigger.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.MySingleTrigger.trigger" title="Link to this definition">#</a></dt>
-<dd><p>Trigger one acquisition.</p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Trigger.stage">
+<span class="sig-name descname"><span class="pre">stage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Trigger.stage" title="Link to this definition">#</a></dt>
+<dd><p>Stop any acquisition, subscribe to the busy signal, and stage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Trigger.unstage">
+<span class="sig-name descname"><span class="pre">unstage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Trigger.unstage" title="Link to this definition">#</a></dt>
+<dd><p>Unstage, stop acquisition, clear the busy subscription, and restore
+manual trigger.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Trigger.trigger">
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Trigger.trigger" title="Link to this definition">#</a></dt>
+<dd><p>Trigger one acquisition and return a status object that completes when
+acquire_busy drops.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">Lambda250kCam</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.CamBase</span></code></p>
-<p>support for X-Spectrum Lambda 750K detector
-<a class="reference external" href="https://x-spectrum.de/products/lambda-350k750k/">https://x-spectrum.de/products/lambda-350k750k/</a></p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaCam">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">LambdaCam</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaCam" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">apstools.devices.CamMixin_V34</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.CamBase</span></code></p>
+<p>Support for the X-Spectrum Lambda detectors.</p>
+<p><a class="reference external" href="https://x-spectrum.de/products/lambda/">https://x-spectrum.de/products/lambda/</a></p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam.serial_number">
-<span class="sig-name descname"><span class="pre">serial_number</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam.serial_number" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaCam.serial_number">
+<span class="sig-name descname"><span class="pre">serial_number</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaCam.serial_number" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam.firmware_version">
-<span class="sig-name descname"><span class="pre">firmware_version</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam.firmware_version" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaCam.firmware_version">
+<span class="sig-name descname"><span class="pre">firmware_version</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaCam.firmware_version" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam.operating_mode">
-<span class="sig-name descname"><span class="pre">operating_mode</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam.operating_mode" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaCam.operating_mode">
+<span class="sig-name descname"><span class="pre">operating_mode</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaCam.operating_mode" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam.energy_threshold">
-<span class="sig-name descname"><span class="pre">energy_threshold</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam.energy_threshold" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaCam.energy_threshold">
+<span class="sig-name descname"><span class="pre">energy_threshold</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaCam.energy_threshold" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam.dual_threshold">
-<span class="sig-name descname"><span class="pre">dual_threshold</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam.dual_threshold" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam.file_number_sync">
-<span class="sig-name descname"><span class="pre">file_number_sync</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam.file_number_sync" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam.file_number_write">
-<span class="sig-name descname"><span class="pre">file_number_write</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam.file_number_write" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kCam.pool_max_buffers">
-<span class="sig-name descname"><span class="pre">pool_max_buffers</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kCam.pool_max_buffers" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaCam.dual_threshold">
+<span class="sig-name descname"><span class="pre">dual_threshold</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaCam.dual_threshold" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MyHDF5Plugin">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">MyHDF5Plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.MyHDF5Plugin" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.filestore_mixins.FileStoreHDF5SingleIterativeWrite</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.plugins.HDF5Plugin_V34</span></code></p>
-<p>HDF5 plugin for the Lambda 250k detector with POLAR-specific filestore spec.</p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">LambdaDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ioc_files_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_name_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%s/%s_%6.6d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf1_file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">65535</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_lambda.Trigger" title="id4_common.devices.ad_lambda.Trigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trigger</span></code></a>, <a class="reference internal" href="../ad_mixins/index.html#id4_common.devices.ad_mixins.IOCPathMixin" title="id4_common.devices.ad_mixins.IOCPathMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.ad_mixins.IOCPathMixin</span></code></a>, <a class="reference internal" href="../counters_mixin/index.html#id4_common.devices.counters_mixin.CountersMixin" title="id4_common.devices.counters_mixin.CountersMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id4_common.devices.counters_mixin.CountersMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
+<p>Lambda area detector with HDF5 file writing and statistics plugins.</p>
+<p>The HDF5 files are written under <code class="docutils literal notranslate"><span class="pre">ioc_files_root/&lt;experiment_name&gt;</span></code> on
+the IOC host and have to be moved to the experiment folder after the
+scan.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.MyHDF5Plugin.filestore_spec">
-<span class="sig-name descname"><span class="pre">filestore_spec</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'AD_HDF5_Lambda250k_APSPolar'</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.MyHDF5Plugin.filestore_spec" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.cam">
+<span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.cam" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.hdf1">
+<span class="sig-name descname"><span class="pre">hdf1</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.hdf1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.roi1">
+<span class="sig-name descname"><span class="pre">roi1</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.roi1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.roi2">
+<span class="sig-name descname"><span class="pre">roi2</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.roi2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.roi3">
+<span class="sig-name descname"><span class="pre">roi3</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.roi3" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.roi4">
+<span class="sig-name descname"><span class="pre">roi4</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.roi4" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.stats1">
+<span class="sig-name descname"><span class="pre">stats1</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.stats1" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.stats2">
+<span class="sig-name descname"><span class="pre">stats2</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.stats2" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.stats3">
+<span class="sig-name descname"><span class="pre">stats3</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.stats3" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.stats4">
+<span class="sig-name descname"><span class="pre">stats4</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.stats4" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.codec">
+<span class="sig-name descname"><span class="pre">codec</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.codec" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.proc">
+<span class="sig-name descname"><span class="pre">proc</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.proc" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.ioc_files_root">
+<span class="sig-name descname"><span class="pre">ioc_files_root</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.ioc_files_root" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.default_folder">
+<span class="sig-name descname"><span class="pre">default_folder</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.default_folder" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.hdf1_name_format">
+<span class="sig-name descname"><span class="pre">hdf1_name_format</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'%s/%s_%6.6d.h5'</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.hdf1_name_format" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.max_num_images">
+<span class="sig-name descname"><span class="pre">max_num_images</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">65535</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.max_num_images" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.align_on">
+<span class="sig-name descname"><span class="pre">align_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.align_on" title="Link to this definition">#</a></dt>
+<dd><p>Start detector in alignment mode</p>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_lambda.</span></span><span class="sig-name descname"><span class="pre">Lambda250kDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_lambda.MySingleTrigger" title="id4_common.devices.ad_lambda.MySingleTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MySingleTrigger</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.DetectorBase</span></code></p>
-<p>Lambda 250k area detector with HDF5 file writing and statistics plugins.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.cam">
-<span class="sig-name descname"><span class="pre">cam</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.cam" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.align_off">
+<span class="sig-name descname"><span class="pre">align_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.align_off" title="Link to this definition">#</a></dt>
+<dd><p>Stop detector</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.hdf1">
-<span class="sig-name descname"><span class="pre">hdf1</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.hdf1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.save_images_on">
+<span class="sig-name descname"><span class="pre">save_images_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.save_images_on" title="Link to this definition">#</a></dt>
+<dd><p>Enable HDF5 image saving.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.roi1">
-<span class="sig-name descname"><span class="pre">roi1</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.roi1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.save_images_off">
+<span class="sig-name descname"><span class="pre">save_images_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.save_images_off" title="Link to this definition">#</a></dt>
+<dd><p>Disable HDF5 image saving.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.roi2">
-<span class="sig-name descname"><span class="pre">roi2</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.roi2" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.auto_save_on">
+<span class="sig-name descname"><span class="pre">auto_save_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.auto_save_on" title="Link to this definition">#</a></dt>
+<dd><p>Enable automatic HDF5 saving on each acquisition.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.roi3">
-<span class="sig-name descname"><span class="pre">roi3</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.roi3" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.auto_save_off">
+<span class="sig-name descname"><span class="pre">auto_save_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.auto_save_off" title="Link to this definition">#</a></dt>
+<dd><p>Disable automatic HDF5 saving on each acquisition.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.roi4">
-<span class="sig-name descname"><span class="pre">roi4</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.roi4" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.default_settings">
+<span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.default_settings" title="Link to this definition">#</a></dt>
+<dd><p>Apply default detector settings and stage signal configuration.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.stats1">
-<span class="sig-name descname"><span class="pre">stats1</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.stats1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.plot_select">
+<span class="sig-name descname"><span class="pre">plot_select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stats</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_select" title="Link to this definition">#</a></dt>
+<dd><p>Selects which stats will be plotted. All are being read.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stats</strong> (<em>iterable</em><em> of </em><em>ints</em>) – List with the stats numbers to be plotted.</p>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.stats2">
-<span class="sig-name descname"><span class="pre">stats2</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.stats2" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.plot_all">
+<span class="sig-name descname"><span class="pre">plot_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_all" title="Link to this definition">#</a></dt>
+<dd><p>Set all four stats channels to be plotted.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.stats3">
-<span class="sig-name descname"><span class="pre">stats3</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.stats3" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.plot_stats1">
+<span class="sig-name descname"><span class="pre">plot_stats1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_stats1" title="Link to this definition">#</a></dt>
+<dd><p>Set only Stats1 total to be plotted.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.stats4">
-<span class="sig-name descname"><span class="pre">stats4</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.stats4" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.plot_stats2">
+<span class="sig-name descname"><span class="pre">plot_stats2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_stats2" title="Link to this definition">#</a></dt>
+<dd><p>Set only Stats2 total to be plotted.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.codec">
-<span class="sig-name descname"><span class="pre">codec</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.codec" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.plot_stats3">
+<span class="sig-name descname"><span class="pre">plot_stats3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_stats3" title="Link to this definition">#</a></dt>
+<dd><p>Set only Stats3 total to be plotted.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.proc">
-<span class="sig-name descname"><span class="pre">proc</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.proc" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.plot_stats4">
+<span class="sig-name descname"><span class="pre">plot_stats4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_stats4" title="Link to this definition">#</a></dt>
+<dd><p>Set only Stats4 total to be plotted.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.setup_images">
+<span class="sig-name descname"><span class="pre">setup_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_template</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flyscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.setup_images" title="Link to this definition">#</a></dt>
+<dd><p>Configure HDF5 folder, name, and number for the upcoming scan.</p>
+<p>The IOC writes to the folder mapped from <code class="docutils literal notranslate"><span class="pre">base_path/&lt;name&gt;</span></code> (see
+<code class="docutils literal notranslate"><span class="pre">IOCPathMixin</span></code>); the returned paths are the final ones.</p>
+</dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.preset_monitor">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">preset_monitor</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.preset_monitor" title="Link to this definition">#</a></dt>
-<dd><p>Return the signal used to set exposure time.</p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.save_image_flag">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">save_image_flag</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.save_image_flag" title="Link to this definition">#</a></dt>
+<dd><p>Return True if images will be saved on next acquisition.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.label_option_map">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">label_option_map</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.label_option_map" title="Link to this definition">#</a></dt>
+<dd><p>Return mapping of stats channel label names to their index numbers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.plot_options">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">plot_options</span></span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_options" title="Link to this definition">#</a></dt>
+<dd><p>Return list of available channel names for plot selection.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.default_kinds">
-<span class="sig-name descname"><span class="pre">default_kinds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.default_kinds" title="Link to this definition">#</a></dt>
-<dd><p>Configure default kind settings for all detector plugins and components.</p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.select_plot">
+<span class="sig-name descname"><span class="pre">select_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.select_plot" title="Link to this definition">#</a></dt>
+<dd><p>Select which stats channels to plot by label name.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.Lambda250kDetector.default_settings">
-<span class="sig-name descname"><span class="pre">default_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.Lambda250kDetector.default_settings" title="Link to this definition">#</a></dt>
-<dd><p>Apply default stage signal settings for the Lambda detector.</p>
+<dt class="sig sig-object py" id="id4_common.devices.ad_lambda.LambdaDetector.field_for_label">
+<span class="sig-name descname"><span class="pre">field_for_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4_common.devices.ad_lambda.LambdaDetector.field_for_label" title="Link to this definition">#</a></dt>
+<dd><p>Return the ophyd field name for a plot-option label.</p>
 </dd></dl>
 
 </dd></dl>
@@ -861,46 +954,58 @@
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LAMBDA_FILES_ROOT"><code class="docutils literal notranslate"><span class="pre">LAMBDA_FILES_ROOT</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.BLUESKY_FILES_ROOT"><code class="docutils literal notranslate"><span class="pre">BLUESKY_FILES_ROOT</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.TEST_IMAGE_DIR"><code class="docutils literal notranslate"><span class="pre">TEST_IMAGE_DIR</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.MySingleTrigger"><code class="docutils literal notranslate"><span class="pre">MySingleTrigger</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.MySingleTrigger.stage"><code class="docutils literal notranslate"><span class="pre">MySingleTrigger.stage()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.MySingleTrigger.unstage"><code class="docutils literal notranslate"><span class="pre">MySingleTrigger.unstage()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.MySingleTrigger.trigger"><code class="docutils literal notranslate"><span class="pre">MySingleTrigger.trigger()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Trigger"><code class="docutils literal notranslate"><span class="pre">Trigger</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Trigger.setup_manual_trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.setup_manual_trigger()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Trigger.setup_external_trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.setup_external_trigger()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Trigger.stage"><code class="docutils literal notranslate"><span class="pre">Trigger.stage()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Trigger.unstage"><code class="docutils literal notranslate"><span class="pre">Trigger.unstage()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Trigger.trigger"><code class="docutils literal notranslate"><span class="pre">Trigger.trigger()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam.serial_number"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam.serial_number</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam.firmware_version"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam.firmware_version</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam.operating_mode"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam.operating_mode</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam.energy_threshold"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam.energy_threshold</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam.dual_threshold"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam.dual_threshold</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam.file_number_sync"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam.file_number_sync</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam.file_number_write"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam.file_number_write</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kCam.pool_max_buffers"><code class="docutils literal notranslate"><span class="pre">Lambda250kCam.pool_max_buffers</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaCam"><code class="docutils literal notranslate"><span class="pre">LambdaCam</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaCam.serial_number"><code class="docutils literal notranslate"><span class="pre">LambdaCam.serial_number</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaCam.firmware_version"><code class="docutils literal notranslate"><span class="pre">LambdaCam.firmware_version</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaCam.operating_mode"><code class="docutils literal notranslate"><span class="pre">LambdaCam.operating_mode</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaCam.energy_threshold"><code class="docutils literal notranslate"><span class="pre">LambdaCam.energy_threshold</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaCam.dual_threshold"><code class="docutils literal notranslate"><span class="pre">LambdaCam.dual_threshold</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.MyHDF5Plugin"><code class="docutils literal notranslate"><span class="pre">MyHDF5Plugin</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.MyHDF5Plugin.filestore_spec"><code class="docutils literal notranslate"><span class="pre">MyHDF5Plugin.filestore_spec</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.cam"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.cam</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.hdf1"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.hdf1</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.roi1"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.roi1</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.roi2"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.roi2</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.roi3"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.roi3</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.roi4"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.roi4</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.stats1"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.stats1</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.stats2"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.stats2</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.stats3"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.stats3</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.stats4"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.stats4</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.codec"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.codec</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.proc"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.proc</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.preset_monitor"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.preset_monitor</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.default_kinds"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.default_kinds()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.Lambda250kDetector.default_settings"><code class="docutils literal notranslate"><span class="pre">Lambda250kDetector.default_settings()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector"><code class="docutils literal notranslate"><span class="pre">LambdaDetector</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.cam"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.cam</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.hdf1"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.hdf1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.roi1"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.roi1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.roi2"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.roi2</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.roi3"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.roi3</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.roi4"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.roi4</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.stats1"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.stats1</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.stats2"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.stats2</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.stats3"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.stats3</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.stats4"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.stats4</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.codec"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.codec</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.proc"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.proc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.ioc_files_root"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.ioc_files_root</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.default_folder"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.default_folder</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.hdf1_name_format"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.hdf1_name_format</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.max_num_images"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.max_num_images</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.align_on"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.align_on()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.align_off"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.align_off()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.save_images_on"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.save_images_on()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.save_images_off"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.save_images_off()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.auto_save_on"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.auto_save_on()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.auto_save_off"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.auto_save_off()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.default_settings"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.default_settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_select"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.plot_select()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_all"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.plot_all()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_stats1"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.plot_stats1()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_stats2"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.plot_stats2()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_stats3"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.plot_stats3()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_stats4"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.plot_stats4()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.setup_images"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.setup_images()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.save_image_flag"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.save_image_flag</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.label_option_map"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.label_option_map</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.plot_options"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.plot_options</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.select_plot"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.select_plot()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_lambda.LambdaDetector.field_for_label"><code class="docutils literal notranslate"><span class="pre">LambdaDetector.field_for_label()</span></code></a></li>
 </ul>
 </li>
 </ul>

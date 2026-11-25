@@ -5,9 +5,11 @@ id4_common.devices.ad_lambda
 
 .. autoapi-nested-parse::
 
-   Lambda area detector
+   X-Spectrum Lambda area detector
 
-
+   The Lambda IOC cannot write to the experiment file server, so the HDF5 files
+   are written to the IOC's local disk and moved afterwards. See
+   ``IOCPathMixin`` for the folder layout.
 
 
 
@@ -16,58 +18,56 @@ id4_common.devices.ad_lambda
 Module Contents
 ---------------
 
-.. py:data:: LAMBDA_FILES_ROOT
-   :value: '/extdisk/4idd/'
+.. py:class:: Trigger(*args, image_name=None, delay=0.1, **kwargs)
 
-
-.. py:data:: BLUESKY_FILES_ROOT
-   :value: '/home/sector4/4idd/bluesky_images'
-
-
-.. py:data:: TEST_IMAGE_DIR
-   :value: '%Y/%m/%d/'
-
-
-.. py:class:: MySingleTrigger(*args, image_name=None, delay_time=0.1, **kwargs)
-
-   Bases: :py:obj:`ophyd.areadetector.TriggerBase`
+   Bases: :py:obj:`id4_common.devices.ad_mixins.TriggerBase`
 
 
    This trigger mixin class takes one acquisition per trigger.
-   .. rubric:: Examples
 
-   >>> class SimDetector(SingleTrigger):
-   ...     pass
-   >>> det = SimDetector('..pv..')
-   # optionally, customize name of image
-   >>> det = SimDetector('..pv..', image_name='fast_detector_image')
+
+   .. py:method:: setup_manual_trigger()
+
+      Configure stage_sigs for single-image manual-trigger mode.
+
+
+
+   .. py:method:: setup_external_trigger()
+      :abstractmethod:
+
+
+      Raise NotImplementedError; flyscans are not supported yet.
+
 
 
    .. py:method:: stage()
 
-      Subscribe to detector state changes and stage the detector.
+      Stop any acquisition, subscribe to the busy signal, and stage.
 
 
 
    .. py:method:: unstage()
 
-      Unstage the detector and unsubscribe from detector state changes.
+      Unstage, stop acquisition, clear the busy subscription, and restore
+      manual trigger.
 
 
 
    .. py:method:: trigger()
 
-      Trigger one acquisition.
+      Trigger one acquisition and return a status object that completes when
+      acquire_busy drops.
 
 
 
-.. py:class:: Lambda250kCam
+.. py:class:: LambdaCam
 
-   Bases: :py:obj:`ophyd.areadetector.CamBase`
+   Bases: :py:obj:`apstools.devices.CamMixin_V34`, :py:obj:`ophyd.areadetector.CamBase`
 
 
-   support for X-Spectrum Lambda 750K detector
-   https://x-spectrum.de/products/lambda-350k750k/
+   Support for the X-Spectrum Lambda detectors.
+
+   https://x-spectrum.de/products/lambda/
 
 
    .. py:attribute:: serial_number
@@ -85,40 +85,16 @@ Module Contents
    .. py:attribute:: dual_threshold
 
 
-   .. py:attribute:: file_number_sync
-      :value: None
+.. py:class:: LambdaDetector(*args, ioc_files_root=None, default_folder='', hdf1_name_template='%s/%s_%6.6d', hdf1_file_extension='h5', max_num_images=65535, **kwargs)
+
+   Bases: :py:obj:`Trigger`, :py:obj:`id4_common.devices.ad_mixins.IOCPathMixin`, :py:obj:`id4_common.devices.counters_mixin.CountersMixin`, :py:obj:`ophyd.areadetector.DetectorBase`
 
 
+   Lambda area detector with HDF5 file writing and statistics plugins.
 
-   .. py:attribute:: file_number_write
-      :value: None
-
-
-
-   .. py:attribute:: pool_max_buffers
-      :value: None
-
-
-
-.. py:class:: MyHDF5Plugin(*args, **kwargs)
-
-   Bases: :py:obj:`ophyd.areadetector.filestore_mixins.FileStoreHDF5SingleIterativeWrite`, :py:obj:`ophyd.areadetector.plugins.HDF5Plugin_V34`
-
-
-   HDF5 plugin for the Lambda 250k detector with POLAR-specific filestore spec.
-
-
-   .. py:attribute:: filestore_spec
-      :value: 'AD_HDF5_Lambda250k_APSPolar'
-
-
-
-.. py:class:: Lambda250kDetector(*args, image_name=None, delay_time=0.1, **kwargs)
-
-   Bases: :py:obj:`MySingleTrigger`, :py:obj:`ophyd.areadetector.DetectorBase`
-
-
-   Lambda 250k area detector with HDF5 file writing and statistics plugins.
+   The HDF5 files are written under ``ioc_files_root/<experiment_name>`` on
+   the IOC host and have to be moved to the experiment folder after the
+   scan.
 
 
    .. py:attribute:: cam
@@ -157,20 +133,140 @@ Module Contents
    .. py:attribute:: proc
 
 
-   .. py:property:: preset_monitor
+   .. py:attribute:: ioc_files_root
+      :value: None
 
-      Return the signal used to set exposure time.
 
 
-   .. py:method:: default_kinds()
+   .. py:attribute:: default_folder
+      :value: ''
 
-      Configure default kind settings for all detector plugins and components.
+
+
+   .. py:attribute:: hdf1_name_format
+      :value: '%s/%s_%6.6d.h5'
+
+
+
+   .. py:attribute:: max_num_images
+      :value: 65535
+
+
+
+   .. py:method:: align_on(time=0.1)
+
+      Start detector in alignment mode
+
+
+
+   .. py:method:: align_off()
+
+      Stop detector
+
+
+
+   .. py:method:: save_images_on()
+
+      Enable HDF5 image saving.
+
+
+
+   .. py:method:: save_images_off()
+
+      Disable HDF5 image saving.
+
+
+
+   .. py:method:: auto_save_on()
+
+      Enable automatic HDF5 saving on each acquisition.
+
+
+
+   .. py:method:: auto_save_off()
+
+      Disable automatic HDF5 saving on each acquisition.
 
 
 
    .. py:method:: default_settings()
 
-      Apply default stage signal settings for the Lambda detector.
+      Apply default detector settings and stage signal configuration.
+
+
+
+   .. py:method:: plot_select(stats)
+
+      Selects which stats will be plotted. All are being read.
+
+      :param stats: List with the stats numbers to be plotted.
+      :type stats: iterable of ints
+
+
+
+   .. py:method:: plot_all()
+
+      Set all four stats channels to be plotted.
+
+
+
+   .. py:method:: plot_stats1()
+
+      Set only Stats1 total to be plotted.
+
+
+
+   .. py:method:: plot_stats2()
+
+      Set only Stats2 total to be plotted.
+
+
+
+   .. py:method:: plot_stats3()
+
+      Set only Stats3 total to be plotted.
+
+
+
+   .. py:method:: plot_stats4()
+
+      Set only Stats4 total to be plotted.
+
+
+
+   .. py:method:: setup_images(base_path, name_template, file_number, flyscan=False)
+
+      Configure HDF5 folder, name, and number for the upcoming scan.
+
+      The IOC writes to the folder mapped from ``base_path/<name>`` (see
+      ``IOCPathMixin``); the returned paths are the final ones.
+
+
+
+   .. py:property:: save_image_flag
+
+      Return True if images will be saved on next acquisition.
+
+
+   .. py:property:: label_option_map
+
+      Return mapping of stats channel label names to their index numbers.
+
+
+   .. py:property:: plot_options
+
+      Return list of available channel names for plot selection.
+
+
+   .. py:method:: select_plot(channels)
+
+      Select which stats channels to plot by label name.
+
+
+
+   .. py:method:: field_for_label(label)
+
+      Return the ophyd field name for a plot-option label.
 
 
 
