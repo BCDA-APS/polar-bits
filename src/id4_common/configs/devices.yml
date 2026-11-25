@@ -478,6 +478,26 @@ ophyd.EpicsMotor:
   prefix: "4idbSoft:m3"
   labels: ["motor", "flag", "baseline"]
 
+##########################
+## Other area detectors ##
+##########################
+
+# These IOCs cannot write to the experiment file server: files go to
+# <ioc_files_root>/<experiment_name>/... and must be moved into the
+# experiment folder after the scan (see IOCPathMixin in devices/ad_mixins.py).
+
+id4_common.devices.ad_lambda.LambdaDetector:
+- name: lamb
+  prefix: "4idLambda:"
+  ioc_files_root: "/extdisk/polar"
+  labels: ["detector", "MagXES"]
+
+id4_common.devices.ad_lightfield.LightFieldDetector:
+- name: raman
+  prefix: "4LF1:"
+  ioc_files_root: 'Z:\4idd\bluesky_images\raman'
+  labels: ["raman", "detector"]
+
 ###################
 ## Miscellaneous  ##
 ###################

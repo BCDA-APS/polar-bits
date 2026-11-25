@@ -106,11 +106,12 @@ def load_vortex(
     if "dante" in electronic.lower():
         logger.warning(
             "\n To prime hdf, Acq.Mode needs to be in MCA mapping mode."
-            "\n with IOC with dpuser, "
-            "vortex._local_folder = /local/home/dpuser/sector4/"
-            "\n with IOC with polar, "
-            "vortex._local_folder = /net/s4data/export/sector4/4idd/"
-            "bluesky_images/vortex"
+            "\n Files are written under %s.ioc_files_root = %r and must be"
+            "\n moved afterwards. If the IOC runs as polar and the experiment"
+            "\n is on dserv, write directly with %s.ioc_files_root = None.",
+            name,
+            device.ioc_files_root,
+            name,
         )
 
     return device

@@ -103,6 +103,18 @@ one acquisition. Reference patterns: `Eiger1MDetector`, `VimbaDetector` (ADCore
 `acquire`); `VortexDante1`/`VortexDante4` (MCA `acquire_start`/`mca_mode`).
 A camera with no warmup signals logs a warning and skips priming.
 
+**IOCs that can't write to the experiment file server.** Lambda,
+LightField (Windows) and the Dante write to a folder of their own, and the
+files are moved afterwards (the move is not done by bluesky). Use
+`IOCPathMixin` on the detector plus `MappedPathHDF5Plugin` for `hdf1` (both
+in `ad_mixins.py`). The IOC writes `<base_experiment_path>/<rel>` to
+`<ioc_files_root>/<experiment_name>/<rel>`, using the current `experiment`
+(so `experiment_setup()` must have run). `ioc_files_root` comes from
+`devices.yml`, or for the Dante from `load_vortex(..., ioc_files_root=)`
+(default `/local/home/dpuser/sector4`). `setup_images()` calls
+`hdf1.set_write_folder(...)`; the paths it returns and the resource
+documents are the final ones. `ioc_files_root=None` writes directly.
+
 ## Detector Plotting API
 
 All detectors used with `CountersClass.plotselect()` must inherit from one of:
