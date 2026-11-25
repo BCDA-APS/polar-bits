@@ -534,7 +534,7 @@ class VortexXspress37(Trigger, ROICountersMixin, DetectorBase):
         for pixel in range(1, self.num_channels + 1):
             pix = getattr(self, f"stats{pixel}")
             for i in range(1, MAX_ROIS + 1):
-                k = "normal" if i in rois else "omitted"
+                k = "normal" if i in rois else "config"
                 getattr(pix, f"roi{i}").kind = k
 
         self._read_rois = list(rois)

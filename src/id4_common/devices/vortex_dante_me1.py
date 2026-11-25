@@ -199,7 +199,7 @@ class VortexDante1(Trigger, IOCPathMixin, ROICountersMixin, DetectorBase):
     """
 
     _default_configuration_attrs = ("cam",)
-    _default_read_attrs = ("hdf1", "mcas", "scas", "total")
+    _default_read_attrs = ("cam", "hdf1", "mcas", "scas", "total")
 
     _read_rois = [1]
     _num_channels = 1
@@ -305,6 +305,7 @@ class VortexDante1(Trigger, IOCPathMixin, ROICountersMixin, DetectorBase):
             mca.preset_real_time.kind = "omitted"
             mca.elapsed_real_time.kind = "omitted"
             mca.spectrum.kind = "omitted"
+            mca.rois.kind = "normal"
             for roi in mca.rois.component_names:
                 d = getattr(mca, f"rois.{roi}")
                 for c in d.component_names:
@@ -357,7 +358,7 @@ class VortexDante1(Trigger, IOCPathMixin, ROICountersMixin, DetectorBase):
         for pixel in range(1, self.num_channels + 1):
             pix = getattr(self.mcas, f"mca{pixel}")
             for i in range(MAX_ROIS):
-                k = "normal" if i in rois else "omitted"
+                k = "normal" if i in rois else "config"
                 getattr(pix.rois, f"roi{i}").kind = k
 
         self._read_rois = list(rois)
