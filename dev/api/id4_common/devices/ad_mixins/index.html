@@ -690,6 +690,19 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">id4_common.devices.ad_mixins.</span></span><span class="sig-name descname"><span class="pre">ROIPlugin</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.ROIPlugin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#id4_common.devices.ad_mixins.PluginMixin" title="id4_common.devices.ad_mixins.PluginMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PluginMixin</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.areadetector.plugins.ROIPlugin_V34</span></code></p>
 <p>Remove property attribute found in AD IOCs now.</p>
+<p><code class="docutils literal notranslate"><span class="pre">min_xyz</span></code> and <code class="docutils literal notranslate"><span class="pre">size</span></code> are redeclared with <code class="docutils literal notranslate"><span class="pre">config</span></code> signals: ophyd
+makes them <code class="docutils literal notranslate"><span class="pre">normal</span></code>, which a <code class="docutils literal notranslate"><span class="pre">config</span></code> plugin drops, so the ROI
+bounds were never recorded (#72).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.ROIPlugin.min_xyz">
+<span class="sig-name descname"><span class="pre">min_xyz</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.ROIPlugin.min_xyz" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4_common.devices.ad_mixins.ROIPlugin.size">
+<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#id4_common.devices.ad_mixins.ROIPlugin.size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1102,7 +1115,11 @@ completion.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.ImagePlugin"><code class="docutils literal notranslate"><span class="pre">ImagePlugin</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.PvaPlugin"><code class="docutils literal notranslate"><span class="pre">PvaPlugin</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.ProcessPlugin"><code class="docutils literal notranslate"><span class="pre">ProcessPlugin</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.ROIPlugin"><code class="docutils literal notranslate"><span class="pre">ROIPlugin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.ROIPlugin"><code class="docutils literal notranslate"><span class="pre">ROIPlugin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.ROIPlugin.min_xyz"><code class="docutils literal notranslate"><span class="pre">ROIPlugin.min_xyz</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.ROIPlugin.size"><code class="docutils literal notranslate"><span class="pre">ROIPlugin.size</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.StatsPlugin"><code class="docutils literal notranslate"><span class="pre">StatsPlugin</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.StatsPlugin.sigma_x"><code class="docutils literal notranslate"><span class="pre">StatsPlugin.sigma_x</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4_common.devices.ad_mixins.StatsPlugin.sigma_y"><code class="docutils literal notranslate"><span class="pre">StatsPlugin.sigma_y</span></code></a></li>

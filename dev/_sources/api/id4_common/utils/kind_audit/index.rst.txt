@@ -1,0 +1,60 @@
+id4_common.utils.kind_audit
+===========================
+
+.. py:module:: id4_common.utils.kind_audit
+
+.. autoapi-nested-parse::
+
+   Find signals that a device's ``kind`` settings silently drop from the data
+   (issues #72, #100).
+
+   In ophyd, ``kind`` on a sub-Device filters what it passes up to its parent:
+
+   - ``read()`` only recurses into children with the ``normal`` bit.
+   - ``read_configuration()`` only recurses into children with the ``config``
+     bit, and only picks up leaf signals that are themselves ``config``.
+
+   So a ``normal``/``hinted`` signal inside a ``config`` sub-Device (e.g. a
+   positioner readback) is in neither. These helpers list such signals by
+   walking the kinds the same way ``Device.read()`` and
+   ``Device.read_configuration()`` do, so they need no EPICS connection and
+   work on disconnected or fake devices.
+
+   Typical use in the interactive session::
+
+       audit_kinds("magnet911", "mono_feedback")
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: find_unrecorded_signals(device)
+
+   Return names of non-omitted signals missing from read and configuration.
+
+   A signal is reported when it and all its parents are not ``omitted``,
+   but neither ``device.read()`` nor ``device.read_configuration()``
+   reaches it, i.e. a ``config`` parent is hiding a ``normal`` signal.
+   Everything below an ``omitted`` parent counts as deliberately dropped.
+
+   :param device: Top-level device to audit.
+   :type device: ophyd.Device
+
+   :returns: Signal names (as used in the data), sorted.
+   :rtype: list of str
+
+
+.. py:function:: audit_kinds(*devices)
+
+   Print the signals each device's kinds drop from the data.
+
+   :param \*devices: Devices, or names to look up in ``oregistry``.
+   :type \*devices: ophyd.Device or str
+
+   :returns: ``{device_name: [lost signal names]}`` for devices with losses.
+   :rtype: dict
+
+

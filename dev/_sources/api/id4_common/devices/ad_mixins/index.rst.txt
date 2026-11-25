@@ -73,6 +73,16 @@ Module Contents
 
    Remove property attribute found in AD IOCs now.
 
+   ``min_xyz`` and ``size`` are redeclared with ``config`` signals: ophyd
+   makes them ``normal``, which a ``config`` plugin drops, so the ROI
+   bounds were never recorded (#72).
+
+
+   .. py:attribute:: min_xyz
+
+
+   .. py:attribute:: size
+
 
 .. py:class:: StatsPlugin
 
