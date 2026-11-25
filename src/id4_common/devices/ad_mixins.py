@@ -21,6 +21,7 @@ from ophyd import Signal
 from ophyd.areadetector import EigerDetectorCam
 from ophyd.areadetector import EpicsSignalWithRBV
 from ophyd.areadetector import Xspress3DetectorCam
+from ophyd.areadetector.base import DDC_SignalWithRBV
 from ophyd.areadetector.filestore_mixins import FileStoreBase
 from ophyd.areadetector.plugins import AttributePlugin_V34
 from ophyd.areadetector.plugins import CodecPlugin_V34
@@ -68,7 +69,27 @@ class ProcessPlugin(PluginMixin, ProcessPlugin_V34):
 
 
 class ROIPlugin(PluginMixin, ROIPlugin_V34):
-    """Remove property attribute found in AD IOCs now."""
+    """Remove property attribute found in AD IOCs now.
+
+    ``min_xyz`` and ``size`` are redeclared with ``config`` signals: ophyd
+    makes them ``normal``, which a ``config`` plugin drops, so the ROI
+    bounds were never recorded (#72).
+    """
+
+    min_xyz = DDC_SignalWithRBV(
+        ("min_x", "MinX"),
+        ("min_y", "MinY"),
+        ("min_z", "MinZ"),
+        doc="Minimum size of the ROI in XYZ",
+        kind="config",
+    )
+    size = DDC_SignalWithRBV(
+        ("x", "SizeX"),
+        ("y", "SizeY"),
+        ("z", "SizeZ"),
+        doc="Size of the ROI in XYZ",
+        kind="config",
+    )
 
     _default_configuration_attrs = (
         ROIPlugin_V34._default_configuration_attrs

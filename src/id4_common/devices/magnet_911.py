@@ -279,7 +279,6 @@ class NVDevice(Device):
         "",
         setpoint_pv="SetTargetTemperature",
         readback_pv="Temperature",
-        kind="config",
     )
 
     pressure = Component(
@@ -287,7 +286,6 @@ class NVDevice(Device):
         "",
         setpoint_pv="SetTargetPressure",
         readback_pv="Pressure",
-        kind="config",
     )
 
     read_button = Component(EpicsSignal, "Read.PROC", kind="omitted")
@@ -308,8 +306,8 @@ class Magnet911(Device):
 
     ps = Component(PowerSupply, "911TMagnet:PSU:", labels=["magnet"])
 
-    monitors = DynamicDeviceComponent(_make_monitors(num=6), kind="config")
+    monitors = DynamicDeviceComponent(_make_monitors(num=6))
 
     temps = Component(VTIDevice, "911TMagnet:VTI:")
 
-    needle_valve = Component(NVDevice, "911TMagnet:NV:", kind="config")
+    needle_valve = Component(NVDevice, "911TMagnet:NV:")

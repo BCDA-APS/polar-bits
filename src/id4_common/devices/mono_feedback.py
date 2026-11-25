@@ -14,27 +14,27 @@ class FeedbackDirection(Device):
     stabilization.
     """
 
-    status = Component(EpicsSignal, ":on", string=True)
+    status = Component(EpicsSignal, ":on", string=True, kind="config")
 
-    readback_pv = Component(EpicsSignal, ".INP", string=True)
-    control_pv = Component(EpicsSignal, ".OUTL", string=True)
+    readback_pv = Component(EpicsSignal, ".INP", string=True, kind="config")
+    control_pv = Component(EpicsSignal, ".OUTL", string=True, kind="config")
 
     setpoint = Component(EpicsSignal, ".VAL")
     readback = Component(EpicsSignalRO, ".CVAL")
     following_error = Component(EpicsSignalRO, ".ERR")
 
-    scan = Component(EpicsSignal, ".SCAN", string=True)
+    scan = Component(EpicsSignal, ".SCAN", string=True, kind="config")
 
-    kp = Component(EpicsSignal, ".KP")
-    ki = Component(EpicsSignal, ".KI")
-    kd = Component(EpicsSignal, ".KD")
+    kp = Component(EpicsSignal, ".KP", kind="config")
+    ki = Component(EpicsSignal, ".KI", kind="config")
+    kd = Component(EpicsSignal, ".KD", kind="config")
 
-    p = Component(EpicsSignalRO, ".P")
-    i = Component(EpicsSignal, ".I")
-    d = Component(EpicsSignalRO, ".D")
+    p = Component(EpicsSignalRO, ".P", kind="omitted")
+    i = Component(EpicsSignal, ".I", kind="omitted")
+    d = Component(EpicsSignalRO, ".D", kind="omitted")
 
-    low_limit = Component(EpicsSignal, ".DRVL")
-    high_limit = Component(EpicsSignal, ".DRVH")
+    low_limit = Component(EpicsSignal, ".DRVL", kind="config")
+    high_limit = Component(EpicsSignal, ".DRVH", kind="config")
 
 
 class FeedbackStation(Device):
@@ -62,7 +62,7 @@ class MonoFeedback(Device):
 
     def _kind_setup(self, value=None, **kwargs):
         for item in "b g h".split():
-            kind = "config" if value.lower() == item else "omitted"
+            kind = "normal" if value.lower() == item else "omitted"
             getattr(self, item).kind = kind
 
     def default_settings(self):

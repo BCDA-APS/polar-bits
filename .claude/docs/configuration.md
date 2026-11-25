@@ -68,3 +68,28 @@ one you may need to reach for:
   runtime mapping.
 
 Multiple devices sharing a class must all be listed under **one** class key in `devices.yml` (YAML sequences continue until the next mapping key — a misplaced `- name:` entry silently falls under the preceding class).
+
+**Kinds on sub-Devices (#72, #100).** On a sub-Device (positioner, motor,
+plugin, `DynamicDeviceComponent`), `kind` filters what is passed up; it does
+not label the device:
+
+- `normal` passes everything: its `normal` signals go into `read()` (event
+  data, baseline, NeXus, SPEC) and its `config` signals into
+  `read_configuration()`. ophyd turns a `normal` Device into `normal|config`
+  by itself, so `Kind.normal | Kind.config` on a Device adds nothing.
+- `config` passes **only** its `config` signals. A `normal`/`hinted`
+  readback or setpoint inside is saved nowhere. This was the needle valve
+  pressure bug, and the AD ROI bounds bug (ophyd's `min_xyz`/`size` are
+  `normal` signals inside a `config` plugin).
+- `omitted` passes nothing, not even the `config` signals.
+
+So: leave a sub-Device `normal` when its readings should be saved, and
+classify the leaf signals instead (readback/setpoint `normal`; gains,
+limits, names `config`). Use `config` on a sub-Device only to deliberately
+keep just its configuration, e.g. a deselected ROI, so its bounds stay in
+the descriptor but its counts are not read. Descriptor configuration only
+reaches the database: the NeXus and SPEC writers ignore it, so anything that
+belongs in the files must be `normal` (and the device in the baseline).
+Changing `.kind` at runtime does not update the parents. Check a device with
+`audit_kinds("name")` in the session (`utils/kind_audit.py`); add new device
+classes to `tests/test_kind_audit.py`.

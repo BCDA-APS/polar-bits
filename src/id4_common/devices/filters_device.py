@@ -17,10 +17,10 @@ class FilterSlot(Device):
     """
 
     status = Component(EpicsSignal, "Set", string=True)
-    lock = Component(EpicsSignal, "Lock", string=True)
-    material = Component(EpicsSignal, "Material", string=True)
-    thickness = Component(EpicsSignal, "Thickness")
-    enable = Component(EpicsSignal, "Enable", string=True)
+    lock = Component(EpicsSignal, "Lock", string=True, kind="config")
+    material = Component(EpicsSignal, "Material", string=True, kind="config")
+    thickness = Component(EpicsSignal, "Thickness", kind="config")
+    enable = Component(EpicsSignal, "Enable", string=True, kind="config")
     transmission = Component(EpicsSignalRO, "Transmission")
 
 
@@ -31,7 +31,7 @@ def make_filter_slots(num: int):
     """
     defn = {}
     for n in range(1, num + 1):
-        defn[f"f{n}"] = (FilterSlot, f"Fi{n}:", dict(kind="config"))
+        defn[f"f{n}"] = (FilterSlot, f"Fi{n}:", dict(kind="normal"))
     return defn
 
 

@@ -83,6 +83,19 @@ def test_seed_dict_paths_resolve_against_a_mock_device(fresh_module):
             ), f"path {device_name}.{path} did not resolve to a leaf"
 
 
+def test_magnet911_paths_exist_on_real_class(fresh_module):
+    """The h-9T paths name real Magnet911 attributes, not just mock ones."""
+    pytest.importorskip("apstools.devices")
+    from id4_common.devices.magnet_911 import Magnet911
+    from ophyd.sim import make_fake_device
+
+    ts_mod, _, _ = fresh_module
+    device = make_fake_device(Magnet911)("4idhSoft:", name="magnet911")
+    _, sp_path, rb_path = ts_mod.TEMPERATURE_CONTROLLERS["h-9T"]
+    for path in (sp_path, rb_path):
+        ts_mod._resolve_path(device, path)
+
+
 def test_unknown_label_raises_keyerror(fresh_module):
     ts_mod, _, _ = fresh_module
     with pytest.raises(KeyError, match="bogus-label"):

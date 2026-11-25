@@ -24,7 +24,6 @@ class PolAnalyzer(Device):
             "preamp",
             "detector",
         ),
-        kind="config",
     )
     horizontal_preamp = Component(
         LocalPreAmp,
@@ -33,7 +32,6 @@ class PolAnalyzer(Device):
             "preamp",
             "detector",
         ),
-        kind="config",
     )
 
     def default_settings(self):

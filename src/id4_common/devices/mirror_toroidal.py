@@ -22,10 +22,10 @@ class MR3(Device):
     pitch = Component(EpicsMotor, "m14", labels=("motor",))
 
     # Individual motors
-    yu = Component(EpicsMotor, "m1", labels=("motor",), kind="config")
-    yd = Component(EpicsMotor, "m2", labels=("motor",), kind="config")
-    xu = Component(EpicsMotor, "m3", labels=("motor",), kind="config")
-    xd = Component(EpicsMotor, "m4", labels=("motor",), kind="config")
+    yu = Component(EpicsMotor, "m1", labels=("motor",))
+    yd = Component(EpicsMotor, "m2", labels=("motor",))
+    xu = Component(EpicsMotor, "m3", labels=("motor",))
+    xd = Component(EpicsMotor, "m4", labels=("motor",))
 
     # Stripe settings
     stripe_setpoint = Component(EpicsSignal, "MR3:Stripe", string=True)
@@ -60,10 +60,10 @@ class MR4(Device):
     pitch = Component(EpicsMotor, "m18", labels=("motor",))
 
     # Individual motors
-    yu = Component(EpicsMotor, "m7", labels=("motor",), kind="config")
-    yd = Component(EpicsMotor, "m8", labels=("motor",), kind="config")
-    xu = Component(EpicsMotor, "m9", labels=("motor",), kind="config")
-    xd = Component(EpicsMotor, "m10", labels=("motor",), kind="config")
+    yu = Component(EpicsMotor, "m7", labels=("motor",))
+    yd = Component(EpicsMotor, "m8", labels=("motor",))
+    xu = Component(EpicsMotor, "m9", labels=("motor",))
+    xd = Component(EpicsMotor, "m10", labels=("motor",))
 
     # Stripe settings
     stripe_setpoint = Component(EpicsSignal, "MR4:Stripe", string=True)

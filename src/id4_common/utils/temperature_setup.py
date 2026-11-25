@@ -50,8 +50,8 @@ TEMPERATURE_CONTROLLERS = {
     # 4-ID-H 9-Tesla magnet (sub-components of `magnet911`)
     "h-9T": (
         "magnet911",
-        "temps.setpoint1",
-        "temps.setpoint2",
+        "temps.setpoint_1",
+        "temps.setpoint_2",
     ),
 }
 

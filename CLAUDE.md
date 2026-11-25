@@ -161,7 +161,7 @@ for the local build command, deploy workflow, and page structure.
 
 Read these only when the task at hand touches that area:
 
-- `.claude/docs/configuration.md` — `iconfig.yml`/`devices.yml`, PV-agnostic device pattern, `DynamicDeviceComponent` factory pattern
+- `.claude/docs/configuration.md` — `iconfig.yml`/`devices.yml`, PV-agnostic device pattern, `DynamicDeviceComponent` factory pattern, how `kind` on sub-Devices decides what is saved
 - `.claude/docs/startup-flow.md` — the two startup entry points, `_common_startup` sequence, per-beamline `stations` table
 - `.claude/docs/device-loading.md` — `id4_common/` module map, `oregistry`/`load_device`/`reload_all_devices`, deferred EPICS connection pattern, HDF1 priming, `CountersMixin` detector plotting API
 - `.claude/docs/data-output-and-logging.md` — SPEC/NeXus/dichro output, session logging config, temperature controllers
